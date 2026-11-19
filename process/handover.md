@@ -5,13 +5,16 @@ tool is still being first built. Once the shared-state issue exists, the handove
 lives there in the `handover-process` record (design part 4, section 4; build text
 5, section 4) and this file is retired.
 
-Last written: 2026-11-19, by a PROCESS session (session_012hdw2VUEz7qriE4aqxCNzC),
-at a clean refresh point the owner asked for, after completing all build/design work
-through stage 7, fixing the PROCESS refresh fault (decision B), the coordinator
-recording-path fault and a trial close-from-detached fault, and trimming the texts under
-their limits. **`main` tip is `bf7d22b` (PRs #23–#30 all merged); tool 105/105.** The next
-PROCESS's agenda is under "Next steps" below (A: the owner-open review document; B: the
-verification sweep; C: the shared-state-issue decision). Nothing is half-done.
+Last written: 2026-11-19, by PROCESS session_012hdw2R18xbdETqTENSyT1M, at a clean pause
+after: (1) building and merging **option C** (owner Decision, 19 Nov) — the owner, not ROOT,
+starts and refreshes PROCESS (PR #32, now on `main`); (2) delivering the **owner-open review**
+as the "Process4 Open Points" page (https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU) for the
+owner to settle items 1–11; (3) running the **verification sweep** (six workers; findings in
+`process/research/verification-sweep-19nov.md`); and (4) creating the process-repo
+**shared-state issue #33** (its `handover-process` record carries PROCESS liveness so the
+coordinator can find PROCESS). **tool 105/105.** Under option C, **PROCESS refresh is now the
+owner's act** (the coordinator surfaces the prompt). Nothing is half-done. The next PROCESS's
+agenda (queued verification fixes + the owner's settlements) is under "Next steps."
 
 ## The owner's standing direction (19 Nov 2026)
 
@@ -163,49 +166,53 @@ The coordinator's current open list was five; four are resolved:
 
 ## Next steps / the roadmap (task list mirrors this)
 
-All build/design work through stage 7 is DONE and merged (see above). The tool is complete
-(105/105). The successor's agenda, set by the owner on 19 Nov, in order:
+Agenda A, B and C (set by the owner on 19 Nov) are DONE this session, and option C is merged.
+What remains for the next PROCESS:
 
-**A. The owner-open review document (do first).** Produce a document the owner can read and
-settle from, walking through each open item in design part 10 §1 (and the readings it
-references): for each, a plain-words explanation, the options considered together with their
-interactions, and PROCESS's recommendation, so he can settle them in one pass. These are the
-items that gate the design from "proposed" to accepted. Make it a document he can read and
-respond to (a claude.ai doc/artifact is the natural form; the owner works in plain words —
-no codes or unseen references). Record his settlements verbatim in `design-decisions.md` and
-update the design in the same step.
+**1. Apply the queued verification fixes (corrections; no rule change; merge under the standing
+direction, tool-tests green).** From `process/research/verification-sweep-19nov.md`. Four cheap
+ones are already done this session (design-decisions "sections 5 and 6"; design/10 period;
+design/06 "not built" wording; research "section 6"). STILL QUEUED, each needing a full read of
+the build text first (PROCESS rule): (a) **build/01b** — update the `ready`/`results`/`close`
+command specs to show `--branch`/current-branch default (the tool + decisions record already
+have it); (b) **build/04 stage 10 and build/06 §6** — change "ROOT starts/refreshes PROCESS" to
+the owner-start of option C; (c) **process.md** — add "interrupt" to its lane acts (needs a
+small offsetting trim; it fills to 4,091, 5 B under); (d) **00-index.md** — refresh the stale
+raw-byte and "as filled" tables and the line count.
 
-**B. The verification sweep.** Spawn a set of workers, each taking a slice of the Process4
-design requirements, to rigorously confirm whether the CURRENT process4 (the tool, the
-starting texts, the build texts, the design's own internal consistency) actually meets them,
-and to report findings. This is heavy parallel reading — exactly what workers are for; keep
-it out of PROCESS's own context. Collect findings; any real gap becomes a process-fault fix
-(correction only; no new test/gate/review/stop — rule 2).
+**2. Bring the owner the two verification items that are his to settle** (options, recommendation):
+(A) the **round-done deadlock** for a walk-flaw-only module that closes unmerged (design part 2
+§4 sanctions the scenario but gives no path to finished/dropped — a design clarification + small
+tool correction; VW3 GAP 1); (B) the **lane→coordinator channel** that lane.md rule 4 needs but
+the acts/design don't grant (VW4-1; same area as open-point 7's lane readings).
 
-**C. The shared-state issue decision (owner asked; awaiting his yes/no).** Whether to create
-the process repo's own shared-state issue now (`p4 state write --create`, which registers
-PROCESS liveness and lets a successor register itself — completing the refresh fix's
-registration half) or keep the interim `process/handover.md` file. PROCESS recommends
-creating it. If he says yes, create it and transition this handover into the
-`handover-process` record (build text 5 §4), retiring the file per that text.
+**3. Record the owner's settlements of the "Process4 Open Points"** (the review page) as they
+arrive: his exact marked words in `design-decisions.md`, design updated in the same step, each
+rewritten entry shown once. For open-point 8 (his approvals wording) he will need the actual
+proposed text — retrieve it from the process3 repo working file
+(`process4/working/design_work_18nov/owner_acts_and_approvals.md`) and put the real wording in
+front of him, not a description.
 
 **Then, operational / the owner's (not more authoring):**
-- **Validate the PROCESS refresh fix + stages 5–7 in the trial.** Needs the owner's one-line
-  "move `process3-probes` to the latest Process4 version" to the coordinator (decision C) so a
-  fresh ROOT loads everything built here; then the refresh, walks, release and account switch
-  can be exercised (trial items). Until then the owner-start fallback stands.
+- **Validate option C + stages 5–7 in the trial.** Needs the owner's one-line "move
+  `process3-probes` to the latest Process4 version" to the coordinator so a fresh
+  ROOT/coordinator load option C; then the owner-start PROCESS refresh (the coordinator
+  surfacing the prompt on the standing page), the walks, the release and the account switch can
+  be exercised (trial items). The cross-repo session *create* is no longer a dependency; only
+  cross-repo *messaging* (proven) remains.
 - **The first real tranche** (the proof), and the civicsmith conversion (its own conversion
   plan + the owner's setup acts + the autoMode settings on its env).
 - **Per-product** promote/rollback/support procedures (design part 3 §8), written at conversion.
 
-No open process faults remain: the five original trial faults, the PROCESS refresh fault,
-and the coordinator recording-path fault are all addressed. **Size note: all starting
-texts are now under the 4,096 filled limit.** `arch.md` was trimmed (PR #27) from ~4,249
-to ~4,006–4,038 filled; `coordinator.md` was trimmed when the recording-path clause was
-added (PR #28) to ~4,050–4,082 filled; `process.md` (4,079, no fill placeholders) and
-`root.md` (~4,080 filled) are under. **Measure filled size with literal replacement (how
-the tool fills templates), not `sed` — `sed` expands the fetch line's `&` and over-counts
-by ~88 bytes.**
+The original trial faults, the PROCESS refresh fault (now owner-start, option C) and the
+coordinator recording-path fault are all addressed. **Size note: the role texts are tight.**
+Measured with a realistic 40-char commit fill (and `<copy>` left literal, as the tool does):
+`process.md` 4,091, `coordinator.md` 4,078, `root.md` 3,770 — all under after option C's
+trims. **VW4 found `arch.md` fills to ~4,040–4,105 and coordinator was at a ~12 B margin
+before this session** — the 4,096 limit has almost no headroom (flagged to the owner under
+open-point 1). **Measure filled size with literal replacement (how the tool fills templates),
+not `sed` — `sed` expands the fetch line's `&` and over-counts by ~88 bytes.** If `arch.md`
+proves over when re-measured, trim it (a queued fix) or raise it with the owner.
 
 ## Known environment facts (IMPORTANT — do not repeat the earlier mistake)
 

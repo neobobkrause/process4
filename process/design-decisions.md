@@ -39,7 +39,7 @@ section 4 (fault 7, found by the trial on 19 November 2026).
 **The rule as it now stands.** A job's required reading includes the record of
 ARCH's design decisions, so the job builds to the interface ARCH decided. This
 corrected the job's starting text (`starting_texts/job.md`), consistent with
-design part 2, section 8 and part 5, sections 6 and 50 (fault 8, found by the
+design part 2, section 8 and part 5, sections 5 and 6 (fault 8, found by the
 trial on 19 November 2026).
 
 **The owner's words.** "Decision: adopt the fixes for faults 7 and 8 in PR #13" — 19 November 2026.

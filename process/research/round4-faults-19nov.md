@@ -16,7 +16,7 @@ the process.
    had to retype refusal tests; tax's run failed on the check, not behaviour).
    New and more serious. **Fault D** — needs research and an owner decision,
    because it changes how the two approved refusals behave and the design says the
-   check reads test files (design part 2, section 59). Not fixed here.
+   check reads test files (design part 2, section 6). Not fixed here.
 3. **ROOT cannot start PROCESS (cross-repo).** Addressed by the approvals the
    owner merged (File A = PR #12; File B in `process3-probes`). Pending
    confirmation when ROOT next tries; unproven ground. No tool/text change.

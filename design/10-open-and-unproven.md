@@ -63,7 +63,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **The notice as part of a running process.** Its method was proven only on made-up modules, and only with 23 refusals in the tool that the owner has not approved; the form this design takes, without them, was never built or run. Picking a told job's related tests is not proven at all.
 - **Cross-repository acts.** Cross-repository messaging between roles worked (seen 19 Nov). A cross-repository session-lifecycle act was refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session, refused twice on 19 Nov), so PROCESS is started and refreshed by the owner, not ROOT (decision C; part 6, section 7); the design no longer depends on a cross-repository session create.
 - **The owner's acts to start a product** (part 7, section 4), and that nothing physical stops a product's session from changing the process (part 6, section 7).
-- **Everything listed as not proven on Claude Code** in part 7 A session fetching a read-only copy of the process was seen once, on 19 Nov.
+- **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process was seen once, on 19 Nov.
 - **Everything on Codex not marked measured in part 8.**
 
 ## 4. The trial
