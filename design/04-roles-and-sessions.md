@@ -4,7 +4,7 @@ Length: 161 lines. Last section: "11. Smaller rules a session needs".
 
 ## 1. The roles, and the sessions that hold no standing role
 
-- **ROOT** is the first session. The owner starts it with a plain prompt on the product's repository. It starts the watcher, ARCH and the coordinator, and starts PROCESS when asked. Once an hour a scheduled wake rouses it as a safety net, to wake or replace a session that has stopped. It decides nothing about the product and builds nothing.
+- **ROOT** is the first session. The owner starts it with a plain prompt on the product's repository. It starts the watcher, ARCH and the coordinator. The owner starts PROCESS (section 2; part 6). Once an hour a scheduled wake rouses it as a safety net, to wake or replace a session that has stopped. It decides nothing about the product and builds nothing.
 - **The watcher** is a standby session that takes over if ROOT dies. ROOT starts it (section 6).
 - **The coordinator** is the owner's front door for the product. It passes on his marked decisions and instructions exactly as typed and dated, and keeps the product's record of them. It answers his questions in words, never by building anything. It tells him what ARCH decided, one plain line each, puts to him the questions that are his, and gives him the account after each round. On his word it holds or approves one merge, puts a module first, changes the slot number, stops work, or moves the product to the latest or a named Process4 version (part 6, section 7). It decides nothing about the product.
 - **ARCH** is the architecture session, one for each product. It decides every technical matter of the product, writes each decision in the product's decision record, and settles a design before anything is built on it. It writes requirement text, keeps the module list, proposes each tranche, names each walk's areas, turns each flaw into work for a named module, makes the development deployment, prepares a release, starts the product's lanes, writes the tranche report, and carries out a move to a new Process4 version on the owner's approval (part 6, section 7). It never edits the owner's approvals, changes the process, or publishes a release without him.
@@ -20,13 +20,13 @@ What the tool does and what ARCH keeps: whatever has one right answer is done by
 
 | Starter | Starts |
 |---|---|
-| The owner | ROOT |
-| ROOT | The watcher, ARCH, the coordinator, PROCESS |
+| The owner | ROOT, PROCESS |
+| ROOT | The watcher, ARCH, the coordinator |
 | ARCH | Jobs, walking sessions, the product's lanes |
 | PROCESS | Its own lanes (a reading; part 6, section 8) |
 | A long-lived role or a job | Its own workers |
 
-- Under a ROOT the owner started, sessions sit at most three levels deep: ROOT; then ARCH, the coordinator, the watcher and PROCESS; then jobs, walking sessions and lanes. A takeover by the watcher adds a level (section 6).
+- Under a ROOT the owner started, sessions sit at most three levels deep: ROOT; then ARCH, the coordinator and the watcher; then jobs, walking sessions and lanes. PROCESS is started by the owner in the process's repository (part 6), not under ROOT. A takeover by the watcher adds a level (section 6).
 - No session starts its own replacement.
 - A session is started with one repository only; from the newest commit of the tranche branch, or for PROCESS of the process repository's main branch; in the harness's unattended mode; and with starting instructions that name every act it may take. PROCESS works in the process's own repository.
 - **Claude decided:** ROOT's first act is to fetch the newest copy of its branch, and to stop if it cannot.
@@ -92,9 +92,9 @@ The owner's rulings:
 - Each long-lived role is refreshed on purpose, at a natural pause in its work or at the stated fill level (part 5), whichever comes first. It asks its parent. Its successor starts only from the shared state and the repository.
 - ARCH is long-lived.
 - **Claude decided:** before it asks, the role rewrites its handover record.
-- The parent of ARCH, the coordinator and PROCESS is ROOT. The parent of a product's lane is ARCH. **Claude decided:** ROOT replaces the watcher, and ROOT itself is refreshed by the watcher (section 6).
-- **Claude decided:** ROOT records in the roles record the address of each standing session it starts or refreshes, so another session can resolve the role to it (section 4; section 11). A PROCESS successor that ROOT starts in the process's repository is recorded there by ROOT once ROOT has its address.
-- **Claude decided** PROCESS's refresh fallback. Starting or refreshing PROCESS is a cross-repository session start: ROOT works in the product's repository and PROCESS in the process's, and the permission checker may refuse the start (part 7, section 5). Where ROOT cannot complete it, after a bounded re-attempt of a non-substantive refusal (part 6, section 4), ROOT passes the owner the steps through the coordinator's standing page, and the owner starts the successor himself, the one way he already starts PROCESS (section 1). The successor starts only from the shared state and the repository, as any refresh does; the owner, or ROOT once it has the address, records it in the roles record. **Unproven:** the cross-repository start; measured once in the trial (part 10).
+- The parent of ARCH and the coordinator is ROOT; PROCESS is started and refreshed by the owner (part 6, section 7). The parent of a product's lane is ARCH. **Claude decided:** ROOT replaces the watcher, and ROOT itself is refreshed by the watcher (section 6).
+- **Claude decided:** ROOT records in the roles record the address of each standing session it starts or refreshes, so another session can resolve the role to it (section 4; section 11). The live PROCESS is recorded in PROCESS's own record in the process's repository, by PROCESS, where the coordinator reads it (part 6, section 7).
+- **Claude decided** how PROCESS is refreshed (the owner's decision C for the PROCESS refresh, 19 November 2026). PROCESS is started and refreshed by the owner, not by ROOT, because it is the one owner-facing role and every refresh happens with the owner present; this removes the cross-repository session start, which the permission checker resisted even with the permissions-management settings in place (part 7, section 3). At its refresh point PROCESS rewrites its handover record and asks the coordinator, which puts the start prompt on the owner's standing page and notifies him; the owner starts the successor, the one way he already starts PROCESS (section 1). The successor starts only from the shared state and the repository, as any refresh does, and records its own liveness in PROCESS's record in the process's repository, where the coordinator reads it. Decision B's never-retry re-attempt, role-to-address resolution and successor registration stand unchanged for every other cross-repository act, cross-repository messaging among the roles among them (part 1, section 6; part 6, section 4).
 - A job that fills up or dies is replaced by ARCH with a new session that continues from the same branch and pull request.
 - A finished session is archived, not deleted. **Claude decided:** the session that started a session archives it; where the starter is gone, ROOT does.
 - Sessions other than ROOT and the watcher are relatively short-lived. **Reading:** a role such as ARCH lasts, while its sessions are refreshed often.

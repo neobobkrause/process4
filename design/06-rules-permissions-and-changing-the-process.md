@@ -45,7 +45,7 @@ Length: 74 lines. Last section: "8. Process4 develops itself".
 ## 6. A process fault
 
 - No session building a product fixes a process fault or works round it.
-- A fault goes from the session that met it to ARCH, from ARCH to the coordinator, and from the coordinator to PROCESS. ARCH asks ROOT to start PROCESS if it is not running.
+- A fault goes from the session that met it to ARCH, from ARCH to the coordinator, and from the coordinator to PROCESS. If PROCESS is not running, the coordinator puts starting it on the owner's standing page and notifies him; the owner starts it (section 7).
 - **Claude decided:** the fault's description is written once by the session that met it and passed on unchanged.
 - A process fault that stops work waits for the owner at PROCESS. Other work goes on.
 
@@ -62,8 +62,8 @@ What follows from them:
 - Any change to Process4 is explained to the owner, who decides whether and how the process is updated.
 - No session building a product may change the process, add a test, check, gate or review to it, or adopt a changed process on its own. ARCH moves a product to a changed process only with the owner's prior approval, by the means PROCESS proposes.
 - **Claude decided** the means (the owner's decision C, 19 November 2026): the owner, in the coordinator's session, instructs it to move a product to the latest Process4 version — or to a named version. That one instruction is his prior approval, and he needs give no commit id and do nothing more. The coordinator records his words and tells ARCH; ARCH resolves the latest version with the tool (`latest-version`: the newest commit of the process repository's main, which holds only merged, tested changes), updates the product's process config to that commit by pull request, and merges it; then the sessions refresh onto it (ROOT refreshes the standing roles; ARCH restarts any open job from its branch), losing no work (part 3, section 1). The coordinator tells the owner, in one line, when every session is on the new version.
-- ROOT starts PROCESS. PROCESS works in the process's own repository, with the owner directly. The coordinator can talk to it.
-- **Claude decided:** a ROOT that finds PROCESS already running, by the record PROCESS keeps in the process's repository, starts no second and passes the matter to the one that runs. **Unproven** with two products.
+- The owner starts PROCESS, and refreshes it (part 4, section 5). PROCESS works in the process's own repository, with the owner directly. The coordinator can talk to it, and surfaces on the owner's standing page when PROCESS needs starting or refreshing.
+- **Claude decided:** the coordinator finds PROCESS already running, by the record PROCESS keeps in the process's repository, and does not ask the owner to start a second; it passes the matter to the one that runs. **Unproven** with two products.
 - **Claude decided:** PROCESS runs as one session at a time, keeps its own folder in the process's repository, and records its research there before it proposes.
 - **Claude decided:** PROCESS writes the owner's approving words into the record of the change, exactly as typed, with the date. Nothing else counts as approval.
 - **Unproven:** nothing physical stops a session building a product from changing the process's files, or from moving to a changed process.
