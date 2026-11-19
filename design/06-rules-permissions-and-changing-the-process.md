@@ -40,7 +40,7 @@ Length: 74 lines. Last section: "8. Process4 develops itself".
 - The AI builds the tool, before anything is in force.
 - A product names one fixed version of the process in its process config, and a tranche runs on that one version from open to close. Each session fetches a read-only copy of it.
 - PROCESS answers a finding against the tool that needs a deliberate attack with "no change" unless the owner says otherwise.
-- **Unproven:** the tool is not built. Whether merges made by it pass the permission checker at a real rate is unmeasured.
+- **Unproven:** the tool is built but has not run in a process in force. Whether merges made by it pass the permission checker at a real rate is unmeasured.
 
 ## 6. A process fault
 
