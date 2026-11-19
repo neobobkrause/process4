@@ -48,7 +48,7 @@ export const productFiles = () => ({
 
 // GitHub in memory: pull requests, issues, comments, labels, check runs, all by number.
 export function fakeGitHub(over = {}) {
-  const s = { prs: [], issues: [], comments: [], labels: [], runs: [], wfruns: [], logs: {}, next: 1, nextComment: 100, calls: [], time: '2026-11-20T10:00:00Z' };
+  const s = { prs: [], issues: [], comments: [], labels: [], runs: [], wfruns: [], logs: {}, releases: [], next: 1, nextComment: 100, calls: [], time: '2026-11-20T10:00:00Z' };
   const gh = {
     s,
     repo: () => ({ default_branch: 'main' }),
@@ -73,6 +73,14 @@ export function fakeGitHub(over = {}) {
     createIssue: (slug, { title, labels }) => { const i = { number: s.next++, title, labels, state: 'open' }; s.issues.push(i); return i; },
     lockIssue: (slug, n) => { s.calls.push(['lock', n]); },
     closeIssue: (slug, n) => { s.calls.push(['close-issue', n]); const i = s.issues.find((x) => x.number === n); if (i) i.state = 'closed'; },
+    createRelease: (slug, body) => {
+      const n = s.next++;
+      const rel = { id: n, tag_name: body.tag_name, name: body.name, body: body.body, draft: !!body.draft, prerelease: !!body.prerelease, target_commitish: body.target_commitish, html_url: `https://gh/releases/${encodeURIComponent(body.tag_name)}`, upload_url: `https://uploads/repos/releases/${n}/assets{?name,label}`, assets: [] };
+      s.releases.push(rel); s.calls.push(['create-release', rel.tag_name]); return rel;
+    },
+    releaseByTag: (slug, tag) => s.releases.find((r) => r.tag_name === tag) || null,
+    updateRelease: (slug, id, body) => { const r = s.releases.find((x) => x.id === id); Object.assign(r, body); s.calls.push(['update-release', id]); return r; },
+    uploadReleaseAsset: (slug, release, file) => { const r = s.releases.find((x) => x.id === release.id); const name = file.split('/').pop(); r.assets.push({ name }); s.calls.push(['upload-asset', release.id, name]); return { name }; },
     checkRuns: (slug, sha, name) => s.runs.filter((r) => r.sha === sha && r.name === name),
     jobLog: (slug, id) => s.logs[id] || null,
     ...over,

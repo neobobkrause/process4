@@ -55,6 +55,12 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
     const kind = jobBlock ? `its job block says ${jobBlock.kind || 'no kind'}` : 'no job block was read';
     return out('whole module', `job branch for ${job}; ${kind}`, whole([m]));
   }
+  // Step 5, the mechanical edit (a non-job branch that changes module code). One trial-only config
+  // line asks the required run to run none, so trial item 9's "none run" form can be tried
+  // (build text 1, section 5, step 5; build text 2, section 7).
+  if (cfg.trial?.mechanical_edit_tests === 'none') {
+    return out('nothing', `mechanical edit on branch ${branch}, and the trial config asks for no test run`);
+  }
   return out('whole module', `branch ${branch} is not a job's: each module touched`, whole(touched));
 }
 

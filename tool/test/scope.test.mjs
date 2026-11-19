@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { decideScope, runTests } from '../lib/scope.mjs';
 import { git } from '../lib/util.mjs';
-import { commit, makeRepo, productFiles } from './helpers.mjs';
+import { commit, config, makeRepo, productFiles } from './helpers.mjs';
 
 const passing = "import { test } from 'node:test';\ntest('R1 holds', () => {});\n";
 const failing = "import { test } from 'node:test';\nimport assert from 'node:assert';\ntest('R2 holds', () => assert.equal(1, 2));\n";
@@ -51,6 +51,14 @@ test('another branch that changes module code runs each module it touches', () =
   const { root, base } = merged({ 'src/orders/index.mjs': 'x', 'src/dates/index.mjs': 'y', 'test/dates/d.test.mjs': passing }, { branch: 'work/word-table' });
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'work/word-table', draft: false });
   assert.deepEqual(s.modules, [{ name: 'dates', files: ['test/dates/d.test.mjs'] }, { name: 'orders', files: [] }]);
+});
+
+test('a mechanical edit runs none when the trial config asks for it', () => {
+  const base = { ...productFiles(), 'process.json': config({ trial: { mechanical_edit_tests: 'none' } }) };
+  const { root, base: sha } = merged({ 'src/orders/index.mjs': 'x', 'src/dates/index.mjs': 'y' }, { branch: 'work/word-table', base });
+  const s = decideScope(root, { base: sha, baseRef: 'tranche', branch: 'work/word-table', draft: false });
+  assert.equal(s.scope, 'nothing');
+  assert.match(s.why, /mechanical edit[\s\S]*no test run/);
 });
 
 test('a base with no process config is judged by the head\'s, and says so', () => {

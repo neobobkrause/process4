@@ -1,4 +1,5 @@
 // GitHub acts and reads, all through gh, REST only. Each takes `gh` so that tests replace it.
+import { basename } from 'node:path';
 import { fail, gh as realGh } from './util.mjs';
 
 // A machine-readable comment: the hidden mark, one fenced JSON block, then any plain words.
@@ -52,6 +53,22 @@ export function makeGitHub(gh = realGh) {
     createIssue: (slug, body) => send('POST', `repos/${slug}/issues`, body),
     lockIssue: (slug, n) => send('PUT', `repos/${slug}/issues/${n}/lock`, {}, { allowFail: true }),
     closeIssue: (slug, n) => send('PATCH', `repos/${slug}/issues/${n}`, { state: 'closed' }),
+    // Releases (build text 1b, commands 7 and 8). REST only, as everything else.
+    createRelease: (slug, body) => {
+      const rel = send('POST', `repos/${slug}/releases`, body);
+      if (!rel?.id || !rel?.html_url) fail('GitHub did not return a release');
+      return rel;
+    },
+    releaseByTag: (slug, tag) => api(`repos/${slug}/releases/tags/${encodeURIComponent(tag)}`, { allowFail: true }),
+    updateRelease: (slug, id, body) => send('PATCH', `repos/${slug}/releases/${id}`, body),
+    // The upload goes to the release's own upload_url (its host is uploads.github.com); the file
+    // is sent as-is. Strip the RFC 6570 template (`{?name,label}`) and name the asset after the file.
+    uploadReleaseAsset: (slug, release, file) => {
+      const url = String(release.upload_url || '').replace(/\{[^}]*\}$/, '');
+      if (!url) fail('the release has no upload_url for assets');
+      return gh(['api', '--method', 'POST', `${url}?name=${encodeURIComponent(basename(file))}`,
+        '-H', 'Content-Type: application/octet-stream', '--input', file]);
+    },
     checkRuns: (slug, sha, name) => (api(`repos/${slug}/commits/${sha}/check-runs?check_name=${encodeURIComponent(name)}&per_page=50`)?.check_runs || []),
     // A check run of a workflow is that workflow's job: its log is the job's log.
     jobLog: (slug, id) => {

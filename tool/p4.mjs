@@ -7,6 +7,7 @@ import { github } from './lib/github.mjs';
 import { decideScope, runTests } from './lib/scope.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
 import { walkOpen, walkClose, walkWrite, walkRead, walkText, walkAreas } from './lib/walk.mjs';
+import { releasePrepare, releasePublish } from './lib/release.mjs';
 import { parseBlock } from './lib/github.mjs';
 import { JOB_MARK } from './lib/round.mjs';
 import { Fail, fail, git, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
@@ -43,6 +44,8 @@ const commands = {
   ready: (ctx, a) => c.ready(ctx, prOf(ctx, a)),
   results: (ctx, a) => c.results(ctx, prOf(ctx, a)),
   merge: (ctx, a) => c.merge(ctx, pr(a)),
+  'release prepare': (ctx, a) => releasePrepare(ctx, a._[0], a),
+  'release publish': (ctx, a) => releasePublish(ctx, a._[0], a),
   close: (ctx, a) => c.close(ctx, prOf(ctx, a), a),
   'next-job': (ctx) => c.nextJob(ctx),
   finished: (ctx, a) => c.finishedCmd(ctx, a._[0]),
@@ -88,6 +91,8 @@ export const HELP = {
   ready: 'ready <pr>: marks the pull request ready, which asks for the required run.',
   results: 'results <pr>: prints the required run\'s state on the head commit, and for a failure the last lines of its output.',
   merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it.',
+  'release prepare': 'release prepare <version> --notes <file> [--file <built file>]...: makes an unpublished release at main\'s newest commit with the notes and files; with --development, a published pre-release with its tag.',
+  'release publish': 'release publish <version> --approval "<the owner\'s words>": publishes the prepared release of that version; prints the owner\'s words back, unjudged.',
   close: 'close <pr> [--nothing-to-change "<why>"]: with the flag, first writes the job\'s record; then closes the pull request unmerged.',
   'next-job': 'next-job: chooses the next job for a free slot, rewrites the round record, and prints its module, branch, work and kind; or none ready, or no free slot.',
   finished: 'finished <module>: prints finished or not finished, with the ground, worked out afresh from GitHub.',
