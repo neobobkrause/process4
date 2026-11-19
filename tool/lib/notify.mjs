@@ -8,6 +8,9 @@ import { loadReader, makeProgram, readerVersion } from './notice/ts.mjs';
 import { makeLister } from './notice/listing.mjs';
 import { analyse, describe, makeConfirm, notice, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
+import { relatedList } from './notice/related.mjs';
+import { parseBlock } from './github.mjs';
+import { JOB_MARK } from './round.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
 
@@ -146,5 +149,33 @@ export function checkCmd(ctx, moduleId, a) {
   for (const x of r.refusals) ctx.log(`  ${x.at} ${x.kind}: ${x.text}`);
   for (const x of r.cannotTell) ctx.log(`  cannot tell, not refused: ${x.at} ${x.why}`);
   if (r.refused) fail(`${r.refusals.length} disagreement(s) in ${moduleId}`);
+  return 0;
+}
+
+// 24. related <pr>: a told job's related tests, as the required run's step 3 picks them, made from the merged result
+// of the pull request's head into its base (git merge-tree, written out to a folder outside the working tree). It
+// only lists; it runs nothing and writes nothing to GitHub.
+export function relatedCmd(ctx, n) {
+  const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  const module = pr.head.ref.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1] || fail(`pull request ${n} is not a job's (its branch is ${pr.head.ref})`);
+  const block = ctx.gh.comments(ctx.slug, n).map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || fail(`pull request ${n} has no job block`);
+  if (block.kind !== 'told') { ctx.log(`pull request ${n} is an ${block.kind || 'ordinary'} job of ${module}: the required run runs its whole module; there is no related list`); return 0; }
+  const tip = (ref) => { git(['fetch', '-q', 'origin', ref], { cwd: ctx.root }); return git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }); };
+  const baseSha = tip(`refs/heads/${pr.base.ref}`);
+  const headSha = tip(`refs/heads/${pr.head.ref}`);
+  const m = git(['merge-tree', '--write-tree', baseSha, headSha], { cwd: ctx.root, allowFail: true });
+  if (m.code !== 0) fail(`${pr.head.ref} does not merge cleanly into ${pr.base.ref}; GitHub's run has no merged result either`);
+  const merged = git(['commit-tree', m.stdout.split('\n')[0].trim(), '-p', baseSha, '-p', headSha, '-m', `merged result of pull request ${n}`], { cwd: ctx.root });
+  const base = tempBase();
+  let r;
+  try {
+    r = relatedList({ dir: writeOut(ctx.root, merged, base), gitRoot: ctx.root, base: baseSha, after: merged, module, uses: block.uses || [] });
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+  ctx.log(`related tests of ${module} for pull request ${n}: ${pr.head.ref} at ${headSha.slice(0, 10)} merged into ${pr.base.ref} at ${baseSha.slice(0, 10)}`);
+  if (!r.files.length) ctx.log('The related list is empty: the required run passes at once.');
+  for (const f of r.files) ctx.log(`  ${f.file}: ${f.reasons.join('; ')}`);
+  ctx.log(`  left out: ${r.leftOut.join(', ') || 'none'}`);
   return 0;
 }

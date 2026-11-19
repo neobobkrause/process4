@@ -1,17 +1,30 @@
 #!/usr/bin/env node
 // The Process4 tool: one program, a fresh process for each command, run from the read-only copy.
 // Usage: node <copy>/tool/p4.mjs <command> [arguments]
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { decideScope, runTests } from './lib/scope.mjs';
-import { checkCmd, listingCmd, notifyCmd } from './lib/notify.mjs';
+import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
+import { parseBlock } from './lib/github.mjs';
+import { JOB_MARK } from './lib/round.mjs';
 import { Fail, fail, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
 
 const pr = (a) => {
   const n = Number(a._[0]);
   return Number.isInteger(n) && n > 0 ? n : fail('name the pull request by its number');
 };
+
+// The job block as part one's workflow wrote it: the comment's body, or its JSON alone. None when
+// the file is absent or empty, or holds no block.
+function readJobBlock(file) {
+  if (typeof file !== 'string' || !existsSync(file)) return null;
+  const text = readFileSync(file, 'utf8').trim();
+  if (!text) return null;
+  const b = parseBlock(text, JOB_MARK);
+  if (b) return b.data;
+  try { return JSON.parse(text); } catch { return null; }
+}
 
 const commands = {
   branch: (ctx, a) => c.branch(ctx, a._[0], a.into),
@@ -30,12 +43,17 @@ const commands = {
   listing: (ctx, a) => listingCmd(ctx, a._[0], a),
   notify: (ctx, a) => notifyCmd(ctx, pr(a)),
   check: (ctx, a) => checkCmd(ctx, a._[0], a),
+  related: (ctx, a) => relatedCmd(ctx, pr(a)),
   // On GitHub's machines only (build text 1, section 5).
   'run scope': (ctx, a) => {
-    const s = decideScope(ctx.root, { base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true });
+    const s = decideScope(ctx.root, { base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true, jobBlock: readJobBlock(a['job-block']) });
     if (typeof a.out === 'string') writeFileSync(a.out, JSON.stringify(s));
     ctx.log(`scope: ${s.scope}, because ${s.why}; config from ${s.config_from}`);
-    for (const m of s.modules) ctx.log(`  ${m.name}: ${m.files.length} test file(s)`);
+    for (const m of s.modules) {
+      ctx.log(`  ${m.name}: ${m.files.length} test file(s)`);
+      for (const r of m.related || []) ctx.log(`    ${r.file}: ${r.reasons.join('; ')}`);
+      if (m.left_out) ctx.log(`    left out: ${m.left_out.join(', ') || 'none'}`);
+    }
     return 0;
   },
   'run tests': (ctx, a) => {
@@ -63,7 +81,8 @@ export const HELP = {
   listing: 'listing <module> [--at <commit>]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints the module\'s interface listing; writes nothing to GitHub.',
   notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into the waiting-work record.',
   check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports, of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
-  'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--out <file>]: on GitHub\'s machines only, decides the required run\'s scope.',
+  related: 'related <pr>: lists a told job\'s related test files, each with the rule that put it there, and the files left out, from the merged result of the pull request into its base; runs nothing.',
+  'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--job-block <file>] [--out <file>]: on GitHub\'s machines only, decides the required run\'s scope; for a job branch, the file holds its job block.',
   'run tests': 'run tests --scope <file>: on GitHub\'s machines only, runs the tests in scope.',
 };
 

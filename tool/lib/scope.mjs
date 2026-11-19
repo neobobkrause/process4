@@ -2,6 +2,7 @@
 // the read-only token and runs no product code; `run tests` on part two, which holds none.
 import { appendFileSync } from 'node:fs';
 import { loadConfig, loadModules, ownerOf } from './config.mjs';
+import { relatedList } from './notice/related.mjs';
 import { NO_TOKENS, git, run, underPath } from './util.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
@@ -14,8 +15,9 @@ export function testFiles(all, modules, m) {
 }
 
 // Decides the scope. `root` is GitHub's merge of the pull request into its base, checked out.
-// Returns { scope, why, config_from, modules: [{ name, files }] }.
-export function decideScope(root, { base, baseRef, branch, draft }) {
+// `jobBlock` is the job block of the pull request (its `<!-- process4-job -->` comment), or null.
+// Returns { scope, why, config_from, modules: [{ name, files, related?, left_out? }] }.
+export function decideScope(root, { base, baseRef, branch, draft, jobBlock = null }) {
   const parents = git(['rev-list', '--parents', '-n', '1', 'HEAD'], { cwd: root }).split(' ').slice(1);
   const mergedBase = parents.length === 2 ? parents[0] : base;
   let cfg = loadConfig(root, mergedBase);
@@ -38,9 +40,20 @@ export function decideScope(root, { base, baseRef, branch, draft }) {
   if (job) {
     const m = modules.find((x) => x.name === job);
     if (!m) return out('whole module', `job branch for ${job}, which the module list does not name: every module touched`, whole(touched));
-    // The related scope (step 3) is built at stage 4; until then a told job's run is its whole
-    // module, the widest step of the related scope.
-    return out('whole module', `job branch for ${job}`, whole([m]));
+    if (jobBlock?.kind === 'told') {
+      // Step 3: the related list, made with the reader on the merged result (build text 5, section 7).
+      let r;
+      try {
+        r = relatedList({ dir: root, gitRoot: root, base: mergedBase, after: 'HEAD', module: job, uses: jobBlock.uses || [] });
+      } catch (e) {
+        return out('whole module', `told job of ${job}, but the reader could not make the related list (${e.message}): the whole module, the widest step`, whole([m]));
+      }
+      if (!r.files.length) return { ...out('nothing', `told job of ${job}, and its related list is empty: it passes at once`), left_out: r.leftOut };
+      return out('related', `told job of ${job}: ${r.files.length} related test file(s), ${r.leftOut.length} left out`,
+        [{ name: job, files: r.files.map((f) => f.file), related: r.files, left_out: r.leftOut }]);
+    }
+    const kind = jobBlock ? `its job block says ${jobBlock.kind || 'no kind'}` : 'no job block was read';
+    return out('whole module', `job branch for ${job}; ${kind}`, whole([m]));
   }
   return out('whole module', `branch ${branch} is not a job's: each module touched`, whole(touched));
 }
@@ -61,6 +74,8 @@ export function runTests(root, scope, { log = console.log, summary = process.env
       const c = check(root, m.name);
       log(c.stdout + c.stderr);
       if (c.code !== 0) { ok = false; lines.push(`- ${m.name}: check found a disagreement (exit ${c.code})`); }
+      for (const r of m.related || []) lines.push(`  - related: ${r.file}: ${r.reasons.join('; ')}`);
+      if (m.left_out) lines.push(`  - left out: ${m.left_out.length ? m.left_out.join(', ') : 'none'}`);
       if (!m.files.length) { lines.push(`- ${m.name}: no test files; none ran`); continue; }
       log(`== ${m.name}: ${cmd} ${[...args, ...m.files].join(' ')}`);
       const r = run(cmd, [...args, ...m.files], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });
