@@ -147,3 +147,21 @@ test('failed-runs counts failed required runs, not cancelled ones, and speaks at
   t.out.length = 0; failedRunsCmd(t.ctx, pr.number);
   assert.match(t.out.join('\n'), /^5 failed[\s\S]*record dates blocked/);
 });
+
+test('a job blocked by two modules stays blocked until both have merged after the block (fault n)', () => {
+  const t = product();
+  const o = startJob(t, 'dates');
+  git(['fetch', '-q', 'origin', 'job/dates/1'], { cwd: t.root });
+  git(['checkout', '-q', '-b', 'job/dates/1', 'FETCH_HEAD'], { cwd: t.root });
+  push(t.ctx, { _: ['both refuse a leap day'], blocked: ['pricing', 'orders'] });
+  git(['checkout', '-q', 'main'], { cwd: t.root });
+  t.out.length = 0; roundDoneCmd(t.ctx);
+  assert.match(t.out.join('\n'), /dates: blocked by pricing and orders/);
+  t.gh.s.prs.push({ number: 91, state: 'closed', merged_at: '2026-11-20T11:00:00Z', head: { ref: 'job/pricing/1' }, base: { ref: 'tranche' } });
+  t.out.length = 0; roundDoneCmd(t.ctx);
+  assert.match(t.out.join('\n'), /dates: blocked by pricing and orders/);
+  t.gh.s.prs.push({ number: 92, state: 'closed', merged_at: '2026-11-20T11:05:00Z', head: { ref: 'job/orders/1' }, base: { ref: 'tranche' } });
+  t.out.length = 0; nextJob(t.ctx);
+  assert.deepEqual(t.out.slice(0, 2), ['module: dates', `branch: job/dates/1 (its job is ready again: the block by pricing and orders ended when pricing and orders merged)`]);
+  assert.equal(record(t.gh, 'round').modules.find((m) => m.module === 'dates').pull_request, o.number);
+});

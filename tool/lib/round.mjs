@@ -66,8 +66,10 @@ const openJob = (view, module) => jobsOf(view, module).find((p) => p.state === '
 export function blockOf(view, pr) {
   const rec = view.jobRecord(pr.number);
   if (!rec?.blocked) return null;
-  const endedBy = view.merged.find((m) => m.module === rec.blocked.by && Date.parse(m.merged_at) > Date.parse(rec.at));
-  return { by: rec.blocked.by, why: rec.blocked.why, at: rec.at, holds: !endedBy };
+  // A job blocked by several modules is ready again once each of them has merged after the block.
+  const by = [].concat(rec.blocked.by);
+  const ended = by.every((name) => view.merged.some((m) => m.module === name && Date.parse(m.merged_at) > Date.parse(rec.at)));
+  return { by: by.length === 1 ? by[0] : by, why: rec.blocked.why, at: rec.at, holds: !ended };
 }
 
 const entryOf = (view, module) => (view.round.modules || []).find((e) => e.module === module) || null;
@@ -155,11 +157,11 @@ export function nextJobName(view, module) {
 
 // 13. Whether the round's jobs are done (design part 2, section 4).
 export function roundDone(view, states) {
-  const clearable = (by) => states.some((s) => s.module === by && (s.state === 'open' || s.state === 'has work'));
+  const clearable = (by) => [].concat(by || []).some((one) => states.some((s) => s.module === one && (s.state === 'open' || s.state === 'has work')));
   const lines = states.map((s) => {
     if (s.state === 'finished') return { done: true, line: `${s.module}: finished (${s.why})` };
     if (s.state === 'blocked') {
-      const by = s.by ? ` by ${s.by}` : '';
+      const by = s.by ? ` by ${[].concat(s.by).join(' and ')}` : '';
       return clearable(s.by)
         ? { done: false, line: `${s.module}: blocked${by}, which an open job of the round can clear: ${s.why}` }
         : { done: true, line: `${s.module}: blocked${by}, carried into the next round: ${s.why}` };

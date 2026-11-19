@@ -37,6 +37,16 @@ function intoBranch(ctx, cfg, into) {
 }
 
 const currentBranch = (root) => git(['branch', '--show-current'], { cwd: root }) || fail('the checkout is on no branch');
+// The branch checked out, or null on a detached checkout (fault o: open must not refuse one).
+const branchOrNone = (root) => git(['branch', '--show-current'], { cwd: root }) || null;
+
+// The modules named by --blocked: repeated (--blocked a --blocked b) or with commas (a,b).
+export function blockers(v) {
+  const names = [].concat(v).filter((x) => typeof x === 'string').flatMap((x) => x.split(',')).map((x) => x.trim()).filter(Boolean);
+  if (!names.length || [].concat(v).some((x) => x === true)) fail('say --blocked <module> "<why>"');
+  for (const n of names) if (!/^[a-z0-9-]+$/.test(n)) fail(`${n} is not a module's name`);
+  return [...new Set(names)];
+}
 
 // 1. branch <name> [--into <branch>]: from the newest commit of the branch pull requests go into,
 // with one empty commit so that a pull request can open, made without moving the session's checkout.
@@ -76,14 +86,15 @@ export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
   if (!BRANCH.test(name) || name === 'main' || name === cfg?.tranche_branch) fail(`${name} is not a working branch; push only job/ and work/ branches`);
-  if (a.blocked !== undefined && (a.blocked === true || !a._[0])) fail('say --blocked <module> "<why>"');
+  const by = a.blocked === undefined ? null : blockers(a.blocked);
+  if (by && !a._[0]) fail('say --blocked <module> "<why>"');
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
   if (a.blocked !== undefined) {
     const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record the block on`);
-    writeJobRecord(ctx, pr.number, { blocked: { by: a.blocked, why: a._[0] } });
-    ctx.log(`recorded on pull request ${pr.number}: blocked by ${a.blocked}`);
+    writeJobRecord(ctx, pr.number, { blocked: { by: by.length === 1 ? by[0] : by, why: a._[0] } });
+    ctx.log(`recorded on pull request ${pr.number}: blocked by ${by.join(' and ')}`);
   }
   return 0;
 }
@@ -118,8 +129,10 @@ function printJob(ctx, cfg, pr) {
 export function open(ctx, a) {
   const cfg = loadConfig(ctx.root);
   const module = typeof a.module === 'string' ? a.module : null;
+  const here = branchOrNone(ctx.root);
   const name = typeof a.branch === 'string' ? a.branch
-    : module && !JOB.test(currentBranch(ctx.root)) ? newestJobBranch(ctx, module) : currentBranch(ctx.root);
+    : module && !JOB.test(here || '') ? newestJobBranch(ctx, module)
+      : here || fail('the checkout is detached; name the branch with --branch <b>');
   if (module && name.match(JOB)?.[1] !== module) fail(`${name} is not a job branch of ${module}`);
   const had = ctx.gh.prForBranch(ctx.slug, name);
   if (had) { printJob(ctx, cfg, had); return 0; }
@@ -160,8 +173,10 @@ export function ready(ctx, n) {
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, REQUIRED).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
-  // A run cancelled by a newer one (`ready` cancels the draft's) is not the result.
-  const r = runs.find((x) => !CANCELLED.includes(x.conclusion)) || runs[0];
+  // A run cancelled by a newer one (`ready` cancels the draft's) is not the result. Where every
+  // run so far was cancelled, the newer one has not yet made its check: waiting (fault k).
+  const r = runs.find((x) => !CANCELLED.includes(x.conclusion));
+  if (!r && runs.length) { ctx.log(`waiting: ${REQUIRED} on ${pr.head.sha.slice(0, 10)} has no run that was not cancelled yet (newest: ${runs[0].html_url})`); return 0; }
   if (!r || r.status !== 'completed') { ctx.log(`waiting: ${REQUIRED} on ${pr.head.sha.slice(0, 10)} ${r ? `is ${r.status}: ${r.html_url}` : 'has not started'}`); return 0; }
   if (r.conclusion === 'success') { ctx.log(`passed: ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`); return 0; }
   ctx.log(`failed (${r.conclusion}): ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`);
@@ -263,7 +278,8 @@ export function nextJob(ctx) {
     const b = view.jobRecord(pr.number);
     entry = { module: pick.module, state: 'open', pull_request: pr.number, restarted: b.at };
     ctx.log(`module: ${pick.module}`);
-    ctx.log(`branch: ${pr.head.ref} (its job is ready again: the block by ${b.blocked.by} ended when ${b.blocked.by} merged)`);
+    const names = [].concat(b.blocked.by).join(' and ');
+    ctx.log(`branch: ${pr.head.ref} (its job is ready again: the block by ${names} ended when ${names} merged)`);
     ctx.log(`work: as its job block on pull request ${pr.number} says`);
     ctx.log(`kind: ${view.jobBlock(pr.number)?.kind || 'ordinary'}`);
     ctx.log(`then: open --branch ${pr.head.ref} prints its starting instructions`);
