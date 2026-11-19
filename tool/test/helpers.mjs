@@ -48,7 +48,7 @@ export const productFiles = () => ({
 
 // GitHub in memory: pull requests, issues, comments, labels, check runs, all by number.
 export function fakeGitHub(over = {}) {
-  const s = { prs: [], issues: [], comments: [], labels: [], runs: [], logs: {}, next: 1, nextComment: 100, calls: [] };
+  const s = { prs: [], issues: [], comments: [], labels: [], runs: [], wfruns: [], logs: {}, next: 1, nextComment: 100, calls: [], time: '2026-11-20T10:00:00Z' };
   const gh = {
     s,
     repo: () => ({ default_branch: 'main' }),
@@ -63,8 +63,11 @@ export function fakeGitHub(over = {}) {
     markReady: (slug, n) => { gh.getPR(slug, n).draft = false; },
     mergePR: (slug, n, sha) => { s.calls.push(['merge', n, sha]); return { merged: true, sha: 'm'.repeat(40) }; },
     comments: (slug, n) => s.comments.filter((c) => c.on === n),
-    addComment: (slug, n, body) => { const c = { id: s.nextComment++, on: n, body }; s.comments.push(c); return c; },
-    editComment: (slug, id, body) => { const c = s.comments.find((x) => x.id === id); if (!c) return null; c.body = body; return c; },
+    addComment: (slug, n, body) => { const c = { id: s.nextComment++, on: n, body, created_at: s.time, updated_at: s.time }; s.comments.push(c); return c; },
+    editComment: (slug, id, body) => { const c = s.comments.find((x) => x.id === id); if (!c) return null; c.body = body; c.updated_at = s.time; return c; },
+    allPRs: (slug, base) => s.prs.filter((p) => p.base.ref === base).slice().reverse(),
+    closePR: (slug, n) => { s.calls.push(['close', n]); gh.getPR(slug, n).state = 'closed'; },
+    workflowRuns: (slug, branch) => s.wfruns.filter((r) => r.head_branch === branch),
     issuesByLabel: (slug, label) => s.issues.filter((i) => i.labels.includes(label)),
     createLabel: (slug, name) => { s.labels.push(name); },
     createIssue: (slug, { title, labels }) => { const i = { number: s.next++, title, labels }; s.issues.push(i); return i; },
