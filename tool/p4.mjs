@@ -6,6 +6,7 @@ import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { decideScope, runTests } from './lib/scope.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
+import { walkOpen, walkClose, walkWrite, walkRead, walkText, walkAreas } from './lib/walk.mjs';
 import { parseBlock } from './lib/github.mjs';
 import { JOB_MARK } from './lib/round.mjs';
 import { Fail, fail, git, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
@@ -54,6 +55,12 @@ const commands = {
   notify: (ctx, a) => notifyCmd(ctx, pr(a)),
   check: (ctx, a) => checkCmd(ctx, a._[0], a),
   related: (ctx, a) => relatedCmd(ctx, pr(a)),
+  'walk open': (ctx, a) => walkOpen(ctx, a._[0]),
+  'walk close': (ctx, a) => walkClose(ctx, a._[0]),
+  'walk write': (ctx, a) => walkWrite(ctx, a._[0], a),
+  'walk read': (ctx, a) => walkRead(ctx, a._[0], a._[1]),
+  'walk text': (ctx, a) => walkText(ctx, a._[0]),
+  'walk areas': (ctx) => walkAreas(ctx),
   // On GitHub's machines only (build text 1, section 5).
   'run scope': (ctx, a) => {
     const s = decideScope(ctx.root, { base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true, jobBlock: readJobBlock(a['job-block']) });
@@ -93,6 +100,12 @@ export const HELP = {
   notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into the waiting-work record.',
   check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports, of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
   related: 'related <pr>: lists a told job\'s related test files, each with the rule that put it there, and the files left out, from the merged result of the pull request into its base; runs nothing.',
+  'walk open': 'walk open <internal|external>: opens the walk issue, titled with the tranche, round and kind, and writes its number into the round record.',
+  'walk close': 'walk close <issue>: closes the walk issue once ARCH has placed every entry.',
+  'walk write': 'walk write <issue> --session <n> --from <file>: writes walking session n\'s one comment on the walk issue, rewritten in place.',
+  'walk read': 'walk read <issue> [<flaw>]: prints the walk issue\'s comments, or one flaw.',
+  'walk text': 'walk text <session>: prints a walking session\'s starting instructions, filled with names and addresses only.',
+  'walk areas': 'walk areas: lists the round\'s candidate internal and external areas from changed modules\' step headers and requirement endings, for ARCH to choose from.',
   'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--job-block <file>] [--out <file>]: on GitHub\'s machines only, decides the required run\'s scope; for a job branch, the file holds its job block.',
   'run tests': 'run tests --scope <file>: on GitHub\'s machines only, runs the tests in scope.',
 };

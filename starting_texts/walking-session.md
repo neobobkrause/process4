@@ -12,7 +12,7 @@ In your copy: `design/` parts 00, 01, 03, 06, your harness's part (07 on Claude 
 - Internal walk: build the product on your own machine and serve it there, with the product's stand-in for AI answers and no secret, without deploying it.
 - External walk: use your browser on your copy, and take it through the product's own first-use door to make your own sign-in.
 - Run an area's steps with the run-steps command, in the background; walk by hand in your browser what no step covers.
-- `p4 walk write --from <file>`: your one comment in the walk issue, rewritten in place. `p4 walk read`. `p4 state read`.
+- `p4 walk write <walk issue> --session <number> --from <file>`: your one comment in the walk issue, rewritten in place. `p4 walk read <walk issue>`. `p4 state read`.
 - Message ARCH.
 
 ## Rules

@@ -6,7 +6,19 @@ lives there in the `handover-process` record (design part 4, section 4; build te
 5, section 4) and this file is retired.
 
 Last written: 2026-11-19, by a PROCESS session (session_012hdw2UKJgbfzjKvHCV4eMY),
-after resolving fault D (PR #16).
+after validating cross-repo comms and starting tool stage 5 (the walks).
+
+## The owner's standing direction (19 Nov 2026)
+
+The owner told PROCESS, in conversation, to drive the goal autonomously: "develop,
+test, and evolve process4 to the point that it meets all design requirements and can
+be used for development of both the trial product and larger products like
+civicsmith," taking on stage 5 and then each next task without waiting for per-step
+go-aheads. So: build the designed remainder (stages 5, 6, 7), validate in the trial,
+settle owner-open items as Claude-decided where technical (overrulable) and flagged
+where product, and merge building work under the standing approvals (tool-tests
+green), keeping this handover and the task list current. A marked "Decision:"/
+"Instruction:" is still required to change a RULE/requirement or record approval.
 
 ## What a successor should read first
 
@@ -20,15 +32,22 @@ folder (`process/`, including `research/`); and this handover.
 - **Nothing is in force.** The design is still "proposed"; per `CLAUDE.md` we are
   in the first-build phase. The `process4` approvals were widened (PR #12) to let
   PROCESS message a product's coordinator and ROOT and run its own lanes.
-- **The tool is at stage 4.** `main` (tip `267b709`) has the stage-4 notice piece
-  plus stages 1–3 and all the fixes below, including the fault-D fix (PR #16). Tool
-  tests pass (85/85, Node 22, **with TS 5.6.3 — run `npm ci` first**; see the note
-  at the end). `npm ci`/`npm test` in `tool/` takes ~2 min. Stage 5 (the walk
-  commands) is not built yet.
-- **The trial** runs in `neobobkrause/process3-probes` on `process4` commit
-  `dfaad79`. The owner decided (19 Nov) to move it onto `process4` `main`; that
-  move should point at the current tip `267b709` (all fixes, fault D included), and
-  the trial ROOT must be restarted to load the widened File B approvals.
+- **The tool is at stage 4, with stage 5 in progress.** `main` tip `c14e4f9`.
+  Tool tests pass (86/86, Node 22, **with TS 5.6.3 — run `cd tool && npm ci`
+  first**). Stage 5 (the walk commands) is being implemented (see Next steps);
+  stage 6 (release) and stage 7 (account switch) not built.
+- **The trial** runs in `neobobkrause/process3-probes`, now on `process4`
+  `c14e4f9` (moved via product PR #364; ARCH record confirms). Rounds of jobs have
+  run; no walk has run yet (blocked on stage 5). Live trial roles as of 20:48Z:
+  coordinator `session_012hdw2R5GW3dLuFJs61jAHX`, ARCH `session_012hdw2SyBhE5uNvX4LtXXzR`,
+  ROOT `session_012hdw2SNwQp6h8qJhDRrZoV`, watcher `session_012hdw2UPxUg4uJ5yPtwwGrF`.
+- **Cross-repo PROCESS comms: VALIDATED.** Round-trip PROCESS↔coordinator confirmed
+  20:50Z (coordinator replied "received, replying works"). The cause of the earlier
+  "Unsanctioned Communication" denials was the auto-mode classifier treating
+  cross-repo traffic as external; fixed by an `autoMode` block added to the **BIO**
+  environment's setup script (all dev sessions run in BIO). Grounds:
+  `process/research/automode-classifier-strategy-19nov.md` and
+  `cross-repo-process-messaging-19nov.md`.
 
 ## This session's work (19 Nov) — all merged to `main`
 
@@ -43,6 +62,16 @@ folder (`process/`, including `research/`); and this handover.
 - Decisions recorded verbatim in `process/design-decisions.md`: faults 7+8
   ("Decision: adopt the fixes for faults 7 and 8 in PR #13") and B/A/C
   ("Decision: adopt the round-4 fixes B, A and C in PR #14"), both 19 Nov 2026.
+- Fault D fix: PR #16. Merged. ("Decision: B".)
+- Environment permissions-management check on startup/account switch: PR #18.
+  Merged. (Owner's "Instruction:" of 19 Nov; design part 7 §5 defines the autoMode
+  strategy; the check is in parts 1 §3, 7 act 6, 4 §7.)
+- Move-to-latest (decision C): PR #19. Merged. One instruction to the coordinator
+  moves a product to the latest/named version; tool gained `latest-version`.
+  ("Decision: C".)
+- Research grounds landed on `main`: PR #20.
+- autoMode block added to the BIO environment (via update_environment; the owner
+  approved the card). Takes effect on fresh container starts.
 
 ## Trial faults — status
 
@@ -64,15 +93,31 @@ The coordinator's current open list was five; four are resolved:
   assertions (reads them as "cannot tell"); it flips 1 of the proof's 48 recorded
   refusing decisions (P09) and keeps the rest. Tool tests 85/85 with TS 5.6.3.
 
-## Next steps / waiting on the owner
+## Next steps / the roadmap (task list mirrors this)
 
-1. **Fault D** — done (PR #16, above). No open process faults remain from the
-   trial's list.
-2. Once satisfied, the owner moves the trial onto `main` (now tip `267b709`, which
-   carries the fault-D fix) — a marked decision in the trial coordinator's session —
-   and restarts the trial ROOT.
-3. Builder's "eight gaps in the texts" reconciled: the owner pasted the current
-   list (five); all five are now addressed.
+Driving the critical path autonomously (owner's standing direction above):
+
+1. **Stage 5 — the walks (IN PROGRESS).** Task #1. The six walk commands (specified
+   in build text 1b §19–24; defined in build text 3 §6–7) + walking-session/UX-lane
+   texts (drafted in `starting_texts/`) + a made-up two-screen walk product with a
+   Screens doc, two journeys, and `walk`/`deploy` process-config groups (build text 2
+   §7). A fork was tasked (19 Nov 20:5x) to implement the tool commands + tests in
+   the working tree (not commit); review its output, run `cd tool && npm ci && npm
+   test`, then commit on a `work/` branch, PR, merge on green. Settle the five walk
+   questions (build text 3 §9) as Claude-decided where technical, flagged where
+   product. Then validate in the trial (build text 3 §8, smallest first).
+2. **Stage 6 — release.** Task #2. Mechanical-edit scope, release prepare/publish,
+   install/update, tranche→main merge.
+3. **Stage 7 — account switch + written procedures.** Task #3.
+4. **Settle owner-open items** (part 10 §1). Task #4.
+5. **Never-retry clarification** (coordinator-gh + classifier-noise) — Task #5;
+   research recorded (`coordinator-gh-in-tool-command-19nov.md`); options A/B/C,
+   recommended B+C; **awaiting the owner's marked decision** (the one item that needs
+   his word before building). Not on the critical path.
+6. Then the first real tranche (proof), and civicsmith conversion (needs its own
+   conversion plan + the owner's setup acts + the autoMode settings on its env).
+
+No open process faults remain from the trial's original list; all five are addressed.
 
 ## Known environment facts (IMPORTANT — do not repeat the earlier mistake)
 
@@ -97,8 +142,9 @@ The coordinator's current open list was five; four are resolved:
   container came with TypeScript 6.0.2 in `tool/node_modules`, which makes
   `check`/`listing`/`notify` read differently and fails 3 tool tests (notify ×2,
   the round4 proof series) with a "reads with TypeScript 6.0.2" note. Run
-  `cd tool && npm ci` first (CI does): it restores 5.6.3 and the suite is 85/85.
-  A red suite here is almost always this, not a real break.
+  `cd tool && npm ci` first (CI does): it restores 5.6.3 and the suite is green
+  (86/86 as of stage-5 start). A red suite here is almost always this, not a real
+  break.
 - Flow for a process change: research in `process/research/` → present options →
   the owner's marked "Decision:" words → record them in `process/design-decisions.md`
   in the same PR as the change → `p4 merge` once `tool-tests` is green.

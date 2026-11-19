@@ -51,6 +51,7 @@ export function makeGitHub(gh = realGh) {
     createLabel: (slug, name, color, description) => send('POST', `repos/${slug}/labels`, { name, color, description }, { allowFail: true }),
     createIssue: (slug, body) => send('POST', `repos/${slug}/issues`, body),
     lockIssue: (slug, n) => send('PUT', `repos/${slug}/issues/${n}/lock`, {}, { allowFail: true }),
+    closeIssue: (slug, n) => send('PATCH', `repos/${slug}/issues/${n}`, { state: 'closed' }),
     checkRuns: (slug, sha, name) => (api(`repos/${slug}/commits/${sha}/check-runs?check_name=${encodeURIComponent(name)}&per_page=50`)?.check_runs || []),
     // A check run of a workflow is that workflow's job: its log is the job's log.
     jobLog: (slug, id) => {
