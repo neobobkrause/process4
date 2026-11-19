@@ -5,8 +5,9 @@ tool is still being first built. Once the shared-state issue exists, the handove
 lives there in the `handover-process` record (design part 4, section 4; build text
 5, section 4) and this file is retired.
 
-Last written: 2026-11-19, by a PROCESS session (session_012hdw2UKJgbfzjKvHCV4eMY),
-after validating cross-repo comms and starting tool stage 5 (the walks).
+Last written: 2026-11-19, by a PROCESS session (session_012hdw2VUEz7qriE4aqxCNzC),
+after building stage 6 (release) and fixing the PROCESS refresh fault (decision B).
+`main` tip is `5f50579`.
 
 ## The owner's standing direction (19 Nov 2026)
 
@@ -32,12 +33,24 @@ folder (`process/`, including `research/`); and this handover.
 - **Nothing is in force.** The design is still "proposed"; per `CLAUDE.md` we are
   in the first-build phase. The `process4` approvals were widened (PR #12) to let
   PROCESS message a product's coordinator and ROOT and run its own lanes.
-- **Stage 5 (the walk commands) is BUILT and merged** (PR #21, `main` tip
-  `12b7dfe`). `tool/lib/walk.mjs` has walk open/close/write/read/text/areas;
-  walking-session and UX-lane starting texts verified; build text 2 §7 already
-  specifies the `walk`/`deploy`/`walks_folder` config. Tool tests **95/95**,
-  Node 22, **with TS 5.6.3 — run `cd tool && npm ci` first**. **Stage 6 (release)
-  and stage 7 (account switch) are NOT built** — stage 6 is the next build.
+- **Stage 5 (walks) and stage 6 (release) are BUILT and merged.** Stage 5: PR #21.
+  Stage 6: PR #23 (`main` `5f50579`) — `tool/lib/release.mjs` (`release prepare` /
+  `release publish`), the GitHub release methods in `tool/lib/github.mjs`, and
+  scope 5's trial-only `mechanical_edit_tests: "none"` form in `tool/lib/scope.mjs`.
+  Tool tests **103/103**, Node 22, **with TS 5.6.3 — run `cd tool && npm ci` first**.
+  The release path and asset upload are tested only against the in-memory GitHub;
+  live GitHub is unproven (design part 3 §6; build text 1 §8). **Stage 7 (account
+  switch + the written procedures) is NOT built — it is the next build.**
+- **PROCESS refresh fault: FIXED (decision B, PR #24, `main` `5f50579`).** ROOT had
+  declined to start the PROCESS successor across repositories (bound by never-retry
+  after earlier refusals); the owner had to start PROCESS by hand. Decision B
+  clarified never-retry (a non-substantive refusal of a sanctioned act may be
+  re-attempted, bounded), added role→address resolution via the roles record,
+  successor registration by ROOT, and the owner-start fallback; the cross-repo start
+  is a trial item (design part 10 §4 item 10). Grounds:
+  `process/research/process-refresh-cross-repo-19nov.md`. The BIO `autoMode` block
+  already sanctions the start, so no settings change was needed. **Not yet measured**
+  in the trial (needs a fresh ROOT on the new version).
 - **The trial** runs in `neobobkrause/process3-probes`, now on `process4`
   `c14e4f9` (moved via product PR #364; ARCH record confirms). Rounds of jobs have
   run; no walk has run yet (blocked on stage 5). Live trial roles as of 20:48Z:
@@ -51,7 +64,17 @@ folder (`process/`, including `research/`); and this handover.
   `process/research/automode-classifier-strategy-19nov.md` and
   `cross-repo-process-messaging-19nov.md`.
 
-## This session's work (19 Nov) — all merged to `main`
+## This session's work (session_012hdw2VUEz7qriE4aqxCNzC, 19 Nov) — merged to `main`
+
+- **Stage 6 (release): PR #23** (`b12de5d`). Built under the standing approvals as the
+  designed remainder; tool tests 103/103.
+- **PROCESS refresh fix (decision B): PR #24** (`5f50579`). The owner's words
+  "Decision:option B" (19 Nov 2026) are recorded verbatim in
+  `process/design-decisions.md`; design parts 1, 4, 6, 7, 10 updated in the same step.
+  This also settled the never-retry clarification the earlier classifier-noise and
+  malformed-command faults were waiting on.
+
+## Earlier work this day (session_012hdw2UKJgbfzjKvHCV4eMY, 19 Nov) — all merged to `main`
 
 - Set up PROCESS's records: PR #8 (`process/` folder). Merged.
 - Shared-state issue: **deferred** on the owner's word until ROOT first runs.
@@ -99,31 +122,34 @@ The coordinator's current open list was five; four are resolved:
 
 Driving the critical path autonomously (owner's standing direction above):
 
-1. **Stage 5 — the walks: DONE** (PR #21, merged `12b7dfe`). Tool commands + texts
-   built and tested. REMAINING is trial-side, not a process4 build: the made-up
-   two-screen walk product (Screens doc, two journeys, `walk`/`deploy` config) and
-   the actual walk runs happen in the trial repo, driven by the trial ARCH/ROOT
-   (build text 3 §8, smallest first). Now that cross-repo comms work, PROCESS can
-   message the trial coordinator to prompt it; the session-starting is theirs.
-2. **Stage 6 — release: NEXT (start here).** Task #2. Build `release prepare
-   <version> --notes <file> [--file ...] [--development]` and `release publish
-   <version> --approval "<words>"` (specs: build text 1b commands 7–8; design part 3
-   §6), the GitHub release API calls in `tool/lib/github.mjs`, and scope 5 — the
-   mechanical edit — in `tool/lib/scope.mjs` (build text 1 §5 step 5: whole module
-   for each module a non-job `work/` branch touches; plus the trial-only
-   `trial.mechanical_edit_tests: "none"` form). Add tool tests; keep the suite green
-   (run `npm ci` first). The fork pattern (delegate implementation, review, merge)
-   worked well for stage 5 and is a good way to keep PROCESS context lean.
-3. **Stage 7 — account switch + written procedures.** Task #3.
-4. **Settle owner-open items** (part 10 §1). Task #4.
-5. **Never-retry clarification** (coordinator-gh + classifier-noise) — Task #5;
-   research recorded (`coordinator-gh-in-tool-command-19nov.md`); options A/B/C,
-   recommended B+C; **awaiting the owner's marked decision** (the one item that needs
-   his word before building). Not on the critical path.
+1. **Stages 5 (walks) and 6 (release): DONE and merged.** Tool at 103/103. The
+   trial-side exercise of the walks (the made-up two-screen walk product; actual walk
+   runs in the trial repo, driven by the trial ARCH/ROOT, build text 3 §8) and of the
+   release path still have to be run in the trial — not a process4 build.
+2. **Stage 7 — account switch + the written procedures: NEXT (start here).** The
+   account-switch steps and what is read to show no work was lost (build text 4 stage 7;
+   design part 4 §7, part 10 §2 items 11 and 1 — the promote/rollback/support procedures,
+   part 3 §8). The switch now includes confirming the new account's environment carries
+   the permissions-management settings (design part 7 §5).
+3. **Validate the PROCESS refresh fix in the trial.** The fix is merged but unmeasured.
+   To measure it, the trial must move to the latest process4 version (the owner's
+   one-line "move to latest" instruction to the coordinator, decision C) so a fresh ROOT
+   loads the clarified design and the autoMode block, then a PROCESS refresh is attempted
+   (trial item 10). Until then the owner-start fallback stands.
+4. **Settle owner-open items** (part 10 §1).
+5. **Coordinator recording-path clause (pending the owner).** The malformed-`gh`-in-a-
+   recording-command fault's *preventive* half (research `coordinator-gh-in-tool-command-19nov.md`,
+   Q1/option C) is still open: fold into coordinator rule 1/6 "carry the owner's words
+   into the tool from a file, never on a command line." Its recovery half (never-retry)
+   is now done by decision B. Bring option C to the owner; it touches the coordinator
+   text (3,843 bytes — tight).
 6. Then the first real tranche (proof), and civicsmith conversion (needs its own
    conversion plan + the owner's setup acts + the autoMode settings on its env).
 
-No open process faults remain from the trial's original list; all five are addressed.
+No open process faults remain: the five original trial faults and the PROCESS refresh
+fault are all addressed. **Note: `arch.md` (4,063 bytes raw) and `process.md` (4,079)
+are at the 4,096 starting-text limit; `arch.md` likely exceeds it once filled — flag as a
+size fault to the owner before adding to either text (rule 7).**
 
 ## Known environment facts (IMPORTANT — do not repeat the earlier mistake)
 
