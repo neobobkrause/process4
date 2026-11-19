@@ -24,6 +24,12 @@ export function makeGitHub(gh = realGh) {
       const owner = slug.split('/')[0];
       return (api(`repos/${slug}/pulls?state=open&head=${owner}:${encodeURIComponent(branch)}&per_page=10`) || [])[0] || null;
     },
+    // Every pull request into a branch, open and closed, newest first.
+    allPRs: (slug, base) => pages(`repos/${slug}/pulls?state=all&base=${encodeURIComponent(base)}&sort=created&direction=desc&per_page=100`),
+    closePR: (slug, n) => send('PATCH', `repos/${slug}/pulls/${n}`, { state: 'closed' }),
+    // The runs of one workflow on a branch, from GitHub's record of runs.
+    workflowRuns: (slug, branch) => pages(`repos/${slug}/actions/runs?branch=${encodeURIComponent(branch)}&event=pull_request&per_page=100`)
+      .flatMap((p) => p.workflow_runs || []),
     closedPRs: (slug, base) => api(`repos/${slug}/pulls?state=closed&base=${encodeURIComponent(base)}&sort=updated&direction=desc&per_page=50`) || [],
     createPR: (slug, body) => {
       const pr = send('POST', `repos/${slug}/pulls`, body);

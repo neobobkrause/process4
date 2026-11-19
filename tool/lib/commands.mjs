@@ -3,7 +3,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fetchLine, loadConfig, needConfig, notYetMet, readAt, requirementsFile } from './config.mjs';
+import { fetchLine, loadConfig, needConfig, readAt, requirementsFile } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
 import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
@@ -11,9 +11,12 @@ import {
 } from './state.mjs';
 import { fail, git } from './util.mjs';
 
-export const JOB_MARK = 'process4-job';
-export const RECORD_MARK = 'process4-job-record';
-export const REQUIRED = 'module-tests';
+import {
+  JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
+  nextJobName, pickNext, readView, roundDone as isRoundDone, slots, workOf,
+} from './round.mjs';
+
+export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
 const JOB = /^job\/([a-z0-9-]+)\/(\d+)$/;
 const BRANCH = /^(job\/[a-z0-9-]+\/\d+|work\/[A-Za-z0-9._/-]+)$/;
@@ -92,8 +95,6 @@ export function jobText(ctx, cfg, { module, branch: b, url }) {
   return Object.entries(fill).reduce((t, [k, v]) => t.split(k).join(v), text);
 }
 
-const describe = (w) => (w.kind === 'notice' ? `notice from ${w.from} (pull request ${w.merged})`
-  : w.kind === 'walk-flaw' ? `walk flaw ${w.flaw} ${w.link}` : `flaw from ${w.from}: ${w.words}`);
 
 // The newest remote job branch of a module.
 function newestJobBranch(ctx, module) {
@@ -131,12 +132,9 @@ export function open(ctx, a) {
   }
   needConfig(ctx.root);
   git(['fetch', '-q', 'origin', `refs/heads/${base}`], { cwd: ctx.root });
-  const reqs = notYetMet(readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD'));
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const waiting = records['waiting-work']?.data?.work || [];
-  const mine = waiting.filter((w) => w.module === module);
-  const notices = mine.filter((w) => w.kind === 'notice');
-  const kind = notices.length && notices.length === mine.length && !reqs.length ? 'told' : 'ordinary';
+  const { reqs, mine, notices, kind } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting }, module);
   const job = { module, work: [...reqs, ...mine.map(describe)], kind };
   if (notices.length) job.uses = notices.flatMap((w) => w.uses || []);
   const n = Number(name.match(JOB)[2]);
@@ -234,5 +232,82 @@ export function stateWrite(ctx, key, a) {
   }
   const body = writeRecord(ctx.gh, ctx.slug, issue, records, key, data, words);
   ctx.log(`wrote ${key} in issue ${issue.number}: ${Buffer.byteLength(body)} bytes`);
+  return 0;
+}
+
+// 5. close <pr> [--nothing-to-change "<why>"]: with the flag, first the job's record; then closed unmerged.
+export function close(ctx, n, a) {
+  const why = a['nothing-to-change'];
+  if (why !== undefined && (typeof why !== 'string' || !why.trim())) fail('say --nothing-to-change "<why>"');
+  const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  if (pr.state !== 'open') fail(`pull request ${n} is ${pr.merged_at ? 'merged' : pr.state} already`);
+  if (why !== undefined) { writeJobRecord(ctx, n, { nothing_to_change: why }); ctx.log(`recorded on pull request ${n}: nothing to change`); }
+  ctx.gh.closePR(ctx.slug, n);
+  ctx.log(`closed pull request ${n} unmerged`);
+  return 0;
+}
+
+// 9. next-job: one job for each call. Rewrites the round record and prints what open needs.
+export function nextJob(ctx) {
+  const { issue, records } = readRecords(ctx.gh, ctx.slug);
+  const view = readView(ctx, { records });
+  const states = moduleStates(view);
+  const s = slots(view, states);
+  const pick = pickNext(view, states);
+  const write = (modules) => writeRecord(ctx.gh, ctx.slug, issue, records, 'round', { ...view.round, modules });
+  if (!pick) { write(states); ctx.log(`none ready; slots in use ${s.inUse} of ${s.share}`); return 0; }
+  if (s.inUse >= s.share) { write(states); ctx.log(`no free slot: ${s.inUse} in use of ${s.share}, from ${s.from}`); return 0; }
+  let entry;
+  if (pick.ready_again) {
+    const pr = view.prs.find((p) => p.number === pick.pull_request);
+    const b = view.jobRecord(pr.number);
+    entry = { module: pick.module, state: 'open', pull_request: pr.number, restarted: b.at };
+    ctx.log(`module: ${pick.module}`);
+    ctx.log(`branch: ${pr.head.ref} (its job is ready again: the block by ${b.blocked.by} ended when ${b.blocked.by} merged)`);
+    ctx.log(`work: as its job block on pull request ${pr.number} says`);
+    ctx.log(`kind: ${view.jobBlock(pr.number)?.kind || 'ordinary'}`);
+    ctx.log(`then: open --branch ${pr.head.ref} prints its starting instructions`);
+  } else {
+    const w = workOf(view, pick.module);
+    const name = nextJobName(view, pick.module);
+    entry = { module: pick.module, state: 'open', pull_request: null, branch: name };
+    ctx.log(`module: ${pick.module}`);
+    ctx.log(`branch: ${name}`);
+    ctx.log(`work: ${[...w.reqs, ...w.mine.map(describe)].join('; ')}`);
+    ctx.log(`kind: ${w.kind}`);
+    ctx.log(`then: branch ${name}; open --module ${pick.module} prints its starting instructions`);
+  }
+  write(states.map((x) => (x.module === pick.module ? entry : x)));
+  ctx.log(`slots in use ${s.inUse + 1} of ${s.share}`);
+  return 0;
+}
+
+const roundView = (ctx) => readView(ctx, { records: findIssue(ctx.gh, ctx.slug) ? readRecords(ctx.gh, ctx.slug).records : {} });
+
+// 12. finished <module>
+export function finishedCmd(ctx, module) {
+  if (!/^[a-z0-9-]+$/.test(module || '')) fail('name the module');
+  const f = isFinished(roundView(ctx), module);
+  ctx.log(`${f.finished ? 'finished' : 'not finished'}: ${f.why}`);
+  return 0;
+}
+
+// 13. round-done
+export function roundDoneCmd(ctx) {
+  const view = roundView(ctx);
+  const r = isRoundDone(view, moduleStates(view));
+  ctx.log(r.done ? 'done' : 'not done');
+  for (const l of r.lines) ctx.log(`  ${l}`);
+  return 0;
+}
+
+// 15. failed-runs <pr>: every failed required run on the pull request, with no reset.
+export function failedRunsCmd(ctx, n) {
+  const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr);
+  ctx.log(`${failed.length} failed run(s) of ${REQUIRED} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
+  const module = pr.head.ref.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1] || pr.head.ref;
+  if (failed.length === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
+  if (failed.length >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
   return 0;
 }
