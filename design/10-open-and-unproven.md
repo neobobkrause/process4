@@ -1,6 +1,6 @@
 # Part 10. What is open, what is unproven, and the trial
 
-Length: 108 lines. Last section: "6. Risks with no trial".
+Length: 109 lines. Last section: "6. Risks with no trial".
 
 Most items are also marked where they belong in parts 1 to 9. This part gathers them and adds what belongs to no one part.
 
@@ -61,6 +61,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **Two products sharing the slots.**
 - **An edit to the approvals with a restart** that carries a round on.
 - **The notice as part of a running process.** Its method was proven only on made-up modules, and only with 23 refusals in the tool that the owner has not approved; the form this design takes, without them, was never built or run. Picking a told job's related tests is not proven at all.
+- **A cross-repository session start** — ROOT starting or refreshing PROCESS in the process's repository. Cross-repository messaging worked (seen 19 Nov); the start itself was refused earlier and not retried, and is unproven with the permissions-management settings in place. The refresh fallback is the owner starting PROCESS (part 4, section 5).
 - **The owner's acts to start a product** (part 7, section 4), and that nothing physical stops a product's session from changing the process (part 6, section 7).
 - **Everything listed as not proven on Claude Code** in part 7 A session fetching a read-only copy of the process was seen once, on 19 Nov.
 - **Everything on Codex not marked measured in part 8.**
@@ -83,7 +84,7 @@ The order in which these are built and tried, the most doubtful first, and what 
 7. Finished sessions, once archived, do not use up the account's room.
 8. Several walking sessions share one walk by area; a session makes a deployment and an external walk within a round; the tranche branch merges into the main branch.
 9. A mechanical edit across several modules merges once, tried with the touched modules' tests run and with none run.
-10. A process fault travels from a job to PROCESS, and ROOT starts PROCESS in the process's repository.
+10. A process fault travels from a job to PROCESS, and ROOT starts PROCESS in the process's repository. PROCESS is then refreshed by ROOT starting its successor across repositories — ROOT re-attempting a non-substantive refusal (part 6, section 4) and recording the successor's address — and, where ROOT still cannot, the owner starts the successor from the coordinator's standing page (the fallback, part 4, section 5).
 11. An edit to the approvals with a restart carries a round on.
 12. An install and an update are run and confirmed on a development account, and a release is prepared as far as the owner's approval.
 13. The rule for who takes a free slot gives the same answer every time.

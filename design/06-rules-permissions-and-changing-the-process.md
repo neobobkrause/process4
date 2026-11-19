@@ -1,6 +1,6 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 73 lines. Last section: "8. Process4 develops itself".
+Length: 74 lines. Last section: "8. Process4 develops itself".
 
 ## 1. What holds a rule
 
@@ -30,6 +30,7 @@ Length: 73 lines. Last section: "8. Process4 develops itself".
 - One judged act for each command.
 - A refused act is never reworded or handed to another session.
 - Three refusals in a row stop a session, which is replaced.
+- A non-substantive refusal does not count as working the act around. Where the checker refuses an act the approvals and the permissions-management settings (part 7, section 5) sanction, and it allowed an identical act before or invites a retry, or the refusal fell on a command the session malformed, the session re-attempts the sanctioned act cleanly and bounded (part 1, section 6): it keeps its prior state, tries again at its next wake or after a short wait, and brings the matter to the owner if it persists. A genuinely unsanctioned act, and a relayed consent (part 3, section 6), are still never retried; three refusals in a row still stop the session.
 
 ## 5. The tool
 

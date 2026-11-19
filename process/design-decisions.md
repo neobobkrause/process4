@@ -125,6 +125,50 @@ to the owner (latest by default, a named version when he gives one).
 
 **The owner's words.** "Decision: C" — 19 November 2026.
 
+### Subject: Refreshing PROCESS across repositories, and re-attempting a non-substantive refusal
+
+**The rule as it now stands.** Starting or refreshing PROCESS is a cross-repository
+session start (ROOT works in the product's repository, PROCESS in the process's), which
+the permission checker may refuse. Option B of three put to the owner corrects this as a
+group, adding no test, gate, review or stop:
+
+1. **Non-substantive refusals may be re-attempted.** Where the checker refuses an act the
+   owner's approvals and the permissions-management settings sanction, and the refusal is
+   non-substantive — the checker allowed an identical act before or invites another
+   attempt, or the refusal fell on a command the session malformed — the session makes the
+   sanctioned act again, cleanly and bounded (keep prior state, retry at the next wake or
+   after a short wait, bring it to the owner if it persists). This is not working a refusal
+   around: a genuinely unsanctioned act is still never reworded or handed on, a relayed
+   consent is still not retried, and three refusals in a row still stop the session (design
+   part 1, sections 6–7; part 6, section 4). This also settles the never-retry clarification
+   that the classifier-noise and malformed-command faults were waiting on.
+2. **Naming a role to message it.** A session resolves a role to its current session
+   address from the roles record (a lane from the lanes record) before messaging it, never
+   from a remembered address, with `state read --repository` where the record is in another
+   repository (design part 4, sections 4 and 11).
+3. **Successor registration.** ROOT records in the roles record the address of each
+   standing session it starts or refreshes, the cross-repository PROCESS successor included
+   (design part 4, section 5).
+4. **The PROCESS refresh fallback.** Where ROOT cannot complete the cross-repository start,
+   after a bounded re-attempt, it passes the owner the steps through the coordinator's
+   standing page and the owner starts the successor himself — the one way he already starts
+   PROCESS — which starts, as any refresh does, only from the shared state and the
+   repository (design part 4, sections 1 and 5).
+5. **Measured once in the trial.** The cross-repository start, the bounded re-attempt and
+   the owner-start fallback are a trial item; the start remains unproven until then (design
+   part 7, section 3; part 10, section 4, item 10; part 10, section 3).
+
+This corrected the measured PROCESS refresh fault of 19 November 2026 (ROOT declined to
+start the PROCESS successor across repositories, bound by the never-retry rule after earlier
+refusals; the owner had to start PROCESS by hand). Researched in
+`process/research/process-refresh-cross-repo-19nov.md`. The permissions-management settings
+already sanction the start (the BIO environment's `autoMode` block names starting the
+PROCESS session in neobobkrause/process4), so no settings change was needed. The
+clarification lives in the design, which every role reads in full, rather than being
+duplicated into the near-full starting texts (part 5, section 3; starting-text size limit).
+
+**The owner's words.** "Decision:option B" — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

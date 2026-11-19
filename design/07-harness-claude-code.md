@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 80 lines. Last section: "5. The permissions-management settings".
+Length: 81 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -49,6 +49,7 @@ From the first measurement of 18 Nov, on one model with a 1,000,000-token window
 - Why the cloud once handed a session a copy of its branch about an hour old, and whether it still does.
 - Whether approvals that reach a session after its start count the same as approvals read at the start.
 - Whether a session's browser can reach the development site.
+- Whether a session can create a session on another repository — ROOT starting or refreshing PROCESS in the process's repository. Cross-repository messaging between roles worked on 19 Nov once the permissions-management settings (section 5) were in place; the cross-repository start was refused in an earlier attempt and, by the never-retry rule, not retried, so whether it passes with those settings is unmeasured. The refresh fallback is the owner starting PROCESS (part 4, section 5).
 - How many live sessions the account bears. New starts once failed silently at about fifty.
 - Whether a program goes on reaching GitHub from a session at a real rate. Seen once, on 19 Nov, in the trial's first stage: with the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment. The report is `process4/working/trial/stage0_report_19nov.md`.
 
