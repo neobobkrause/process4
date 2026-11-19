@@ -204,3 +204,40 @@ test('results passes over a run cancelled by a newer one', () => {
   results(ctx, 1);
   assert.match(out.join('\n'), /^passed: .*R1$/);
 });
+
+test('results says waiting, not failed, when the only run on the head was cancelled by the newer one (fault k)', () => {
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(makeRepo(), gh);
+  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
+  gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
+  results(ctx, 1);
+  assert.match(out.join('\n'), /^waiting: .*no run that was not cancelled yet/);
+  assert.doesNotMatch(out.join('\n'), /failed/);
+});
+
+test('push --blocked records two blocking modules, repeated or with a comma (fault n)', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  push(ctx, { _: ['both refuse a leap day'], blocked: ['dates', 'pricing'] });
+  let recs = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).filter(Boolean);
+  assert.deepEqual(recs.map((r) => r.data), [{ blocked: { by: ['dates', 'pricing'], why: 'both refuse a leap day' } }]);
+  push(ctx, { _: ['still'], blocked: 'dates,pricing' });
+  recs = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).filter(Boolean);
+  assert.deepEqual(recs[0].data.blocked.by, ['dates', 'pricing']);
+  assert.throws(() => push(ctx, { _: ['x'], blocked: ['dates', true] }), /--blocked <module>/);
+  assert.throws(() => push(ctx, { _: ['x'], blocked: 'Dates!' }), /not a module's name/);
+});
+
+test('open works from a detached checkout (fault o)', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  git(['checkout', '-q', '--detach'], { cwd: root });
+  open(ctx, { _: [], title: 'Requirement text', branch: 'work/req' });
+  assert.equal(gh.s.prs[0].head.ref, 'work/req');
+  assert.throws(() => open(ctx, { _: [], title: 'No branch' }), /detached; name the branch with --branch/);
+  assert.match(out.join('\n'), /pull request 1/);
+});
