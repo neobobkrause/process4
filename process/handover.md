@@ -32,10 +32,12 @@ folder (`process/`, including `research/`); and this handover.
 - **Nothing is in force.** The design is still "proposed"; per `CLAUDE.md` we are
   in the first-build phase. The `process4` approvals were widened (PR #12) to let
   PROCESS message a product's coordinator and ROOT and run its own lanes.
-- **The tool is at stage 4, with stage 5 in progress.** `main` tip `c14e4f9`.
-  Tool tests pass (86/86, Node 22, **with TS 5.6.3 — run `cd tool && npm ci`
-  first**). Stage 5 (the walk commands) is being implemented (see Next steps);
-  stage 6 (release) and stage 7 (account switch) not built.
+- **Stage 5 (the walk commands) is BUILT and merged** (PR #21, `main` tip
+  `12b7dfe`). `tool/lib/walk.mjs` has walk open/close/write/read/text/areas;
+  walking-session and UX-lane starting texts verified; build text 2 §7 already
+  specifies the `walk`/`deploy`/`walks_folder` config. Tool tests **95/95**,
+  Node 22, **with TS 5.6.3 — run `cd tool && npm ci` first**. **Stage 6 (release)
+  and stage 7 (account switch) are NOT built** — stage 6 is the next build.
 - **The trial** runs in `neobobkrause/process3-probes`, now on `process4`
   `c14e4f9` (moved via product PR #364; ARCH record confirms). Rounds of jobs have
   run; no walk has run yet (blocked on stage 5). Live trial roles as of 20:48Z:
@@ -97,17 +99,21 @@ The coordinator's current open list was five; four are resolved:
 
 Driving the critical path autonomously (owner's standing direction above):
 
-1. **Stage 5 — the walks (IN PROGRESS).** Task #1. The six walk commands (specified
-   in build text 1b §19–24; defined in build text 3 §6–7) + walking-session/UX-lane
-   texts (drafted in `starting_texts/`) + a made-up two-screen walk product with a
-   Screens doc, two journeys, and `walk`/`deploy` process-config groups (build text 2
-   §7). A fork was tasked (19 Nov 20:5x) to implement the tool commands + tests in
-   the working tree (not commit); review its output, run `cd tool && npm ci && npm
-   test`, then commit on a `work/` branch, PR, merge on green. Settle the five walk
-   questions (build text 3 §9) as Claude-decided where technical, flagged where
-   product. Then validate in the trial (build text 3 §8, smallest first).
-2. **Stage 6 — release.** Task #2. Mechanical-edit scope, release prepare/publish,
-   install/update, tranche→main merge.
+1. **Stage 5 — the walks: DONE** (PR #21, merged `12b7dfe`). Tool commands + texts
+   built and tested. REMAINING is trial-side, not a process4 build: the made-up
+   two-screen walk product (Screens doc, two journeys, `walk`/`deploy` config) and
+   the actual walk runs happen in the trial repo, driven by the trial ARCH/ROOT
+   (build text 3 §8, smallest first). Now that cross-repo comms work, PROCESS can
+   message the trial coordinator to prompt it; the session-starting is theirs.
+2. **Stage 6 — release: NEXT (start here).** Task #2. Build `release prepare
+   <version> --notes <file> [--file ...] [--development]` and `release publish
+   <version> --approval "<words>"` (specs: build text 1b commands 7–8; design part 3
+   §6), the GitHub release API calls in `tool/lib/github.mjs`, and scope 5 — the
+   mechanical edit — in `tool/lib/scope.mjs` (build text 1 §5 step 5: whole module
+   for each module a non-job `work/` branch touches; plus the trial-only
+   `trial.mechanical_edit_tests: "none"` form). Add tool tests; keep the suite green
+   (run `npm ci` first). The fork pattern (delegate implementation, review, merge)
+   worked well for stage 5 and is a good way to keep PROCESS context lean.
 3. **Stage 7 — account switch + written procedures.** Task #3.
 4. **Settle owner-open items** (part 10 §1). Task #4.
 5. **Never-retry clarification** (coordinator-gh + classifier-noise) — Task #5;
