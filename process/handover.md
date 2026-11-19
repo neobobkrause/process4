@@ -126,11 +126,11 @@ Driving the critical path autonomously (owner's standing direction above):
    trial-side exercise of the walks (the made-up two-screen walk product; actual walk
    runs in the trial repo, driven by the trial ARCH/ROOT, build text 3 §8) and of the
    release path still have to be run in the trial — not a process4 build.
-2. **Stage 7 — account switch + the written procedures: NEXT (start here).** The
-   account-switch steps and what is read to show no work was lost (build text 4 stage 7;
-   design part 4 §7, part 10 §2 items 11 and 1 — the promote/rollback/support procedures,
-   part 3 §8). The switch now includes confirming the new account's environment carries
-   the permissions-management settings (design part 7 §5).
+2. **Stage 7 — account switch: DRAFTED** in build text 6 (`build/06-the-account-switch.md`):
+   the steps (sessions' side and the owner's) and what is read to show no work was lost,
+   elaborating design part 4 §7; all unproven, rehearsed in trial stage 7. REMAINING under
+   stage 7: the per-product promote/rollback/support procedures (design part 3 §8; part 10
+   §2 item 1), written when a product is converted, not generic process4 work.
 3. **Validate the PROCESS refresh fix in the trial.** The fix is merged but unmeasured.
    To measure it, the trial must move to the latest process4 version (the owner's
    one-line "move to latest" instruction to the coordinator, decision C) so a fresh ROOT
@@ -147,9 +147,11 @@ Driving the critical path autonomously (owner's standing direction above):
    conversion plan + the owner's setup acts + the autoMode settings on its env).
 
 No open process faults remain: the five original trial faults and the PROCESS refresh
-fault are all addressed. **Note: `arch.md` (4,063 bytes raw) and `process.md` (4,079)
-are at the 4,096 starting-text limit; `arch.md` likely exceeds it once filled — flag as a
-size fault to the owner before adding to either text (rule 7).**
+fault are all addressed. **Size note: `arch.md` is ~4,340 bytes once filled with a
+product name and the fetch line — over the 4,096 starting-text limit (pre-existing
+drift). It is PROCESS's to trim back under the limit (rule 7; the owner confirmed 19 Nov
+this is technical and his only if it truly cannot fit). `process.md` (4,079, no fill
+placeholders) is under the limit and fine.**
 
 ## Known environment facts (IMPORTANT — do not repeat the earlier mistake)
 

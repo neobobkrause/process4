@@ -119,7 +119,7 @@ Tried:
 
 Tried: a switch of account that loses no work (item 15). It failed once in the earlier process. It needs his acts in a second account, and is left to last because nothing else rests on it.
 
-The steps of an account switch, on the sessions' side and on his, are not written. Nor is what is read to show that it lost no work. This is design work still owed (the design, part 10, section 2, item 11).
+The steps of an account switch, on the sessions' side and on his, and what is read to show that it lost no work, are in build text 6 (`06-the-account-switch.md`), which answers the design work owed (the design, part 10, section 2, item 11).
 
 ## 4. What each stage asks of the owner
 
