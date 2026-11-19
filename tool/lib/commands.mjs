@@ -309,6 +309,23 @@ export function finishedCmd(ctx, module) {
   return 0;
 }
 
+// Resolves "latest": the newest commit of the process repository's main branch (the version a move to
+// latest adopts), read by git from the address process.json already names. Read-only; prints the commit
+// and whether it differs from the pinned one. ARCH uses it so a version move needs no commit id (build
+// text 1b, command 25; the owner's decision C, 19 Nov 2026).
+export function latestVersion(ctx) {
+  const cfg = needConfig(ctx.root);
+  const repo = cfg.process?.repository;
+  if (!repo) fail('process.json must name process.repository');
+  const r = git(['ls-remote', repo, 'refs/heads/main'], { cwd: ctx.root, allowFail: true });
+  if (r.code !== 0) fail(`could not read the process repository's main: ${r.stderr.trim()}`);
+  const commit = (r.stdout.split('\n').find((l) => l.trim()) || '').split(/\s+/)[0];
+  if (!/^[0-9a-f]{40}$/.test(commit)) fail("could not read the process repository's latest main commit");
+  ctx.log(commit);
+  ctx.log(commit === cfg.process.commit ? 'already the pinned version' : `newer than the pinned ${cfg.process.commit}`);
+  return 0;
+}
+
 // 13. round-done
 export function roundDoneCmd(ctx) {
   const view = roundView(ctx);

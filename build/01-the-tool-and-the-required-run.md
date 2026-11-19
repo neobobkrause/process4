@@ -49,7 +49,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 | `release prepare`; `release publish` | Making an unpublished release, or with `--development` a pre-release with its tag; publishing a release, with the owner's approval typed in that session |
 | `notify`, `state write`, `next-job`, `walk write` | Rewriting a comment on an issue |
 | `walk open`, `walk close` | Opening an issue in the product's repository; closing it |
-| `listing`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `walk areas`, `walk text`, `walk read` | Reading only |
+| `listing`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `latest-version`, `walk areas`, `walk text`, `walk read` | Reading only |
 
 **Unproven:** every row. No approvals wording for Process4 is committed, and no act of this tool has been judged. Trial item 2 measures `merge`.
 
