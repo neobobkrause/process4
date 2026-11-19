@@ -1,89 +1,93 @@
-# Research: product sessions cannot message/start PROCESS across repositories (19 Nov 2026)
+# Research: "Unsanctioned Communication" refusals of PROCESS↔product acts (19 Nov 2026)
 
-Recorded by PROCESS before proposing (rule 3). Measured: at the owner's request
-PROCESS sent a test message to the trial coordinator
-(`session_012hdw2S6LmPRuy6GVXBtScB`, in `neobobkrause/process3-probes`) at ~17:51
-UTC — **delivered**. The coordinator's reply to PROCESS was **refused** by the
-permission checker ("Unsanctioned Communication"); ROOT's cross-repo act toward
-PROCESS was refused the same way at 17:43 UTC. Reported by the owner, relaying the
-coordinator's own finding.
+Recorded by PROCESS before proposing (rule 3). **This file was first written with a
+wrong diagnosis (that File B lacked the wording) and is rewritten here from the
+sessions' own transcripts; the owner's exact dated words are never edited, but this
+is PROCESS's own research, so it is corrected in place.**
 
-## Diagnosis
+## What was measured
 
-- A session loads **its own repository's** standing approvals at start (design part
-  6, section 2). The product's standing roles (ROOT, the coordinator, ARCH) run in
-  the **product** repository and load **File B** (`process3-probes` `CLAUDE.md`).
-- File B sanctions messaging/starting only sessions **working in the product
-  repository**. PROCESS works in the **process** repository. So a product session
-  messaging PROCESS, or ROOT starting PROCESS, is **cross-repository** and the
-  checker refuses it as "Unsanctioned Communication".
-- The reverse works: **PROCESS → coordinator delivered**, because **File A**
-  (`process4` `CLAUDE.md`) sanctions PROCESS's own outbound side ("message that
-  product's coordinator and ROOT"). Inbound receipt by the product session is not
-  gated — the message arrived; only the product session's **outbound** send/start
-  toward another repository is refused.
-- So each side's act is governed by **that side's** approvals. File A covers
-  PROCESS's side (correct). File B does **not** sanction the product side's
-  cross-repo acts. The earlier handover/report that "the approvals were widened so
-  messages pass both ways" was wrong for File B — it was never verified by running,
-  and the owner's test now disproves it.
+- At the owner's request PROCESS sent a test message to the trial coordinator
+  (`session_012hdw2S6LmPRuy6GVXBtScB`) at ~17:51Z — **delivered**.
+- The coordinator's **reply** to PROCESS (~17:52Z) was **refused**. Exact reason
+  from its transcript: *"Permission for this action was denied by the Claude Code
+  auto mode classifier. Reason: [Unsanctioned Communication]. … You *may* attempt to
+  accomplish this action using other tools."* (a `send_message` to
+  `session_012hdw2UKJgbfzjKvHCV4eMY`).
+- ROOT's act refused at 17:41Z was a **same-repository** `create_session`
+  (refreshing the coordinator onto c6dec02), **not** a cross-repo act. ROOT's own
+  words: *"identical creates had worked,"* so it treated it as a **transient
+  classifier refusal**, kept the old session, and planned to retry at its next
+  hourly wake. ROOT wrote a harness note: *"create_session can be refused
+  transiently ('Unsanctioned Communication') — keep the old session and retry next
+  wake."*
 
-This is **not** a harness limit: PROCESS→product cross-repo messaging works, so the
-channel exists. It is an **approvals-wording** gap on the product side.
+## Corrected diagnosis
 
-## What the design requires of a product's approvals (and currently is unstated)
+The refusals are **nondeterministic false positives from the Claude Code auto-mode
+permission classifier**, not an approvals-wording gap.
 
-The design's fault path (part 6, section 6) and ROOT's duties (part 4, section 2;
-part 6, sections 3 and 5) require, from the **product** side:
+- **File B already authorizes the act.** The product's `CLAUDE.md` says product
+  sessions may *"start one PROCESS session in the repository neobobkrause/process4 …
+  and message, interrupt and archive it,"* and may *"start, message, interrupt and
+  archive Claude sessions working on Process3 or those products."* So both the
+  coordinator→PROCESS message and ROOT's coordinator create are sanctioned by the
+  committed approvals. **No File B change would fix this; my earlier proposed clause
+  is withdrawn.**
+- The auto-mode classifier is an independent AI judge (design part 6, section 1
+  lists "the permission checker" as one of three things that hold a rule). It
+  refused acts the approvals permit — a same-repo create and a cross-repo message —
+  having allowed identical acts before. The classifier message itself invites
+  retrying/other means.
+- So this is a **harness behaviour** (classifier nondeterminism) intersecting with
+  Process4's **never-retry rule**.
 
-1. **ROOT may start PROCESS** in the process repository (and record/read that it is
-   running there — `state read --repository`, already sanctioned as a read).
-2. **The coordinator may message PROCESS** in the process repository (the fault
-   chain session → ARCH → coordinator → PROCESS ends in this message).
+## The real fault: never-retry is too blunt for non-substantive refusals
 
-Both are cross-repository session acts. File B must sanction them, or the fault
-path and ROOT-starts-PROCESS cannot work, and faults reach PROCESS only through the
-owner (as now).
+The design treats every checker refusal as authoritative and bars rework (part 1,
+sections 6–7; part 6, section 4). That rule exists to stop a session
+**circumventing a refusal of an act the approvals do not allow**. But two refusals
+measured on 19 Nov are **not** of that kind:
 
-## The boundary on PROCESS
+1. **Classifier noise** (this file): a transient false refusal of an act the
+   approvals DO sanction. ROOT improvised the right handling (keep prior state,
+   retry at next wake, escalate if persistent); the coordinator, reading the rule
+   strictly, abandoned its reply to PROCESS. Handling is inconsistent and undefined.
+2. **A malformed command** (see `coordinator-gh-in-tool-command-19nov.md`): a
+   forbidden command mixed into a legitimate tool command; the legitimate act was
+   never cleanly attempted.
 
-PROCESS may **never** write, edit or relay the owner's approvals (rule 10; design
-part 6, section 2 — "No session writes, edits or relays it"), and acts on no
-repository but this one. File B is the **product's** approvals, in the **product**
-repository. So PROCESS cannot fix this directly. PROCESS's part (design part 6,
-section 2; part 10, section 1, item 8) is to **propose the wording**; the owner
-commits it himself, and the product ROOT restarts to load it (approvals load only
-at start).
+Both share a root: the never-retry rule does not distinguish a **substantive**
+refusal (the act is not permitted → never rework) from a **non-substantive** one
+(classifier noise, or a self-inflicted malformed command → the sanctioned act may
+be re-attempted). Fault 7 (a relayed consent) is different and genuinely not
+retried; keep it apart.
 
-## Proposed File B wording (for the owner to adopt — NOT approvals until he commits them)
+## Options (fold with the coordinator-gh item; one coherent clarification)
 
-To add to the product's standing approvals, in his own voice, minimally:
+Each clarifies/corrects; none adds a test, gate, review or stop (rule 2).
 
-> ROOT may start PROCESS in the process's repository (`neobobkrause/process4`), and
-> may record and read there that PROCESS is running. The coordinator may message
-> PROCESS in the process's repository, and ARCH and the coordinator may receive its
-> replies.
+- **A — No change.** Keep strict never-retry; rely on ROOT-style improvisation and
+  the owner's relay. Cost: measured breakage (the coordinator can't confirm to
+  PROCESS; refreshes stall on noise); inconsistent handling; the owner's words can
+  be lost (the gh case).
+- **B — Clarify never-retry (recommended).** A session may re-attempt an act **its
+  approvals sanction** when the refusal is non-substantive — a transient classifier
+  refusal (an identical act worked before / the classifier itself invites retry), or
+  a self-inflicted malformed command re-issued cleanly. Bounded: keep prior state,
+  retry at the next wake or after a short delay, and escalate to the owner if it
+  persists. Guards kept: a genuinely-unsanctioned act is never reworded; the
+  three-refusals-in-a-row stop still applies. This standardises ROOT's sensible
+  behaviour and unblocks the coordinator→PROCESS reply.
+- **C — Also document the classifier behaviour** in the Claude Code harness table
+  (design part 7 / "Not proven on Claude Code"): the auto-mode classifier can
+  transiently refuse cross-session acts the approvals permit; sessions handle it per
+  B. A process change, merged the usual way.
 
-This adds no test, gate, review or stop; it sanctions exactly the two cross-repo
-acts the design already assumes. After he commits it, the trial ROOT is restarted
-so the standing roles load it; then the coordinator→PROCESS reply is tried again to
-confirm (my outbound already works).
+## Note for the charter discussion
 
-## Options
-
-- **A — Owner adds the File B wording + restart (recommended).** Makes the design's
-  fault path work; least change; keeps faults off the owner's manual relay.
-- **B — No approvals change; accept the owner as the relay.** Faults reach PROCESS
-  via the owner's standing page, as now. Then a small Process4 design clarification
-  should say so (so part 6 §6 is not read as a promise the approvals don't keep).
-- **C — Also add a Process4 design/text clarification** (a process change, merged
-  the usual way) stating that a product's approvals must sanction ROOT starting
-  PROCESS and the coordinator messaging PROCESS cross-repo — so no future product
-  repeats this. Pairs with A.
-
-## Open / needs the owner to relay (product sessions cannot answer PROCESS yet)
-
-- The exact act and reason text ROOT was refused at 17:43: was it **ROOT starting
-  PROCESS** cross-repo (covered by A), or **ROOT starting a same-repo coordinator**
-  (which would be a separate anomaly, since ROOT started coordinators earlier in the
-  trial)? I cannot ask the product sessions directly until A is in place.
+File B is correct as-is for this; the fix is in Process4's own design/texts (B, C),
+which is squarely PROCESS's to make on the owner's word — no product-repo change
+needed here. But PROCESS could only confirm File B was adequate once the owner
+pasted it; PROCESS cannot currently read the product repos' governing files, which
+bears on the broader charter question raised 19 Nov.
