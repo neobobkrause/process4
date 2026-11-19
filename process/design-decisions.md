@@ -169,6 +169,22 @@ duplicated into the near-full starting texts (part 5, section 3; starting-text s
 
 **The owner's words.** "Decision:option B" — 19 November 2026.
 
+### Subject: The coordinator records the owner's words from a file
+
+**The rule as it now stands.** The coordinator carries the owner's marked words into the
+tool from a file, never typed on a command line (coordinator starting text, rule 1). This
+prevents the fault measured on the trial, where a forbidden `gh` command — one the session
+added, or one present in the owner's quoted words — reached the command line and the
+permission checker refused the whole recording command, so his words went unrecorded and he
+had to retype them. It is the preventive half of the coordinator recording-path fault; the
+recovery half (re-issuing a command the session malformed, cleanly) is the
+non-substantive-refusal clarification of the decision above. Researched in
+`process/research/coordinator-gh-in-tool-command-19nov.md` (option C). It adds no test, gate,
+review or stop; `process.md` and `arch.md` already record their words from files, so only the
+coordinator text needed the clause.
+
+**The owner's words.** "Instruction: add the prevition piece of the coordinator recording-path problem fix as you've described." — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
