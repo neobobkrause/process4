@@ -3,7 +3,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fetchLine, loadConfig, needConfig, readAt, requirementsFile } from './config.mjs';
+import { fetchLine, loadConfig, needConfig, readAt, requiredCheck, requirementsFile } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
 import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
@@ -165,21 +165,22 @@ export function ready(ctx, n) {
   ctx.gh.markReady(ctx.slug, n);
   const pr = ctx.gh.getPR(ctx.slug, n);
   if (pr.draft) fail(`pull request ${n} is still a draft`);
-  ctx.log(`pull request ${n} is ${pr.state} and ready; the required run ${REQUIRED} has been asked for`);
+  ctx.log(`pull request ${n} is ${pr.state} and ready; the required run ${requiredCheck(ctx.root)} has been asked for`);
   return 0;
 }
 
 // 14. results <pr>: the required run's state on the head commit.
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
-  const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, REQUIRED).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
+  const required = requiredCheck(ctx.root);
+  const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, required).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
   // A run cancelled by a newer one (`ready` cancels the draft's) is not the result. Where every
   // run so far was cancelled, the newer one has not yet made its check: waiting (fault k).
   const r = runs.find((x) => !CANCELLED.includes(x.conclusion));
-  if (!r && runs.length) { ctx.log(`waiting: ${REQUIRED} on ${pr.head.sha.slice(0, 10)} has no run that was not cancelled yet (newest: ${runs[0].html_url})`); return 0; }
-  if (!r || r.status !== 'completed') { ctx.log(`waiting: ${REQUIRED} on ${pr.head.sha.slice(0, 10)} ${r ? `is ${r.status}: ${r.html_url}` : 'has not started'}`); return 0; }
-  if (r.conclusion === 'success') { ctx.log(`passed: ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`); return 0; }
-  ctx.log(`failed (${r.conclusion}): ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`);
+  if (!r && runs.length) { ctx.log(`waiting: ${required} on ${pr.head.sha.slice(0, 10)} has no run that was not cancelled yet (newest: ${runs[0].html_url})`); return 0; }
+  if (!r || r.status !== 'completed') { ctx.log(`waiting: ${required} on ${pr.head.sha.slice(0, 10)} ${r ? `is ${r.status}: ${r.html_url}` : 'has not started'}`); return 0; }
+  if (r.conclusion === 'success') { ctx.log(`passed: ${required} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`); return 0; }
+  ctx.log(`failed (${r.conclusion}): ${required} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`);
   const out = ctx.gh.jobLog(ctx.slug, r.id);
   if (out) ctx.log(out.trimEnd().split('\n').slice(-40).join('\n'));
   return 0;
@@ -320,8 +321,9 @@ export function roundDoneCmd(ctx) {
 // 15. failed-runs <pr>: every failed required run on the pull request, with no reset.
 export function failedRunsCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
-  const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr);
-  ctx.log(`${failed.length} failed run(s) of ${REQUIRED} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
+  const required = requiredCheck(ctx.root);
+  const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr, required);
+  ctx.log(`${failed.length} failed run(s) of ${required} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
   const module = pr.head.ref.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1] || pr.head.ref;
   if (failed.length === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
   if (failed.length >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);

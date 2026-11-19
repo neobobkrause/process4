@@ -44,6 +44,35 @@ trial on 19 November 2026).
 
 **The owner's words.** "Decision: adopt the fixes for faults 7 and 8 in PR #13" — 19 November 2026.
 
+### Subject: Reporting that an act cannot be done
+
+**The rule as it now stands.** The tool reaches GitHub through `node`; a refused
+direct `gh` or git command is expected (the deny list forces GitHub through the
+tool) and is not the tool being blocked. A session verifies an act with the tool
+before telling the owner it cannot be done. This corrected the PROCESS starting
+text (`starting_texts/process.md`, rule 8), after the first PROCESS session wrongly
+reported it could not merge (fix B, 19 November 2026).
+
+**The owner's words.** "Decision: adopt the round-4 fixes B, A and C in PR #14" — 19 November 2026.
+
+### Subject: The required check's name
+
+**The rule as it now stands.** The required check is `tool-tests` on the process
+repository (which holds the tool) and `module-tests` on a product; the tool
+chooses it per repository (`requiredCheck`). This corrected the tool (fix A,
+round-4 fault, 19 November 2026).
+
+**The owner's words.** "Decision: adopt the round-4 fixes B, A and C in PR #14" — 19 November 2026.
+
+### Subject: Naming the pull request for a job's commands
+
+**The rule as it now stands.** `ready`, `results` and `close` default to the
+current branch's one open pull request when no number is given (a job has exactly
+one); `merge`, `failed-runs` and `notify` still require the number. This corrected
+the tool (fix C, round-4 fault 1, 19 November 2026).
+
+**The owner's words.** "Decision: adopt the round-4 fixes B, A and C in PR #14" — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

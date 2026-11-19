@@ -8,11 +8,20 @@ import { decideScope, runTests } from './lib/scope.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
 import { parseBlock } from './lib/github.mjs';
 import { JOB_MARK } from './lib/round.mjs';
-import { Fail, fail, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
+import { Fail, fail, git, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
 
 const pr = (a) => {
   const n = Number(a._[0]);
   return Number.isInteger(n) && n > 0 ? n : fail('name the pull request by its number');
+};
+
+// For ready/results/close, which a job runs from its own branch: the pull request number if
+// given, else the one open pull request of the current branch (a job has exactly one).
+const prOf = (ctx, a) => {
+  if (a._[0] != null) return pr(a);
+  const branch = git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: ctx.root });
+  const found = ctx.gh.prForBranch(ctx.slug, branch);
+  return found?.number || fail(`no open pull request for the current branch ${branch}; name it by its number`);
 };
 
 // The job block as part one's workflow wrote it: the comment's body, or its JSON alone. None when
@@ -30,10 +39,10 @@ const commands = {
   branch: (ctx, a) => c.branch(ctx, a._[0], a.into),
   push: (ctx, a) => c.push(ctx, a),
   open: (ctx, a) => c.open(ctx, a),
-  ready: (ctx, a) => c.ready(ctx, pr(a)),
-  results: (ctx, a) => c.results(ctx, pr(a)),
+  ready: (ctx, a) => c.ready(ctx, prOf(ctx, a)),
+  results: (ctx, a) => c.results(ctx, prOf(ctx, a)),
   merge: (ctx, a) => c.merge(ctx, pr(a)),
-  close: (ctx, a) => c.close(ctx, pr(a), a),
+  close: (ctx, a) => c.close(ctx, prOf(ctx, a), a),
   'next-job': (ctx) => c.nextJob(ctx),
   finished: (ctx, a) => c.finishedCmd(ctx, a._[0]),
   'round-done': (ctx) => c.roundDoneCmd(ctx),

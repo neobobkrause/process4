@@ -175,7 +175,7 @@ export function roundDone(view, states) {
 // 15. Failed required runs on a pull request, from GitHub's record of runs. A cancelled run
 // (`ready`'s newer run cancels the draft's) is not a failure and is not counted.
 const FAILED = ['failure', 'timed_out', 'startup_failure'];
-export function failedRuns(runs, pr) {
-  return runs.filter((r) => r.name === REQUIRED && (r.head_branch === pr.head.ref || (r.pull_requests || []).some((p) => p.number === pr.number))
+export function failedRuns(runs, pr, name = REQUIRED) {
+  return runs.filter((r) => r.name === name && (r.head_branch === pr.head.ref || (r.pull_requests || []).some((p) => p.number === pr.number))
     && FAILED.includes(r.conclusion));
 }
