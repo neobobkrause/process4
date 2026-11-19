@@ -6,7 +6,7 @@ Length: 74 lines. Last section: "8. Support beyond the process".
 
 - Before a tranche opens, ARCH proposes in a few plain lines what it is for and which journeys are expected to complete at its end, naming any journey left out and why. The owner approves or changes it.
 - The tranche is built on the tranche branch. The main branch never moves while a tranche runs. **Claude decided:** there is one lasting tranche branch. After a tranche merges into the main branch, the next tranche goes on from the same branch.
-- A product's tranche runs on one fixed version of the process from open to close (part 6).
+- A product's tranche runs on one fixed version of the process from open to close (part 6). A product moves to a changed process version only on the owner's approval (part 6, section 7). **Claude decided:** a version move loses no work — where no job is open it is made at once; where jobs are open it is made at the next round boundary, or, on the owner's word to move now, open jobs stop and restart from their branches on the new version (as after an approvals edit, part 4, section 7).
 - While a tranche runs, ARCH prepares what the next round or tranche needs.
 
 ## 2. A round

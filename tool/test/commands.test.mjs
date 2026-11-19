@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { JOB_MARK, RECORD_MARK, branch, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
+import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
 import { parseBlock } from '../lib/github.mjs';
 import { mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
-import { commit, ctxFor, fakeGitHub, makeRepo, productFiles } from './helpers.mjs';
+import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
 function product() {
   const root = makeRepo(productFiles());
@@ -240,4 +240,22 @@ test('open works from a detached checkout (fault o)', () => {
   assert.equal(gh.s.prs[0].head.ref, 'work/req');
   assert.throws(() => open(ctx, { _: [], title: 'No branch' }), /detached; name the branch with --branch/);
   assert.match(out.join('\n'), /pull request 1/);
+});
+
+test('latest-version prints the newest main commit of the process repository', () => {
+  // a stand-in process repository: a repo with a bare origin whose main tip is known
+  const proc = makeRepo({ 'README.md': 'process\n' });
+  const bare = git(['remote', 'get-url', 'origin'], { cwd: proc });
+  const tip = git(['rev-parse', 'HEAD'], { cwd: proc });
+  const root = product();
+  write(root, { 'process.json': config({ process: { repository: bare, version: '4.0.0', commit: 'a'.repeat(40) } }) });
+  const { ctx, out } = ctxFor(root, fakeGitHub());
+  assert.equal(latestVersion(ctx), 0);
+  assert.equal(out[0], tip);
+  assert.match(out[1], /newer than the pinned a{40}/);
+  // when the pin already equals latest, it says so
+  write(root, { 'process.json': config({ process: { repository: bare, version: '4.0.0', commit: tip } }) });
+  const second = ctxFor(root, fakeGitHub());
+  assert.equal(latestVersion(second.ctx), 0);
+  assert.equal(second.out[1], 'already the pinned version');
 });

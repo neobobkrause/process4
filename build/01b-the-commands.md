@@ -1,4 +1,4 @@
-Length: 38 lines. Last section: "4. The commands".
+Length: 40 lines. Last section: "4. The commands".
 
 # Process4 build text 1b: the tool's commands
 
@@ -34,5 +34,7 @@ One for each act in part 6, section 5. Common to all: arguments are checked for 
 22. **`walk text <session>`**. Prints a walking session's starting instructions (part 4, section 11): its text filled in with names and addresses from the round record and the config. Its areas stay in the round record, which the text names.
 23. **`walk areas`**. Lists the modules a round changed and the areas they name, for ARCH to choose from (part 6, section 5): the pages and journeys their step headers and requirement text name (build text 3, section 2; build text 2, section 4).
 24. **`related <pr>`**. Lists a told job's related tests, as step 3 of build text 1, section 5 picks them, for the job to run in its own session if it chooses. It only lists; it runs nothing.
+
+25. **`latest-version`**. Reads only. Prints the newest commit of the process repository's main branch — the version a move to the latest adopts — from the address the process config names, and whether it differs from the pinned commit. ARCH runs it so a version move needs no commit id from the owner (the owner's decision C, 19 Nov 2026). **Unproven:** the read of another repository's main from a session.
 
 **The run's entry.** The workflow calls `p4.mjs run scope` and `p4.mjs run tests` (build text 1, section 5), on GitHub's machines only.

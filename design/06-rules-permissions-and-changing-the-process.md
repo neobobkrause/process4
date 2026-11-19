@@ -1,6 +1,6 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 72 lines. Last section: "8. Process4 develops itself".
+Length: 73 lines. Last section: "8. Process4 develops itself".
 
 ## 1. What holds a rule
 
@@ -60,6 +60,7 @@ What follows from them:
 - "No change" is always among the options. His written instructions, as a field report quotes them: "caution is a cost, paid only against a measured failure or your word", and "the default answer to a finding with nothing measured behind it is no change".
 - Any change to Process4 is explained to the owner, who decides whether and how the process is updated.
 - No session building a product may change the process, add a test, check, gate or review to it, or adopt a changed process on its own. ARCH moves a product to a changed process only with the owner's prior approval, by the means PROCESS proposes.
+- **Claude decided** the means (the owner's decision C, 19 November 2026): the owner, in the coordinator's session, instructs it to move a product to the latest Process4 version — or to a named version. That one instruction is his prior approval, and he needs give no commit id and do nothing more. The coordinator records his words and tells ARCH; ARCH resolves the latest version with the tool (`latest-version`: the newest commit of the process repository's main, which holds only merged, tested changes), updates the product's process config to that commit by pull request, and merges it; then the sessions refresh onto it (ROOT refreshes the standing roles; ARCH restarts any open job from its branch), losing no work (part 3, section 1). The coordinator tells the owner, in one line, when every session is on the new version.
 - ROOT starts PROCESS. PROCESS works in the process's own repository, with the owner directly. The coordinator can talk to it.
 - **Claude decided:** a ROOT that finds PROCESS already running, by the record PROCESS keeps in the process's repository, starts no second and passes the matter to the one that runs. **Unproven** with two products.
 - **Claude decided:** PROCESS runs as one session at a time, keeps its own folder in the process's repository, and records its research there before it proposes.

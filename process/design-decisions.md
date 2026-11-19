@@ -109,6 +109,22 @@ work; it is a setup prerequisite, added on the owner's explicit instruction.
 
 **The owner's words.** "Instruction: When process4 development (and product development using process4) moves to another Claude account, the steps involved in starting development under the different account should include a check to make sure that the environment the sessions will be running under includes the proper settings for process4's permissions management strategy." — 19 November 2026.
 
+### Subject: Moving a product to the latest (or a named) Process4 version
+
+**The rule as it now stands.** The owner, in the coordinator's session, instructs it
+to move a product to the latest Process4 version, or to a named version; that one
+instruction is his prior approval, needs no commit id, and asks nothing further of
+him. The coordinator records his words and tells ARCH; ARCH resolves the latest with
+the tool's `latest-version` (the newest commit of the process repository's main,
+which holds only merged, tested changes), sets the product's process config to that
+commit by pull request, merges it, and refreshes the sessions onto it, losing no
+work (design part 6, section 7; part 3, section 1; part 4, section 1; the coordinator
+and ARCH starting texts; the tool's `latest-version` command, build text 1b command
+25). It removes steps; it adds no test, gate, review or stop. Option C of three put
+to the owner (latest by default, a named version when he gives one).
+
+**The owner's words.** "Decision: C" — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
