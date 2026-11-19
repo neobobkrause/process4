@@ -11,6 +11,7 @@ const passing = "import { test } from 'node:test';\ntest('R1 holds', () => {});\
 const failing = "import { test } from 'node:test';\nimport assert from 'node:assert';\ntest('R2 holds', () => assert.equal(1, 2));\n";
 
 // GitHub's merge of a branch into the tranche, checked out, as the run sees it.
+const USES = "import { d } from '../dates/index.mjs';\nexport const o = d + 1;\n";
 function merged(files, { branch = 'job/orders/1', base = productFiles() } = {}) {
   const root = makeRepo(base);
   const baseSha = git(['rev-parse', 'HEAD'], { cwd: root });
@@ -61,7 +62,7 @@ test('a base with no process config is judged by the head\'s, and says so', () =
 });
 
 test('run tests passes when every command exits 0, fails otherwise, and writes a summary', () => {
-  const { root, base } = merged({ 'src/orders/index.mjs': 'x', 'test/orders/a.test.mjs': passing });
+  const { root, base } = merged({ 'src/orders/index.mjs': USES, 'test/orders/a.test.mjs': passing });
   const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
   assert.equal(runTests(root, s, { log: () => {}, summary }), true);
@@ -72,7 +73,7 @@ test('run tests passes when every command exits 0, fails otherwise, and writes a
 });
 
 test('a module with no test files passes, and the summary says none ran', () => {
-  const { root, base } = merged({ 'src/orders/index.mjs': 'x' });
+  const { root, base } = merged({ 'src/orders/index.mjs': USES });
   const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
   assert.equal(runTests(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false }), { log: () => {}, summary }), true);
   assert.match(readFileSync(summary, 'utf8'), /orders: no test files; none ran/);
@@ -80,11 +81,19 @@ test('a module with no test files passes, and the summary says none ran', () => 
 
 test('product code runs without the token variables', () => {
   const { root, base } = merged({
-    'src/orders/index.mjs': 'x',
+    'src/orders/index.mjs': USES,
     'test/orders/t.test.mjs': "import { test } from 'node:test';\nimport assert from 'node:assert';\ntest('R1 no token', () => assert.equal(process.env.GH_TOKEN, undefined));\n",
   });
   process.env.GH_TOKEN = 'secret-for-test';
   try {
     assert.equal(runTests(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false }), { log: () => {}, summary: null }), true);
   } finally { delete process.env.GH_TOKEN; }
+});
+
+test('run tests runs the tool\'s check before a module\'s tests, and a disagreement fails the run', () => {
+  const { root, base } = merged({ 'src/orders/index.mjs': 'export const o = 1;\n', 'test/orders/a.test.mjs': passing });
+  const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
+  const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
+  assert.equal(runTests(root, s, { log: () => {}, summary }), false);
+  assert.match(readFileSync(summary, 'utf8'), /orders: check found a disagreement[\s\S]*Failed\./);
 });

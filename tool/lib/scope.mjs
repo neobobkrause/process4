@@ -46,13 +46,21 @@ export function decideScope(root, { base, baseRef, branch, draft }) {
 }
 
 // Runs each module's test command over its files, with the token variables removed.
-export function runTests(root, scope, { log = console.log, summary = process.env.GITHUB_STEP_SUMMARY } = {}) {
+// Before each module's tests, the tool's `check` of that module (build text 1, section 5, part
+// two), run from this same copy of the tool with the token variables removed.
+const P4 = new URL('../p4.mjs', import.meta.url).pathname;
+const runCheck = (root, name) => run(process.execPath, [P4, 'check', name], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });
+
+export function runTests(root, scope, { log = console.log, summary = process.env.GITHUB_STEP_SUMMARY, check = runCheck } = {}) {
   const lines = [`## module-tests`, '', `Scope: **${scope.scope}**, because ${scope.why}. Config read from ${scope.config_from}.`, ''];
   let ok = true;
   if (scope.scope !== 'nothing') {
     const cfg = loadConfig(root, 'HEAD');
     const [cmd, ...args] = cfg.test_command.split(/\s+/).filter(Boolean);
     for (const m of scope.modules) {
+      const c = check(root, m.name);
+      log(c.stdout + c.stderr);
+      if (c.code !== 0) { ok = false; lines.push(`- ${m.name}: check found a disagreement (exit ${c.code})`); }
       if (!m.files.length) { lines.push(`- ${m.name}: no test files; none ran`); continue; }
       log(`== ${m.name}: ${cmd} ${[...args, ...m.files].join(' ')}`);
       const r = run(cmd, [...args, ...m.files], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });

@@ -105,6 +105,7 @@ jobs:
           for lock in $(jq -r '.lock_files[]?' process.json); do (cd "$(dirname "$lock")" && npm ci --no-audit --no-fund --loglevel=error); done
           git clone -q "$REPO" "$RUNNER_TEMP/process4"
           git -C "$RUNNER_TEMP/process4" checkout -q "$COMMIT"
+          (cd "$RUNNER_TEMP/process4/tool" && npm ci --no-audit --no-fund --loglevel=error)
       - name: run the tests in scope
         if: steps.nothing.outputs.skip != 'true'
         env:
