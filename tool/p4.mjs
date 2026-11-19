@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { decideScope, runTests } from './lib/scope.mjs';
+import { checkCmd, listingCmd, notifyCmd } from './lib/notify.mjs';
 import { Fail, fail, parseArgs, repoRoot, repoSlug, sleep } from './lib/util.mjs';
 
 const pr = (a) => {
@@ -26,6 +27,9 @@ const commands = {
   'failed-runs': (ctx, a) => c.failedRunsCmd(ctx, pr(a)),
   'state read': (ctx, a) => c.stateRead(ctx, a._[0], a),
   'state write': (ctx, a) => c.stateWrite(ctx, a._[0], a),
+  listing: (ctx, a) => listingCmd(ctx, a._[0], a),
+  notify: (ctx, a) => notifyCmd(ctx, pr(a)),
+  check: (ctx, a) => checkCmd(ctx, a._[0], a),
   // On GitHub's machines only (build text 1, section 5).
   'run scope': (ctx, a) => {
     const s = decideScope(ctx.root, { base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true });
@@ -56,16 +60,20 @@ export const HELP = {
   'failed-runs': 'failed-runs <pr>: prints the count of failed required runs on the pull request, not counting cancelled runs; at the third and fifth, the line for ARCH.',
   'state read': 'state read [<record>] [--repository <owner/name>]: prints one record of the shared state, or all.',
   'state write': 'state write <record> --from <file> [--create [--process]]: rewrites one record in place; --create makes the issue and its empty records once.',
+  listing: 'listing <module> [--at <commit>]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints the module\'s interface listing; writes nothing to GitHub.',
+  notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into the waiting-work record.',
+  check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports, of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
   'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--out <file>]: on GitHub\'s machines only, decides the required run\'s scope.',
   'run tests': 'run tests --scope <file>: on GitHub\'s machines only, runs the tests in scope.',
 };
 
-// GitHub is reached only for commands that need it; `run` reads the checkout alone.
+// GitHub is reached only for commands that need it; `run`, `listing` and `check` read the checkout alone.
+const LOCAL = new Set(['listing', 'check']);
 export function context(name, overrides = {}) {
   const root = overrides.root || repoRoot();
   return {
     root,
-    slug: name.startsWith('run ') ? null : repoSlug(root),
+    slug: name.startsWith('run ') || LOCAL.has(name) ? null : repoSlug(root),
     gh: github,
     log: console.log,
     wait: sleep,

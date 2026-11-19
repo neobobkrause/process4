@@ -1,0 +1,2164 @@
+{
+ "about": [
+  "Expected answers of the Process4 tool (design 8) to the 150 recorded changes of the notice's proof, converted to the Process4 forms in this folder.",
+  "For each change: told, each told user with, briefly, its reasons (provider, entry and words, or \"not followed fully\", and the note of an undeclared use); refuses, the modules from the provider on whose check refuses after the change; firstCommentsStep where the change is a module's comments-only first step.",
+  "Started from the proof's recorded design-7 answers (results/iter7/<series>/<id>.json, as its tool said them; changes/iter7/<series>-expected.json and -reading.json). Where design 8 answers differently, the answer is recorded again and each difference has one line in rerecorded, saying which rule of design 7 it rested on.",
+  "needs is the proof's reading of which users truly needed a change (changes/iter7/<series>-reading.json), kept to show where design 8 misses one that design 7 told or stopped."
+ ],
+ "changes": {
+  "P01-price-content": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "P02-reword-explanation": {
+   "series": "planned",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "P03-remove-function": {
+   "series": "planned",
+   "provider": "text-rules",
+   "told": {
+    "front": [
+     "text-rules titleCase: removed"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "P04-rename-function": {
+   "series": "planned",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money splitEvenly: removed"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P05-answer-field-removed": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings op:bookstatus: hands back differently"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P06-answer-field-renamed": {
+   "series": "planned",
+   "provider": "rooms",
+   "told": {
+    "bookings": [
+     "rooms Room: hands back differently, bound changed",
+     "rooms Rooms.add: hands back differently, bound changed",
+     "rooms Rooms.find: hands back differently, bound changed"
+    ],
+    "billing": [
+     "rooms Rooms.add: hands back differently, bound changed"
+    ],
+    "front": [
+     "rooms Room: hands back differently, bound changed",
+     "rooms op:roomlist: hands back differently, bound changed",
+     "rooms table:rooms: cannot stand in, hands back differently, bound changed"
+    ],
+    "reports": [
+     "rooms Rooms.add: hands back differently, bound changed",
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings",
+    "front"
+   ],
+   "needs": [
+    "bookings",
+    "front"
+   ]
+  },
+  "P07-accept-optional": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "P08-newly-required": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings BookingRequest: cannot stand in, bound changed",
+     "bookings Bookings.open: cannot stand in, bound changed"
+    ],
+    "front": [
+     "bookings BookingRequest: cannot stand in, bound changed",
+     "bookings op:bookopen: cannot stand in, bound changed"
+    ],
+    "reports": [
+     "bookings BookingRequest: cannot stand in, bound changed",
+     "bookings Bookings.open: cannot stand in, bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "billing",
+    "front",
+    "reports"
+   ],
+   "needs": [
+    "billing",
+    "front",
+    "reports"
+   ],
+   "rerecorded": [
+    "billing was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "P09-newly-refused": {
+   "series": "planned",
+   "provider": "store",
+   "told": {
+    "rooms": [
+     "store Store.put: cannot stand in"
+    ],
+    "bookings": [
+     "store Store.put: cannot stand in"
+    ],
+    "front": [
+     "store seededStore: cannot stand in"
+    ],
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [
+    "store"
+   ],
+   "needs": []
+  },
+  "P10-answer-gains-field": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings Booking: hands back differently",
+     "bookings Bookings.cancel: hands back differently",
+     "bookings Bookings.open: hands back differently"
+    ],
+    "front": [
+     "bookings Booking: hands back differently",
+     "bookings op:bookcancel: hands back differently",
+     "bookings op:bookopen: hands back differently"
+    ],
+    "reports": [
+     "bookings Booking: hands back differently",
+     "bookings Bookings.cancel: hands back differently",
+     "bookings Bookings.open: hands back differently",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "P11-list-gains-name": {
+   "series": "planned",
+   "provider": "rooms",
+   "told": {
+    "bookings": [
+     "rooms Room: hands back differently",
+     "rooms Rooms.add: cannot stand in, hands back differently",
+     "rooms Rooms.find: hands back differently"
+    ],
+    "billing": [
+     "rooms Rooms.add: cannot stand in, hands back differently"
+    ],
+    "front": [
+     "rooms ROOM_KINDS: hands back differently",
+     "rooms Room: hands back differently",
+     "rooms RoomKind: accepts more, hands back differently",
+     "rooms op:roomlist: accepts more, hands back differently",
+     "rooms table:rooms: accepts more, hands back differently"
+    ],
+    "reports": [
+     "rooms ROOM_KINDS: hands back differently",
+     "rooms Rooms.add: cannot stand in, hands back differently",
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "bookings was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\"",
+    "billing was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\"",
+    "reports was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\""
+   ]
+  },
+  "P12-bound-line-changed": {
+   "series": "planned",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "meter": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "billing": [
+     "money Amount: bound changed",
+     "money add: bound changed",
+     "money amount: bound changed",
+     "money formatAmount: bound changed",
+     "money splitEvenly: bound changed",
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings op:bookquote: bound changed",
+     "bookings op:bookstatus: bound changed",
+     "meter MeterMsg: bound changed"
+    ],
+    "front": [
+     "money Amount: bound changed",
+     "bookings Booking: bound changed",
+     "bookings op:bookcancel: bound changed",
+     "bookings op:bookopen: bound changed",
+     "note: uses money without declaring it"
+    ],
+    "reports": [
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ]
+  },
+  "P13-kind-renamed": {
+   "series": "planned",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: kind renamed, shape unchanged"
+    ],
+    "meter": [
+     "money Amount: kind renamed, shape unchanged"
+    ],
+    "billing": [
+     "money Amount: kind renamed, shape unchanged",
+     "bookings Booking: hands back differently, bound changed",
+     "bookings Bookings.cancel: hands back differently, bound changed",
+     "bookings Bookings.open: hands back differently, bound changed",
+     "bookings op:bookquote: hands back differently, bound changed",
+     "bookings op:bookstatus: hands back differently, bound changed",
+     "meter MeterMsg: accepts more, hands back differently, bound changed"
+    ],
+    "front": [
+     "bookings Booking: hands back differently, bound changed",
+     "bookings op:bookcancel: hands back differently, bound changed",
+     "bookings op:bookopen: hands back differently, bound changed",
+     "note: uses money without declaring it"
+    ],
+    "reports": [
+     "bookings Booking: hands back differently, bound changed",
+     "bookings Bookings.cancel: hands back differently, bound changed",
+     "bookings Bookings.open: hands back differently, bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings",
+    "meter",
+    "billing"
+   ],
+   "needs": [
+    "bookings",
+    "meter",
+    "billing"
+   ]
+  },
+  "P14-meaning-changed-comment-updated": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings op:bookquote: bound changed"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P15-meaning-changed-comment-not-updated": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "P16-code-changed-comment-forgotten-visible": {
+   "series": "planned",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [
+    "text-rules"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "P17-code-changed-comment-forgotten-running-only": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "front"
+   ]
+  },
+  "P18-operation-retired": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "door": [
+     "bookings BookingOps: removed"
+    ],
+    "billing": [
+     "door Door.call: cannot stand in",
+     "door Door.get: cannot stand in",
+     "door Handlers: removed"
+    ],
+    "front": [
+     "bookings op:bookcancel: removed",
+     "door Door.call: cannot stand in",
+     "door Handlers: removed"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "P19-operation-body-field-renamed": {
+   "series": "planned",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings op:bookquote: cannot stand in"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P20-message-kind-changed": {
+   "series": "planned",
+   "provider": "meter",
+   "told": {
+    "billing": [
+     "meter MeterMsg: cannot stand in, hands back differently"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P21-unfollowable-users-provider": {
+   "series": "planned",
+   "provider": "store",
+   "told": {
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "P22a-first-job-comments-step": {
+   "series": "planned",
+   "provider": "calendar",
+   "told": {},
+   "refuses": [],
+   "firstCommentsStep": true,
+   "needs": []
+  },
+  "P22b-first-job-real-change": {
+   "series": "planned",
+   "provider": "calendar",
+   "told": {
+    "bookings": [
+     "calendar addDays: bound changed, hands back differently"
+    ],
+    "reports": [
+     "calendar: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "P23-user-already-disagrees": {
+   "series": "planned",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money splitEvenly: hands back differently"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "P24-new-entry": {
+   "series": "planned",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "P25-two-changes-one-commit": {
+   "series": "planned",
+   "provider": "rooms",
+   "told": {
+    "front": [
+     "rooms op:roomlist: hands back differently"
+    ],
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "P26-reaches-through-third-module": {
+   "series": "planned",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed"
+    ],
+    "meter": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed"
+    ],
+    "billing": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money add: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed",
+     "money formatAmount: cannot stand in, bound changed",
+     "money splitEvenly: cannot stand in, hands back differently, bound changed",
+     "bookings Booking: hands back differently, bound changed",
+     "bookings Bookings.cancel: hands back differently, bound changed",
+     "bookings Bookings.open: hands back differently, bound changed",
+     "bookings op:bookquote: hands back differently, bound changed",
+     "bookings op:bookstatus: hands back differently, bound changed",
+     "meter MeterMsg: cannot stand in, hands back differently, bound changed"
+    ],
+    "front": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "bookings Booking: hands back differently, bound changed",
+     "bookings op:bookcancel: hands back differently, bound changed",
+     "bookings op:bookopen: hands back differently, bound changed",
+     "note: uses money without declaring it"
+    ],
+    "reports": [
+     "bookings Booking: hands back differently, bound changed",
+     "bookings Bookings.cancel: hands back differently, bound changed",
+     "bookings Bookings.open: hands back differently, bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "P27-test-helper-changed": {
+   "series": "planned",
+   "provider": "store",
+   "told": {
+    "front": [
+     "store seededStore: cannot stand in"
+    ],
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "P28-handle-method-renamed": {
+   "series": "planned",
+   "provider": "store",
+   "told": {
+    "rooms": [
+     "store Store: removed",
+     "store Store.get: removed"
+    ],
+    "bookings": [
+     "store Store: removed",
+     "store Store.get: removed"
+    ],
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [
+    "rooms",
+    "bookings"
+   ],
+   "needs": [
+    "rooms",
+    "bookings"
+   ],
+   "rerecorded": [
+    "rooms was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "bookings was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "A01-stored-row-shape": {
+   "series": "adversarial",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rule 2 (a table's rows have one owner and one kind), of the 23 refusals not taken"
+   ]
+  },
+  "A03-reexported-function": {
+   "series": "adversarial",
+   "provider": "text-rules",
+   "told": {
+    "rooms": [
+     "text-rules slugify: bound changed"
+    ],
+    "front": [
+     "text-rules slugify: bound changed"
+    ],
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "rooms",
+    "front"
+   ]
+  },
+  "A04-message-kind-not-shared": {
+   "series": "adversarial",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing's check refused in design 7 and does not now: its refusal rested on rule 3 (a message is read with its sender's kind), of the 23 refusals not taken"
+   ]
+  },
+  "A06-error-kind-changed": {
+   "series": "adversarial",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money splitEvenly: hands back differently"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "A07-bound-test-moved-line-not": {
+   "series": "adversarial",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "front"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "A08-request-line-built-in-steps": {
+   "series": "adversarial",
+   "provider": "billing",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "A09-assert-narrowing": {
+   "series": "adversarial",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "A10-kind-split-same-shape": {
+   "series": "adversarial",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings Booking: declaration changed (not classified)",
+     "bookings Bookings.cancel: declaration changed (not classified)",
+     "bookings Bookings.open: declaration changed (not classified)",
+     "bookings op:bookstatus: declaration changed (not classified)"
+    ],
+    "front": [
+     "bookings Booking: declaration changed (not classified)",
+     "bookings op:bookcancel: declaration changed (not classified)",
+     "bookings op:bookopen: declaration changed (not classified)"
+    ],
+    "reports": [
+     "bookings Booking: declaration changed (not classified)",
+     "bookings Bookings.cancel: declaration changed (not classified)",
+     "bookings Bookings.open: declaration changed (not classified)",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "A11-string-spelled-String": {
+   "series": "adversarial",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "A12-caught-error-makes-user-unfollowed": {
+   "series": "adversarial",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "A13-computed-member-renamed": {
+   "series": "adversarial",
+   "provider": "store",
+   "told": {
+    "rooms": [
+     "store Store: removed",
+     "store: not followed fully"
+    ],
+    "bookings": [
+     "store Store: removed",
+     "store Store.get: removed"
+    ],
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings"
+   ],
+   "needs": [
+    "rooms",
+    "bookings"
+   ],
+   "rerecorded": [
+    "rooms was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "bookings was told, now is told with other words: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "A14-copy-of-kind-in-the-middle": {
+   "series": "adversarial",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed"
+    ],
+    "meter": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed"
+    ],
+    "billing": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
+     "money add: cannot stand in, hands back differently, bound changed",
+     "money amount: hands back differently, bound changed",
+     "money formatAmount: cannot stand in, bound changed",
+     "money splitEvenly: cannot stand in, hands back differently, bound changed",
+     "meter MeterMsg: cannot stand in, hands back differently, bound changed"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings",
+    "meter",
+    "billing"
+   ],
+   "needs": [
+    "bookings",
+    "meter",
+    "billing"
+   ]
+  },
+  "X01-optional-param-callback": {
+   "series": "adversarial-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)"
+   ]
+  },
+  "X02-opaque-id-digits": {
+   "series": "adversarial-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "X03-port-bound-changed": {
+   "series": "adversarial-independent",
+   "provider": "bookings",
+   "told": {
+    "front": [
+     "bookings Clock.now: bound changed"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "front"
+   ]
+  },
+  "X04-includes-on-literal-list": {
+   "series": "adversarial-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "X05-stale-write": {
+   "series": "adversarial-independent",
+   "provider": "store",
+   "told": {
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "X06-bound-reworded": {
+   "series": "adversarial-independent",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "meter": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "billing": [
+     "money Amount: bound changed",
+     "money add: bound changed",
+     "money amount: bound changed",
+     "money formatAmount: bound changed",
+     "money splitEvenly: bound changed",
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings op:bookquote: bound changed",
+     "bookings op:bookstatus: bound changed",
+     "meter MeterMsg: bound changed"
+    ],
+    "front": [
+     "money Amount: bound changed",
+     "bookings Booking: bound changed",
+     "bookings op:bookcancel: bound changed",
+     "bookings op:bookopen: bound changed",
+     "note: uses money without declaring it"
+    ],
+    "reports": [
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "X07-list-gains-name-lookup-table": {
+   "series": "adversarial-independent",
+   "provider": "rooms",
+   "told": {
+    "bookings": [
+     "rooms Room: hands back differently",
+     "rooms Rooms.add: cannot stand in, hands back differently",
+     "rooms Rooms.find: hands back differently"
+    ],
+    "billing": [
+     "rooms Rooms.add: cannot stand in, hands back differently"
+    ],
+    "front": [
+     "rooms ROOM_KINDS: hands back differently",
+     "rooms Room: hands back differently",
+     "rooms RoomKind: accepts more, hands back differently",
+     "rooms op:roomlist: accepts more, hands back differently",
+     "rooms table:rooms: accepts more, hands back differently"
+    ],
+    "reports": [
+     "rooms ROOM_KINDS: hands back differently",
+     "rooms Rooms.add: cannot stand in, hands back differently",
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings"
+   ],
+   "needs": [
+    "bookings"
+   ],
+   "rerecorded": [
+    "bookings was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\"",
+    "billing was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\"",
+    "reports was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for rooms RoomHandlers.roomlist, rooms Rooms.add, rooms Rooms.list, door Handlers.roomlist; it is \"cannot stand in\""
+   ]
+  },
+  "X08-new-op-name-clash": {
+   "series": "adversarial-independent",
+   "provider": "rooms",
+   "told": {
+    "billing": [
+     "bookings op:bookstatus: rooms now answers the same name"
+    ],
+    "reports": [
+     "rooms: not followed fully",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "billing",
+    "front"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "X09-message-channel": {
+   "series": "adversarial-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter's check refused in design 7 and does not now: its refusal rested on rules 5 and 30 (a message is written on its stated channel); rule 3 (a message is read with its sender's kind), of the 23 refusals not taken"
+   ]
+  },
+  "X10-node-timer": {
+   "series": "adversarial-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Y01-method-error-kind": {
+   "series": "round3-independent",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings Bookings.cancel: hands back differently",
+     "bookings op:bookstatus: hands back differently"
+    ],
+    "front": [
+     "bookings op:bookcancel: hands back differently"
+    ],
+    "reports": [
+     "bookings Bookings.cancel: hands back differently",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "front"
+   ]
+  },
+  "Y02-amount-cannot-be-changed": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "money's check refused in design 7 and does not now: its refusal rested on rules 11, 22 and 31 (plain data never a class instance), of the 23 refusals not taken"
+   ]
+  },
+  "Y03-handle-member-optional": {
+   "series": "round3-independent",
+   "provider": "door",
+   "told": {
+    "billing": [
+     "door Door.get: hands back differently",
+     "door createDoor: cannot stand in"
+    ],
+    "front": [
+     "door createDoor: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for door createDoor; it is \"cannot stand in\"",
+    "front was not told, now is told: rule 52: the type checker did not confirm \"accepts more\" for door createDoor; it is \"cannot stand in\""
+   ]
+  },
+  "Y04-row-kind-written-through-helper": {
+   "series": "round3-independent",
+   "provider": "rooms",
+   "told": {
+    "front": [
+     "rooms table:rooms: cannot stand in, hands back differently, bound changed"
+    ],
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "front"
+   ]
+  },
+  "Y05-row-cast-at-write": {
+   "series": "round3-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rule 14 (a cast may not turn a known kind into a product kind it is not), of the 23 refusals not taken"
+   ]
+  },
+  "Y06-channel-line-built-first": {
+   "series": "round3-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter's check refused in design 7 and does not now: its refusal rested on rules 5 and 30 (a message is written on its stated channel), of the 23 refusals not taken"
+   ]
+  },
+  "Y07-limit-outside-bound-test": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "Y08-bound-on-number-kind": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {
+    "bookings": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "meter": [
+     "money Amount: bound changed",
+     "money amount: bound changed"
+    ],
+    "billing": [
+     "money Amount: bound changed",
+     "money add: bound changed",
+     "money amount: bound changed",
+     "money formatAmount: bound changed",
+     "money splitEvenly: bound changed",
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings op:bookquote: bound changed",
+     "bookings op:bookstatus: bound changed",
+     "meter MeterMsg: bound changed"
+    ],
+    "front": [
+     "money Amount: bound changed",
+     "bookings Booking: bound changed",
+     "bookings op:bookcancel: bound changed",
+     "bookings op:bookopen: bound changed",
+     "note: uses money without declaring it"
+    ],
+    "reports": [
+     "bookings Booking: bound changed",
+     "bookings Bookings.cancel: bound changed",
+     "bookings Bookings.open: bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ]
+  },
+  "Y09-newer-library-method": {
+   "series": "round3-independent",
+   "provider": "rooms",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Y10-map-has-get-provider-kind": {
+   "series": "round3-independent",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "Y11-tests-grouped-with-it": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Y12-bound-test-rewritten-same-meaning": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Y13-constructor-accepts-differently": {
+   "series": "round3-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money Tally: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "Z01-bound-test-same-values-other-checks": {
+   "series": "round4-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "front"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "Z02-limit-read-from-module": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "Z03-blank-line-after-each-message": {
+   "series": "round4-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 19 (one message per line); rule 45 (a channel carries only message lines the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "Z04-stream-chosen-into-variable": {
+   "series": "round4-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter's check refused in design 7 and does not now: its refusal rested on rules 5 and 30 (a message is written on its stated channel), of the 23 refusals not taken"
+   ]
+  },
+  "Z05-amount-built-by-static-factory": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "money's check refused in design 7 and does not now: its refusal rested on rules 11, 22 and 31 (plain data never a class instance), of the 23 refusals not taken"
+   ]
+  },
+  "Z06-wrapping-handler-error-kind": {
+   "series": "round4-independent",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings op:bookquote: hands back differently"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "Z07-handle-method-handed-on": {
+   "series": "round4-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ],
+   "rerecorded": [
+    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)"
+   ]
+  },
+  "Z08-second-overload-hands-back": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money formatAmount: hands back differently"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "Z09-list-parameter-becomes-rest": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money sum: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "Z10-readonly-list-now-sorted": {
+   "series": "round4-independent",
+   "provider": "text-rules",
+   "told": {
+    "front": [
+     "text-rules listWords: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "Z11-request-lines-change-nothing": {
+   "series": "round4-independent",
+   "provider": "door",
+   "told": {
+    "billing": [
+     "door Door.get: cannot stand in"
+    ],
+    "front": [
+     "door Door.get: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "Z12-returned-text-kind-bound": {
+   "series": "round4-independent",
+   "provider": "text-rules",
+   "told": {
+    "rooms": [
+     "text-rules slugify: bound changed"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "rooms"
+   ]
+  },
+  "Z13-static-method-hands-back": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money Tally: declaration changed (not classified)",
+     "money Tally.sum: hands back differently"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ]
+  },
+  "Z14-member-may-be-undefined": {
+   "series": "round4-independent",
+   "provider": "door",
+   "told": {
+    "billing": [
+     "door Door.get: hands back differently",
+     "door createDoor: cannot stand in"
+    ],
+    "front": [
+     "door createDoor: cannot stand in"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for door createDoor; it is \"cannot stand in\"",
+    "front was not told, now is told: rule 52: the type checker did not confirm \"accepts more\" for door createDoor; it is \"cannot stand in\""
+   ]
+  },
+  "Z15-uncommented-module-changed": {
+   "series": "round4-independent",
+   "provider": "calendar",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told every user of a module without interface comments whose change is not the comments-only first step (rule 21) as not followed fully, a fifth cause; design 8 has the four of build text 5, section 6 only",
+    "reports was told, now is not told: design 7 told every user of a module without interface comments whose change is not the comments-only first step (rule 21) as not followed fully, a fifth cause; design 8 has the four of build text 5, section 6 only"
+   ]
+  },
+  "Z16-random-booking-ids": {
+   "series": "round4-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Z17-filter-boolean": {
+   "series": "round4-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "Z18-object-groupby": {
+   "series": "round4-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "rooms's check refused in design 7 and does not now: its refusal rested on rule 49 (the methods of a plain handle do not use this), of the 23 refusals not taken"
+   ]
+  },
+  "Z19-at-sign-in-bound-line": {
+   "series": "round4-independent",
+   "provider": "text-rules",
+   "told": {
+    "front": [
+     "text-rules isEmail: bound changed"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "Z20-test-helper-renamed": {
+   "series": "round4-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "Z21-throws-explained-in-two-lines": {
+   "series": "round4-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "V01-accepts-more-hides-static": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money Tally: cannot stand in",
+     "money Tally.sum: hands back differently"
+    ]
+   },
+   "refuses": [
+    "billing"
+   ],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is told with other words: rule 52: the type checker did not confirm \"accepts more\" for money Tally; it is \"cannot stand in\""
+   ]
+  },
+  "V02-bound-values-in-mapped-list": {
+   "series": "round5-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "V03-refusals-through-console-error": {
+   "series": "round5-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rules 5 and 30 (a message is written on its stated channel), of the 23 refusals not taken"
+   ]
+  },
+  "V04-instance-built-in-a-conditional": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "money's check refused in design 7 and does not now: its refusal rested on rules 11, 22 and 31 (plain data never a class instance), of the 23 refusals not taken"
+   ]
+  },
+  "V05-error-kind-in-bound-test": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "money's check refused in design 7 and does not now: its refusal rested on rules 29 and 36 (a thrown kind must be a stated kind), of the 23 refusals not taken"
+   ]
+  },
+  "V06-non-interface-file-renamed": {
+   "series": "round5-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "V07-write-with-callback": {
+   "series": "round5-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "V08-limit-read-from-json": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "V09-pop-after-length-check": {
+   "series": "round5-independent",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "V10-checked-cast-to-kind": {
+   "series": "round5-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "V11-door-copy-in-two-steps": {
+   "series": "round5-independent",
+   "provider": "door",
+   "told": {
+    "billing": [
+     "door Door.call: hands back differently",
+     "door Door.get: hands back differently"
+    ],
+    "front": [
+     "door Door.call: hands back differently"
+    ]
+   },
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "door's check refused in design 7 and does not now: its refusal rested on rules 29 and 36 (a thrown kind must be a stated kind), of the 23 refusals not taken"
+   ]
+  },
+  "V12-destructured-parameter": {
+   "series": "round5-independent",
+   "provider": "rooms",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "V13-states-named": {
+   "series": "round5-independent",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "V14-overload-added": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "V15-bound-test-through-helper": {
+   "series": "round5-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W01-meter-start-argument": {
+   "series": "round6-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 34 (how a running part is started is read into a published kind), of the 23 refusals not taken"
+   ]
+  },
+  "W02-meter-ready-line": {
+   "series": "round6-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 45 (a channel carries only message lines the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "W03-error-stated-on-kind-not-checked": {
+   "series": "round6-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rules 29 and 36 (a thrown kind must be a stated kind), of the 23 refusals not taken"
+   ]
+  },
+  "W04-bound-on-built-method": {
+   "series": "round6-independent",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings Bookings.open: bound changed"
+    ],
+    "front": [
+     "bookings op:bookopen: bound changed"
+    ],
+    "reports": [
+     "bookings Bookings.open: bound changed",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "front"
+   ]
+  },
+  "W05-price-list-in-euros": {
+   "series": "round6-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [
+    "front"
+   ],
+   "needs": [
+    "front"
+   ]
+  },
+  "W06-old-overload-kept-behind": {
+   "series": "round6-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money formatAmount: cannot stand in, hands back differently"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "W07-throws-union": {
+   "series": "round6-independent",
+   "provider": "text-rules",
+   "told": {
+    "rooms": [
+     "text-rules slugify: hands back differently"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "W08-cast-after-has": {
+   "series": "round6-independent",
+   "provider": "rooms",
+   "told": {
+    "reports": [
+     "rooms: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "W09-row-written-in-place": {
+   "series": "round6-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W10-json-settings-file": {
+   "series": "round6-independent",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W11-structured-log-line": {
+   "series": "round6-independent",
+   "provider": "door",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W12-error-code": {
+   "series": "round6-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W13-fields-reordered": {
+   "series": "round6-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W14-list-kind-named": {
+   "series": "round6-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W15-export-list": {
+   "series": "round6-independent",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "W16-store-gains-id": {
+   "series": "round6-independent",
+   "provider": "store",
+   "told": {
+    "reports": [
+     "store: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "W17-limit-read-through-namespace": {
+   "series": "round6-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "U01-table-renamed-mark-forgotten": {
+   "series": "round7-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rule 47 (rows only into tables the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "U02-table-name-in-constant-rows-compact": {
+   "series": "round7-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rule 2 (a table's rows have one owner and one kind), of the 23 refusals not taken"
+   ]
+  },
+  "U03-coded-error-through-object-assign": {
+   "series": "round7-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "bookings's check refused in design 7 and does not now: its refusal rested on rules 29 and 36 (a thrown kind must be a stated kind), of the 23 refusals not taken"
+   ]
+  },
+  "U04-messages-encoded-by-named-function": {
+   "series": "round7-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 45 (a channel carries only message lines the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "U05-start-environment-through-node-process": {
+   "series": "round7-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 44 (the outside world reached only in recognised forms), of the 23 refusals not taken"
+   ]
+  },
+  "U06-limit-lowered-in-json": {
+   "series": "round7-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "U07-method-now-needs-its-handle": {
+   "series": "round7-independent",
+   "provider": "rooms",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ],
+   "rerecorded": [
+    "rooms's check refused in design 7 and does not now: its refusal rested on rule 49 (the methods of a plain handle do not use this), of the 23 refusals not taken"
+   ]
+  },
+  "U08-same-kind-parameters-swap-places": {
+   "series": "round7-independent",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "bookings Bookings.quote: parameters moved"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "U09-price-sheet-in-euros": {
+   "series": "round7-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "front"
+   ],
+   "rerecorded": [
+    "front's check refused in design 7 and does not now: its refusal rested on rule 44 (the outside world reached only in recognised forms), of the 23 refusals not taken"
+   ]
+  },
+  "U10-handle-renamed-member-changed": {
+   "series": "round7-independent",
+   "provider": "rooms",
+   "told": {
+    "bookings": [
+     "rooms Rooms: kind renamed, shape unchanged"
+    ],
+    "reports": [
+     "rooms: not followed fully",
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [
+    "bookings",
+    "front"
+   ],
+   "needs": [
+    "bookings",
+    "front"
+   ],
+   "rerecorded": [
+    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)"
+   ]
+  },
+  "U11-test-uses-notStrictEqual": {
+   "series": "round7-independent",
+   "provider": "store",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "U12-worker-path-through-import-meta-resolve": {
+   "series": "round7-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "U13-error-subclass-of-stated-kind": {
+   "series": "round7-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "U14-inline-import-to-at-import": {
+   "series": "round7-independent",
+   "provider": "store",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "U15-functions-written-as-arrows": {
+   "series": "round7-independent",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "U16-equal-written-strictEqual": {
+   "series": "round7-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": []
+  },
+  "T01-rooms-handle-built-as-class": {
+   "series": "round8-independent",
+   "provider": "rooms",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "front",
+    "reports"
+   ]
+  },
+  "T02-quote-bound-not-reaching-operation": {
+   "series": "round8-independent",
+   "provider": "bookings",
+   "told": {
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "T03-unknown-room-refused-in-helper": {
+   "series": "round8-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "T04-tally-full-error": {
+   "series": "round8-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "T05-meter-ready-line-console-log": {
+   "series": "round8-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "T06-weekday-takes-text-after-partial-first-step": {
+   "series": "round8-independent",
+   "provider": "calendar",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "reports"
+   ]
+  },
+  "T07-price-function-parameters-swap": {
+   "series": "round8-independent",
+   "provider": "bookings",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ]
+  },
+  "T08-limit-lowered-in-test-helper": {
+   "series": "round8-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "bookings"
+   ]
+  },
+  "T09-messages-pretty-printed": {
+   "series": "round8-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [
+    "billing"
+   ],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "T10-new-operation": {
+   "series": "round8-independent",
+   "provider": "bookings",
+   "told": {
+    "billing": [
+     "door Door.call: cannot stand in",
+     "door Door.get: cannot stand in"
+    ],
+    "front": [
+     "door Door.call: cannot stand in"
+    ],
+    "reports": [
+     "bookings: not followed fully"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "T11-bound-test-assertion-messages": {
+   "series": "round8-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "bookings was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "front was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "reports was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)"
+   ]
+  },
+  "T12-list-kind-written-as-Array": {
+   "series": "round8-independent",
+   "provider": "money",
+   "told": {
+    "billing": [
+     "money splitEvenly: declaration changed (not classified)"
+    ]
+   },
+   "refuses": [],
+   "needs": []
+  },
+  "T13-data-file-url-in-a-constant": {
+   "series": "round8-independent",
+   "provider": "text-rules",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "text-rules's check refused in design 7 and does not now: its refusal rested on rule 44 (the outside world reached only in recognised forms), of the 23 refusals not taken"
+   ]
+  },
+  "T14-write-with-encoding": {
+   "series": "round8-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [
+    "meter"
+   ],
+   "needs": []
+  },
+  "T15-message-line-as-template": {
+   "series": "round8-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 19 (one message per line); rule 45 (a channel carries only message lines the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "T16-errors-made-by-helper": {
+   "series": "round8-independent",
+   "provider": "money",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "money's check refused in design 7 and does not now: its refusal rested on rule 46 (every throw of a kind the tool can read), of the 23 refusals not taken"
+   ]
+  },
+  "T17-test-shows-meter-output": {
+   "series": "round8-independent",
+   "provider": "meter",
+   "told": {},
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "billing was told, now is not told: design 7 told on \"bound test changed\" (a test named for a bound whose checks changed, rule 4), which design 8 does not take (build text 2b, section 6)",
+    "meter's check refused in design 7 and does not now: its refusal rested on rule 35 (a stream that carries messages carries only messages), of the 23 refusals not taken"
+   ]
+  }
+ },
+ "rerecordedCounts": {
+  "bound test changed not taken": 48,
+  "rule 52": 11,
+  "one of the 23 refusals not taken": 28,
+  "hand-on-as-a-value not taken": 3,
+  "rule 21 (fifth cause of not followed fully) not taken": 2
+ }
+}

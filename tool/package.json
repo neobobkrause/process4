@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The Process4 tool. Stage 1: no dependency yet; the language reader comes at stage 4.",
-  "engines": { "node": ">=22" },
-  "scripts": { "test": "node --test \"test/*.test.mjs\"" }
+  "description": "The Process4 tool. Its one dependency, TypeScript at one exact version, is the language reader of listing, notify and check (build text 1, section 2).",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "typescript": "5.6.3"
+  }
 }
