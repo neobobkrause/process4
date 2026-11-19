@@ -37,7 +37,7 @@ For a session to do, and to report.
 8. The required test run. Written in build text `01-the-tool-and-the-required-run.md`. Not built.
 9. The walks. Written: build text `03-the-walks.md`. Nothing in it has run.
 10. Left unsettled by the forms text: helpers under one module's tests that another module imports, which the interface listing does not cover; one written form for messages between two separately running parts of a product; and how the owner's record of decisions is split when it outgrows the maximum.
-11. The steps of an account switch, and what is read to show that it lost no work.
+11. The steps of an account switch, and what is read to show that it lost no work. The switch now includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5; the owner's instruction of 19 November 2026); the rest of the steps are still to be written.
 12. The forms of the shared state's records, and what the tool means by "cannot follow" and "reaches". Written: build text `05-the-records-and-following.md`. Nothing in it has run.
 13. What is read to show that archived sessions do not use up the account's room.
 

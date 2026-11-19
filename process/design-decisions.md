@@ -92,6 +92,23 @@ put to the owner: it flips one of the proof's 48 recorded refusing decisions
 
 **The owner's words.** "Decision: B" — 19 November 2026.
 
+### Subject: Checking the environment's permissions-management settings on setup and an account switch
+
+**The rule as it now stands.** The steps for starting development under a Claude
+account — at a product's start, and whenever Process4 development or a product's
+development moves to another Claude account — include a check that the cloud
+environment the sessions will run under carries the process's permissions-management
+settings before ROOT is started. On Claude Code those settings are the `autoMode`
+block that steers the auto-mode checker so sanctioned cross-session and cross-repository
+acts are not falsely refused; what they are and where they live is design part 7,
+section 5. This added the check to the owner's acts (part 1, section 3; part 7,
+section 4, act 6), the account-switch step (part 4, section 7), and the open
+account-switch design work (part 10, section 2, item 11); on Codex the equivalent is
+not yet known (part 8, section 2). It adds no test, gate, review or stop to product
+work; it is a setup prerequisite, added on the owner's explicit instruction.
+
+**The owner's words.** "Instruction: When process4 development (and product development using process4) moves to another Claude account, the steps involved in starting development under the different account should include a check to make sure that the environment the sessions will be running under includes the proper settings for process4's permissions management strategy." — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
