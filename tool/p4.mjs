@@ -17,13 +17,16 @@ const pr = (a) => {
   return Number.isInteger(n) && n > 0 ? n : fail('name the pull request by its number');
 };
 
-// For ready/results/close, which a job runs from its own branch: the pull request number if
-// given, else the one open pull request of the current branch (a job has exactly one).
+// For ready/results/close: the pull request number if given, else the one open pull request
+// of the branch named with --branch, else of the current branch (a job has exactly one). A job
+// starts on a detached checkout of the tranche branch (design part 4, section 2), so it names
+// --branch <its branch>; `open` takes --branch the same way (fault o).
 const prOf = (ctx, a) => {
   if (a._[0] != null) return pr(a);
-  const branch = git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: ctx.root });
+  const branch = (typeof a.branch === 'string' && a.branch) || git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: ctx.root });
+  if (branch === 'HEAD') fail('the checkout is detached; name the pull request by its number, or its branch with --branch <b>');
   const found = ctx.gh.prForBranch(ctx.slug, branch);
-  return found?.number || fail(`no open pull request for the current branch ${branch}; name it by its number`);
+  return found?.number || fail(`no open pull request for the branch ${branch}; name it by its number`);
 };
 
 // The job block as part one's workflow wrote it: the comment's body, or its JSON alone. None when
@@ -88,12 +91,12 @@ export const HELP = {
   branch: 'branch <name> [--into <branch>]: makes job/<module>/<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
   push: 'push [--blocked <module>[,<module>] "<why>"]: pushes the current working branch to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request.',
   open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request (from a detached checkout, name the branch with --branch); for a job writes the job block and prints its starting instructions. With one open already, prints it and its job block.',
-  ready: 'ready <pr>: marks the pull request ready, which asks for the required run.',
-  results: 'results <pr>: prints the required run\'s state on the head commit, and for a failure the last lines of its output.',
+  ready: 'ready [<pr>] [--branch <b>]: marks the pull request ready (named by number, by --branch, or the current branch\'s one open pull request), which asks for the required run.',
+  results: 'results [<pr>] [--branch <b>]: prints the required run\'s state on the head commit (pull request named by number, by --branch, or the current branch), and for a failure the last lines of its output.',
   merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it.',
   'release prepare': 'release prepare <version> --notes <file> [--file <built file>]...: makes an unpublished release at main\'s newest commit with the notes and files; with --development, a published pre-release with its tag.',
   'release publish': 'release publish <version> --approval "<the owner\'s words>": publishes the prepared release of that version; prints the owner\'s words back, unjudged.',
-  close: 'close <pr> [--nothing-to-change "<why>"]: with the flag, first writes the job\'s record; then closes the pull request unmerged.',
+  close: 'close [<pr>] [--branch <b>] [--nothing-to-change "<why>"]: closes the pull request unmerged (named by number, by --branch, or the current branch); with the flag, first writes the job\'s record. A job starts on a detached checkout, so it names --branch <its branch> or the number.',
   'next-job': 'next-job: chooses the next job for a free slot, rewrites the round record, and prints its module, branch, work and kind; or none ready, or no free slot.',
   finished: 'finished <module>: prints finished or not finished, with the ground, worked out afresh from GitHub.',
   'latest-version': 'latest-version: prints the newest commit of the process repository\'s main (what a move to the latest version adopts), and whether it differs from the pinned one; reads only.',

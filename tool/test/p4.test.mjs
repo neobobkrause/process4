@@ -59,3 +59,31 @@ test('close --nothing-to-change with no number uses the current branch\'s pull r
   assert.equal(code, 0);
   assert.equal(gh.getPR('o/product', pr.number).state, 'closed');
 });
+
+// A job starts on a detached checkout of the tranche branch, so a told job that finds nothing
+// to change names --branch (close ignored it before; the trial's invoice job hit this, 19 Nov).
+test('close/ready resolve the pull request from --branch on a detached checkout', () => {
+  const root = makeRepo(productFiles());
+  git(['checkout', '-q', '--detach'], { cwd: root });
+  assert.equal(git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: root }), 'HEAD');
+  const gh = fakeGitHub();
+  const pr = gh.createPR('o/product', { head: 'job/invoice/8', base: 'tranche', draft: true, title: 'x' });
+  const code = main(['close', '--branch', 'job/invoice/8', '--nothing-to-change', 'nothing here'],
+    { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
+  assert.equal(code, 0);
+  assert.equal(gh.getPR('o/product', pr.number).state, 'closed');
+  // ready resolves --branch the same way.
+  const pr2 = gh.createPR('o/product', { head: 'job/dates/3', base: 'tranche', draft: true, title: 'y' });
+  assert.equal(main(['ready', '--branch', 'job/dates/3'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} }), 0);
+  assert.equal(gh.getPR('o/product', pr2.number).draft, false);
+});
+
+test('close with neither a number nor --branch on a detached checkout fails and closes nothing', () => {
+  const root = makeRepo(productFiles());
+  git(['checkout', '-q', '--detach'], { cwd: root });
+  const gh = fakeGitHub();
+  const pr = gh.createPR('o/product', { head: 'job/invoice/8', base: 'tranche', draft: true, title: 'x' });
+  const code = main(['close', '--nothing-to-change', 'x'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
+  assert.equal(code, 1);
+  assert.equal(gh.getPR('o/product', pr.number).state, 'open');
+});

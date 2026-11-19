@@ -66,10 +66,19 @@ round-4 fault, 19 November 2026).
 
 ### Subject: Naming the pull request for a job's commands
 
-**The rule as it now stands.** `ready`, `results` and `close` default to the
-current branch's one open pull request when no number is given (a job has exactly
-one); `merge`, `failed-runs` and `notify` still require the number. This corrected
-the tool (fix C, round-4 fault 1, 19 November 2026).
+**The rule as it now stands.** `ready`, `results` and `close` take the pull request
+number, or the branch named with `--branch <b>`, or — when neither is given — default to
+the current branch's one open pull request (a job has exactly one); `merge`, `failed-runs`
+and `notify` still require the number. Fix C (round-4 fault 1, 19 November 2026) added the
+current-branch default. A job starts on a detached checkout of the tranche branch (design
+part 4, section 2), where the current branch reads `HEAD` and the default cannot resolve
+the pull request, so these three also accept `--branch` as `open` does (fault o); a told
+job that finds nothing to change names `--branch <its branch>` or the number. This last
+correction answered a trial process fault of 19 November 2026 (the invoice job, pull
+request 361, could not `close --nothing-to-change` from its detached checkout, and `close`
+ignored `--branch`); researched in `process/research/close-detached-checkout-19nov.md`. It
+adds no test, gate, review or stop; it corrects the tool so fix C's intent reaches the
+job's actual checkout.
 
 **The owner's words.** "Decision: adopt the round-4 fixes B, A and C in PR #14" — 19 November 2026.
 
