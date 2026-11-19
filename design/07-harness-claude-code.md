@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 70 lines. Last section: "4. The owner's acts to start a product".
+Length: 80 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -61,10 +61,20 @@ From the first measurement of 18 Nov, on one model with a 1,000,000-token window
 3. Set each repository's settings: merges by merge commit, no automatic merging, no automatic deleting of branches, a read-only token for GitHub's machines, no repository secrets.
 4. Make the rule for every branch: no deleting and no overwriting, with no one excepted.
 5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories.
-6. Make the deploy token and enter the secret values in Claude's cloud environment.
+6. Make the deploy token and enter the secret values in Claude's cloud environment, and confirm that environment carries the process's permissions-management settings (section 5).
 7. Commit his approvals and forbidden commands on the process repository's main branch, on GitHub's website.
 8. Commit the same two files on the product's main branch, and make the tranche branch from it.
 9. Start ROOT: the product's repository alone, the tranche branch, Auto mode, a plain prompt.
 10. Once the required test run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing.
 
 Not known: whether act 10 can be done before act 9.
+
+## 5. The permissions-management settings
+
+Auto mode's checker (section 1) is steered by `autoMode` settings the environment provides. The checker reads them from the session's user settings (`~/.claude/settings.json`) or the account's managed settings, and never from a repository: a repository's `.claude/settings.json` is not read for `autoMode`, so these settings cannot live in the product's or the process's repository.
+
+- **What they are. Claude decided:** an `autoMode.environment` block that names the process's repository and its products' repositories as mutually trusted internal work, and an `autoMode.allow` block that names the roles' cross-session and cross-repository coordination — starting, messaging and archiving the account's role sessions, PROCESS in its own repository among them, and making their scheduled wakes — as sanctioned routine. Each keeps the built-in defaults (`$defaults`).
+- **Why.** Without them the checker, by default, trusts only a session's own repository and treats any other destination as external; a product session's message to PROCESS in the process's repository is then refused, unevenly, as "Unsanctioned Communication" (one of the checker's server-side policy categories, with "Undermining Oversight"). The settings remove the cause by telling the checker these repositories and acts are internal and expected.
+- **Where they are written.** In a cloud session the per-session user settings are rebuilt at each start, so the environment's setup script writes these settings into `~/.claude/settings.json`; a change takes effect only when a session starts fresh. The `permissions.deny` list (part 6, section 3) and the working rules (part 6, section 4) stand unchanged beside them.
+- **The check, on setup and on an account switch.** Before ROOT is started — at a product's start, and whenever Process4 development or a product's development moves to another Claude account — the owner confirms the cloud environment the sessions will run under carries these settings. The owner's instruction of 19 November 2026.
+- **Unproven:** that these settings reduce the checker's refusals of sanctioned acts to zero. An earlier setup measured 19 of 19 acts passing with such settings, and the checker remains probabilistic; only `permissions.deny` is an absolute gate, and it blocks rather than permits.

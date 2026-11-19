@@ -1,6 +1,6 @@
 # Part 8. The harness table for Codex
 
-Length: 50 lines. Last section: "3. What the owner fills".
+Length: 51 lines. Last section: "3. What the owner fills".
 
 Everything in this part is specific to Codex. Where the Codex side is not known or not built, this part says so plainly and leaves it for the owner's work on his OpenAI account. "Not known" means no record shows it; it does not mean Codex cannot do it.
 
@@ -39,6 +39,7 @@ Everything in this part is specific to Codex. Where the Codex side is not known 
 
 - **A refresh at a stated fill level.** No fill level can be read, so only the natural pause can trigger a refresh. The rule that compaction is never needed (part 5, section 1) is therefore met only by frequent refreshes at pauses. The owner's words: a Codex-based process "requires that we be able to avoid compaction entirely". Nothing signals a compaction if one happens.
 - **The three things that hold a rule** (part 6, section 1). What carries the approvals, the forbidden commands and the permission checker is not known.
+- **The permissions-management settings** (part 7, section 5 on Claude Code). What steers Codex's checker, if it has one, so that sanctioned cross-session and cross-repository acts are not refused is not known; so the owner's setup and account-switch check of them (part 1, section 3) has nothing to confirm on Codex until this is filled.
 - **A message wakes its receiver at once.** Shown only for a child in the same chat.
 - **Each role as a session of its own that the owner can open.** On Codex every role was a child inside one chat.
 - **Grouping a product's sessions, and archiving finished ones.**

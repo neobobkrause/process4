@@ -1,6 +1,6 @@
 # Part 1. Purpose, the owner, his decisions, and working principles
 
-Length: 79 lines. Last section: "7. Known weaknesses of AI sessions".
+Length: 80 lines. Last section: "7. Known weaknesses of AI sessions".
 
 ## 1. What Process4 is for
 
@@ -27,6 +27,7 @@ Length: 79 lines. Last section: "7. Known weaknesses of AI sessions".
 | Commit his standing approvals and the list of forbidden commands, in the product's repository and in the process's | At the start, then only when the wording must change |
 | Change a permission or rule setting in GitHub or in the hosting account | Very occasionally |
 | Connect the harness to GitHub, and enter the deploy token and other secret values, from a page the process writes | At the start of a product, at an account switch, and before a token expires |
+| Confirm the sessions' environment carries the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |
 | Connect an AI account to the development deployment | Before an external walk of journeys that use AI |
 
 - Each act with a known date appears on his standing page before the date, with the steps.

@@ -115,7 +115,7 @@ The owner's rulings:
 - **Claude decided:** an edit to the owner's approvals goes with a restart of ROOT by this way. What it does to a running round: the owner first tells the coordinator to stop, and open jobs push and stop; he commits the edit and starts ROOT; ROOT starts the standing roles afresh; ARCH starts a new session for each module with an open pull request, continuing from its branch. The round goes on from the round record.
 - **Claude decided:** a restarted ROOT first archives every session still named in the roles and lanes records, and every open job's session, and then starts the roles afresh.
 - **Claude decided:** the coordinator's session removes a standing note, by the tool, when what ends it comes true. A held merge reaches ARCH by the standing notes, which the tool reads before every merge, and by a message from the coordinator.
-- A switch of account adds only the owner's own acts in the new account. **Unproven:** an account switch that loses no work.
+- A switch of account adds only the owner's own acts in the new account, and includes confirming that the new account's cloud environment, under which the sessions will run, carries the process's permissions-management settings (part 7, section 5). **Unproven:** an account switch that loses no work.
 
 ## 8. Messages
 
