@@ -1,0 +1,9 @@
+{
+  "name": "process4-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The Process4 tool. Stage 1: no dependency yet; the language reader comes at stage 4.",
+  "engines": { "node": ">=22" },
+  "scripts": { "test": "node --test \"test/*.test.mjs\"" }
+}

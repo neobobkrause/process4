@@ -1,0 +1,38 @@
+# The required run of the process's own repository (build text 1, section 6): the tool's own
+# tests, on every pull request. It passes at once where no file of the tool changed, so that a
+# pull request of texts alone is not left waiting for a run that never reports.
+name: tool-tests
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions:
+  contents: read
+jobs:
+  tool-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: did a file of the tool change
+        id: changed
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --name-only "$BASE" HEAD | grep -qE '^(tool/|shims/|starting_texts/|\.github/workflows/tool-tests\.yml$)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No file of the tool changed: passed at once." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.changed.outputs.run == 'true'
+        with:
+          node-version: '22'
+      - name: the tool's tests
+        if: steps.changed.outputs.run == 'true'
+        run: |
+          git config --global user.email tool-tests@example.com
+          git config --global user.name tool-tests
+          cd tool && npm ci --no-audit --no-fund && npm test
