@@ -73,6 +73,25 @@ the tool (fix C, round-4 fault 1, 19 November 2026).
 
 **The owner's words.** "Decision: adopt the round-4 fixes B, A and C in PR #14" — 19 November 2026.
 
+### Subject: The check and deliberate error-condition tests (fault D)
+
+**The rule as it now stands.** The tool's `check` makes only the two refusals the
+owner approved: a structured comment that disagrees with the module's code, and
+the module's code that disagrees with a provider's stated interface (design part 2,
+section 6). A wrong-typed value a test passes on purpose inside an error assertion
+(`assert.throws`, `assert.rejects` and their kin), to show that an error condition
+is "properly identified and communicated", is neither refusal: the tool reads it
+as "cannot tell" and never refuses it. This corrected the tool (`check` reported
+every type disagreement in a module's files, so it failed required runs on correct
+error-condition tests) and the design (part 2, section 6) and build text 1b
+(command 18), consistent with the requirement that module tests show error
+conditions are communicated (fault D, found by the trial; researched in
+`process/research/faultD-check-wrong-type-tests-19nov.md`). Option B of the four
+put to the owner: it flips one of the proof's 48 recorded refusing decisions
+(P09) and preserves the rest.
+
+**The owner's words.** "Decision: B" — 19 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

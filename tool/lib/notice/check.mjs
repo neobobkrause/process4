@@ -58,8 +58,28 @@ function isInsideComment(sf, pos) {
 
 const POSSIBLY_UNDEFINED = new Set([2532, 2533, 18047, 18048, 18049]);
 const MEMBERSHIP = new Set(['includes', 'indexOf', 'lastIndexOf', 'has']);
+/** The assertions whose first argument deliberately exercises an error condition (design part 2, section 6). */
+const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 
 function walk(n, f) { f(n); ts.forEachChild(n, (c) => walk(c, f)); }
+
+/**
+ * The character spans of the first argument of each deliberate error assertion (assert.throws, assert.rejects and
+ * their kin) in a test file. A test may pass a wrong-typed value on purpose there to show that the error condition is
+ * properly identified and communicated (design part 2, section 6). That is not one of the two approved refusals, so a
+ * reader's complaint inside such a span is "cannot tell", never a disagreement (fault D, the owner's decision of 19 Nov
+ * 2026). Decided here: the signal is the enclosing assertion, the one place the test marks the value as deliberate.
+ */
+function errorAssertionSpans(sf) {
+  const spans = [];
+  walk(sf, (n) => {
+    if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) && ERROR_ASSERTIONS.has(n.expression.name.text)) {
+      const a0 = n.arguments[0];
+      if (a0) spans.push([a0.getStart(sf), a0.end]);
+    }
+  });
+  return spans;
+}
 function within(node, outer) { return node.pos >= outer.pos && node.end <= outer.end; }
 
 /**
@@ -118,6 +138,8 @@ export function check(tree, moduleId, opts = {}) {
     const sf = program.getSourceFile(f);
     if (!sf) continue;
     const isTest = mod.tests.includes(f);
+    // In a test file, the first argument of a deliberate error assertion may carry a wrong-typed value on purpose.
+    const errorSpans = isTest ? errorAssertionSpans(sf) : null;
 
     // Calls by a name the reader cannot read: "cannot tell" for the call and for the uses of its answer.
     const unreadCalls = [];
@@ -142,6 +164,11 @@ export function check(tree, moduleId, opts = {}) {
       const text = ts.flattenDiagnosticMessageText(d.messageText, ' ');
       const at = where(d, tree.root);
       const node = nodeAt(sf, d.start ?? 0);
+      // A deliberate wrong-typed value inside a test's error assertion: not one of the two approved refusals (fault D).
+      if (errorSpans && errorSpans.some(([s, e]) => (d.start ?? 0) >= s && (d.start ?? 0) < e)) {
+        cannotTell.push({ at, code: d.code, why: 'a value deliberately exercised in an error assertion (assert.throws/rejects)', text });
+        continue;
+      }
       // A missing name of a closed set of names is a real disagreement, though the reader files it with the unstated kinds.
       // Iteration 4: a complaint of the comment parser inside a comment; Node names the reader is not told of;
       // filter(Boolean), which removes the missing values the reader still sees.

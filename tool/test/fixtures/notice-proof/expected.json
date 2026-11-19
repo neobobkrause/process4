@@ -161,8 +161,9 @@
      "store: not followed fully"
     ]
    },
-   "refuses": [
-    "store"
+   "refuses": [],
+   "rerecorded": [
+    "store's check refused in design 8 and does not now: it rested on the module's own deliberate error assertions (assert.throws passing put's old numeric argument); with the deliberate-error-assertion exemption adopted for fault D (the owner's decision of 19 Nov 2026; design part 2 section 6; build text 1b command 18), such a value is \"cannot tell\", not a refusal"
    ],
    "needs": []
   },
@@ -2159,6 +2160,7 @@
   "rule 52": 11,
   "one of the 23 refusals not taken": 28,
   "hand-on-as-a-value not taken": 3,
-  "rule 21 (fifth cause of not followed fully) not taken": 2
+  "rule 21 (fifth cause of not followed fully) not taken": 2,
+  "fault D: deliberate error assertion exemption": 1
  }
 }
