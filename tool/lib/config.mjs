@@ -28,6 +28,10 @@ export function needConfig(root, ref) {
   return loadConfig(root, ref) || fail(`this repository has no ${CONFIG_FILE}`);
 }
 
+// The required check's name for the repository at `root`: the process repo holds the tool
+// (tool/p4.mjs) and runs `tool-tests`; a product repo does not and runs `module-tests`.
+export const requiredCheck = (root) => (existsSync(join(root, 'tool', 'p4.mjs')) ? 'tool-tests' : 'module-tests');
+
 const modulesDir = (cfg) => `${cfg.process_folder.replace(/\/?$/, '/')}modules/`;
 
 // The order file and each module's entry, in order. Empty when there is no order file.
