@@ -43,7 +43,7 @@ export const productFiles = () => ({
   'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: ['dates'] },
   'process/modules/orders.md': 'Length: 8 lines.\n\n# orders\n\nNext number: 3\n\n- **R1** [met] one\n- **R2** [not yet met] two\n',
   'src/dates/index.mjs': 'export const d = 1;\n',
-  'src/orders/index.mjs': 'export const o = 1;\n',
+  'src/orders/index.mjs': "import { d } from '../dates/index.mjs';\nexport const o = d;\n",
 });
 
 // GitHub in memory: pull requests, issues, comments, labels, check runs, all by number.

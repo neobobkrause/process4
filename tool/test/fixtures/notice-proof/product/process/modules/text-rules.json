@@ -1,0 +1,13 @@
+{
+  "name": "text-rules",
+  "files": [
+    "text-rules/src/"
+  ],
+  "tests": [
+    "text-rules/test/"
+  ],
+  "public": [
+    "text-rules/src/index.mjs"
+  ],
+  "uses": []
+}
