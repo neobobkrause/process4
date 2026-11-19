@@ -14,24 +14,34 @@ import { fail, git } from './util.mjs';
 export const JOB_MARK = 'process4-job';
 export const RECORD_MARK = 'process4-job-record';
 export const REQUIRED = 'module-tests';
+const CANCELLED = ['cancelled', 'skipped'];
 const JOB = /^job\/([a-z0-9-]+)\/(\d+)$/;
 const BRANCH = /^(job\/[a-z0-9-]+\/\d+|work\/[A-Za-z0-9._/-]+)$/;
 const TEXTS = new URL('../../starting_texts/', import.meta.url);
 
-// The branch pull requests go into: the config's tranche branch, else the repository's default.
-function intoBranch(ctx, cfg) {
-  return cfg?.tranche_branch || ctx.gh.repo(ctx.slug).default_branch;
+// The branch pull requests go into: the one named with --into, else the config's tranche branch,
+// else the repository's default. --into lets a product's first pull request, made before any
+// process.json exists, go into the tranche branch without writing the config locally first.
+function intoBranch(ctx, cfg, into) {
+  if (into !== undefined) {
+    if (typeof into !== 'string' || !/^[A-Za-z0-9._/-]+$/.test(into)) fail('say --into <branch>');
+    return into;
+  }
+  if (cfg?.tranche_branch) return cfg.tranche_branch;
+  const d = ctx.gh.repo(ctx.slug).default_branch;
+  ctx.log(`no process.json in the working tree: into the default branch ${d}; name another with --into <branch>`);
+  return d;
 }
 
 const currentBranch = (root) => git(['branch', '--show-current'], { cwd: root }) || fail('the checkout is on no branch');
 
-// 1. branch <name>: from the newest commit of the branch pull requests go into, with one empty
-// commit so that a pull request can open, made without moving the session's checkout.
-export function branch(ctx, name) {
+// 1. branch <name> [--into <branch>]: from the newest commit of the branch pull requests go into,
+// with one empty commit so that a pull request can open, made without moving the session's checkout.
+export function branch(ctx, name, into) {
   if (!BRANCH.test(name || '')) fail('name the branch job/<module>/<n> or work/<what>');
-  const base = intoBranch(ctx, loadConfig(ctx.root));
   const had = git(['ls-remote', '--heads', 'origin', `refs/heads/${name}`], { cwd: ctx.root });
   if (had) { ctx.log(`${name} exists already at ${had.split(/\s/)[0]}`); return 0; }
+  const base = intoBranch(ctx, loadConfig(ctx.root), into);
   git(['fetch', '-q', 'origin', `refs/heads/${base}`], { cwd: ctx.root });
   const tip = git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root });
   const c = git(['commit-tree', `${tip}^{tree}`, '-p', tip, '-m', `Start ${name}`], { cwd: ctx.root });
@@ -102,7 +112,7 @@ function printJob(ctx, cfg, pr) {
   ctx.log(jobText(ctx, cfg, { module: job.data.module, branch: pr.head.ref, url: pr.html_url }));
 }
 
-// 3. open --module <name> | --title "<t>" [--into-main] [--branch <b>]: a draft pull request.
+// 3. open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: a draft pull request.
 // With no pull request to open, prints the one open for the branch and its job block.
 export function open(ctx, a) {
   const cfg = loadConfig(ctx.root);
@@ -113,7 +123,7 @@ export function open(ctx, a) {
   const had = ctx.gh.prForBranch(ctx.slug, name);
   if (had) { printJob(ctx, cfg, had); return 0; }
   if (!module && typeof a.title !== 'string') fail('say --module <name> or --title "<title>"');
-  const base = a['into-main'] ? 'main' : intoBranch(ctx, cfg);
+  const base = a['into-main'] ? 'main' : intoBranch(ctx, cfg, a.into);
   if (!module) {
     const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: a.title, body: `Opened by the Process4 tool from ${name}.`, draft: true });
     ctx.log(`pull request ${pr.number}: ${pr.html_url}`);
@@ -152,7 +162,8 @@ export function ready(ctx, n) {
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, REQUIRED).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
-  const r = runs[0];
+  // A run cancelled by a newer one (`ready` cancels the draft's) is not the result.
+  const r = runs.find((x) => !CANCELLED.includes(x.conclusion)) || runs[0];
   if (!r || r.status !== 'completed') { ctx.log(`waiting: ${REQUIRED} on ${pr.head.sha.slice(0, 10)} ${r ? `is ${r.status}: ${r.html_url}` : 'has not started'}`); return 0; }
   if (r.conclusion === 'success') { ctx.log(`passed: ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`); return 0; }
   ctx.log(`failed (${r.conclusion}): ${REQUIRED} on ${pr.head.sha.slice(0, 10)}: ${r.html_url}`);

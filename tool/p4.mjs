@@ -13,7 +13,7 @@ const pr = (a) => {
 };
 
 const commands = {
-  branch: (ctx, a) => c.branch(ctx, a._[0]),
+  branch: (ctx, a) => c.branch(ctx, a._[0], a.into),
   push: (ctx, a) => c.push(ctx, a),
   open: (ctx, a) => c.open(ctx, a),
   ready: (ctx, a) => c.ready(ctx, pr(a)),
@@ -36,6 +36,20 @@ const commands = {
   },
 };
 
+// What each command does, printed by --help (or -h) and nothing else: a help flag never acts.
+export const HELP = {
+  branch: 'branch <name> [--into <branch>]: makes job/<module>/<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
+  push: 'push [--blocked <module> "<why>"]: pushes the current working branch to the same-named branch, never forced; with --blocked, writes the job\'s record on its pull request.',
+  open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request; for a job writes the job block and prints its starting instructions. With one open already, prints it and its job block.',
+  ready: 'ready <pr>: marks the pull request ready, which asks for the required run.',
+  results: 'results <pr>: prints the required run\'s state on the head commit, and for a failure the last lines of its output.',
+  merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it.',
+  'state read': 'state read [<record>] [--repository <owner/name>]: prints one record of the shared state, or all.',
+  'state write': 'state write <record> --from <file> [--create [--process]]: rewrites one record in place; --create makes the issue and its empty records once.',
+  'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--out <file>]: on GitHub\'s machines only, decides the required run\'s scope.',
+  'run tests': 'run tests --scope <file>: on GitHub\'s machines only, runs the tests in scope.',
+};
+
 // GitHub is reached only for commands that need it; `run` reads the checkout alone.
 export function context(name, overrides = {}) {
   const root = overrides.root || repoRoot();
@@ -51,9 +65,15 @@ export function context(name, overrides = {}) {
 }
 
 export function main(argv, overrides) {
-  const a = parseArgs(argv);
+  const a = parseArgs(argv.filter((x) => x !== '-h'));
   const two = a._.slice(0, 2).join(' ');
   const name = commands[two] ? two : a._[0];
+  const log = overrides?.log || console.log;
+  if (argv.includes('--help') || argv.includes('-h')) {
+    if (HELP[name]) log(HELP[name]);
+    else for (const k of Object.keys(commands)) log(HELP[k] || k);
+    return 0;
+  }
   if (!commands[name]) {
     console.log(`commands: ${Object.keys(commands).join(', ')}`);
     return name ? 1 : 0;

@@ -179,3 +179,28 @@ test('merge prints GitHub\'s refusal', () => {
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   assert.throws(() => merge(ctx, 1), /Required status check "module-tests" is expected/);
 });
+
+test('with no process.json, branch and open take --into, so a first pull request needs no config written first', () => {
+  const root = makeRepo();
+  git(['push', '-q', 'origin', 'main:refs/heads/p4-tranche'], { cwd: root });
+  commit(root, { 'x.txt': 'later on main\n' });
+  git(['push', '-q', 'origin', 'main'], { cwd: root });
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  branch(ctx, 'work/first-content', 'p4-tranche');
+  assert.equal(git(['rev-parse', `${remote(root, 'work/first-content')}^`], { cwd: root }), remote(root, 'p4-tranche'));
+  git(['checkout', '-q', '-b', 'work/first-content'], { cwd: root });
+  open(ctx, { _: [], title: 'First content', into: 'p4-tranche' });
+  assert.equal(gh.s.prs[0].base.ref, 'p4-tranche');
+  assert.throws(() => branch(ctx, 'work/y', true), /--into <branch>/);
+});
+
+test('results passes over a run cancelled by a newer one', () => {
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(makeRepo(), gh);
+  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
+  gh.s.runs.push({ id: 1, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'success', started_at: '1', html_url: 'R1' });
+  gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
+  results(ctx, 1);
+  assert.match(out.join('\n'), /^passed: .*R1$/);
+});
