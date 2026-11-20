@@ -26,18 +26,15 @@ a{color:var(--accent)}
 </header>
 
 <section class="wait">
-<h2>Waiting for you: two short steps to finish getting the trial's work onto main</h2>
-<p>You chose <b>option C</b> (20 Nov). The trial's coordinator has ARCH's exact steps.</p>
+<h2>Waiting for you: one GitHub setting, then the trial's work lands on main</h2>
+<p>ARCH built the joining pull request (#383) and its check passed, but GitHub refused the merge: main's rule still requires a check named <b>gate</b>, left over from the earlier process. Nothing produces "gate" any more. Main's rule must require <b>module-tests</b> instead, like the tranche branch's rule. Only you can change a GitHub rule.</p>
 <ol>
-<li><b>Done</b> (you report ARCH merged it). Open the session titled <b>process3-probes coordinator</b> and type:<div class="draft">Instruction: carry out PROCESS's option C now — ARCH joins p4-tranche to main by the steps PROCESS #5 sent you. The stop stays for everything else.</div>You should see it record your words and tell ARCH. ARCH then merges one pull request into main and the coordinator tells you its number.</li>
-<li><b>Now</b> (carries your new approvals onto the tranche branch):
-<ol>
-<li>Open <b>https://github.com/neobobkrause/process3-probes/compare/p4-tranche...main</b>. You should see "Able to merge" and, under Files changed, exactly two files: <code>CLAUDE.md</code> and <code>.claude/settings.json</code>. If you see more files, stop and tell me.</li>
-<li>Click <b>Create pull request</b>, then <b>Create pull request</b> again on the form.</li>
-<li>Wait for the check <b>module-tests</b> to show a green tick (a minute or two), then click <b>Merge pull request</b> and <b>Confirm merge</b>. You should see "Pull request successfully merged and closed". Do not click "Delete branch".</li>
-</ol></li>
+<li>Open <b>https://github.com/neobobkrause/process3-probes/settings/rules</b>. Click the ruleset that covers <b>main</b>. (If the page lists no rulesets, open <b>https://github.com/neobobkrause/process3-probes/settings/branches</b> instead and click <b>Edit</b> beside <b>main</b>.)</li>
+<li>Find <b>Require status checks to pass</b>. Remove <b>gate</b> with the trash or × beside it. Click <b>Add checks</b>, type <code>module-tests</code>, and pick it from the list.</li>
+<li>Click <b>Save changes</b>. You should see the rule now lists <b>module-tests</b> and not <b>gate</b>.</li>
+<li>Tell the trial's coordinator: "main's rule now requires module-tests". ARCH then merges #383.</li>
 </ol>
-<p>You do not need to delete <code>p4-tranche</code>: the trial goes on from it. Then tell the coordinator when to lift the stop.</p>
+<p>After that, one more set of clicks carries your new forbidden-commands file onto the tranche branch; I will give it to you then.</p>
 </section>
 
 <section class="card">
