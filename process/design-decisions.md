@@ -419,6 +419,23 @@ test, gate, review or stop.
 **The owner's words.** "Decision: as recommended" — 20 November 2026 (on the review
 page's item-11 / Codex thread).
 
+### Subject: A walk-flaw module whose job hands the flaw back (round-done gap)
+
+**The rule as it now stands.** A module carrying a walk flaw (or a flaw another module's job
+reported) is finished by a merge; or, when its job finds that nothing in the module needs
+changing, by its job recording that in its pull request and closing it unmerged, which hands
+the flaw back to ARCH. ARCH re-places the flaw against another module (or gives it to the UX
+lane where the document is wrong); the module that handed it back is finished for the round,
+and the re-placed flaw is the other module's work (bounded by design part 4 §10: a flaw handed
+back twice becomes a design question). This closed a latent gap in the built round logic found
+by the verification sweep: such a module reached neither "finished" (it is "finished only by a
+merge") nor the next job (the flaw was stripped from waiting work when its job opened), so
+`round-done` hung forever once walks run. It is a correction that completes what design part 2
+§4 already intended; it adds no test, gate, review or stop. It changed design part 2 §4, the
+tool's `finished` (`tool/lib/round.mjs`), build text 1b command 12, and the tool's tests.
+
+**The owner's words.** "open item 12: decided - close the gap" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

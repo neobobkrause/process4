@@ -97,7 +97,10 @@ export function finished(view, module) {
   else {
     const rec = view.jobRecord(last.number);
     if (!rec?.nothing_to_change) return { finished: false, why: `pull request ${last.number} closed unmerged with no nothing-to-change record` };
-    if (view.jobBlock(last.number)?.kind !== 'told') return { finished: false, why: `pull request ${last.number} closed with nothing to change, but its work was not only a notice; only a merge finishes it` };
+    // A job that finds nothing in the module needs changing and closes unmerged finishes the
+    // module: a notice-only told job, or one handing a walk flaw or job-reported flaw back to
+    // ARCH (design part 2 §4). An unmet requirement is not cleared this way: the workOf check
+    // below keeps such a module unfinished.
     why = `pull request ${last.number} closed with nothing to change: ${rec.nothing_to_change}`;
   }
   const w = workOf(view, module);
