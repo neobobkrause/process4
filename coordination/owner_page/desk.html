@@ -14,64 +14,63 @@ h2{font:600 .78rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;c
 .updated{color:var(--muted);font-size:.9rem;margin-top:6px}
 p{margin:0 0 8px}
 ul,ol{margin:0;padding-left:1.3rem;display:grid;gap:6px}
-.later{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
+.wait{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px;border-left:3px solid var(--wait)}
+.card{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em}
+a{color:var(--accent)}
 </style></head><body>
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026, 13:50 UTC. A fresh session, titled "Process4: set-up and trial, continued (refresh 5 of 19 Nov)", now keeps this page. The one before it got too full to go on. One matter at a time. Reply in your session with Claude.</p>
+<p class="updated">Updated 20 Nov 2026 by PROCESS. I keep this page now — there is no separate coordinating session unless you start one. This page holds what I bring you about the design and the process; the trial product's own page is separate (linked below); you work with me directly in your session titled "PROCESS". One matter at a time.</p>
 </header>
 
-<section>
-<h2>Waiting for you</h2>
-<p><b>Nothing waits for you now.</b></p>
+<section class="wait">
+<h2>Waiting for you — one decision: the four reading-size limits</h2>
+<p>The reading-fidelity measurement you asked for has run (Claude Code, Opus 5.5, medium effort; 103 clean trials; full report at <code>measurement/results/report.md</code>). It found <b>no provisional figure unsafe</b> — nothing broke on fidelity. Here is what I propose; the figures become the design's values only on your marked word.</p>
+<table>
+<tr><th>Value</th><th>Now</th><th>Measured</th><th>I propose</th></tr>
+<tr><td>Single text</td><td>24,000 B</td><td>clean to 76,000; the only limit is the harness's read cut (~25k tokens)</td><td><b>60,000 B on Claude Code</b> (keep 24,000 for Codex until it is measured) — this needs your decision, as it changes "Codex governs both" (part 5 §1)</td></tr>
+<tr><td>Set of texts</td><td>175,000 B</td><td>clean to 220,000</td><td><b>Keep 175,000, now measured</b> (drop "provisional"); 25% headroom</td></tr>
+<tr><td>Role text</td><td>4,096 B / 10 rules</td><td>45 rules at 32.9 KB as safe as 10 at 4 KB (the first run couldn't tell reading from guessing; the rebuilt one can)</td><td><b>A modest raise for breathing room</b> — e.g. 8,192 B, keeping ~10 rules — or hold at 4,096/10. This is now a conciseness choice (part 5 §3), not a fidelity one. Your call. (Current texts are tight: <code>process.md</code> is 4,086 of 4,096.)</td></tr>
+<tr><td>Fill level</td><td>40%</td><td>clean to 80%</td><td><b>Keep 40%, now measured</b>, with headroom to 80%</td></tr>
+</table>
+<p>To settle: a marked line, e.g. <code>Decision: set texts and fill as measured; single text 60,000 on Claude Code; raise role text to 8,192 / 10 rules</code> — or correct any part. I record your words and update the design in the same step.</p>
+</section>
+
+<section class="card">
+<h2>Two findings from the measurement (worth your eye)</h2>
 <ul>
-<li><b>The trial is stopped on your word</b> ("Instruction: stop all work", about 14:59 UTC). <b>Your stop held.</b> The trial's ROOT woke on its hourly timer at 15:33 and again at 16:33 UTC. Each time it read your stop, left it in place and started nothing. That was seen twice. The stop stays until you lift it in the trial coordinator's session. Nothing presses you to lift it.</li>
-<li><b>Still to try, once you lift the stop.</b> These are on the coordinator's page (https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb). You type a stop and a held merge while jobs are running. A job is replaced after its third failed test run. You edit your approvals, followed by a restart. Each one will come to you with steps when its moment comes.</li>
+<li><b>A cut read is silent.</b> When a single text is too big, the harness returns a <i>partial</i> read with no notice in the tool result (this version). A session that did not notice would act on half a text. The guard is keeping the single-text limit well below the cut — both 24,000 and 60,000 are. It revises what design part 7 §2 assumed; I can note that in the design on your word.</li>
+<li><b>A headless session cannot see its own fill.</b> One reader guessed 70% when it was 16%. Refreshing at 40% relies on reading the fill level; that works in an interactive session but not a headless one (it guessed early, the safe way). It touches design part 7 §1 and how unattended refresh works; I'll bring you options if you want them.</li>
 </ul>
 </section>
 
-<section class="later">
-<h2>Starting the next session: your steps (you asked for these)</h2>
-<p><b>The repository really is neobobkrause/process3.</b> That is where this job keeps its notes. The starting text below tells the new session to read the design from neobobkrause/process4, where your work with PROCESS has changed it. This text replaces the one in the comment thread.</p>
-<ol>
-<li>Open claude.ai/code and start a new session.</li>
-<li>Choose the repository neobobkrause/process3 and the branch claude/process4-design-handoff-7w8nh8.</li>
-<li>Choose the model Claude Opus 5.5 and Auto mode.</li>
-<li>Copy all of the text in the box below, paste it in, and send it.</li>
-</ol>
-<pre style="white-space:pre-wrap;border:1px solid var(--line);border-radius:6px;padding:12px;font-size:.9rem">You take over the Process4 set-up and trial work as the coordinating session. Work on branch claude/process4-design-handoff-7w8nh8 of neobobkrause/process3 and push only there. First fetch that branch and be at its newest commit (2d03b10 or later).
-
-Read in full, and confirm the line count of each: process4/working/handoff_20nov_coordinating_session_5.md (the latest handoff; it rules over earlier ones, and passes on facts and where work stands, not rules); handoff_19nov_coordinating_session_4.md, _3.md and _2.md; sections 1 and 5 of handoff_19nov_coordinating_session.md; then the design's eleven parts and the build texts as they stand on main of neobobkrause/process4 (folders design/ and build/, by a plain clone of that public repository), not the older drafts in process3's process4/definition/; then process4/working/trial/setup_log_19nov.md.
-
-I direct you. After reading, tell me in two or three plain lines that you have taken over and what you are doing, then carry on as the handoff's section 0 says. Change no rule of the design without a message of mine beginning "Decision:" or "Instruction:". Put anything for me on my page (https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT; read it with the Artifact tool, then publish with its url), one matter at a time, with the design's words and mine in full. Keep messages in the conversation short. I am not a GitHub user, so give me numbered click-by-click steps for any act of mine. Every session you start uses the model claude-opus-5-5. Read your fill with get_session (no id), field context_usage; at 40 percent write a handoff, push it, and tell me.</pre>
-<p>If you would rather not have a coordinating session any more, because you now work with PROCESS and the trial coordinator directly, simply don't start one. Nothing in the trial depends on it.</p>
+<section>
+<h2>Where everything stands</h2>
+<ul>
+<li><b>All the open points are settled or closed</b> except the four figures above. (Items 3, 11, 12, 13 settled; item 8 was a non-item and is closed — your approvals wording is committed and in force. See the Open Points page: https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU)</li>
+<li><b>Civicsmith readiness:</b> I gave you an honest assessment in the session. The reading-limit risk I flagged is now largely answered — the limits have wide measured headroom. What stays unproven is scale (~200 modules), and walks/deployment/release by sessions on Cloudflare — the design's own position is that the first real tranche is the proof. I recommend phasing: run the figures into the design, do civicsmith's setup, then a small first tranche as the proof.</li>
+</ul>
 </section>
 
 <section>
-<h2>Which page shows what</h2>
+<h2>The trial</h2>
 <ul>
-<li>This page, your own, holds anything I bring you about the design itself.</li>
-<li>The trial coordinator's page holds what the trial product needs from you.</li>
-<li>You work with PROCESS directly, in your session titled "PROCESS".</li>
+<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>; its own page is https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb and holds what the trial product needs from you.</li>
+<li><b>The trial is on an old process version.</b> Its <code>process.json</code> pins process4 <code>7d8e529</code>; process4 has moved well past that (now <code>ae9bae7</code>, carrying the round-done fix and the lane-routing fix among others). To move it to the latest, tell the trial coordinator "move to the latest Process4 version" when you choose; nothing forces it.</li>
+<li><b>Still to try</b> (trial stages): a held merge and a stop reaching an open job; a job replaced at its third failed run; an approvals edit with a restart; stage 4 trials 2–3; stage 5 walks. Each comes to you with steps when its moment arrives.</li>
 </ul>
 </section>
 
 <section>
 <h2>Still owed to you, later</h2>
 <ul>
-<li>The same additions to process3's own approvals file that you made in process4. The steps are in your comment thread. When you reply "done" there, I'll read the file back to check it.</li>
-<li>A plan, as a document, for bringing Process3's tools and ways of working into line with the design.</li>
-</ul>
-</section>
-
-<section>
-<h2>Done since your last look</h2>
-<ul>
-<li>Round 4 ran on the tool's new piece (14:44 to 14:54 UTC). Two parts changed, and the tool told the two parts that use them. Both checked and found nothing to change. Seen once.</li>
-<li>Round 3: seven jobs merged. Your "do invoice first" and your limit of 2 jobs at once both held, seen once.</li>
-<li>The trial product moved onto the tool's new piece (version 6be2618), on your decision.</li>
-<li>Stage 1 of the trial: the tool made 20 merges, and nothing was refused.</li>
+<li>A plan, as a document, for bringing Process3's tools and ways of working into line with the design (offered 19 Nov; no answer needed yet).</li>
+<li>The Codex side: measure the four values on Codex before they govern there; and name the Codex model. Later work, on your OpenAI account.</li>
 </ul>
 </section>
 </main>
