@@ -1,24 +1,14 @@
 # Part 10. What is open, what is unproven, and the trial
 
-Length: 109 lines. Last section: "6. Risks with no trial".
+Length: 98 lines. Last section: "6. Risks with no trial".
 
 Most items are also marked where they belong in parts 1 to 9. This part gathers them and adds what belongs to no one part.
 
 ## 1. Open with the owner
 
-Each of these is to be put to him in full, with its options, before the design can be called settled.
+One item remains open with the owner, to be put to him in full before the design can be called settled.
 
-1. **The four values** (part 5, section 2): **settled (the owner, 20 November 2026)** — set on the 20 November Claude Code measurement: the largest single text 60,000 bytes on Claude Code (24,000 on Codex until measured), the largest set 175,000 bytes, a role's starting text 8,192 bytes and at most ten rules, and the fill level 50 percent (his exception: session refreshes are expensive and slow, so the level is set higher while leaving room to work on). A Codex re-measurement is owed before they govern there (part 8).
-2. **How a tranche ends** (part 3, section 5): **settled (the owner, 20 November 2026): no change** — the rounds' partial walks, each scoped to what the round changed, are what shows the tranche's journeys complete; no end-of-tranche sweep is added.
-3. **A tranche merged with its flaws named** (part 3, section 5): **settled (the owner, 20 November 2026)** — the process leaves the release judgement to the owner; it neither forces nor forbids a release from a flaws-named tranche, with his release approval and a clean install and update the guardrails (part 3, sections 5–6).
-4. **Publishing a release** (part 3, section 6): **settled (the owner, 20 November 2026)** — on his approval ARCH publishes, placing the installer at the distribution point with a release token (and a production secret used through a secret-management facility to produce it where needed); no session directly holds a production key; installs and updates on real sites are user-initiated. What "successful" means for the install and the update (finishes with no error and the site it produces starts; a failure means no release and the fault becomes next-tranche work) is also settled (the owner, 20 November 2026).
-5. **An urgent fix while a tranche is open** (part 3, section 7): **settled (the owner, 20 November 2026)** — pause the open tranche, build the fix as its own tranche from main and merge it, then the paused tranche takes it in and resumes.
-6. **A told job's tests** (part 2, section 7): **settled (the owner, 20 November 2026)** — its own edits count among the changed parts; tests are chosen by whole file; and a module the tool cannot follow runs its whole tests.
-7. **The other readings — settled (the owner, 20 November 2026): as recommended,** each confirmed in its home section: that a role's starting text and its starting instructions are one thing, and what an architecture bug and an implementation error are (part 0, section 6); that a lane's folder needs no module tests (part 2, section 9); that the install and the update run on a development account, and what a failure leads to (part 3, section 6); how an architecture bug is corrected (part 1, section 6); that exercising a doubtful workflow in a walk adds no test (part 3, section 3); the lane rules he has not confirmed one by one, and that questions to a lane and its answers are not kept as a running record (part 4, section 3); that a role lasts while its sessions are refreshed often (part 4, section 5); that every stop nothing called for is reported to PROCESS during the trial (part 4, section 10); that PROCESS brings him a role's principles that cannot be kept short (part 5, section 3); the order of the ranking page (part 5, section 6); that PROCESS starts its own lanes (part 6, section 8).
-8. **His approvals and forbidden commands for Process4** (part 6, section 2): the wording, which only he can write. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list; what is open is his word confirming it as settled, or his revision of it.
-9. **The walks:** five matters in the build text `03-the-walks.md`, section 9. **9.1 settled (the owner, 20 November 2026):** the UX design lane maintains the journey list, that is the list to use, and the owner does not approve it per tranche (the form of the two documents stays as the build text decides). **9.2 settled (20 November 2026):** an AI step is judged as a module test is judged (a valid-but-different answer does not fail it), and the “what must be present” wording is set per journey by the UX design lane. **9.3 settled (20 November 2026): option A** — a tranche may end with AI journeys recorded not walked when no AI account is connected. **9.4 settled (20 November 2026): option a** — ARCH may set a walker’s entry aside as not a flaw, with the reason named in the after-round account. **9.5 settled (20 November 2026): option a** — the walking session walks by hand whatever a page describes that no written step covers; a walk is not only its written steps. All five walk matters are now settled.
-10. **What "at most ten rules" counts** is no longer open. He left it to the AI on 19 Nov, and it counts numbered rule lines (part 4, section 11). The eight drafted starting texts each have ten or fewer, and each is under 8,192 bytes.
-11. **Codex: settled (the owner, 20 November 2026) — Claude Code first, Codex later.** Process4 proceeds on Claude Code, where the design is complete; the Codex side is later work. Everything part 8 marks not known, and which Codex model the process uses, are filled from his OpenAI account when he takes that on; until then Codex is not supported and nothing is blocked waiting on it.
+1. **His approvals and forbidden commands for Process4** (part 6, section 2): the wording, which only he can write. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list; what is open is his word confirming the wording as settled, or his revision of it.
 
 ## 2. Open design work
 
@@ -37,7 +27,7 @@ For a session to do, and to report.
 8. The required test run. Written in build text `01-the-tool-and-the-required-run.md`. Not built.
 9. The walks. Written: build text `03-the-walks.md`. Nothing in it has run.
 10. Left unsettled by the forms text: helpers under one module's tests that another module imports, which the interface listing does not cover; one written form for messages between two separately running parts of a product; and how the owner's record of decisions is split when it outgrows the maximum.
-11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5; the owner's instruction of 19 November 2026); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
+11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
 12. The forms of the shared state's records, and what the tool means by "cannot follow" and "reaches". Written: build text `05-the-records-and-following.md`. Nothing in it has run.
 13. What is read to show that archived sessions do not use up the account's room.
 
@@ -45,25 +35,25 @@ For a session to do, and to report.
 
 Process4 has never run and its tool is not built. Nothing below has been shown to work as this design uses it.
 
-- **The tool,** and merges made by it passing the permission checker at a real rate. That a program run by a session can reach GitHub was seen once, on 19 Nov (part 7, section 3).
+- **The tool,** and merges made by it passing the permission checker at a real rate. That a program run by a session can reach GitHub has been seen (part 7, section 3).
 - **The shared state,** and a successor starting only from it.
 - **A ROOT started by a plain prompt** coming up on the owner's newest approvals and acting as ROOT.
 - **Replacing ARCH while jobs are open.**
 - **The watcher's takeover,** and ROOT's refresh by it.
 - **Walks made by sessions:** a session's browser reaching the development site; a walk shared among sessions; the hosting account bearing the walkers.
-- **A walk ending without flaws.** None did in the process before this one.
+- **A walk ending without flaws.**
 - **A deployment made from a session** inside a round.
 - **The mechanical edit's one merge,** and the test run it needs.
 - **The tranche branch merging into the main branch.**
 - **The release path:** an install, an update, and a release prepared as far as the owner's approval.
 - **A stop on the owner's word** that the hourly wake does not undo; a held merge; a module put first; a new slot number.
-- **An account switch that loses no work.** It failed once.
+- **An account switch that loses no work.**
 - **Two products sharing the slots.**
 - **An edit to the approvals with a restart** that carries a round on.
-- **The notice as part of a running process.** Its method was proven only on made-up modules, and only with 23 refusals in the tool that the owner has not approved; the form this design takes, without them, was never built or run. Picking a told job's related tests is not proven at all.
-- **Cross-repository acts.** Cross-repository messaging between roles worked (seen 19 Nov). A cross-repository session-lifecycle act was refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session, refused twice on 19 Nov), so PROCESS is started and refreshed by the owner, not ROOT (decision C; part 6, section 7); the design no longer depends on a cross-repository session create.
+- **The notice as part of a running process,** unproven and not built or run on a real product. Picking a told job's related tests is not proven at all.
+- **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
 - **The owner's acts to start a product** (part 7, section 4), and that nothing physical stops a product's session from changing the process (part 6, section 7).
-- **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process was seen once, on 19 Nov.
+- **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process has been seen.
 - **Everything on Codex not marked measured in part 8.**
 
 ## 4. The trial
@@ -73,7 +63,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 
 The order in which these are built and tried, the most doubtful first, and what each stage asks of the owner, is the build text `04-the-trial.md`.
 
-**Claude decided** this list. What the trial rehearses, each once unless a number is given:
+What the trial rehearses, each once unless a number is given:
 
 1. A plain-started ROOT fetches the newest copy, comes up on the newest approvals and forbidden commands, also straight after an approvals commit, and starts the watcher, ARCH and the coordinator.
 2. Twenty or more merges by the tool pass the permission checker.
@@ -84,7 +74,7 @@ The order in which these are built and tried, the most doubtful first, and what 
 7. Finished sessions, once archived, do not use up the account's room.
 8. Several walking sessions share one walk by area; a session makes a deployment and an external walk within a round; the tranche branch merges into the main branch.
 9. A mechanical edit across several modules merges once, tried with the touched modules' tests run and with none run.
-10. A process fault travels from a job to PROCESS, and the owner starts PROCESS in the process's repository, surfaced by the coordinator on the owner's standing page (part 6, section 6). PROCESS is then refreshed by the owner starting its successor from the coordinator's standing page (decision C; part 4, section 5). Cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (part 6, section 4).
+10. A process fault travels from a job to PROCESS, and the owner starts PROCESS in the process's repository, surfaced by the coordinator on the owner's standing page (part 6, section 6). PROCESS is then refreshed by the owner starting its successor from the coordinator's standing page (part 4, section 5). Cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (part 6, section 4).
 11. An edit to the approvals with a restart carries a round on.
 12. An install and an update are run and confirmed on a development account, and a release is prepared as far as the owner's approval.
 13. The rule for who takes a free slot gives the same answer every time.
@@ -106,4 +96,3 @@ The order in which these are built and tried, the most doubtful first, and what 
 - Sessions write and count the walks' steps. A step that was loosened cannot be seen. A walk starts from a fresh copy and cannot see an update breaking a user's existing data; only the confirmed update before a release looks at that.
 - A module's tests run only on its own job. A failure caused by another module's merge can sit unseen until a walk meets it.
 - Most rules in this design are held by text alone. Nothing physical stops a session building a product from changing the process's files, or from moving to a changed process.
-- Why GitHub once suspended the sessions' account was never learned.

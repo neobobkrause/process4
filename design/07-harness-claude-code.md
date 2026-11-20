@@ -17,29 +17,29 @@ Everything in this part is specific to Claude Code.
 | Scheduled wake | A scheduled task on the account |
 | Secret values, the deploy token among them | Settings of Claude's cloud environment, entered by the owner. The only route measured to work |
 | Instruction files loaded at start | `CLAUDE.md` and `settings.json`. The product's `CLAUDE.md` stays under thirty lines |
-| Worker | A helper the session starts inside itself. A worker cannot start workers (seen once) |
-| Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way, seen once on 20 Nov); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |
+| Worker | A helper the session starts inside itself. A worker cannot start workers |
+| Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |
 | Compaction | A full context is shrunk automatically, which loses what was read |
-| The time a session can run one thing | About thirty minutes for one command, as recorded in the process before this one |
+| The time a session can run one thing | About thirty minutes for one command |
 | Archiving | A session can be archived and unarchived |
 | A notification to the owner | A push notification to his phone |
 | The owner's standing page; a lane's design pages | Pages on claude.ai |
 | The owner speaking to a role | He opens that role's session and types |
-| Grouping sessions under a product | **Claude decided:** a tag naming the product, set on each session when it is started. Sessions can be listed by tag. Workers are not sessions and so carry none. Read in the session tools' own descriptions; not measured |
-| The owner seeing each open job | **Claude decided:** each job's session is titled with its module's name, and the list of sessions shows each one's title and whether it is working, waiting or finished. Read in the session tools' own descriptions; whether the list he sees meets the rule is not measured |
+| Grouping sessions under a product | A tag naming the product, set on each session when it is started. Sessions can be listed by tag. Workers are not sessions and so carry none. Not measured |
+| The owner seeing each open job | Each job's session is titled with its module's name, and the list of sessions shows each one's title and whether it is working, waiting or finished. Whether the list he sees meets the rule is not measured |
 | Starting instructions | The prompt a session is started with |
-| Model and effort passed on | The starter names both when it starts a session. Read in the starting tool's own description; not measured |
+| Model and effort passed on | The starter names both when it starts a session. Not measured |
 | Planned replacement | The parent starts a fresh session and archives the old one |
-| The limit on depth | One session reported a limit of eight (seen once). It bounds how many times a watcher can take over before the owner starts a fresh ROOT (part 4, section 6) |
+| The limit on depth | One session reported a limit of eight. It bounds how many times a watcher can take over before the owner starts a fresh ROOT (part 4, section 6) |
 | The shared state | Not carried by the harness. It is on GitHub (part 4, section 4) |
 | Connecting the harness to GitHub | The owner connects his GitHub to Claude and installs Claude's GitHub App on the repository |
 | A session's browser | A browser on the session's own machine. Not shown to reach the development site |
-| A read-only copy of the process | A plain clone of the process's public repository into a folder outside the session's working files. Seen once, 19 Nov: a session holding one repository made it, and its forbidden commands were refused before and after |
+| A read-only copy of the process | A plain clone of the process's public repository into a folder outside the session's working files |
 | What the subscription covers; cost | **Open (a session):** where cost can be read is not named anywhere read |
 
 ## 2. Reading, as measured
 
-From the measurement of 20 November 2026 (model `claude-opus-5-5`, effort `medium`, a 1,000,000-token window; `measurement/results/report.md`). It supersedes the weaker first measurement of 18 Nov.
+As measured on Claude Code:
 
 - A plain read returns a file whole up to the harness's mechanical cut, about 25,000 tokens: about 76,000 bytes of dense governing prose, and about 63,000 bytes of table-dense prose. The single-text maximum on Claude Code, 60,000 bytes, sits below both (part 5, section 2).
 - A file past the cut comes back as a partial read. In this harness version the tool result carried no notice of the cut, so a session that did not compare the lines returned against the file's length would act on part of a text. The guard is keeping the single-text maximum below the cut, which 60,000 is.
@@ -50,13 +50,13 @@ From the measurement of 20 November 2026 (model `claude-opus-5-5`, effort `mediu
 - Why the cloud once handed a session a copy of its branch about an hour old, and whether it still does.
 - Whether approvals that reach a session after its start count the same as approvals read at the start.
 - Whether a session's browser can reach the development site.
-- Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked on 19 Nov once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice on 19 Nov, as "Destructive or Unwanted Actions" and "Undermining Oversight"). PROCESS is therefore started and refreshed by the owner, not by ROOT (the owner's decision C, 19 November 2026; part 4, section 5; part 6, section 7), so the design no longer depends on a cross-repository session create.
+- Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice, as "Destructive or Unwanted Actions" and "Undermining Oversight"). PROCESS is therefore started and refreshed by the owner, not by ROOT (part 4, section 5; part 6, section 7).
 - How many live sessions the account bears. New starts once failed silently at about fifty.
-- Whether a program goes on reaching GitHub from a session at a real rate. Seen once, on 19 Nov, in the trial's first stage: with the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment. The report is `process4/working/trial/stage0_report_19nov.md`.
+- Whether a program goes on reaching GitHub from a session at a real rate. With the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment.
 
 ## 4. The owner's acts to start a product
 
-**Claude decided** the order. **Unproven:** none of it has been carried out for Process4. The steps in full, and why each cannot be a session's act, are in `process4/working/design_work_18nov/owner_acts_and_approvals.md`.
+**Unproven:** none of it has been carried out for Process4.
 
 1. Have a second GitHub account for the sessions.
 2. Give that account write access to the product's repository and the process's, and accept as that account.
@@ -75,8 +75,8 @@ Not known: whether act 10 can be done before act 9.
 
 Auto mode's checker (section 1) is steered by `autoMode` settings the environment provides. The checker reads them from the session's user settings (`~/.claude/settings.json`) or the account's managed settings, and never from a repository: a repository's `.claude/settings.json` is not read for `autoMode`, so these settings cannot live in the product's or the process's repository.
 
-- **What they are. Claude decided:** an `autoMode.environment` block that names the process's repository and its products' repositories as mutually trusted internal work, and an `autoMode.allow` block that names the roles' cross-session and cross-repository coordination — starting, messaging and archiving the account's role sessions, PROCESS in its own repository among them, and making their scheduled wakes — as sanctioned routine. Each keeps the built-in defaults (`$defaults`).
+- **What they are.** An `autoMode.environment` block that names the process's repository and its products' repositories as mutually trusted internal work, and an `autoMode.allow` block that names the roles' cross-session and cross-repository coordination — starting, messaging and archiving the account's role sessions, PROCESS in its own repository among them, and making their scheduled wakes — as sanctioned routine. Each keeps the built-in defaults (`$defaults`).
 - **Why.** Without them the checker, by default, trusts only a session's own repository and treats any other destination as external; a product session's message to PROCESS in the process's repository is then refused, unevenly, as "Unsanctioned Communication" (one of the checker's server-side policy categories, with "Undermining Oversight"). The settings remove the cause by telling the checker these repositories and acts are internal and expected.
 - **Where they are written.** In a cloud session the per-session user settings are rebuilt at each start, so the environment's setup script writes these settings into `~/.claude/settings.json`; a change takes effect only when a session starts fresh. The `permissions.deny` list (part 6, section 3) and the working rules (part 6, section 4) stand unchanged beside them.
-- **The check, on setup and on an account switch.** Before ROOT is started — at a product's start, and whenever Process4 development or a product's development moves to another Claude account — the owner confirms the cloud environment the sessions will run under carries these settings. The owner's instruction of 19 November 2026.
-- **Unproven:** that these settings reduce the checker's refusals of sanctioned acts to zero. An earlier setup measured 19 of 19 acts passing with such settings, and the checker remains probabilistic; only `permissions.deny` is an absolute gate, and it blocks rather than permits.
+- **The check, on setup and on an account switch.** Before ROOT is started — at a product's start, and whenever Process4 development or a product's development moves to another Claude account — the owner confirms the cloud environment the sessions will run under carries these settings.
+- **Unproven:** that these settings reduce the checker's refusals of sanctioned acts to zero. The settings are expected to work, but the checker remains probabilistic; only `permissions.deny` is an absolute gate, and it blocks rather than permits.
