@@ -440,9 +440,8 @@ This settled the first of the five walk matters the owner was to settle (build t
 section 1 and in design part 10, section 1, item 9), and confirms the UX lane's ownership of
 the walks' documents (design part 3, section 3; part 4, section 3). The form of the two
 documents stays as build text 3, section 2 decides (a page per screen group and per journey,
-with an index). The owner still approves each tranche (part 3, section 1); he simply does not
-separately approve the journey list. It adds no test, gate, review or stop. The other four
-walk matters (9.2–9.5) remain open.
+with an index). He does not separately approve the journey list. It adds no test, gate,
+review or stop. The other four walk matters (9.2–9.5) remain open.
 
 **The owner's words.** "Decision: the UX design lane maintains the list of journeys. That's the list to use, and I don't need to approve that list after a tranche." — 20 November 2026.
 
@@ -481,7 +480,10 @@ instructions (put a module first, change the slot number, stop, move versions) �
 approves every public release. This removed the owner's "approve or change ARCH's proposal for
 a tranche" act (design part 1, section 3), rewrote how a tranche opens (part 3, section 1), and
 changed ARCH's duty from "proposes each tranche" to opening it and deciding its scope (part 4,
-section 1). It removes a step; it adds no test, gate, review or stop.
+section 1). It removes a step; it adds no test, gate, review or stop. (ARCH's starting text
+rule 6 and a cross-reference in the "Which list of journeys counts" entry still read "propose"
+or "approves each tranche" after this decision landed; both were brought into line on 20
+November 2026 as a faithful-to-settled correction, changing no rule.)
 
 **The owner's words.** "Decision: Remove the owner's tranche-approval" — 20 November 2026.
 
