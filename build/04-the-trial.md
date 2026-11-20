@@ -18,7 +18,7 @@ Everything is tried in the trial repository, on made-up modules. No product is t
 
 Before stage 0:
 
-1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals, which he types in a session; the forbidden commands are PROCESS's technical list (the design, part 6, section 2). Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9. Whether it can be done before act 9 is not known (the design, part 7, section 4); stage 1 is where that is tried.
+1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals, which he types in a session; the forbidden commands are PROCESS's technical list (the design, part 6, section 2). Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9. It was done before act 9 on the trial (the design, part 7, section 4).
 2. The trial's forbidden commands must allow the one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.
 3. His word on where the process's repository is, and whether it is public. Build text 1 assumes it is public.
 4. His word that a session may build the tool (the design's part 4, section 11).
