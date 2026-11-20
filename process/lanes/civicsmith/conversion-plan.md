@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 113 lines. Last section: "6. Open, and who settles it".
+Length: 116 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -17,13 +17,16 @@ differ, the design rules. Steps that wait on the owner's facts are marked so.
   and one journey walked there (PROCESS's standing recommendation; design part 10 §3).
 - No product behaviour changes in the conversion itself. Behaviour changes come as tranche work.
 
-## 2. Before anything: what the owner tells the lane
+## 2. Before anything: what the owner has told the lane, and what is still to learn
 
-1. The repository's exact name, its companions, and whether the real repository or "civicsmith-copy"
-   moves (the lane recommends the real one, from its own main; the page's Choice 1).
-2. Where the purpose, audiences, principles and requirements are written.
-3. Whether work is in flight under Process3, so it is finished or stopped before the switch.
-4. The language and build tools, if he knows them.
+Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `neobobkrause/civicsmith2`; its
+founding documents are in it; no work is in flight; its languages can be seen in it; and "there are
+several problems that need to be resolved before process4 development can begin".
+
+Still to learn, from a session started in civicsmith2 under its own approvals (the lane cannot read a
+private repository; `civicsmith2-reading-brief.md`) or from the owner: the founding documents' paths and
+content, the languages and tools, the module count, Process3's traces, and the several problems. The
+problems are resolved before act 1 of section 3, or placed in the plan where each belongs.
 
 ## 3. The owner's acts, for an existing Process3 repository
 
@@ -105,7 +108,7 @@ What the texts leave unassigned (research/process4-for-a-product.md §3). This l
 
 | Matter | Who settles |
 |---|---|
-| Which repository moves; where the founding documents are; work in flight | The owner |
+| The founding documents, languages, module count and the several problems | A session in civicsmith2, or the owner |
 | Points 1, 2, 3, 5, 6, 9 to Process4's texts | Settled: the owner's "Decision: B", 20 Nov 2026 |
 | Whether Process3's approvals let a session place the new ones | Shown at act 8; unproven |
 | Where the "about 200 modules" figure comes from | The owner, or ARCH's import graph |
