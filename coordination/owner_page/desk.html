@@ -22,75 +22,47 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS #4, at its refresh. From now on you work with PROCESS #5. One matter at a time.</p>
+<p class="updated">Updated 20 Nov 2026 by PROCESS #5. One matter at a time.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: start PROCESS #5</h2>
-<p>PROCESS #4 has written its handover and stopped at a natural pause. Nothing is half done.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, in Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md; your folder process/ (including process/research/); and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>You should see it name itself <b>PROCESS #5</b> and report what it read. If it names a different number, tell it the handover says 5.</li>
-</ol>
-<p>The old session titled "PROCESS #4" does nothing more. You can leave it or archive it.</p>
+<h2>Waiting for you: getting the trial's finished work onto main</h2>
+<p><b>The question.</b> How should the trial's tranche branch (<code>p4-tranche</code>) reach main?</p>
+<p><b>The problem, plainly.</b> <code>p4-tranche</code> was started on its own, not from main, so the two branches share no history and GitHub has nothing to merge. The design already says a tranche branch is made from main; the trial's setup text never said so for a repository that already had history. The work itself is fine: round 6 is done and nothing is open.</p>
+<p><b>The options.</b></p>
+<ul>
+<li><b>C — Join the two histories (recommended).</b> ARCH makes one branch from main whose content is exactly <code>p4-tranche</code>'s, except your approvals file and the forbidden-commands file, which keep main's newer versions. That one commit is tied to both branches. ARCH opens a pull request into main and merges it. Nothing is rerun, nothing is deleted, your branch rule is untouched, and from then on the tranche goes on from <code>p4-tranche</code> and future merges into main work. Then one more pull request carries your new approvals from main onto <code>p4-tranche</code>; you click Merge on it.</li>
+<li><b>B — Copy only.</b> Same first step, but not tied to <code>p4-tranche</code>. The work reaches main, but the next tranche hits the same wall unless you first loosen your branch rule, delete <code>p4-tranche</code>, and a session remakes it.</li>
+<li><b>D — Start a fresh tranche from main and rerun the jobs.</b> Throws away finished work.</li>
+<li><b>A — No change.</b> The work stays off main.</li>
+</ul>
+<p><b>What is proven.</b> The tool already makes a branch from main and opens and merges a pull request into main. Not yet shown: that the permission checker lets ARCH merge this particular pull request. If it refuses, you click Merge on the pull request instead.</p>
+<p><b>Also proposed, separately:</b> one sentence in the trial's setup text saying the tranche branch starts from main, so this cannot recur. "No change" is also fine there, because the design already says it.</p>
+<p><b>To choose:</b> type here, for example <code>Decision: C, and fix the setup text</code>. Then you type one instruction in the trial coordinator's session, which I will give you word for word, and ARCH does the rest. Afterwards I give you one page to check: it should list exactly two changed files.</p>
 </section>
 
 <section class="card">
-<h2>Done today: your new approvals for this repository</h2>
-<p>You landed the drafted approvals on main yourself (20 Nov), word for word as drafted. From now on a change to them works this way: I draft it, put it in a pull request, and you click Merge. Sessions read approvals when they start, so the new text applies from the next PROCESS session onward.</p>
-</section>
-
-<section class="card">
-<h2>Done today: you never edit a file or type a command</h2>
-<p>On your <b>"Decision: as recommended"</b> (20 Nov), Process4 now says every act of yours is clicks on pages named by their full address, or words you type into a session or a form box. Your approvals: you type the words in a session, it puts them unchanged in a pull request it never merges, and you click Merge. The forbidden-commands list is a technical list PROCESS keeps. Missing environment settings: a session proposes the change and you click Approve. The old rule that you merge the tool's pull requests is gone. Normal merges into main need nothing from you. Your word on a merge is needed only for a hold you ask for, and for a tranche you choose to merge with its flaws named.</p>
-<p>For the trial's conflict right now: work through it with the trial's coordinator, as you said.</p>
-</section>
-
-<section class="wait">
-<h2>Waiting for you: finishing the account switch</h2>
-<p><b>What is now confirmed on this account.</b> The shared state carried over untouched. PROCESS runs on your <b>BioDefault</b> environment, and its setup script loads the permissions settings (the <code>autoMode</code> block). I checked that the block is loaded in this session. So the question PROCESS #2 put to you (restart PROCESS on BioDefault: A, B or C) is settled in practice: PROCESS now runs there. I recorded myself in the shared state as PROCESS #4.</p>
-<ol>
-<li><b>Start the trial's ROOT on BioDefault.</b> Use <code>neobobkrause/process3-probes</code> as the only repository, Auto mode, with a plain prompt. A session that holds more than one repository loads no deny list (PROCESS #3 was started with two repositories and is now archived). The same applies to future PROCESS sessions: <code>neobobkrause/process4</code> alone, main, BioDefault.</li>
-<li><b>Tell me the trial's new ROOT</b> once it is running. Its session title is enough. I record it once in my products list, and from then on I announce each new PROCESS to it myself. The list is empty now, so until you tell me, I cannot reach the trial.</li>
-<li><b>Then, when you choose:</b> tell the trial's coordinator "move to the latest Process4 version". The trial still pins process4 <code>7d8e529</code>, so it lacks every fix since then. Nothing forces this move.</li>
-</ol>
-<p>Still yours from the switch checklist: the trial's own page is on the old account, so the trial's coordinator will republish it here once it runs.</p>
-</section>
-
-<section class="card">
-<h2>Settled on 20 Nov</h2>
-<p><b>The four reading limits</b>, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b>, your exception, to minimise expensive refreshes.</p>
-<p><b>The two measurement findings</b>, each as recommended. A <i>silent cut read</i> needs no further change, because the 60,000 limit sits below the cut and every governing text states its own length. On <i>reading a session's own fill</i>, design part 7 §1 now records that sessions read their fill through <code>get_session</code> and refresh at a natural pause when they cannot read it.</p>
-<p><b>Standardized session names</b>: <code>PROCESS #N</code>, or <code>product role #N</code> (for example <code>civicsmith ARCH #3</code>; a job is <code>civicsmith orders #2</code>), where N is the generation, kept in each long-lived role's handover record so it survives a full stop.</p>
-<p><b>The first account switch</b>, in your words (<i>"Decision: B — Move PROCESS to the new account too (to simplify this first account switch)"</i>): the trial and PROCESS move to the new account together, because their coordination is session messaging and the harness keeps that within one account.</p>
+<h2>Done today</h2>
+<ul>
+<li><b>PROCESS #5 is running</b>, recorded in the shared state. I put the trial's ROOT (<i>process3-probes ROOT #4</i>) in my products list and told it I am the live PROCESS.</li>
+<li><b>Your new approvals for this repository</b> are in force. A change to them works like this from now on: I draft it, put it in a pull request, and you click Merge.</li>
+<li><b>You never edit a file or type a command.</b> The trial's Process4 version (<code>3940d13</code>) already carries this, and the drafting route for your approvals. None of the options above asks you to edit a file.</li>
+</ul>
 </section>
 
 <section>
 <h2>Later, when you like</h2>
 <ul>
-<li><b>Record that a role session can name itself.</b> The design still lists this as unproven (part 7 §3). It has now worked twice in Auto mode: PROCESS #1 and PROCESS #4 each set their own title. Options: <b>A</b>, move it from "not proven" to "seen to work" in part 7 §3 (recommended, a record of a measured fact, adds nothing); <b>B</b>, no change.</li>
+<li><b>Record that a role session can name itself.</b> The design still lists this as unproven (part 7 §3). It has now worked three times in Auto mode (PROCESS #1, #4, #5). Options: <b>A</b>, move it to "seen to work" (recommended; it records a measured fact and adds nothing); <b>B</b>, no change.</li>
+<li><b>Measure once whether a session may place your approved approvals text in a pull request.</b> Option C's last step is the first real try of this.</li>
 </ul>
 </section>
 
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>All the open points are settled or closed</b>, and every decision is in the design decisions record. Your approvals wording is committed and in force. The Open Points page is on the old account.</li>
-<li><b>Civicsmith readiness.</b> The reading limits now have wide measured headroom. What stays unproven is scale (about 200 modules) and walks, deployment and release by sessions on Cloudflare. The design's position is that the first real tranche is the proof. My recommendation is unchanged: civicsmith's setup, then a small first tranche as the proof.</li>
+<li><b>The trial</b> is stopped (your account-switch instruction) and on Process4 <code>3940d13</code>, the latest. Tranche t1, round 6: jobs done, nothing waiting.</li>
+<li><b>Civicsmith readiness.</b> Unchanged: civicsmith's setup, then a small first tranche as the proof. This fault is one more reason its tranche branch must start from its main.</li>
 </ul>
-</section>
-
-<section>
-<h2>The trial</h2>
-<ul>
-<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>. It waits only for you to start its ROOT on this account.</li>
-<li><b>Still to try</b> (trial stages): a held merge and a stop reaching an open job; a job replaced at its third failed run; an approvals edit with a restart; stage 4 trials 2 and 3; stage 5 walks. Each comes to you with steps when its moment arrives.</li>
-</ul>
-</section>
-
-<section class="card">
-<h2>In motion</h2>
-<p>Nothing else is in motion. Process3-conformance and Codex work stay dropped, per your word.</p>
 </section>
 </main>
