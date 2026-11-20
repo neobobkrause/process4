@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 85 lines. Last section: "5. The permissions-management settings".
+Length: 86 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -53,6 +53,7 @@ As measured on Claude Code:
 - Whether a session's browser can reach the development site.
 - Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice, as "Destructive or Unwanted Actions" and "Undermining Oversight"). PROCESS is therefore started and refreshed by the owner, not by ROOT (part 4, section 5; part 6, section 7).
 - A cross-repository read of another repository's shared state is refused. A session is scoped to its own repository; a `gh api` read of another repository's issue returns HTTP 403 ("GitHub access to this repository is not enabled for this session"), even for a public repository, measured 20 November 2026 in both directions (a product session reading the process repository, and the reverse). A plain `git` clone of the public process repository works (the read-only tool copy); only the `gh api` read of its issue — where the shared state lives — is refused. So the coordinator finds the live PROCESS from its own product's roles record, kept current by a cross-repository message, not by reading the process repository (part 4, section 5; part 6, section 7).
+- Whether a session can reach a session under a **different Claude account**. Session-to-session acts are scoped to one account by the harness's own tools — creating a session requires the same account, and a listing shows only the account's own sessions — so a cross-account reach (messaging, listing, create, archive) is treated as unavailable. PROCESS and the products it serves therefore run under one account, and an account switch moves them together (part 6, section 7; build text 6, section 1; the owner's decision of 20 November 2026). Not measured directly across two accounts.
 - How many live sessions the account bears. New starts once failed silently at about fifty.
 - Whether a program goes on reaching GitHub from a session at a real rate. With the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment.
 - Whether a role session in Auto mode can set a session's name (its own, or a job's or walking session's it starts) with the harness's set-session-title. The session-naming convention (part 4, section 11; section 1 above) rests on it and has not been put to the checker.

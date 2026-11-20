@@ -1,4 +1,4 @@
-Length: 153 lines. Last section: "7. Unproven, and not settled here".
+Length: 161 lines. Last section: "7. Unproven, and not settled here".
 
 # Process4 build text 6: the account switch
 
@@ -22,6 +22,14 @@ trial (stage 7, item 15).
   part 7, section 5). It may coincide with a switch of the GitHub account the sessions
   act as, or of the hosting account a product deploys to; each of those is the owner's
   own act in the new account (the design, part 7, section 4; part 9).
+- **PROCESS and the products it serves run under one Claude account.** Their coordination is
+  session-to-session messaging, which the harness scopes to a single account — a session
+  reaches only its own account's sessions (the design, part 7, section 3). So PROCESS cannot
+  reach a product's sessions, nor they PROCESS, across accounts, and cross-account
+  PROCESS↔product coordination is not built. An account switch that moves a product PROCESS
+  serves therefore moves PROCESS to the same account, keeping the two together; they are not
+  split across accounts (the owner's decision B, 20 November 2026). A future cross-account
+  arrangement would need a coordination channel this process does not have.
 - It is **the one way back** (the design, part 4, section 7) with the owner's new-account
   acts done first: a full stop, then the owner's acts in the new account, then he starts
   ROOT, and ROOT rebuilds everything from the shared state and the repository.
