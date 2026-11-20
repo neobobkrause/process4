@@ -1,0 +1,61 @@
+{
+ "id": "role-K20-4096-s4",
+ "K": 20,
+ "bytes": 4141,
+ "singleRules": 46,
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 46,
+  "firstLast": 46,
+  "firstErr": null
+ },
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Ember register",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "BT-1031",
+   "ok": true
+  },
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "DX-3628",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "CS-7389",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: D\nS3: A\nS4: C\nS5: C\nS6: B\nS7: D\nS8: D\nS9: D\nS10: C\nS11: D\nS12: B\nS13: B\nS14: B\nS15: C\nS16: B\nS17: D\nS18: C\nS19: C\nS20: D\nS21: B\nS22: D\nS23: D\nS24: A\nS25: B\nS26: D\nS27: A\nS28: B\nS29: B\nS30: C\nS31: C\nS32: C\nS33: A\nS34: B\nS35: D\nS36: D\nS37: A\nS38: C\nS39: A\nS40: A\nS41: D\nS42: D\nS43: C\nS44: A\nS45: C\nS46: A\nS47: D\nS48: B\nS49: D\nQ1: NOT STATED\nQ2: BT-1031\nQ3: DX-3628\nQ4: NOT STATED\nQ5: CS-7389",
+ "compactions": 0,
+ "cost": 0.13055740000000002,
+ "status": "CLEAN",
+ "seconds": 30
+}

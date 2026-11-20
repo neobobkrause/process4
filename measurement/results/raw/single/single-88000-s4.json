@@ -1,0 +1,44 @@
+{
+ "id": "single-88000-s4",
+ "kind": "single",
+ "bytes": 88000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:10.107Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 582,
+   "firstLast": 582,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "The file wasn't fully read, so I can't reply READ COMPLETE. The single Read call stopped at the tool's size limit and returned only lines 1–582 of 789. I have not seen lines 583–789, which is the rest of \"4. Silent in the design\" in the starting-texts index and everything after it.\n\nYou asked for one plain Read with no offset or limit, so I didn't make a second call. If you want the whole file, I can do one more Read with `allow_large: true`, or read lines 583–789 with an offset. Otherwise, I can only answer questions about lines 1–582.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 26936,
+  "cost": 0.2007314,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 582,
+   "firstLast": 582,
+   "firstErr": null
+  }
+ ],
+ "seconds": 12
+}

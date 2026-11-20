@@ -1,0 +1,174 @@
+{
+ "id": "single-72000-s1",
+ "kind": "single",
+ "bytes": 72000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:43.179Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 72000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 674,
+   "firstLast": 674,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 29897,
+  "cost": 0.2177786,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NOT STATED\n2. TJ-3043\n3. MQ-5335\n4. NOT STATED\n5. NK-4512\n6. JB-3493\n7. ZK-1611\n8. CG-3993\n9. QK-2691\n10. KF-2235\n11. LQ-2600\n12. RC-3414\n13. WS-7347\n14. TZ-2876",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 29175,
+  "cost": 0.4407784,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Ember register",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "TJ-3043",
+    "answer": "TJ-3043",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "MQ-5335",
+    "answer": "MQ-5335",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "NK-4512",
+    "answer": "NK-4512",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "JB-3493",
+    "answer": "JB-3493",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "ZK-1611",
+    "answer": "ZK-1611",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CG-3993",
+    "answer": "CG-3993",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "QK-2691",
+    "answer": "QK-2691",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "KF-2235",
+    "answer": "KF-2235",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "LQ-2600",
+    "answer": "LQ-2600",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RC-3414",
+    "answer": "RC-3414",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "WS-7347",
+    "answer": "WS-7347",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "TZ-2876",
+    "answer": "TZ-2876",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 18
+}

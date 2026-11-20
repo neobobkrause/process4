@@ -1,0 +1,44 @@
+{
+ "id": "single-88000-s1",
+ "kind": "single",
+ "bytes": 88000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:13.201Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 2,
+   "firstWhole": false,
+   "coveredAll": true,
+   "covered": 785,
+   "firstLast": 585,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\n(I had to make two Read calls, not one, because the tool cut the first one off at line 585 of 785. I've now read all 785 lines. The last few lines, 777–784, are fragments that break off mid-sentence.)",
+  "uses": 2,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 35249,
+  "cost": 0.27636879999999997,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 2,
+   "firstWhole": false,
+   "coveredAll": true,
+   "covered": 785,
+   "firstLast": 585,
+   "firstErr": null
+  }
+ ],
+ "seconds": 15
+}

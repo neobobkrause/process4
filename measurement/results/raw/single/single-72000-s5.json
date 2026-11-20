@@ -1,0 +1,174 @@
+{
+ "id": "single-72000-s5",
+ "kind": "single",
+ "bytes": 72000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:43.496Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 72000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 672,
+   "firstLast": 672,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 29307,
+  "cost": 0.2130598,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. BV-9420\n2. KK-3528\n3. MX-2654\n4. TS-8705\n5. KH-3565\n6. KL-8714\n7. WD-1583\n8. BW-6459\n9. VL-8755\n10. NOT STATED\n11. XC-5081\n12. DM-1209\n13. NOT STATED\n14. SC-2217",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 28581,
+  "cost": 0.4312076,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "BV-9420",
+    "answer": "BV-9420",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "KK-3528",
+    "answer": "KK-3528",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "MX-2654",
+    "answer": "MX-2654",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "TS-8705",
+    "answer": "TS-8705",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "KH-3565",
+    "answer": "KH-3565",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "KL-8714",
+    "answer": "KL-8714",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "WD-1583",
+    "answer": "WD-1583",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "BW-6459",
+    "answer": "BW-6459",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "VL-8755",
+    "answer": "VL-8755",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "XC-5081",
+    "answer": "XC-5081",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "DM-1209",
+    "answer": "DM-1209",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SC-2217",
+    "answer": "SC-2217",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 20
+}

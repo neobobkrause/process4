@@ -1,0 +1,61 @@
+{
+ "id": "role-K15-4096-s1",
+ "K": 15,
+ "bytes": 4024,
+ "singleRules": 35,
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 45,
+  "firstLast": 45,
+  "firstErr": null
+ },
+ "rulesApplied": 15,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "FK-3442",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "CG-2932",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": true,
+   "answer": "FH-6824",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: C\nS3: A\nS4: D\nS5: C\nS6: D\nS7: B\nS8: A\nS9: A\nS10: C\nS11: C\nS12: A\nS13: B\nS14: A\nS15: C\nS16: A\nS17: B\nS18: C\nS19: C\nS20: C\nS21: D\nS22: D\nS23: A\nS24: A\nS25: A\nS26: D\nS27: A\nS28: D\nS29: D\nS30: A\nS31: A\nS32: D\nS33: A\nS34: B\nS35: C\nS36: B\nS37: B\nS38: A\nQ1: FK-3442\nQ2: CG-2932\nQ3: FH-6824\nQ4: NOT STATED\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.12226580000000001,
+ "status": "CLEAN",
+ "seconds": 29
+}

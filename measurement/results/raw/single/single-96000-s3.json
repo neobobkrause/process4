@@ -1,0 +1,44 @@
+{
+ "id": "single-96000-s3",
+ "kind": "single",
+ "bytes": 96000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:48.167Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 633,
+   "firstLast": 633,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ INCOMPLETE. My one Read call stopped at line 633 of 959 because of the tool's size limit, so I haven't seen lines 634–959. The cut falls in design Part 6, section 2 (\"The owner's standing approvals\"), just after \"The tracking number for the Oriel journal is JH-8256.\"\n\nI didn't read any further because you asked for a single plain Read call. To get the rest, you can let me make a second call (offset 634, or `allow_large`). If you don't, I'll answer from lines 1–633 only and say so whenever a question depends on the part I haven't read.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 25055,
+  "cost": 0.18534299999999998,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 633,
+   "firstLast": 633,
+   "firstErr": null
+  }
+ ],
+ "seconds": 18
+}

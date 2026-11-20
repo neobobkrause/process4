@@ -1,0 +1,404 @@
+{
+ "id": "set-220000-s1",
+ "kind": "set",
+ "bytes": 220000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:21.509Z",
+ "coverage": [
+  {
+   "file": "01-build-02b-the-comment-and-the-listing.md",
+   "bytes": 10318,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 128,
+   "firstLast": 128,
+   "firstErr": null
+  },
+  {
+   "file": "02-appendix-working-notes.md",
+   "bytes": 11962,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 127,
+   "firstLast": 127,
+   "firstErr": null
+  },
+  {
+   "file": "03-build-05-the-records-and-following.md",
+   "bytes": 17127,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 205,
+   "firstLast": 205,
+   "firstErr": null
+  },
+  {
+   "file": "04-design-02-modules-jobs-tests-and-the-notice.md",
+   "bytes": 16646,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-04-roles-and-sessions.md",
+   "bytes": 22455,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 162,
+   "firstLast": 162,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-01-purpose-owner-and-decisions.md",
+   "bytes": 10488,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "07-starting_texts-job.md",
+   "bytes": 3636,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-05-reading-and-documents.md",
+   "bytes": 5996,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "09-build-01b-the-commands.md",
+   "bytes": 12235,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 43,
+   "firstLast": 43,
+   "firstErr": null
+  },
+  {
+   "file": "10-design-00-index.md",
+   "bytes": 10948,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 94,
+   "firstLast": 94,
+   "firstErr": null
+  },
+  {
+   "file": "11-starting_texts-coordinator.md",
+   "bytes": 3868,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "12-starting_texts-00-index.md",
+   "bytes": 9705,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 83,
+   "firstLast": 83,
+   "firstErr": null
+  },
+  {
+   "file": "13-starting_texts-process.md",
+   "bytes": 4086,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "14-starting_texts-arch.md",
+   "bytes": 3842,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "15-build-03-the-walks.md",
+   "bytes": 20922,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 199,
+   "firstLast": 199,
+   "firstErr": null
+  },
+  {
+   "file": "16-starting_texts-watcher.md",
+   "bytes": 2689,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "17-design-08-harness-codex.md",
+   "bytes": 4450,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "18-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10310,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "19-build-01-the-tool-and-the-required-run.md",
+   "bytes": 15336,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 108,
+   "firstLast": 108,
+   "firstErr": null
+  },
+  {
+   "file": "20-build-06-the-account-switch.md",
+   "bytes": 9683,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 156,
+   "firstLast": 156,
+   "firstErr": null
+  },
+  {
+   "file": "21-starting_texts-lane.md",
+   "bytes": 3286,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "22-starting_texts-walking-session.md",
+   "bytes": 3622,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "23-design-09-hosting-cloudflare.md",
+   "bytes": 2661,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 32,
+   "firstLast": 32,
+   "firstErr": null
+  },
+  {
+   "file": "24-starting_texts-root.md",
+   "bytes": 3729,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 35,
+   "firstLast": 35,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 24,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 84179,
+  "cost": 0.765676,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. JH-3047\n2. NOT STATED\n3. DW-2885\n4. DQ-8565\n5. RB-8130\n6. NH-4859\n7. GM-7834\n8. XQ-8355\n9. RN-9315\n10. MP-9098\n11. NOT STATED\n12. JB-4310\n13. GJ-8930\n14. QP-4117",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 83339,
+  "cost": 1.4219478,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JH-3047",
+    "answer": "JH-3047",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DW-2885",
+    "answer": "DW-2885",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "DQ-8565",
+    "answer": "DQ-8565",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RB-8130",
+    "answer": "RB-8130",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NH-4859",
+    "answer": "NH-4859",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "GM-7834",
+    "answer": "GM-7834",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "XQ-8355",
+    "answer": "XQ-8355",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "RN-9315",
+    "answer": "RN-9315",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "MP-9098",
+    "answer": "MP-9098",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "JB-4310",
+    "answer": "JB-4310",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "GJ-8930",
+    "answer": "GJ-8930",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "QP-4117",
+    "answer": "QP-4117",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 46
+}

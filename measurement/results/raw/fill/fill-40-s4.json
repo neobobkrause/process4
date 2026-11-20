@@ -1,0 +1,306 @@
+{
+ "id": "fill-40-s4",
+ "pct": 40,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 400000,
+ "answerCtx": 401010,
+ "fillPct": 40.1,
+ "inTolerance": true,
+ "filesRead": 28,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 190,
+   "firstLast": 190,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.",
+   "ok": true
+  },
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake.",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run.",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150.",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused; REST worked.",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on.",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests`",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  },
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more.",
+   "ok": true
+  },
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "CJ-5183",
+    "answer": "CJ-5183",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CD-2671",
+    "answer": "CD-2671",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CS-6014",
+    "answer": "CS-6014",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "BN-6781",
+    "answer": "BN-6781",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NF-6320",
+    "answer": "NF-6320",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "GJ-6924",
+    "answer": "GJ-6924",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "JL-5560",
+    "answer": "JL-5560",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "TS-5894",
+    "answer": "TS-5894",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "QF-7612",
+    "answer": "QF-7612",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NZ-4351",
+    "answer": "NZ-4351",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "LH-4251",
+    "answer": "LH-4251",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QP-2107",
+    "answer": "QP-2107",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 123,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 12599,
+   "maxCtx": 12599,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 146566,
+   "maxCtx": 146566,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 290808,
+   "maxCtx": 290808,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 394906,
+   "maxCtx": 394906,
+   "uses": 8,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 400267,
+   "maxCtx": 400267,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 401010,
+   "maxCtx": 401010,
+   "uses": 0,
+   "reply": "1. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.\n2. The hourly wake.\n3. At its third failed run.\n4. 150.\n5. CJ-5183\n6. CD-2671\n7. G",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 14.37,
+ "reply": "1. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.\n2. The hourly wake.\n3. At its third failed run.\n4. 150.\n5. CJ-5183\n6. CD-2671\n7. GraphQL was refused; REST worked.\n8. The most doubtful thing that everything else rests on.\n9. CS-6014\n10. BN-6781\n11. NF-6320\n12. NOT STATED\n13. GJ-6924\n14. JL-5560\n15. `module-tests`\n16. `--development`\n17. `tool-tests`\n18. Twenty or more.\n19. TS-5894\n20. QF-7612\n21. NZ-4351\n22. LH-4251\n23. NOT STATED\n24. QP-2107\n25. NOT STATED\n\nHANDOVER\n\nI read carrier.md, notes-001 to notes-028 and requirements.md, each once and in full. carrier.md is Part 4 of the Process4 design (roles and sessions). Its appended ARCH starting text says it is 27 lines long, but the file stops partway through it, at \"Refr\" and \"State term reads copy\". The notes are Process3 evidence, audits, draft definitions and Ledger extracts. requirements.md is build text 4, which sets the order of building and trying in stages 0 to 7. I answered 25 questions from memory, without opening any file again. Three answers are NOT STATED: the Quartz roster code, the Plover digest code and a per-stage dollar budget. Nothing else remains, except checking the truncated end of carrier.md against its source if it matters.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 68
+}

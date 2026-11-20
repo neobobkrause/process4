@@ -1,0 +1,174 @@
+{
+ "id": "single-48000-s3",
+ "kind": "single",
+ "bytes": 48000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:44.712Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 48000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 340,
+   "firstLast": 340,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 20673,
+  "cost": 0.1465672,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. MT-3329\n2. NL-7734\n3. TN-1956\n4. NC-9684\n5. CV-9266\n6. ZM-2486\n7. QM-2359\n8. NT-2412\n9. HB-3287\n10. NOT STATED\n11. DJ-3583\n12. NW-7281\n13. SS-6086\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 19948,
+  "cost": 0.295691,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "MT-3329",
+    "answer": "MT-3329",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "NL-7734",
+    "answer": "NL-7734",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "TN-1956",
+    "answer": "TN-1956",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "NC-9684",
+    "answer": "NC-9684",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CV-9266",
+    "answer": "CV-9266",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZM-2486",
+    "answer": "ZM-2486",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QM-2359",
+    "answer": "QM-2359",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NT-2412",
+    "answer": "NT-2412",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "HB-3287",
+    "answer": "HB-3287",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DJ-3583",
+    "answer": "DJ-3583",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NW-7281",
+    "answer": "NW-7281",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SS-6086",
+    "answer": "SS-6086",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 23
+}

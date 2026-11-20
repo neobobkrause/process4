@@ -1,0 +1,44 @@
+{
+ "id": "single-80000-s4",
+ "kind": "single",
+ "bytes": 80000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:11.708Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 588,
+   "firstLast": 588,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I can't reply READ COMPLETE, because the read didn't finish. My single plain Read call stopped at the tool's size cap: I got lines 1–588 of 724. The last 136 lines are unread, starting partway through Part 7 (the Claude Code harness table, just after the row about \"The shared state\").\n\nYou told me to make one plain Read call and read nothing else, so I haven't made a second call. The tool offers two ways to get the rest: a second call for lines 589–724, or a re-read with its large-file option. If you want the whole text read before your questions, tell me which to use and I'll do it.\n\nIf we go ahead with what I have, I can answer questions about lines 1–588. For anything in the last 136 lines, I'll say I haven't read it.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 26457,
+  "cost": 0.2000194,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 588,
+   "firstLast": 588,
+   "firstErr": null
+  }
+ ],
+ "seconds": 13
+}

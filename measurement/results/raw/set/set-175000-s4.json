@@ -1,0 +1,364 @@
+{
+ "id": "set-175000-s4",
+ "kind": "set",
+ "bytes": 175000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:09.721Z",
+ "coverage": [
+  {
+   "file": "01-starting_texts-lane.md",
+   "bytes": 3340,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "02-starting_texts-job.md",
+   "bytes": 3579,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "03-design-08-harness-codex.md",
+   "bytes": 4504,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "04-design-01-purpose-owner-and-decisions.md",
+   "bytes": 10543,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 84,
+   "firstLast": 84,
+   "firstErr": null
+  },
+  {
+   "file": "05-starting_texts-root.md",
+   "bytes": 3785,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 35,
+   "firstLast": 35,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-00-index.md",
+   "bytes": 10891,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 94,
+   "firstLast": 94,
+   "firstErr": null
+  },
+  {
+   "file": "07-design-07-harness-claude-code.md",
+   "bytes": 9586,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10310,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "09-design-09-hosting-cloudflare.md",
+   "bytes": 2613,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "10-build-04-the-trial.md",
+   "bytes": 14719,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  {
+   "file": "11-build-01-the-tool-and-the-required-run.md",
+   "bytes": 15335,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "12-starting_texts-coordinator.md",
+   "bytes": 3918,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "13-appendix-working-notes.md",
+   "bytes": 4029,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 57,
+   "firstLast": 57,
+   "firstErr": null
+  },
+  {
+   "file": "14-design-10-open-and-unproven.md",
+   "bytes": 14274,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 112,
+   "firstLast": 112,
+   "firstErr": null
+  },
+  {
+   "file": "15-build-03-the-walks.md",
+   "bytes": 20922,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 199,
+   "firstLast": 199,
+   "firstErr": null
+  },
+  {
+   "file": "16-build-02-the-forms.md",
+   "bytes": 14730,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 180,
+   "firstLast": 180,
+   "firstErr": null
+  },
+  {
+   "file": "17-starting_texts-arch.md",
+   "bytes": 3898,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "18-build-05-the-records-and-following.md",
+   "bytes": 17195,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 207,
+   "firstLast": 207,
+   "firstErr": null
+  },
+  {
+   "file": "19-starting_texts-watcher.md",
+   "bytes": 2743,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "20-starting_texts-process.md",
+   "bytes": 4086,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 20,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 68697,
+  "cost": 0.5985590000000001,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. PP-3056\n2. NOT STATED\n3. JL-1202\n4. FS-3394\n5. LH-3234\n6. DL-6069\n7. QW-4691\n8. WK-1759\n9. WW-1044\n10. MM-9732\n11. FW-8839\n12. FG-5933\n13. RF-7645\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 67873,
+  "cost": 1.1310428,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PP-3056",
+    "answer": "PP-3056",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JL-1202",
+    "answer": "JL-1202",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FS-3394",
+    "answer": "FS-3394",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "LH-3234",
+    "answer": "LH-3234",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "DL-6069",
+    "answer": "DL-6069",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "QW-4691",
+    "answer": "QW-4691",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WK-1759",
+    "answer": "WK-1759",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WW-1044",
+    "answer": "WW-1044",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "MM-9732",
+    "answer": "MM-9732",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "FW-8839",
+    "answer": "FW-8839",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "FG-5933",
+    "answer": "FG-5933",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "RF-7645",
+    "answer": "RF-7645",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 33
+}

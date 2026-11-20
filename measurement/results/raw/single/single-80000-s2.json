@@ -1,0 +1,44 @@
+{
+ "id": "single-80000-s2",
+ "kind": "single",
+ "bytes": 80000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:09.747Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 657,
+   "firstLast": 657,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I couldn't read the whole file. The single Read call stopped at line 657 because of the size cap, so lines 658 to 836 are missing.\n\nWhat I did read runs from build text 5 (the records, and what the tool follows) through Part 10, Part 1, the coordinator's starting text, Part 8 (Codex), ARCH's starting text, build text 2b, and the start of build text 2. That last one stops partway through section 1, \"What was proven, and in what form.\" Its sections 2 to 9 and anything after them are in the part I didn't see.\n\nYou asked for one plain Read call and nothing else, so I haven't read the rest. If you ask about anything in lines 658 to 836, I'll say it's unread rather than guess.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 28537,
+  "cost": 0.2148598,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 657,
+   "firstLast": 657,
+   "firstErr": null
+  }
+ ],
+ "seconds": 11
+}

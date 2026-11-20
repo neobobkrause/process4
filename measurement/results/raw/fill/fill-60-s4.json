@@ -1,0 +1,326 @@
+{
+ "id": "fill-60-s4",
+ "pct": 60,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 600000,
+ "answerCtx": 605881,
+ "fillPct": 60.59,
+ "inTolerance": true,
+ "filesRead": 43,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 190,
+   "firstLast": 190,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run.",
+   "ok": true
+  },
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.",
+   "ok": true
+  },
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on.",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests`",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150",
+   "ok": true
+  },
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake.",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused; REST worked.",
+   "ok": true
+  },
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more.",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Plover digest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CD-2671",
+    "answer": "CD-2671",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "BN-6781",
+    "answer": "BN-6781",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "CJ-5183",
+    "answer": "CJ-5183",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "JL-5560",
+    "answer": "JL-5560",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "GJ-6924",
+    "answer": "GJ-6924",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CS-6014",
+    "answer": "CS-6014",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QP-2107",
+    "answer": "QP-2107",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NF-6320",
+    "answer": "NF-6320",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NZ-4351",
+    "answer": "NZ-4351",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "TS-5894",
+    "answer": "TS-5894",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "QF-7612",
+    "answer": "QF-7612",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "LH-4251",
+    "answer": "LH-4251",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 129,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 12593,
+   "maxCtx": 12593,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 141347,
+   "maxCtx": 141347,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 281263,
+   "maxCtx": 281263,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 417644,
+   "maxCtx": 417644,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 558312,
+   "maxCtx": 558312,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 599725,
+   "maxCtx": 599725,
+   "uses": 3,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 605086,
+   "maxCtx": 605086,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 605881,
+   "maxCtx": 605881,
+   "uses": 0,
+   "reply": "1. NOT STATED\n2. NOT STATED\n3. At its third failed run.\n4. CD-2671\n5. BN-6781\n6. CJ-5183\n7. JL-5560\n8. GJ-6924\n9. CS-6014\n10. QP-2107\n11. The one path stage 0 takes: a script of a few lines, run with ",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 5.87,
+ "reply": "1. NOT STATED\n2. NOT STATED\n3. At its third failed run.\n4. CD-2671\n5. BN-6781\n6. CJ-5183\n7. JL-5560\n8. GJ-6924\n9. CS-6014\n10. QP-2107\n11. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.\n12. `tool-tests`\n13. NF-6320\n14. The most doubtful thing that everything else rests on.\n15. NZ-4351\n16. TS-5894\n17. `module-tests`\n18. 150\n19. The hourly wake.\n20. NOT STATED\n21. `--development`\n22. QF-7612\n23. LH-4251\n24. GraphQL was refused; REST worked.\n25. Twenty or more.\n\nHANDOVER\n\nI read these files in full: carrier.md (Part 4 of the Process4 design on roles and sessions, plus the reference codes), notes-001 to notes-043 (Process4 drafts, audits, evidence, the owner's words and Codex studies) and requirements.md (build text 4, the order of building and trying, stages 0 to 7). carrier.md's header says 161 lines, but the file runs longer and ends in a cut-off fragment of an ARCH starting text. I wrote no files and ran nothing. I answered 25 questions from memory and marked 4 as NOT STATED because the files don't give them: the dollar budget, Plover, Quartz and a per-stage cost. Nothing has been checked against the files since. A successor should re-check any answer that matters and confirm whether the cut-off end of carrier.md matters.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 95
+}

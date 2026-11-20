@@ -1,0 +1,106 @@
+value,point,trial,status,bytes_or_fill,rules,probe_recall,neg_controls_ok,missed_classes,work_answers,handover_ok,context_tokens_at_answer,first_read_whole,cut_returned_bytes,model,effort
+1-single,12000,single-12000-s1,CLEAN,12000,,12/12,2/2,,,,7918,true,,claude-opus-5-5,medium
+1-single,12000,single-12000-s2,CLEAN,12000,,12/12,2/2,,,,7658,true,,claude-opus-5-5,medium
+1-single,12000,single-12000-s3,CLEAN,12000,,12/12,2/2,,,,8001,true,,claude-opus-5-5,medium
+1-single,12000,single-12000-s4,CLEAN,12000,,12/12,2/2,,,,7914,true,,claude-opus-5-5,medium
+1-single,12000,single-12000-s5,CLEAN,12000,,12/12,2/2,,,,7878,true,,claude-opus-5-5,medium
+1-single,24000,single-24000-s1,CLEAN,24000,,12/12,2/2,,,,12700,true,,claude-opus-5-5,medium
+1-single,24000,single-24000-s2,CLEAN,24000,,12/12,2/2,,,,12506,true,,claude-opus-5-5,medium
+1-single,24000,single-24000-s3,CLEAN,24000,,12/12,2/2,,,,11602,true,,claude-opus-5-5,medium
+1-single,24000,single-24000-s4,CLEAN,24000,,12/12,2/2,,,,12345,true,,claude-opus-5-5,medium
+1-single,24000,single-24000-s5,CLEAN,24000,,12/12,2/2,,,,11875,true,,claude-opus-5-5,medium
+1-single,48000,single-48000-s1,CLEAN,48000,,12/12,2/2,,,,20480,true,,claude-opus-5-5,medium
+1-single,48000,single-48000-s2,CLEAN,48000,,12/12,2/2,,,,20040,true,,claude-opus-5-5,medium
+1-single,48000,single-48000-s3,CLEAN,48000,,12/12,2/2,,,,19948,true,,claude-opus-5-5,medium
+1-single,48000,single-48000-s4,CLEAN,48000,,12/12,2/2,,,,20550,true,,claude-opus-5-5,medium
+1-single,48000,single-48000-s5,CLEAN,48000,,12/12,2/2,,,,19959,true,,claude-opus-5-5,medium
+1-single,72000,single-72000-s1,CLEAN,72000,,12/12,2/2,,,,29175,true,,claude-opus-5-5,medium
+1-single,72000,single-72000-s2,CLEAN,72000,,12/12,2/2,,,,28330,true,,claude-opus-5-5,medium
+1-single,72000,single-72000-s3,CLEAN,72000,,12/12,2/2,,,,29051,true,,claude-opus-5-5,medium
+1-single,72000,single-72000-s4,CLEAN,72000,,12/12,2/2,,,,28552,true,,claude-opus-5-5,medium
+1-single,72000,single-72000-s5,CLEAN,72000,,12/12,2/2,,,,28581,true,,claude-opus-5-5,medium
+1-single,76000,single-76000-s1,CLEAN,76000,,12/12,2/2,,,,30109,true,,claude-opus-5-5,medium
+1-single,76000,single-76000-s2,CLEAN,76000,,12/12,2/2,,,,30271,true,,claude-opus-5-5,medium
+1-single,76000,single-76000-s3,CLEAN,76000,,12/12,2/2,,,,29828,true,,claude-opus-5-5,medium
+1-single,76000,single-76000-s4,CLEAN,76000,,12/12,2/2,,,,29807,true,,claude-opus-5-5,medium
+1-single,76000,single-76000-s5,CLEAN,76000,,12/12,2/2,,,,30174,true,,claude-opus-5-5,medium
+1-single,80000,single-80000-s1,MECHANICAL-CUT,80000,,,,,,,,false,66377,claude-opus-5-5,medium
+1-single,80000,single-80000-s2,MECHANICAL-CUT,80000,,,,,,,,false,66784,claude-opus-5-5,medium
+1-single,80000,single-80000-s3,MECHANICAL-CUT,80000,,,,,,,,false,61548,claude-opus-5-5,medium
+1-single,80000,single-80000-s4,MECHANICAL-CUT,80000,,,,,,,,false,62127,claude-opus-5-5,medium
+1-single,80000,single-80000-s5,MECHANICAL-CUT,80000,,,,,,,,false,64473,claude-opus-5-5,medium
+1-single,88000,single-88000-s1,MECHANICAL-CUT,88000,,,,,,,,false,70700,claude-opus-5-5,medium
+1-single,88000,single-88000-s2,MECHANICAL-CUT,88000,,,,,,,,false,67116,claude-opus-5-5,medium
+1-single,88000,single-88000-s3,MECHANICAL-CUT,88000,,,,,,,,false,66784,claude-opus-5-5,medium
+1-single,88000,single-88000-s4,MECHANICAL-CUT,88000,,,,,,,,false,63641,claude-opus-5-5,medium
+1-single,88000,single-88000-s5,MECHANICAL-CUT,88000,,,,,,,,false,60417,claude-opus-5-5,medium
+1-single,96000,single-96000-s1,MECHANICAL-CUT,96000,,,,,,,,false,60522,claude-opus-5-5,medium
+1-single,96000,single-96000-s2,MECHANICAL-CUT,96000,,,,,,,,false,66031,claude-opus-5-5,medium
+1-single,96000,single-96000-s3,MECHANICAL-CUT,96000,,,,,,,,false,55399,claude-opus-5-5,medium
+1-single,96000,single-96000-s4,MECHANICAL-CUT,96000,,,,,,,,false,69445,claude-opus-5-5,medium
+1-single,96000,single-96000-s5,MECHANICAL-CUT,96000,,,,,,,,false,67309,claude-opus-5-5,medium
+2-set,132000,set-132000-s1,CLEAN,132000,,12/12,2/2,,,,51683,true,,claude-opus-5-5,medium
+2-set,132000,set-132000-s2,CLEAN,132000,,12/12,2/2,,,,51875,true,,claude-opus-5-5,medium
+2-set,132000,set-132000-s3,CLEAN,132000,,12/12,2/2,,,,53074,true,,claude-opus-5-5,medium
+2-set,132000,set-132000-s4,CLEAN,132000,,12/12,2/2,,,,51835,true,,claude-opus-5-5,medium
+2-set,132000,set-132000-s5,CLEAN,132000,,12/12,2/2,,,,52260,true,,claude-opus-5-5,medium
+2-set,175000,set-175000-s1,CLEAN,175000,,12/12,2/2,,,,67964,true,,claude-opus-5-5,medium
+2-set,175000,set-175000-s2,CLEAN,175000,,12/12,2/2,,,,67137,true,,claude-opus-5-5,medium
+2-set,175000,set-175000-s3,CLEAN,175000,,12/12,2/2,,,,67488,true,,claude-opus-5-5,medium
+2-set,175000,set-175000-s4,CLEAN,175000,,12/12,2/2,,,,67873,true,,claude-opus-5-5,medium
+2-set,175000,set-175000-s5,CLEAN,175000,,12/12,2/2,,,,67961,true,,claude-opus-5-5,medium
+2-set,220000,set-220000-s1,CLEAN,220000,,12/12,2/2,,,,83339,true,,claude-opus-5-5,medium
+2-set,220000,set-220000-s2,CLEAN,220000,,12/12,2/2,,,,83241,true,,claude-opus-5-5,medium
+2-set,220000,set-220000-s3,CLEAN,220000,,12/12,2/2,,,,83280,true,,claude-opus-5-5,medium
+2-set,220000,set-220000-s4,CLEAN,220000,,12/12,2/2,,,,83150,true,,claude-opus-5-5,medium
+2-set,220000,set-220000-s5,CLEAN,220000,,12/12,2/2,,,,85008,true,,claude-opus-5-5,medium
+2-set,88000,set-88000-s1,CLEAN,88000,,12/12,2/2,,,,36073,true,,claude-opus-5-5,medium
+2-set,88000,set-88000-s2,CLEAN,88000,,12/12,2/2,,,,35999,true,,claude-opus-5-5,medium
+2-set,88000,set-88000-s3,CLEAN,88000,,12/12,2/2,,,,36530,true,,claude-opus-5-5,medium
+2-set,88000,set-88000-s4,CLEAN,88000,,12/12,2/2,,,,34853,true,,claude-opus-5-5,medium
+2-set,88000,set-88000-s5,CLEAN,88000,,12/12,2/2,,,,34982,true,,claude-opus-5-5,medium
+3-role,K10@4096,role-K10-4096-s1,CLEAN,3986,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@4096,role-K10-4096-s2,CLEAN,3980,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@4096,role-K10-4096-s3,CLEAN,3988,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@4096,role-K10-4096-s4,CLEAN,3988,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@4096,role-K10-4096-s5,CLEAN,3987,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@6144,role-K10-6144-s1,CLEAN,6173,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@6144,role-K10-6144-s2,CLEAN,6176,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@6144,role-K10-6144-s3,CLEAN,6181,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@6144,role-K10-6144-s4,CLEAN,6187,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K10@6144,role-K10-6144-s5,CLEAN,6185,10/10 (single rules 27),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K15@4096,role-K15-4096-s1,CLEAN,4024,15/15 (single rules 35),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K15@4096,role-K15-4096-s2,CLEAN,4027,15/15 (single rules 35),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K15@4096,role-K15-4096-s3,CLEAN,4025,15/15 (single rules 35),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K15@4096,role-K15-4096-s4,CLEAN,4027,15/15 (single rules 35),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K15@4096,role-K15-4096-s5,CLEAN,4031,15/15 (single rules 35),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K20@4096,role-K20-4096-s1,CLEAN,4144,20/20 (single rules 46),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,validation-openbook,role-K20-4096-s101-openbook,CLEAN,4145,20/20 (single rules 46),3/3,yes,,,,,n/a,,claude-opus-5-5,medium
+3-role,validation-openbook,role-K20-4096-s102-openbook,CLEAN,4146,20/20 (single rules 46),3/3,yes,,,,,n/a,,claude-opus-5-5,medium
+3-role,K20@4096,role-K20-4096-s2,CLEAN,4145,20/20 (single rules 46),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K20@4096,role-K20-4096-s3,CLEAN,4145,20/20 (single rules 46),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K20@4096,role-K20-4096-s4,CLEAN,4141,20/20 (single rules 46),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K20@4096,role-K20-4096-s5,CLEAN,4142,20/20 (single rules 46),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K5@4096,role-K5-4096-s1,CLEAN,3858,5/5 (single rules 11),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K5@4096,role-K5-4096-s2,CLEAN,3849,5/5 (single rules 11),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K5@4096,role-K5-4096-s3,CLEAN,3848,5/5 (single rules 11),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K5@4096,role-K5-4096-s4,CLEAN,3855,5/5 (single rules 11),3/3,yes,,,,,true,,claude-opus-5-5,medium
+3-role,K5@4096,role-K5-4096-s5,CLEAN,3846,5/5 (single rules 11),3/3,yes,,,,,true,,claude-opus-5-5,medium
+4-fill,20%,fill-20-s1,CLEAN,20.79%,,12/12,yes,,10/10,true,207916,true,,claude-opus-5-5,medium
+4-fill,20%,fill-20-s2,CLEAN,20.04%,,12/12,yes,,10/10,true,200415,true,,claude-opus-5-5,medium
+4-fill,20%,fill-20-s99,CLEAN,19.84%,,12/12,yes,,10/10,true,198433,true,,claude-opus-5-5,medium
+4-fill,40%,fill-40-s1,CLEAN,39.79%,,12/12,yes,,10/10,true,397934,true,,claude-opus-5-5,medium
+4-fill,40%,fill-40-s2,CLEAN,40.42%,,12/12,yes,,10/10,true,404170,true,,claude-opus-5-5,medium
+4-fill,40%,fill-40-s3,CLEAN,40.3%,,12/12,yes,,10/10,true,403029,true,,claude-opus-5-5,medium
+4-fill,40%,fill-40-s4,CLEAN,40.1%,,12/12,yes,,10/10,true,401010,true,,claude-opus-5-5,medium
+4-fill,40%,fill-40-s5,CLEAN,40.58%,,12/12,yes,,10/10,true,405799,true,,claude-opus-5-5,medium
+4-fill,60%,fill-60-s1,CLEAN,60.52%,,12/12,yes,,10/10,true,605183,true,,claude-opus-5-5,medium
+4-fill,60%,fill-60-s2,CLEAN,60.06%,,12/12,yes,,10/10,true,600557,true,,claude-opus-5-5,medium
+4-fill,60%,fill-60-s3,CLEAN,59.71%,,12/12,yes,,10/10,true,597051,true,,claude-opus-5-5,medium
+4-fill,60%,fill-60-s4,CLEAN,60.59%,,12/12,yes,,10/10,true,605881,true,,claude-opus-5-5,medium
+4-fill,60%,fill-60-s5,CLEAN,60.47%,,12/12,yes,,10/10,true,604747,true,,claude-opus-5-5,medium
+4-fill,80%,fill-80-s1,CLEAN,80.08%,,12/12,yes,,10/10,true,800787,true,,claude-opus-5-5,medium
+4-fill,80%,fill-80-s2,CLEAN,80.36%,,12/12,yes,,10/10,true,803645,true,,claude-opus-5-5,medium
+4-fill,80%,fill-80-s3,CLEAN,79.46%,,12/12,yes,,10/10,true,794647,true,,claude-opus-5-5,medium
+4-fill,80%,fill-80-s4,CLEAN,79.96%,,12/12,yes,,10/10,true,799605,true,,claude-opus-5-5,medium
+4-fill,80%,fill-80-s5,CLEAN,79.88%,,12/12,yes,,10/10,true,798792,true,,claude-opus-5-5,medium

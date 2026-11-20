@@ -1,0 +1,61 @@
+{
+ "id": "role-K15-4096-s4",
+ "K": 15,
+ "bytes": 4027,
+ "singleRules": 35,
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 45,
+  "firstLast": 45,
+  "firstErr": null
+ },
+ "rulesApplied": 15,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "PG-4693",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "NW-4101",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "TD-7904",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: B\nS3: A\nS4: A\nS5: B\nS6: A\nS7: C\nS8: C\nS9: B\nS10: B\nS11: B\nS12: D\nS13: C\nS14: B\nS15: B\nS16: C\nS17: D\nS18: C\nS19: D\nS20: C\nS21: A\nS22: B\nS23: B\nS24: D\nS25: C\nS26: D\nS27: C\nS28: B\nS29: C\nS30: B\nS31: C\nS32: C\nS33: A\nS34: D\nS35: B\nS36: A\nS37: D\nS38: D\nQ1: PG-4693\nQ2: NOT STATED\nQ3: NW-4101\nQ4: NOT STATED\nQ5: TD-7904",
+ "compactions": 0,
+ "cost": 0.11931779999999999,
+ "status": "CLEAN",
+ "seconds": 29
+}

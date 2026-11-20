@@ -1,0 +1,304 @@
+{
+ "id": "set-132000-s4",
+ "kind": "set",
+ "bytes": 132000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:04.148Z",
+ "coverage": [
+  {
+   "file": "01-build-06-the-account-switch.md",
+   "bytes": 9690,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 156,
+   "firstLast": 156,
+   "firstErr": null
+  },
+  {
+   "file": "02-starting_texts-arch.md",
+   "bytes": 3897,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "03-design-05-reading-and-documents.md",
+   "bytes": 6053,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "04-appendix-working-notes.md",
+   "bytes": 3311,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-10-open-and-unproven.md",
+   "bytes": 14221,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-08-harness-codex.md",
+   "bytes": 4450,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "07-build-02-the-forms.md",
+   "bytes": 14788,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 180,
+   "firstLast": 180,
+   "firstErr": null
+  },
+  {
+   "file": "08-starting_texts-watcher.md",
+   "bytes": 2689,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "09-build-05-the-records-and-following.md",
+   "bytes": 17239,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 209,
+   "firstLast": 209,
+   "firstErr": null
+  },
+  {
+   "file": "10-build-03-the-walks.md",
+   "bytes": 20922,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 199,
+   "firstLast": 199,
+   "firstErr": null
+  },
+  {
+   "file": "11-starting_texts-lane.md",
+   "bytes": 3286,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "12-design-06-rules-permissions-and-changing-the-process.md",
+   "bytes": 10971,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "13-design-02-modules-jobs-tests-and-the-notice.md",
+   "bytes": 16807,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 112,
+   "firstLast": 112,
+   "firstErr": null
+  },
+  {
+   "file": "14-starting_texts-walking-session.md",
+   "bytes": 3676,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 14,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 52639,
+  "cost": 0.4361056,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. HV-4857\n2. WG-8234\n3. RN-3154\n4. PP-7626\n5. ZF-3375\n6. NOT STATED\n7. KC-7896\n8. RQ-3628\n9. MK-3902\n10. TT-7912\n11. KV-3439\n12. NOT STATED\n13. GP-6954\n14. XT-3966",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 51835,
+  "cost": 0.8458654,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HV-4857",
+    "answer": "HV-4857",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WG-8234",
+    "answer": "WG-8234",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "RN-3154",
+    "answer": "RN-3154",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "PP-7626",
+    "answer": "PP-7626",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "ZF-3375",
+    "answer": "ZF-3375",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "KC-7896",
+    "answer": "KC-7896",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "RQ-3628",
+    "answer": "RQ-3628",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "MK-3902",
+    "answer": "MK-3902",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "TT-7912",
+    "answer": "TT-7912",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "KV-3439",
+    "answer": "KV-3439",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "GP-6954",
+    "answer": "GP-6954",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "XT-3966",
+    "answer": "XT-3966",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 29
+}

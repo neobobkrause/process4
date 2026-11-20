@@ -1,0 +1,44 @@
+{
+ "id": "single-96000-s4",
+ "kind": "single",
+ "bytes": 96000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:47.796Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 475,
+   "firstLast": 475,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I can't reply READ COMPLETE, because the read was cut off. The single plain Read call returned only lines 1–475 of the 681 lines in `carrier.md`, because the file is over the per-read size limit.\n\nWhat I read in full:\n- Part 10\n- Build text 1b (the tool's commands)\n- Parts 3, 1 and 2\n- The watcher's starting text\n- Part 6 up to the end of section 2\n\nI haven't seen lines 476–681, which hold the rest of Part 6 (sections 3–8) and whatever comes after it. Your instruction allowed one Read call only, so I didn't make another.\n\nThe file also says that when a read comes back cut, the session should not act on the part it has, but read the rest in order. If you want me to read the whole file, let me either read lines 476–681 in a second call or reread it with the large-file option. Otherwise I can only answer questions about the part above.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 27608,
+  "cost": 0.2078664,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 475,
+   "firstLast": 475,
+   "firstErr": null
+  }
+ ],
+ "seconds": 18
+}

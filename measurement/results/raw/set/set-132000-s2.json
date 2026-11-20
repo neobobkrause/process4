@@ -1,0 +1,344 @@
+{
+ "id": "set-132000-s2",
+ "kind": "set",
+ "bytes": 132000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:10.235Z",
+ "coverage": [
+  {
+   "file": "01-design-00-index.md",
+   "bytes": 11000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 96,
+   "firstLast": 96,
+   "firstErr": null
+  },
+  {
+   "file": "02-starting_texts-walking-session.md",
+   "bytes": 3676,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "03-build-06-the-account-switch.md",
+   "bytes": 9632,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 154,
+   "firstLast": 154,
+   "firstErr": null
+  },
+  {
+   "file": "04-starting_texts-arch.md",
+   "bytes": 3842,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-05-reading-and-documents.md",
+   "bytes": 5996,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-04-roles-and-sessions.md",
+   "bytes": 22504,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 162,
+   "firstLast": 162,
+   "firstErr": null
+  },
+  {
+   "file": "07-appendix-working-notes.md",
+   "bytes": 4975,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 57,
+   "firstLast": 57,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10423,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 77,
+   "firstLast": 77,
+   "firstErr": null
+  },
+  {
+   "file": "09-design-10-open-and-unproven.md",
+   "bytes": 14270,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 112,
+   "firstLast": 112,
+   "firstErr": null
+  },
+  {
+   "file": "10-design-09-hosting-cloudflare.md",
+   "bytes": 2613,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "11-starting_texts-job.md",
+   "bytes": 3579,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "12-design-07-harness-claude-code.md",
+   "bytes": 9586,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "13-design-08-harness-codex.md",
+   "bytes": 4450,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "14-starting_texts-coordinator.md",
+   "bytes": 3868,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "15-starting_texts-process.md",
+   "bytes": 4139,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "16-starting_texts-root.md",
+   "bytes": 3783,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 37,
+   "firstLast": 37,
+   "firstErr": null
+  },
+  {
+   "file": "17-build-02b-the-comment-and-the-listing.md",
+   "bytes": 10319,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 126,
+   "firstLast": 126,
+   "firstErr": null
+  },
+  {
+   "file": "18-starting_texts-lane.md",
+   "bytes": 3345,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 18,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 52692,
+  "cost": 0.46109459999999997,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. WS-9128\n2. NJ-1616\n3. MD-3958\n4. NOT STATED\n5. LG-1884\n6. HM-2592\n7. NQ-2827\n8. FW-5367\n9. BL-9090\n10. NOT STATED\n11. JQ-4741\n12. XG-5453\n13. WG-4934\n14. JS-6561",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 51875,
+  "cost": 0.8656543999999999,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WS-9128",
+    "answer": "WS-9128",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "NJ-1616",
+    "answer": "NJ-1616",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "MD-3958",
+    "answer": "MD-3958",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "LG-1884",
+    "answer": "LG-1884",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HM-2592",
+    "answer": "HM-2592",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NQ-2827",
+    "answer": "NQ-2827",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "FW-5367",
+    "answer": "FW-5367",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "BL-9090",
+    "answer": "BL-9090",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "JQ-4741",
+    "answer": "JQ-4741",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "XG-5453",
+    "answer": "XG-5453",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "WG-4934",
+    "answer": "WG-4934",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "JS-6561",
+    "answer": "JS-6561",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 35
+}

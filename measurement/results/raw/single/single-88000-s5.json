@@ -1,0 +1,44 @@
+{
+ "id": "single-88000-s5",
+ "kind": "single",
+ "bytes": 88000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:09.632Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 614,
+   "firstLast": 614,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "The file was cut off, so I can't say READ COMPLETE. The single plain Read call stopped at the tool's size limit and returned only lines 1–614 of 821. I haven't read lines 615–821. They include the rest of Part 1, section 7 (\"Known weaknesses of AI sessions\") and everything after it.\n\nI didn't make a second call, because you asked for one plain Read and nothing else. If you want the whole file read, tell me whether to read the remaining lines (615–821) or reread the whole file in one call with the size limit lifted. Until then, I can only answer about lines 1–614.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 25398,
+  "cost": 0.1876474,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 614,
+   "firstLast": 614,
+   "firstErr": null
+  }
+ ],
+ "seconds": 11
+}

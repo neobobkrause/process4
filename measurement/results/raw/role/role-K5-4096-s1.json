@@ -1,0 +1,61 @@
+{
+ "id": "role-K5-4096-s1",
+ "K": 5,
+ "bytes": 3858,
+ "singleRules": 11,
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 43,
+  "firstLast": 43,
+  "firstErr": null
+ },
+ "rulesApplied": 5,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Bramble folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "HM-7301",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "PF-1283",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "QZ-4504",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: D\nS3: B\nS4: A\nS5: B\nS6: B\nS7: D\nS8: B\nS9: B\nS10: C\nS11: B\nS12: B\nS13: D\nS14: C\nS15: D\nQ1: NOT STATED\nQ2: HM-7301\nQ3: PF-1283\nQ4: NOT STATED\nQ5: QZ-4504",
+ "compactions": 0,
+ "cost": 0.10268379999999999,
+ "status": "CLEAN",
+ "seconds": 19
+}

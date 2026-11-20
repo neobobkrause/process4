@@ -1,0 +1,61 @@
+{
+ "id": "role-K5-4096-s4",
+ "K": 5,
+ "bytes": 3855,
+ "singleRules": 11,
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 43,
+  "firstLast": 43,
+  "firstErr": null
+ },
+ "rulesApplied": 5,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Linden log",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "DQ-9446",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": true,
+   "answer": "HH-8594",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "ST-7902",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: B\nS3: D\nS4: C\nS5: A\nS6: C\nS7: A\nS8: D\nS9: C\nS10: B\nS11: A\nS12: A\nS13: D\nS14: D\nS15: B\nQ1: NOT STATED\nQ2: DQ-9446\nQ3: HH-8594\nQ4: NOT STATED\nQ5: ST-7902",
+ "compactions": 0,
+ "cost": 0.0924942,
+ "status": "CLEAN",
+ "seconds": 26
+}

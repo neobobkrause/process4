@@ -1,0 +1,324 @@
+{
+ "id": "set-132000-s3",
+ "kind": "set",
+ "bytes": 132000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:08.309Z",
+ "coverage": [
+  {
+   "file": "01-design-10-open-and-unproven.md",
+   "bytes": 14390,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 114,
+   "firstLast": 114,
+   "firstErr": null
+  },
+  {
+   "file": "02-design-06-rules-permissions-and-changing-the-process.md",
+   "bytes": 11026,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "03-starting_texts-process.md",
+   "bytes": 4086,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "04-build-04-the-trial.md",
+   "bytes": 14667,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  {
+   "file": "05-build-02b-the-comment-and-the-listing.md",
+   "bytes": 10264,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 126,
+   "firstLast": 126,
+   "firstErr": null
+  },
+  {
+   "file": "06-starting_texts-root.md",
+   "bytes": 3785,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 35,
+   "firstLast": 35,
+   "firstErr": null
+  },
+  {
+   "file": "07-build-01b-the-commands.md",
+   "bytes": 12290,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 43,
+   "firstLast": 43,
+   "firstErr": null
+  },
+  {
+   "file": "08-build-05-the-records-and-following.md",
+   "bytes": 17133,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 207,
+   "firstLast": 207,
+   "firstErr": null
+  },
+  {
+   "file": "09-starting_texts-watcher.md",
+   "bytes": 2689,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "10-starting_texts-00-index.md",
+   "bytes": 9651,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 81,
+   "firstLast": 81,
+   "firstErr": null
+  },
+  {
+   "file": "11-build-02-the-forms.md",
+   "bytes": 14787,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 180,
+   "firstLast": 180,
+   "firstErr": null
+  },
+  {
+   "file": "12-appendix-working-notes.md",
+   "bytes": 3512,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 42,
+   "firstLast": 42,
+   "firstErr": null
+  },
+  {
+   "file": "13-starting_texts-coordinator.md",
+   "bytes": 3868,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "14-design-09-hosting-cloudflare.md",
+   "bytes": 2665,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "15-starting_texts-lane.md",
+   "bytes": 3286,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "16-starting_texts-arch.md",
+   "bytes": 3901,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 16,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 53869,
+  "cost": 0.47152219999999995,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. HX-3672\n2. TV-4640\n3. CM-3632\n4. NOT STATED\n5. GH-9535\n6. NOT STATED\n7. WX-3852\n8. PS-1372\n9. GB-5960\n10. VT-4799\n11. CN-2919\n12. LW-8508\n13. LS-6434\n14. ZQ-7380",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 53074,
+  "cost": 0.8856539999999999,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HX-3672",
+    "answer": "HX-3672",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "TV-4640",
+    "answer": "TV-4640",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CM-3632",
+    "answer": "CM-3632",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "GH-9535",
+    "answer": "GH-9535",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "WX-3852",
+    "answer": "WX-3852",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "PS-1372",
+    "answer": "PS-1372",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "GB-5960",
+    "answer": "GB-5960",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "VT-4799",
+    "answer": "VT-4799",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CN-2919",
+    "answer": "CN-2919",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "LW-8508",
+    "answer": "LW-8508",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "LS-6434",
+    "answer": "LS-6434",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZQ-7380",
+    "answer": "ZQ-7380",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 31
+}

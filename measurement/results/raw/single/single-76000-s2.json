@@ -1,0 +1,174 @@
+{
+ "id": "single-76000-s2",
+ "kind": "single",
+ "bytes": 76000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:24:34.336Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 76000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 795,
+   "firstLast": 795,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30995,
+  "cost": 0.2315438,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NOT STATED\n2. GP-2756\n3. KG-3744\n4. NZ-6927\n5. NOT STATED\n6. HS-2294\n7. XC-9175\n8. CH-1998\n9. RS-6636\n10. QF-8061\n11. ZJ-3020\n12. LX-9098\n13. PQ-4359\n14. CM-6098",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30271,
+  "cost": 0.4632916,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Quince census",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GP-2756",
+    "answer": "GP-2756",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "KG-3744",
+    "answer": "KG-3744",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "NZ-6927",
+    "answer": "NZ-6927",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "HS-2294",
+    "answer": "HS-2294",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "XC-9175",
+    "answer": "XC-9175",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "CH-1998",
+    "answer": "CH-1998",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "RS-6636",
+    "answer": "RS-6636",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "QF-8061",
+    "answer": "QF-8061",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "ZJ-3020",
+    "answer": "ZJ-3020",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "LX-9098",
+    "answer": "LX-9098",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "PQ-4359",
+    "answer": "PQ-4359",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "CM-6098",
+    "answer": "CM-6098",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 28
+}

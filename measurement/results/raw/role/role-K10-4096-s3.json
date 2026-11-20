@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-4096-s3",
+ "K": 10,
+ "bytes": 3988,
+ "singleRules": 27,
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 46,
+  "firstLast": 46,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "FN-7805",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "HZ-1896",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "XK-4554",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: C\nS3: C\nS4: A\nS5: A\nS6: C\nS7: A\nS8: B\nS9: A\nS10: B\nS11: D\nS12: A\nS13: C\nS14: B\nS15: C\nS16: A\nS17: C\nS18: C\nS19: C\nS20: A\nS21: D\nS22: C\nS23: D\nS24: D\nS25: C\nS26: C\nS27: D\nQ1: FN-7805\nQ2: HZ-1896\nQ3: XK-4554\nQ4: NOT STATED\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1062942,
+ "status": "CLEAN",
+ "seconds": 26
+}

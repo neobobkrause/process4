@@ -1,0 +1,174 @@
+{
+ "id": "single-76000-s1",
+ "kind": "single",
+ "bytes": 76000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:24:31.306Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 76000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 648,
+   "firstLast": 648,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30832,
+  "cost": 0.2264184,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. MH-9801\n2. PL-8867\n3. QG-8878\n4. LM-8216\n5. NOT STATED\n6. DB-8541\n7. GW-4839\n8. PW-9282\n9. PX-5413\n10. PX-4445\n11. NOT STATED\n12. FQ-1925\n13. NC-9755\n14. VX-4293",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30109,
+  "cost": 0.4610702,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "MH-9801",
+    "answer": "MH-9801",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "PL-8867",
+    "answer": "PL-8867",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "QG-8878",
+    "answer": "QG-8878",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "LM-8216",
+    "answer": "LM-8216",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "DB-8541",
+    "answer": "DB-8541",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "GW-4839",
+    "answer": "GW-4839",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "PW-9282",
+    "answer": "PW-9282",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PX-5413",
+    "answer": "PX-5413",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "PX-4445",
+    "answer": "PX-4445",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FQ-1925",
+    "answer": "FQ-1925",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NC-9755",
+    "answer": "NC-9755",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "VX-4293",
+    "answer": "VX-4293",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 29
+}

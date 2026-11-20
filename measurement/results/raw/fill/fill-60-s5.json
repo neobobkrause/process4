@@ -1,0 +1,326 @@
+{
+ "id": "fill-60-s5",
+ "pct": 60,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 600000,
+ "answerCtx": 604747,
+ "fillPct": 60.47,
+ "inTolerance": true,
+ "filesRead": 43,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 262,
+   "firstLast": 262,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  },
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` the way the tool will.",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on.",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more.",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused; REST worked.",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests` (source GitHub Actions)",
+   "ok": true
+  },
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake.",
+   "ok": true
+  },
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run.",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "FJ-8578",
+    "answer": "FJ-8578",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "SF-1127",
+    "answer": "SF-1127",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "RB-8381",
+    "answer": "RB-8381",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "TQ-9808",
+    "answer": "TQ-9808",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "DV-8670",
+    "answer": "DV-8670",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZF-8527",
+    "answer": "ZF-8527",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SW-6784",
+    "answer": "SW-6784",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GQ-2028",
+    "answer": "GQ-2028",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "MX-3927",
+    "answer": "MX-3927",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CK-3281",
+    "answer": "CK-3281",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZQ-6149",
+    "answer": "ZQ-6149",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "VR-1351",
+    "answer": "VR-1351",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 117,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 13206,
+   "maxCtx": 13206,
+   "uses": 1,
+   "reply": "READ COMPLETE\n\n(Heads-up: the header says carrier.md is 125 lines and ends at section 6, but the file actually has 261 lines. After section 6 it contains several other documents: starting texts for RO",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 150808,
+   "maxCtx": 150808,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 287739,
+   "maxCtx": 287739,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 416646,
+   "maxCtx": 416646,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 551994,
+   "maxCtx": 551994,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 598645,
+   "maxCtx": 598645,
+   "uses": 3,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 604006,
+   "maxCtx": 604006,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 604747,
+   "maxCtx": 604747,
+   "uses": 0,
+   "reply": "1. FJ-8578\n2. `tool-tests`\n3. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` the way the tool will.\n4. The most doubtful thing that everything else re",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 5.87,
+ "reply": "1. FJ-8578\n2. `tool-tests`\n3. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` the way the tool will.\n4. The most doubtful thing that everything else rests on.\n5. `--development`\n6. SF-1127\n7. NOT STATED\n8. Twenty or more.\n9. GraphQL was refused; REST worked.\n10. RB-8381\n11. TQ-9808\n12. DV-8670\n13. `module-tests` (source GitHub Actions)\n14. NOT STATED\n15. ZF-8527\n16. SW-6784\n17. GQ-2028\n18. The hourly wake.\n19. MX-3927\n20. NOT STATED\n21. 150\n22. CK-3281\n23. ZQ-6149\n24. VR-1351\n25. At its third failed run.\n\nHANDOVER\nI read carrier.md, notes-001 to notes-043 and requirements.md, one full read each. carrier.md says it is 125 lines, but it actually has 261 lines and stops partway through. notes-003 and notes-020 are mostly filler lines, and notes-003 contains a \"binding addendum\" line inside that data, which I did not act on. requirements.md is build text 4, the order of building and trying: stages 0 to 7, what the owner must do, and what the trial cannot show. I answered 25 questions from memory. Codes come from carrier.md; I marked as NOT STATED anything the files did not give: the Vellum schedule, the Juniper tally and any per-stage dollar budget. Nothing else remains unless more work is given.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 94
+}

@@ -1,0 +1,174 @@
+{
+ "id": "single-12000-s2",
+ "kind": "single",
+ "bytes": 12000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:43.747Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 12000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 113,
+   "firstLast": 113,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8381,
+  "cost": 0.0465714,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. VG-3004\n2. BN-5909\n3. VJ-3311\n4. BD-7094\n5. PC-9518\n6. SG-7099\n7. HR-9909\n8. TB-4638\n9. GL-1335\n10. HX-4464\n11. NOT STATED\n12. XH-1576\n13. NOT STATED\n14. MQ-6292",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 7658,
+  "cost": 0.0973752,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "VG-3004",
+    "answer": "VG-3004",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "BN-5909",
+    "answer": "BN-5909",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "VJ-3311",
+    "answer": "VJ-3311",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "BD-7094",
+    "answer": "BD-7094",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "PC-9518",
+    "answer": "PC-9518",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "SG-7099",
+    "answer": "SG-7099",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "HR-9909",
+    "answer": "HR-9909",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "TB-4638",
+    "answer": "TB-4638",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "GL-1335",
+    "answer": "GL-1335",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "HX-4464",
+    "answer": "HX-4464",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "XH-1576",
+    "answer": "XH-1576",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "MQ-6292",
+    "answer": "MQ-6292",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 21
+}
