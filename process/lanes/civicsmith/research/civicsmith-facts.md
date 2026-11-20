@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 97 lines. Last section: "9. The repository's owner (20 Nov 2026)".
+Length: 108 lines. Last section: "10. Measured by PROCESS #5, 20 Nov 2026 (by message)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -74,10 +74,10 @@ problems that need to be resolved before process4 development can begin."
 - So the repository that moves is `neobobkrause/civicsmith2` (not "civicsmith-copy"; the page's Choice 1
   is answered by his naming it). It is under the owner `neobobkrause`, which the permissions-management
   settings already name (point 7).
-- `git ls-remote https://github.com/neobobkrause/civicsmith2` asked for credentials (20 Nov 2026): the
-  repository is private. The lane's approvals cover neobobkrause/process4 only, so the lane does not read
-  it. Its languages, founding documents and the "several problems" are learnt from a session started in
-  civicsmith2 under its own approvals, or from the owner (see `civicsmith2-reading-brief.md`).
+- `git ls-remote https://github.com/neobobkrause/civicsmith2` asked for credentials (20 Nov 2026). Corrected
+  below (§10): the repository is under `believeinoakland` and is listed public; the prompt most likely came
+  from this session's proxy, not the repository. The lane does not read it, by the owner's choice of a
+  read-only session there (§8) and its approvals (process4 only).
 
 ## 8. From the owner, 20 Nov 2026, later (conversation, not a marked decision)
 
@@ -95,3 +95,14 @@ session's acts on a product's repository only from a session started there, one 
 Bearing on point 7: the environment's `autoMode` block trusts repositories by owner (`neobobkrause/*`,
 research/starting-a-product.md §2); a repository under `believeinoakland` is not covered by that wording.
 Inference until the environment is read.
+
+## 10. Measured by PROCESS #5, 20 Nov 2026 (by message)
+
+- The account's repository list (query "civicsmith") shows three, all listed **public**:
+  `believeinoakland/civicsmith2` (last push 15 Nov), `neobobkrause/civicsmith-copy` (15 Nov),
+  `civicsmith/civicsmith` (30 Oct). So the lane's earlier "private" readings (§1's `git ls-remote` of
+  `neobobkrause/civicsmith`, §7) were most likely this session's proxy, not the repositories.
+- Point 7 confirmed: this environment's `autoMode` block trusts only "every neobobkrause/* GitHub repo".
+  `believeinoakland/civicsmith2` is not named; the part 7 §5 check at setup finds it missing and a session
+  proposes the change for the owner's click.
+- Which of the three repositories moves is put to the owner on the page.
