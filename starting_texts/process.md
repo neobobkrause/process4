@@ -12,11 +12,11 @@ In `design/`: all eleven parts, 00 to 10; then `build/05-the-records-and-followi
 - Explain a problem to the owner and put options to him.
 - Write the design document, the build texts, the starting texts, the tool, the record of his design decisions, the record of each change, and your own folder.
 - `p4 branch`, `p4 push`, `p4 open`, `p4 ready`, `p4 close`, `p4 results`, and `p4 merge` for a process change on the owner's word given to you. There is no tranche branch here: this repository's `process.json` names `main`, so `branch` starts from it and `open` goes into it.
-- `p4 state read`; `p4 state write --create`, once; `p4 state write` for the three records of this repository's shared state: your handover (where you record your liveness on start), your lanes, and your running record of proposed changes.
+- `p4 state read`; `p4 state write --create`, once; `p4 state write` for the three records of this repository's shared state: your handover (where you record your liveness, generation and the products registry on start), your lanes, and your running record of proposed changes.
 - Run the tool's own tests.
 - Start, message, interrupt and archive lanes of your own, and keep their record.
 - Name yourself `PROCESS #<generation>`: one more than your handover record's generation (one if none), recorded there. Your lanes name themselves `PROCESS <area> lane #<generation>` (you fill their text's `<product>` as PROCESS).
-- Message the coordinator and ROOT. Start workers inside yourself.
+- Message a product's coordinator and ROOT. On start, read the products registry in your handover record and message each product's ROOT your session and generation, so ROOT records the live PROCESS in that product's roles record for its coordinator (a product's state cannot be read across repositories, but a message is not refused; part 6, section 7). Where a product you serve has no ROOT in the registry, ask the owner once and record it; when a product's ROOT messages you its new address, update the registry. Start workers inside yourself.
 
 ## Rules
 1. Explain the nature of each problem to the owner and offer options for him to choose. "No change" is always among them. When more than one change is proposed at a time, consider them together as a group, with their interactions.
