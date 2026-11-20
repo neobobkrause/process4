@@ -115,12 +115,23 @@ test('finished, close --nothing-to-change, and round-done', () => {
   assert.match(t.out.join('\n'), new RegExp(`^done\n {2}dates: finished \\(pull request ${d.number} merged\\)`));
 });
 
-test('a job closed with nothing to change is not finished where its work was more than a notice', () => {
+test('a job closed with nothing to change is not finished while the module has an unmet requirement', () => {
   const t = product();
   const d = startJob(t, 'dates');
   close(t.ctx, d.number, { _: [], 'nothing-to-change': 'nothing' });
   t.out.length = 0; finishedCmd(t.ctx, 'dates');
-  assert.match(t.out[0], /not finished: .*only a merge finishes it/);
+  assert.match(t.out[0], /not finished: .*has work again: R1/);
+});
+
+// Item 12 (owner's decision, 20 Nov 2026): a walk-flaw module whose job finds the fix belongs
+// elsewhere and closes unmerged is finished for the round (the flaw is handed back to ARCH).
+test('a walk-flaw module whose job closes nothing-to-change is finished for the round', () => {
+  const t = product({ 'process/modules/dates.md': '- **R1** [met] one\n' });
+  writeRec(t.ctx, t.root, 'waiting-work', { work: [{ module: 'dates', kind: 'walk-flaw', flaw: 't1-1-I-1-1', link: '<the comment>' }] });
+  const d = startJob(t, 'dates');
+  close(t.ctx, d.number, { _: [], 'nothing-to-change': 'the fix belongs in pricing' });
+  t.out.length = 0; finishedCmd(t.ctx, 'dates');
+  assert.match(t.out[0], /^finished: pull request \d+ closed with nothing to change: the fix belongs in pricing/);
 });
 
 test('a block recorded by ARCH at the fifth failed run carries into the next round', () => {

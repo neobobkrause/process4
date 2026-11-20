@@ -39,7 +39,7 @@ The tool decides both, because each has one right answer. **Claude decided** the
 
 - A module's work is finished when its job's pull request has merged.
 - A module whose only work was a notice is also finished when its job records in its own pull request that nothing needs changing, and closes it unmerged.
-- A module with a walk flaw against it is finished only by a merge. If its job finds that nothing in the module needs changing, the flaw goes back to ARCH, which places it against another module or, where the walks' document is wrong, gives it to the UX lane.
+- A module with a walk flaw against it, or a flaw another module's job reported against it, is finished by a merge; or, when its job finds that nothing in the module needs changing, by its job recording that in its pull request and closing it unmerged, which hands the flaw back to ARCH. ARCH then places the flaw against another module or, where the walks' document is wrong, gives it to the UX lane; the module that handed it back is finished for the round, and the re-placed flaw is the other module's work. A flaw handed back twice is not placed a third time; ARCH decides it as a design question (part 4, section 10). This closed a gap in the round logic where such a module could reach neither "finished" nor the next job and so hung round-done (the owner's decision for item 12, 20 November 2026).
 - A round's jobs are done when every module that had work when the round opened, or was given work during it, is finished, or is recorded blocked on a matter that no open job of the round can clear. A blocked module's work carries into the next round and is named in the account after the round.
 
 ## 5. Slots
