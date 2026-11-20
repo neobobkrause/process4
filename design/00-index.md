@@ -63,7 +63,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Foundations:** the owner's own earlier document of the reasons and evidence behind the process.
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.
 - **Module:** one part of the product, with its own code files, tests and requirements file. The product is one ordered list of modules, and a module may use only modules before it.
-- **Provider and user:** a module that uses another is that module's user; the one used is the provider.
+- **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface (the owner's instruction, 20 November 2026).
 - **Interface:** what a module accepts and what it hands back. **Declared uses:** the modules a module states that it uses.
 - **Job:** one session's work on one module, delivered as one pull request.
 - **Slot:** room for one job to run. Eight by default, counted across the account.
