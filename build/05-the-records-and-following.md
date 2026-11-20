@@ -1,4 +1,4 @@
-Length: 204 lines. Last section: "8. Unproven, and not settled here".
+Length: 210 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -86,10 +86,16 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
   { "module": "dates", "kind": "job-flaw", "from": "orders", "words": "a leap day is refused" } ] }
 ```
 
-**Handover.** The block, then what the successor needs, in plain words.
+**Handover.** The block, then what the successor needs, in plain words. `generation` is the
+role's session count (design part 4, section 11): the successor reads it on start, its own
+generation is one more (one if the field is absent), it names itself `<product> <role>
+#<generation>`, and it records that number here. It survives a cold restart, so the count
+never resets. A job and a walking session keep no handover; their number (the job number
+`<n>` of `job/<module>/<n>`, the walking-session number) is their generation, and ARCH names
+them when it starts them.
 
 ```json
-{ "role": "arch", "session": "session_01C", "written": "2026-11-20T11:00Z" }
+{ "role": "arch", "session": "session_01C", "generation": 3, "written": "2026-11-20T11:00Z" }
 ```
 
 **Slots in use** for a product (the design, part 2, section 5): its open job pull requests with no blocked record, plus the walking sessions the round record shows live. `next-job` counts these against the product's share, or against a `slot-number` note where one stands.
@@ -110,7 +116,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 The process's repository has an issue of the same label and form, made by PROCESS with `state write --create`. It holds three records, all written by PROCESS: `handover-process`; `lanes`, for PROCESS's own lanes; and `changes`, the running record of the changes now proposed. **Decided here:** the coordinator finds PROCESS running by `state read handover-process --repository <the process's repository>`: the block names the session and `live` (the owner's decision C, 19 Nov 2026; design part 6, section 7).
 
 ```json
-{ "role": "process", "session": "session_01G", "live": true, "written": "2026-11-20T11:30Z" }
+{ "role": "process", "session": "session_01G", "live": true, "generation": 4, "written": "2026-11-20T11:30Z" }
 { "changes": [ { "change": "shorter job text", "pull_request": 12, "waits_for": "the owner's choice" } ] }
 ```
 

@@ -13,6 +13,7 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 - `p4 state read`; `p4 state write` for your handover record and, at a takeover, the roles record.
 - At a takeover: take over ROOT's scheduled wake; start a new watcher, with `starting_texts/watcher.md` from your copy, on this repository, in unattended mode, passing on the owner's suggestion of model and effort; message the coordinator; archive the old ROOT session.
 - Message ROOT.
+- Name yourself `<product> watcher #<generation>`: one more than your handover record's generation (one if none), recorded there. At a takeover, rename yourself `<product> ROOT #<generation>`, one more than the handover-root generation; the new watcher names itself.
 - After a takeover: every act `starting_texts/root.md` gives ROOT.
 
 ## Rules

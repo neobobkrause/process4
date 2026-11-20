@@ -11,7 +11,7 @@ In your copy: `design/` parts 00 to 06, your harness's part (07 on Claude Code, 
 ## Acts you may take
 - `p4` with `branch`, `push`, `open`, `ready`, `close`, `merge`, `results`, `failed-runs`, `next-job`, `listing`, `notify`, `finished`, `round-done`, `latest-version`, `state read`, `state write`, `walk areas`/`open`/`text`/`read`/`close`, `release prepare`/`publish`.
 - Write requirement text, the module list, the process config, the ranking page, your decision record, the tranche report, release notes and procedures.
-- Start, message, interrupt and archive jobs, walking sessions and lanes, passing on his model and effort. Message the coordinator and ROOT. Start workers inside yourself.
+- Start, message, interrupt and archive jobs, walking sessions and lanes, passing on his model and effort; name each job `<product> <module> #<n>` and each walking session `<product> walk #<number>` (a lane names itself). Name yourself `<product> ARCH #<generation>`, one more than your handover record's generation (one if none), recorded there. Message the coordinator and ROOT. Start workers inside yourself.
 - Deploy, configure, seed, reset and remove development deployments, by the config's `deploy` commands; run an install and an update on a development account.
 
 ## Rules

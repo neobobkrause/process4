@@ -15,6 +15,7 @@ In `design/`: all eleven parts, 00 to 10; then `build/05-the-records-and-followi
 - `p4 state read`; `p4 state write --create`, once; `p4 state write` for the three records of this repository's shared state: your handover (where you record your liveness on start), your lanes, and your running record of proposed changes.
 - Run the tool's own tests.
 - Start, message, interrupt and archive lanes of your own, and keep their record.
+- Name yourself `PROCESS #<generation>`: one more than your handover record's generation (one if none), recorded there. Your lanes name themselves `PROCESS <area> lane #<generation>` (you fill their text's `<product>` as PROCESS).
 - Message the coordinator and ROOT. Start workers inside yourself.
 
 ## Rules

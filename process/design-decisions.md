@@ -570,6 +570,38 @@ checker (part 1 §4; part 3 §6).
 
 **The owner's words.** "open item 13: decided - A" — 20 November 2026.
 
+### Subject: Standardized session names
+
+**The rule as it now stands.** Every Process4 session carries a standard name, so the owner
+can see each one and its lineage. PROCESS is named `PROCESS #<generation>`; a session that
+holds a role, `<product> <role> #<generation>` (e.g. `civicsmith ARCH #3`, `civicsmith ux lane
+#2`). The generation counts that role's sessions on that product — one for the first, one more
+at each refresh, replacement or takeover — and for a long-lived role it is kept in that role's
+handover record, so it continues across a full stop and never resets. A job, which holds no
+role, is named `<product> <module> #<n>` with `<n>` its job number (the `n` of its branch
+`job/<module>/<n>`), so each open job is still told apart by its module (design part 2, section
+3; part 4, section 9); a walking session, `<product> walk #<number>` with its walking-session
+number. A session that keeps a handover record names itself on start from the generation there;
+ARCH names a job and a walking session when it starts them; the owner-started ROOT and PROCESS
+name themselves. The name is set with the harness's set-session-title (design part 7, section
+1), unproven until the trial (part 7, section 3).
+
+This added the convention, harness-neutral, to design part 4, section 11; the mechanism and the
+updated "seeing each open job" row to part 7, section 1, with the set-session-title gap in part
+7, section 3; a Codex "Not known" row to part 8, section 1 (Codex is later work); the
+`generation` field to the handover record form (build text 5, sections 2 and 4); and a naming
+clause to the ROOT, watcher, coordinator, ARCH, lane and PROCESS starting texts. It needs **no
+tool change** — the generation rides in the handover records, which the tool stores and reads as
+arbitrary JSON — and adds no test, gate, review or stop. It is a naming requirement the owner
+added (option B), which the process still meets. For a job the generation is the job number
+(the owner's option (a) for the job name): it stays the same when a filled or dead job's session
+is replaced from the same branch, and rises only when a fresh job opens for the module.
+Researched in `process/research/session-naming-standardization-20nov.md`.
+
+**The owner's words.** "how a job is named decision: as recommended" — 20 November 2026 (the job
+name is `<product> <module> #N`, option (a)). "Options for the whole change:decision: s
+recommended" — 20 November 2026 (adopt the convention, option B).
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

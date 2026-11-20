@@ -1,6 +1,6 @@
 # Part 8. The harness table for Codex
 
-Length: 51 lines. Last section: "3. What the owner fills".
+Length: 52 lines. Last section: "3. What the owner fills".
 
 Everything in this part is specific to Codex. Where the Codex side is not known or not built, this part says so plainly and leaves it for the owner's work on his OpenAI account. "Not known" means no record shows it; it does not mean Codex cannot do it.
 
@@ -31,6 +31,7 @@ Everything in this part is specific to Codex. Where the Codex side is not known 
 | Model and effort passed on | Not known | |
 | The owner's standing page; a lane's design pages | Not known | |
 | Grouping sessions under a product | Not known | |
+| Naming a session (the convention in part 4, section 11) | Not known | |
 | The owner seeing each open job | Not known | |
 | Starting instructions | Not known beyond the instruction files above | |
 | Reading a file | A shell command with an output limit in tokens. Over the limit the start and end arrive, the middle does not, and the command reports success | Measured |

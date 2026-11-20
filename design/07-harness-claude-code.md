@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 82 lines. Last section: "5. The permissions-management settings".
+Length: 84 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -26,7 +26,8 @@ Everything in this part is specific to Claude Code.
 | The owner's standing page; a lane's design pages | Pages on claude.ai |
 | The owner speaking to a role | He opens that role's session and types |
 | Grouping sessions under a product | A tag naming the product, set on each session when it is started. Sessions can be listed by tag. Workers are not sessions and so carry none. Not measured |
-| The owner seeing each open job | Each job's session is titled with its module's name, and the list of sessions shows each one's title and whether it is working, waiting or finished. Whether the list he sees meets the rule is not measured |
+| The owner seeing each open job | Each job's session is named `<product> <module> #<n>` (the naming row below; part 4, section 11), so each open job is told apart by its module, and the list of sessions shows each one's name and whether it is working, waiting or finished. Whether the list he sees meets the rule is not measured |
+| Naming a session | A session's name is set with the harness's set-session-title. A session that keeps a handover record names itself on start, from the generation in that record; ARCH names a job and a walking session when it starts them; the owner-started ROOT and PROCESS name themselves. Not measured (section 3) |
 | Starting instructions | The prompt a session is started with |
 | Model and effort passed on | The starter names both when it starts a session. Not measured |
 | Planned replacement | The parent starts a fresh session and archives the old one |
@@ -53,6 +54,7 @@ As measured on Claude Code:
 - Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice, as "Destructive or Unwanted Actions" and "Undermining Oversight"). PROCESS is therefore started and refreshed by the owner, not by ROOT (part 4, section 5; part 6, section 7).
 - How many live sessions the account bears. New starts once failed silently at about fifty.
 - Whether a program goes on reaching GitHub from a session at a real rate. With the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment.
+- Whether a role session in Auto mode can set a session's name (its own, or a job's or walking session's it starts) with the harness's set-session-title. The session-naming convention (part 4, section 11; section 1 above) rests on it and has not been put to the checker.
 
 ## 4. The owner's acts to start a product
 

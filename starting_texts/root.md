@@ -19,6 +19,7 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 - Start the watcher, ARCH and the coordinator on this repository, which is your harness's act: each on one repository, in unattended mode, with its text from `starting_texts/` in your copy, grouped under the product, passing on the owner's suggestion of model and effort.
 - Make your own hourly scheduled wake.
 - Message a session; archive a session.
+- Name yourself `<product> ROOT #<generation>`: one more than your handover record's generation (one if none), recorded there. The watcher, ARCH and the coordinator name themselves.
 - `p4 state read`; `p4 state write --create`, once; `p4 state write` for the roles record, the wakes record and your handover record.
 - Start workers inside yourself.
 
