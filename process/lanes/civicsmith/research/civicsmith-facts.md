@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 66 lines. Last section: "6. From PROCESS #5, by message, 20 Nov 2026 (added by the lane)".
+Length: 80 lines. Last section: "7. From the owner, 20 Nov 2026 (conversation, not a marked decision)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -64,3 +64,17 @@ The owner (he holds the private repo and the accounts), unless marked PROCESS:
 - Measured on the trial (process/research/tranche-unrelated-to-main-20nov.md): a reused repository's main must be the tranche branch's base, and main's ruleset must require `module-tests` (the trial's still required Process3's `gate`). Both bear directly on a Process3 repository moving to Process4.
 - The account switch moved PROCESS and products to one Claude account (design part 7 §3).
 - PROCESS asks the lane to put to the owner: the repository name(s); whether the real civicsmith or civicsmith-copy is converted; the founding documents and where they are.
+
+## 7. From the owner, 20 Nov 2026 (conversation, not a marked decision)
+
+His words, as typed: "The civicsmith repo is neobobkrause/civicsmith2 / The founding docs are in the repo /
+There is no work in flight / You can see the languages in the repo / Also note that there are several
+problems that need to be resolved before process4 development can begin."
+
+- So the repository that moves is `neobobkrause/civicsmith2` (not "civicsmith-copy"; the page's Choice 1
+  is answered by his naming it). It is under the owner `neobobkrause`, which the permissions-management
+  settings already name (point 7).
+- `git ls-remote https://github.com/neobobkrause/civicsmith2` asked for credentials (20 Nov 2026): the
+  repository is private. The lane's approvals cover neobobkrause/process4 only, so the lane does not read
+  it. Its languages, founding documents and the "several problems" are learnt from a session started in
+  civicsmith2 under its own approvals, or from the owner (see `civicsmith2-reading-brief.md`).
