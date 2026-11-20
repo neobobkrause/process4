@@ -635,6 +635,29 @@ within C; E find PROCESS by its standardized session name, worth measuring). Res
 
 **The owner's words.** "Decision: option C" — 20 November 2026.
 
+### Subject: PROCESS and the products it serves share one Claude account; the first account switch moves them together
+
+**The rule as it now stands.** PROCESS and the products it serves run under one Claude
+account. Their coordination — a product's coordinator reporting a process fault to PROCESS,
+PROCESS announcing itself to a product's ROOT, PROCESS messaging a product's coordinator
+(design part 4 §5; part 6 §§6–7) — runs entirely on session-to-session messaging, which the
+harness scopes to a single account: a session reaches only its own account's sessions (this
+is why cross-repository messaging within one account works — design part 7 §3 — while a
+cross-account reach is not available). Cross-account PROCESS↔product coordination is
+therefore not built. An account switch (build text 6) that moves a product PROCESS serves to
+another Claude account moves PROCESS to that account as well, so the two stay together; the
+first account switch (the trial; design part 10 §4, item 15) does so. This does not forbid a
+future cross-account arrangement — a coordination channel that does not rely on same-account
+messaging would be a process change (option C, the option not taken here) — it records that
+none exists now. It changed design part 7 §3 (the account-scoping of session acts) and build
+text 6 §1 (the single-account constraint on an account switch). It adds no test, gate, review
+or stop; it documents a harness constraint and the means chosen for the first switch. Option
+B of three put to the owner (A: the trial moves alone, PROCESS stays and the owner relays
+across the account line; B: move PROCESS with the trial, one account; C: build cross-account
+coordination first).
+
+**The owner's words.** "Decision: B — Move PROCESS to the new account too (to simplify this first account switch)" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
