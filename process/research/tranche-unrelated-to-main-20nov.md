@@ -104,4 +104,4 @@ to the tranche branch by his click.
 
 ## The owner's choice
 
-"Decision: option C (But, god, I hope this doesn't take any more time. We've already sent 2 hours on this silly problem.) Go!" — 20 November 2026. Option C is carried out by the trial's ARCH on his instruction in the coordinator's session. The separate correction to build text 4, stage 1 was not chosen and is not made.
+"Decision: option C (But, god, I hope this doesn't take any more time. We've already sent 2 hours on this silly problem.) Go!" — 20 November 2026. Option C is carried out by the trial's ARCH on his instruction in the coordinator's session. The separate correction to build text 4, stage 1: "Decision: fix the setup text" — 20 November 2026; made by its own pull request.
