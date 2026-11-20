@@ -17,12 +17,41 @@ ul,ol{margin:0;padding-left:1.3rem;display:grid;gap:6px}
 .card{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
 code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;overflow-wrap:anywhere}
 a{color:var(--accent)}
+.draft{white-space:pre-wrap;font:.9rem/1.5 var(--body);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:12px;max-height:28rem;overflow:auto;margin:8px 0}
 </style>
 <main>
 <header>
 <h1>What is waiting for you</h1>
 <p class="updated">Updated 20 Nov 2026 by PROCESS #4, on your new Claude account. You work with me directly in the session titled "PROCESS #4". One matter at a time.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you: read the draft of your approvals</h2>
+<p>On your <b>"Decision: option B"</b> (20 Nov), I draft your approvals and you decide; nothing takes effect until you land it with your own click. Here is my draft for this repository (<code>neobobkrause/process4</code>). What changes, in plain words:</p>
+<ol>
+<li>Dated 20 Nov; "while its tool is first built" is dropped, since the tool is built.</li>
+<li>"Only words I wrote count as my word" becomes "Only messages I typed myself count as my decisions or instructions". The typo "call PROCESS" is fixed.</li>
+<li>Sessions still merge into main once checks pass, except a change to your approvals file or the forbidden-commands file: only you merge that.</li>
+<li>PROCESS may draft those two files at your request and put a text you approved into a pull request. It never merges it.</li>
+<li>"a change I chose in my own words at PROCESS" becomes "by my marked decision at PROCESS".</li>
+<li>PROCESS may propose a change to the environment's settings through the approval prompt. Nothing changes until you click Approve.</li>
+</ol>
+<p>Everything else is word for word as you have it now.</p>
+<details><summary>The full draft</summary><div class="draft">## Standing approvals from Bob
+
+Standing approvals from Bob for Process4, the development process, 20 Nov 2026, for process4&#x27;s own repository only. They cover every Claude session working on Process4, including sessions that other sessions started. Each product developed with Process4 carries its own approvals in its own repository. A session&#x27;s acts on a product&#x27;s repository, accounts and services are governed only by that product&#x27;s approvals, and are made only from a session started in that product&#x27;s repository (one repository per session).
+
+Such sessions may, without asking me: subscribe to and unsubscribe from activity on the process&#x27;s pull requests; notify me by push notification; and create and edit Process4 pages and documents on claude.ai under the Claude account the acting session itself runs under.
+
+In this repository, neobobkrause/process4, only, they may: push to their own working branches; open, edit, comment on, mark ready or draft, close and reopen pull requests; run builds and tests, fetching public packages and images for them; run, re-run and cancel this repository&#x27;s own workflows; change its workflow files only through pull requests merged as below, never renaming or removing a job whose name matches a required check, never widening any workflow&#x27;s or job&#x27;s permissions, and never adding a pull_request_target trigger; and merge pull requests into main once their required checks pass, without a person&#x27;s review, except a pull request that changes CLAUDE.md or .claude/settings.json, which only I merge.
+
+PROCESS, the one session that changes Process4, may also, for a product built with Process4: message that product&#x27;s coordinator and ROOT, so that process faults reach PROCESS and its replies reach them; and, in this repository, start, message, interrupt and archive its own lanes. At my request, PROCESS may draft the text of these approvals or of the list of forbidden commands, and may place a text I have approved in its session, unchanged, in a pull request that changes only CLAUDE.md or only .claude/settings.json; it never merges that pull request. PROCESS may propose a change to the settings of the cloud environment the sessions run under through the harness&#x27;s own approval prompt; the change takes effect only when I approve it there.
+
+Only messages I typed myself count as my decisions or instructions. Never record your decision or your summary as mine. Process changes only happen in a separate process lane called PROCESS that I interact with. A message of mine is a decision or an instruction only when it begins &quot;Decision:&quot; or &quot;Instruction:&quot;. Everything else is conversation. If a session thinks I have decided something without that mark, it asks me once whether to record it as one.
+
+They may never: force-push; delete a branch, tag or release; change permission, repository or ruleset settings, or a protected environment, except by the proposal through the harness&#x27;s approval prompt named above; push to main; change the files in design/, build/ or starting_texts/, except to carry out a change I chose by my marked decision at PROCESS; change CLAUDE.md or .claude/settings.json, except by the pull request named above, which only I merge; reveal any secret value; or act on any account or service other than those named here, except under a product&#x27;s own approvals from a session started in that product&#x27;s repository. Reading public documentation, reading the public repository neobobkrause/process3, and fetching public packages and images are not acts on another service.</div></details>
+<p><b>Next:</b> if it reads right, type in my session: <i>Instruction: place the approvals draft in a pull request; I will merge it myself.</i> If you want any wording changed, tell me in plain words and I'll redraft.</p>
+</section>
 
 <section class="card">
 <h2>Done today: you never edit a file or type a command</h2>

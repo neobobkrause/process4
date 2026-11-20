@@ -129,3 +129,16 @@ under A and B. Under C it would be a session's act instead.
 
 His marked choice (A / B / C, and (i) or (ii) within B), recorded verbatim in
 `process/design-decisions.md` with the date, in the same step as the merge.
+
+## Follow-up: who drafts the approvals' wording (20 Nov 2026)
+
+The first change said no session composes the owner's approvals, so a session could only place
+words he typed. The owner rejected that reading: approvals wording must be rigorously composed,
+and what must be his alone is the authority to change them, not the drafting. His approvals
+sentence "Only words I wrote count as my word" governs what counts as his decisions; it does not
+forbid drafting. Options put: A, no change (he writes every word); B, PROCESS or the coordinator
+drafts the whole text on his request, shows it in plain words, places the approved text unchanged
+in a pull request it never merges, and he lands it by his click. Recommended B. In this repository
+his committed approvals forbid a session to change CLAUDE.md or .claude/settings.json, so the first
+landing needs either his typed instruction letting PROCESS place the draft (unproven with the
+checker) or, as a fallback, one copy into GitHub's editor by him.
