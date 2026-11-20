@@ -4,82 +4,96 @@
 The process repo's shared-state issue EXISTS (#33); `handover-process` carries PROCESS liveness.
 During first-build this file stays the detailed handover.
 
-Last written: 2026-11-20, by PROCESS `session_012hdw2UWLxH6BY5gyh3Lp4w`, refreshing at ~63%
-context at the owner's prompt. `main` tip `e454467`; tool-tests green on every PR this session.
+Last written: 2026-11-20, by PROCESS `session_012hdw2Use8KHcTuQ4WjvjL6`, refreshing at ~51%
+context at a natural pause. `main` tip `9f5a9f7`; tool-tests green on every PR this session.
 Under decision C, **PROCESS refresh is the owner's act**: he starts the successor. Nothing is
 half-done; everything is merged.
 
-## Read this first — a merge-behaviour correction from today
+## Read this first — merge behaviour
 
 **Showing the owner a record entry is transparency, not an approval gate** (design part 5 §2/§5;
-PROCESS starting-text rule 4, both corrected today, PR #70). The owner's standing approvals already
-let PROCESS merge into `main` once the required check (`tool-tests`) passes, **without a person's
-review**. So: once the owner has given his marked decision for a change, record his words, show him
-the entry, and **merge on CI-pass — do not wait for a separate "merge it."** Hold for his word only
-on a change he has NOT yet decided, on moving a product to a new process version, or on publishing a
-release. (This session over-blocked early on; the owner corrected it: "Decision: fix it", 20 Nov.)
+PROCESS rule 4). The owner's standing approvals let PROCESS merge into `main` once `tool-tests`
+passes, without a person's review. So: once the owner gives a marked decision, record his words,
+show him the entry, and **merge on CI-pass — do not wait for a separate "merge it."** Hold only on
+a change he has NOT decided, on moving a product to a new version, or on publishing a release.
+Faithful-to-settled corrections (making a text match an already-settled decision; no rule change)
+merge the same way, under his standing direction.
 
-## Done this session (all merged)
+## Done this session (all merged, in order)
 
-- **The four reading values** (PR #63), his words recorded: single text **60,000 B on Claude Code**
-  (24,000 Codex until measured — single text is now per-harness); set **175,000 B**; role text
-  **8,192 B / 10 rules**; fill level **50%** (his exception, to minimise expensive refreshes).
-  Design parts 5/7/10, the starting-texts index, and the 40→50% refresh line in all eight role
-  texts.
-- **The two measurement findings** (PR #65), each "Decision: as recommended": silent cut read → no
-  change (guarded); reading fill → design part 7 §1 records that a session reads fill via
-  `get_session` (`context_usage`), and refreshes at a natural pause where it cannot.
-- **The design is now history-free** (PR #69): the owner's decision ("Decision: I agree with your
-  recommendations… Do it.") to enforce part 0 §1 / part 5 §4. Removed from all eleven parts: draft
-  lineage, dated decision provenance, predecessor-process references, working-file paths,
-  change-narratives, and the "Claude decided"/"Reading"/"Settled" marks (legend keeps only Open,
-  Unproven). Part 10 §1 collapsed to the one genuinely-open item (the approvals wording). No rule
-  changed. Research: `process/research/design-history-separation-20nov.md`. **The build texts and
-  the starting-texts index still carry their own history — offered to clean next if he wants.**
-- **Merge-gate fix** (PR #70), above.
-- **Owner pages** kept in sync (PRs #64, #66, #67 handover, #68 research): standing page
-  "Process4 Waiting for Bob" (`3eWSU2EvP27ttdJBZGjDJT`, source `coordination/owner_page/desk.html`)
-  shows nothing waiting; Open Points page (`617wp1vSKDpubVbwiGDpUU`) all settled/closed.
-
-## A fresh downloadable copy of the design
-
-The owner asked for one and got it this session: a single combined Markdown of all eleven cleaned
-parts, built from `design/` and sent to him (not committed — built artifact). Rebuild with:
-`for n in 00 01 02 03 04 05 06 07 08 09 10; do cat design/${n}-*.md; printf '\n\n---\n\n'; done`.
+- **#72** research note for the naming change.
+- **#73** faithful-to-settled correction: two stale "owner approves/proposes a tranche" references
+  (arch.md rule 6; a decisions-record parenthetical) brought into line with "Decision: Remove the
+  owner's tranche-approval" (reaffirmed 20 Nov).
+- **#74 Standardized session names** (owner: job name + whole change "as recommended", 20 Nov):
+  `PROCESS #N`; `<product> <role> #N`; a job `<product> <module> #<n>` (its job number); a walking
+  session `<product> walk #<number>`. Generation = a role's session count, kept in its handover
+  record, surviving a cold restart. Mechanism in design part 7 §1 (set-session-title; handover-
+  keeping roles and owner-started ROOT/PROCESS self-name; ARCH names jobs/walkers); convention in
+  part 4 §11; Codex "Not known" in part 8; `generation` in build text 5. **No tool change.**
+  set-session-title by a role session is marked unproven (part 7 §3) — trial proves it.
+- **#75** standing page: naming settled; dropped Process3-conformance and Codex (owner said no
+  need for both here).
+- **#76** research note for the coordinator/PROCESS-discovery fault.
+- **#77 Coordinator finds the live PROCESS (owner: "Decision: option C", 20 Nov).** The fault: a
+  refreshed coordinator ran `state read handover-process --repository <process repo>` (decision C)
+  and got **HTTP 403** — a session is scoped to its own repo; a `gh api` read of another repo's
+  issue is refused (measured both ways; public too; plain `git` clone still works). Option C: the
+  coordinator reads PROCESS from its **own product's roles record `process` field** (local). ROOT
+  writes it from a message PROCESS sends on start; PROCESS knows which ROOT to message from a
+  `products` registry in its own `handover-process` (seeded by the owner once per product); ROOT
+  re-announces to PROCESS on its own start. Fallback: coordinator surfaces to the owner if the
+  field is none/stale. Owner-start of PROCESS (decision C 19 Nov) is unchanged; only its cross-repo
+  read is superseded. **No tool change.** Research:
+  `process/research/coordinator-cannot-read-process-liveness-20nov.md`.
 
 ## Current state
 
 - **PROCESS keeps the owner's standing page** (his instruction; within approvals). No separate
-  coordinating session. One matter at a time; he works fast and redirects often, and decides via
-  page comments too (a comment webhook arrives as a queued notification — ReadNotifications).
-- **The trial** (`neobobkrause/process3-probes`): stop lifted. The owner asked to "move the trial to
-  the latest Process4 version" — that is the **trial coordinator's** job, not PROCESS's (PROCESS acts
-  only in this repo; a product version-move is the owner instructing the trial coordinator, which
-  tells the trial's ARCH). I gave him the steps: open the trial coordinator session and type
-  "Instruction: move to the latest Process4 version"; no commit id needed. Latest is now `e454467`.
-  Trial page: `JEbwfU3pjZFzGgEcsyxzmb`.
-- **Measurement** that backs the figures: `measurement/results/` (Opus 5.5, medium, 1M window).
-- **Still owed the owner:** Process3-conformance plan (offered, no answer needed yet); Codex
-  measurement + model (later, his OpenAI account); optionally cleaning history from the build texts
-  and the starting-texts index (as the design was cleaned).
+  coordinating session on the process side. He works fast, redirects often, and decides via page
+  comments too (a comment webhook arrives as a queued notification — ReadNotifications).
+- **Standing page** "Process4 Waiting for Bob" (`3eWSU2EvP27ttdJBZGjDJT`, source
+  `coordination/owner_page/desk.html`): nothing owed, nothing pending (both cancelled items
+  dropped). Keep repo desk.html and the published page in sync (commit + publish via Artifact).
+- **Nothing waiting for the owner's decision** right now.
+
+## Open operational follow-ups for the TRIAL (the owner's / the trial's, not PROCESS's)
+
+These let the trial actually use option C; PROCESS acts only in this repo, so flag them, don't do
+them:
+1. **Move the trial to the latest Process4 version** (owner tells the trial coordinator "move to
+   the latest Process4 version"; latest is now `9f5a9f7`), so its sessions refresh onto the fix.
+2. **Seed PROCESS's `products` registry once** with the trial's ROOT session, so PROCESS announces
+   itself (build text 5 §4; design part 4 §5).
+3. **The trial coordinator (`session_012hdw2TiGHJ2cGSkBVR1fRc`) is blocked** asking "which session
+   is PROCESS (A: 14:06 session; B: none)" — neither is right; the live PROCESS is this session's
+   successor. PROCESS may message a product's coordinator (standing approvals), so the owner can
+   have PROCESS tell it the live PROCESS to unblock it — a one-off, offered, not yet taken up.
+
+## Still owed the owner, later
+
+- Optionally cleaning history from the **build texts and the starting-texts index** (the design
+  itself was cleaned; these still carry their own history). Offer only.
+- (Process3-conformance and Codex are **dropped** per the owner, 20 Nov — do not re-offer.)
 
 ## Environment / tool notes
 
 - `node tool/p4.mjs <cmd>` reaches GitHub; a direct `gh`/git command is denied by design. Flow:
   `git checkout -b work/<name> origin/main` → edit → commit (author `Claude <noreply@anthropic.com>`,
-  end with the Co-Authored-By + Claude-Session trailer) → `p4 push` (work/ or job/ only) →
-  `p4 open --title` → `p4 ready <pr>` → `p4 results <pr>` until passed → `p4 merge <pr>`.
-- The cloud hands a **stale `origin/main`** at start; `git fetch origin main` corrects it. The
-  handover's stated `main` tip is authoritative.
-- CI: `tool-tests` runs ~2 min when tool/shims/starting_texts change; design/process/coordination
-  -only PRs pass fast. Watch it with a Monitor (poll `p4 results`) rather than sleeping.
-- Merge refusals: classifier noise ("Destructive or Unwanted Actions") → `git status` alone, then
-  `p4 merge` alone, never chained. Transient 405 right after green → re-check `results`, retry once.
-- A session reads its own fill via `get_session` (no id), field `context_usage`; refresh at 50%
-  (design part 5 §2). This session paused at ~63%.
-- **Parallel workers** (Agent tool, general-purpose) worked well this session for a large read/edit
-  job: survey then clean the eleven design parts, ~4-6 at once on disjoint files, with a precise
-  brief and "change no rule" guardrail — then review the diff (deletions dominate) before committing.
-  Keeps heavy reading/editing off PROCESS's own context.
-- Page work: load `ArtifactComments`; keep repo `desk.html` and the published standing page in sync
-  (commit + publish). Record only marked "Decision:"/"Instruction:" words verbatim.
+  end with the Co-Authored-By + Claude-Session trailer) → `p4 push` → `p4 open --title` →
+  `p4 ready <pr>` (opens draft; must ready before merge) → `p4 results <pr>` until passed →
+  `p4 merge <pr>`.
+- The cloud hands a **stale `origin/main`** at start; `git fetch origin main` corrects it.
+- CI `tool-tests` runs ~2 min when tool/shims/starting_texts change; design/process/coordination
+  -only PRs pass fast. Watch with a Monitor polling `p4 results`, not sleeping.
+- **Cross-repo reality (measured, design part 7 §3):** a `gh api` read of another repo's state is
+  refused (403); cross-repo **messaging** works; cross-repo session create/archive is refused.
+  Build cross-repo coordination on messaging + each session's own-repo state only.
+- A session reads its own fill via `get_session` (no id), field `context_usage`; refresh at 50%.
+- **Governing-text bookkeeping:** every design part / build text states "Length: N lines" = `wc -l`
+  at its top; update it when you add/remove lines. The starting-texts index (`00-index.md`) carries
+  per-text byte figures and combined reading sums — re-measure and update them whenever a design
+  part, build text or starting text changes size (they feed the 175,000 set-max check). Starting
+  texts: ≤8,192 bytes, ≤10 numbered rules.
+- Parallel workers (Agent, general-purpose) help for large read/edit jobs on disjoint files, with a
+  precise brief and a "change no rule" guardrail; review the diff before committing.
