@@ -26,15 +26,14 @@ a{color:var(--accent)}
 </header>
 
 <section class="wait">
-<h2>Waiting for you: one GitHub setting, then the trial's work lands on main</h2>
-<p>ARCH built the joining pull request (#383) and its check passed, but GitHub refused the merge: main's rule still requires a check named <b>gate</b>, left over from the earlier process. Nothing produces "gate" any more. Main's rule must require <b>module-tests</b> instead, like the tranche branch's rule. Only you can change a GitHub rule.</p>
+<h2>Waiting for you: carry your forbidden-commands file onto the tranche branch</h2>
+<p><b>Done:</b> the trial's finished work is on main (pull request #383), and the two branches now share history, so future tranches merge into main normally. One file still differs: main has your newer <code>.claude/settings.json</code>; the tranche branch has the older one.</p>
 <ol>
-<li>Open <b>https://github.com/neobobkrause/process3-probes/settings/rules</b>. Click the ruleset that covers <b>main</b>. (If the page lists no rulesets, open <b>https://github.com/neobobkrause/process3-probes/settings/branches</b> instead and click <b>Edit</b> beside <b>main</b>.)</li>
-<li>Find <b>Require status checks to pass</b>. Remove <b>gate</b> with the trash or × beside it. Click <b>Add checks</b>, type <code>module-tests</code>, and pick it from the list.</li>
-<li>Click <b>Save changes</b>. You should see the rule now lists <b>module-tests</b> and not <b>gate</b>.</li>
-<li>Tell the trial's coordinator: "main's rule now requires module-tests". ARCH then merges #383.</li>
+<li>Open <b>https://github.com/neobobkrause/process3-probes/compare/p4-tranche...main</b>. You should see "Able to merge" and, under Files changed, exactly one file: <code>.claude/settings.json</code>. If you see more, stop and tell me.</li>
+<li>Click <b>Create pull request</b>, then <b>Create pull request</b> again on the form.</li>
+<li>When <b>module-tests</b> shows a green tick, click <b>Merge pull request</b>, then <b>Confirm merge</b>. Do not click "Delete branch".</li>
 </ol>
-<p>After that, one more set of clicks carries your new forbidden-commands file onto the tranche branch; I will give it to you then.</p>
+<p>Then, when you choose, tell the trial's coordinator to lift the stop.</p>
 </section>
 
 <section class="card">

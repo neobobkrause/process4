@@ -105,3 +105,14 @@ to the tranche branch by his click.
 ## The owner's choice
 
 "Decision: option C (But, god, I hope this doesn't take any more time. We've already sent 2 hours on this silly problem.) Go!" — 20 November 2026. Option C is carried out by the trial's ARCH on his instruction in the coordinator's session. The separate correction to build text 4, stage 1: "Decision: fix the setup text" — 20 November 2026; made by its own pull request.
+
+## Outcome (reported by the trial's ARCH, 20 Nov 2026, ~22:05Z)
+
+Option C is complete. The first obstacle was not the permission checker: main's ruleset still
+required the earlier process's check `gate`, which nothing produces. The owner changed main's
+required check to `module-tests` (design part 7 §4 act 10; build text 4 §4) and merged main into
+p4-tranche (trial PR 384, no change to p4-tranche's tree). ARCH re-made the join on p4-tranche's
+tip `f831ae60` and merged PR 383 into main (merge commit `96a4dd7`). `git merge-base origin/main
+origin/p4-tranche` is now `f831ae60`. main holds the product work and kept the owner's `CLAUDE.md`
+and `.claude/settings.json`. Left for the owner's clicks: main's `.claude/settings.json` onto
+p4-tranche.
