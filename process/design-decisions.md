@@ -712,6 +712,21 @@ PROCESS's starting texts; and the starting-texts index. Researched in
 approvals' wording (A: he writes every word; B: PROCESS or the coordinator drafts, he decides and
 lands it by his click): "Decision: option B" — 20 November 2026.
 
+### Subject: A tranche branch starts from main
+
+**The rule as it now stands.** A product's tranche branch is made from the newest commit of its
+main branch, also where main already holds an earlier history (design part 7, section 4, act 8;
+part 6, section 2). Build text 4, stage 1, now says so for the trial. This answered a measured
+fault: the trial's tranche branch `p4-tranche` was made with a history of its own, shared none
+with main, and could not merge into it. The one-off repair is option C: the trial's ARCH joins the
+two histories by one pull request into main, keeping main's approvals and forbidden commands, and
+the owner carries his approvals onto the tranche branch by clicks. It adds no test, gate, review
+or stop. Researched in `process/research/tranche-unrelated-to-main-20nov.md`.
+
+**The owner's words.** "Decision: option C (But, god, I hope this doesn't take any more time. We've
+already sent 2 hours on this silly problem.) Go!" — 20 November 2026. "Decision: fix the setup
+text" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
