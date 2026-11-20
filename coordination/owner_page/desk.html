@@ -25,21 +25,28 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS. I keep this page now — there is no separate coordinating session unless you start one. This page holds what I bring you about the design and the process; the trial product's own page is separate (linked below); you work with me directly in your session titled "PROCESS". One matter at a time.</p>
+<p class="updated">Updated 20 Nov 2026 by PROCESS. I keep this page now — there is no separate coordinating session unless you start one. This page holds what I bring you about the design and the process; the trial product's own page is separate (linked below); you work with me directly in your session titled "PROCESS #1". One matter at a time.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you — start a fresh PROCESS</h2>
-<p>This PROCESS session is at its refresh point (~51% context, a clean pause — everything is merged, nothing half-done). Under your decision, only you start the successor. Open a new Claude Code session on <code>neobobkrause/process4</code>, <code>main</code>, Auto mode, and paste:</p>
-<p><i>"You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md; your folder process/ (including process/research/); and process/handover.md — read it last and continue from it (it names what is done and the open follow-ups). You keep the owner's standing page 'Process4 Waiting for Bob' (artifact 3eWSU2EvP27ttdJBZGjDJT)."</i></p>
-<p>Nothing else needs your decision. What is in motion is below; the trial will bring you its next step when each arrives.</p>
+<h2>Waiting for you — the first account switch</h2>
+<p>Your decision today: <b>move both PROCESS and the trial to a new Claude account, together</b> ("Decision: B — Move PROCESS to the new account too"). Keeping them on one account is what lets them keep coordinating — splitting them across accounts would cut the link. Your steps in the new account, in order (no session can do these):</p>
+<ol>
+<li><b>Stop the trial first.</b> Tell the trial coordinator to stop; its open jobs push and stop.</li>
+<li><b>Connect GitHub.</b> In the new account, connect Claude to GitHub as the sessions' account and install Claude's GitHub App on both repositories — the process repo and the trial repo.</li>
+<li><b>Secrets.</b> In the new account's environment (the environment menu in the session title bar, then Edit), re-enter the deploy token and the other secrets: the Cloudflare token (<code>CLOUDFLARE_API_TOKEN</code>/<code>CF_TOKEN</code>, with <code>CLOUDFLARE_ACCOUNT_ID</code>/<code>CF_ACCT</code>) and the <code>api.cloudflare.com</code> network secret, plus the other variables the current environment has. You enter the values yourself; never paste them in chat.</li>
+<li><b>Permissions settings — don't skip.</b> Copy the current environment's <b>setup script</b> into the new account's environment. It writes the <code>autoMode</code> block that keeps the checker from wrongly refusing the roles' routine cross-session and cross-repository acts; without it the restart cannot complete.</li>
+<li><b>Start the roles in the new account.</b> Start ROOT on the trial repo (plain prompt) and PROCESS on the process repo. ROOT rebuilds everything from the shared state; the coordinator confirms nothing was lost.</li>
+</ol>
+<p>The shared state, the repositories, branches and open pull requests all live on GitHub, so they carry over untouched — confirming that is the point of this step. It is the trial's last and most doubtful step; I'll fix any process fault it surfaces on your word.</p>
 </section>
 
 <section class="card">
 <h2>Settled today (20 Nov)</h2>
 <p><b>The four reading limits</b>, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b> (your exception, to minimise expensive refreshes).</p>
 <p><b>The two measurement findings</b>, each as recommended: a <i>silent cut read</i> — no further change, since the 60,000 limit sits below the cut and every governing text states its own length; and <i>reading a session's own fill</i> — design part 7 §1 now records that sessions read their fill via <code>get_session</code>, and refresh at a natural pause where they cannot read it.</p>
-<p><b>Standardized session names</b>, in your words (the job name and the whole change “as recommended”): every session now carries a standard name — <code>PROCESS #N</code>, or <code>product role #N</code> (e.g. <code>civicsmith ARCH #3</code>, a job <code>civicsmith orders #2</code>) — where N is the generation, one more at each refresh or replacement, kept in each long-lived role's handover record so it survives a full stop. No tool change was needed and no test or gate was added; whether a session can set a name through the harness is marked unproven until the trial. I also corrected two texts that still said you approve a tranche, to match your earlier “remove the owner's tranche-approval.”</p>
+<p><b>Standardized session names</b>, in your words (the job name and the whole change “as recommended”): every session now carries a standard name — <code>PROCESS #N</code>, or <code>product role #N</code> (e.g. <code>civicsmith ARCH #3</code>, a job <code>civicsmith orders #2</code>) — where N is the generation, one more at each refresh or replacement, kept in each long-lived role's handover record so it survives a full stop. No tool change was needed and no test or gate was added. This session is <code>PROCESS #1</code>, and setting that name through the harness worked — one of the things the design had left unproven.</p>
+<p><b>The first account switch</b>, in your words (<i>"Decision: B — Move PROCESS to the new account too (to simplify this first account switch)"</i>): the trial and PROCESS move to a new Claude account <b>together</b>, staying on one account, because their coordination is session messaging and the harness keeps that within an account. Your steps are in the box at the top of this page. Recorded in the design decisions record, with the single-account reason noted in the account-switch procedure; no test, gate or stop was added.</p>
 <p>Nothing broke on fidelity across 103 trials; no test or gate was added — the tool refuses nothing for size. Report: <code>measurement/results/report.md</code>.</p>
 </section>
 
@@ -61,8 +68,8 @@ a{color:var(--accent)}
 </section>
 
 <section class="card">
-<h2>Nothing owed, nothing pending</h2>
-<p>You said no Process3-conformance work and no Codex work here, so I have dropped both — nothing is owed to you now, and nothing is waiting for your decision. The trial will bring you its next step when it arrives.</p>
+<h2>In motion — the account switch</h2>
+<p>The one thing waiting for you is the account switch at the top of this page. Once you have started ROOT and PROCESS in the new account, PROCESS #2 (running there) will publish a fresh copy of this page on the new account and give you its link — a standing page lives on the account it is published under, so this copy stays with the old account. The trial's own page is separate (linked above). (Process3-conformance and Codex work remain dropped, per your word.)</p>
 </section>
 </main>
 </body></html>
