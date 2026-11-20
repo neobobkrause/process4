@@ -102,8 +102,8 @@ Gives: journeys that change data cannot disturb another session's journeys; fixe
 
 **Journeys that use AI.**
 
-- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked.
-- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. Costs: this is a session's judgment and can differ between sessions.
+- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked. A tranche may end with such journeys recorded not walked (the owner's decision A, 20 November 2026).
+- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision, 20 November 2026).** Costs: this is a session's judgment and can differ between sessions.
 
 **How many sessions, and the account's limits. Decided here:**
 
@@ -192,7 +192,7 @@ Items 6 to 8 are the design's trial items 8 and 14 made smaller. A trial can bre
 ## 9. The owner's to settle
 
 1. **Which list of journeys counts — settled (the owner, 20 November 2026):** the UX design lane maintains the list of journeys; that is the list to use, and the owner does not approve it per tranche. The form of the two documents stays as section 2 decides: pages in the folder, one for each group of screens and each journey.
-2. **What "proper results" means for a journey that uses AI,** where its page does not say. The ruling's words are his; section 5 only says where the answer is written.
-3. **Whether a tranche can end while a journey that uses AI is left unwalked** because no AI account is connected. This bears on "all journeys can be completed".
+2. **What "proper results" means for a journey that uses AI — settled (the owner, 20 November 2026):** an AI step is judged as a module test is judged (a different but still valid answer does not fail it), and the "what must be present" wording the `expects` line carries is set per journey by the UX design lane (section 5).
+3. **Whether a tranche can end while a journey that uses AI is left unwalked — settled (the owner, 20 November 2026): yes (option A).** When no AI account is connected, such journeys are recorded not walked and the tranche may still end; each is named not walked in the account after the round.
 4. **A flaw set aside by ARCH.** Section 6 lets ARCH rule that a walker's entry is none of the three things. If he holds that only he, or only a change to the document, can clear a flaw, outcome 3 goes.
 5. **Parts walked by hand.** Section 3 has the walking session judge, in its own words, what no step covers. If he means a walk to be only its written steps, that line goes, and a missing step is then seen by no one.
