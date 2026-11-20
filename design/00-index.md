@@ -80,7 +80,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Governing text:** a text a session must read in full and follow. **The maximums:** the largest single text and the largest set (part 5).
 - **The tool:** the process's own small program, each session's only door to GitHub (part 6).
 - **Shared state:** what every role works from. Its form is a small fixed set of records (part 4).
-- **Standing approvals:** the owner's own text saying what sessions may do without asking him and what they may never do.
+- **Standing approvals:** the owner's text saying what sessions may do without asking him and what they may never do. Its wording may be drafted for him; only he changes it, by his own click.
 - **Forbidden commands:** the list of commands taken away from every session outright.
 - **Permission checker:** the harness's automatic judge of each risky act, which may refuse it.
 - **Unattended mode:** the harness's way of running a session with nobody answering it. **Scheduled wake:** a timer that rouses a session. **Compaction:** a harness shrinking a full context, which loses what was read.

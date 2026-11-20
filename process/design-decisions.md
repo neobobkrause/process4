@@ -665,11 +665,14 @@ address, or words he types into a session or into a field of a form. No act asks
 file or type a command, and his standing page gives each act's steps that way (design part 1,
 section 3). In particular:
 
-1. **His approvals.** He types their words in a session: the coordinator's for a product,
-   PROCESS's for the process's repository. That session places his words, unchanged, in a pull
-   request that changes only that file, and never merges it. He reads the changed file on the pull
-   request's page and lands it by clicking Merge. No session composes or alters his approvals, and
-   no session merges a change to them. Where one of the two files differs between two branches, he
+1. **His approvals.** Their wording is drafted with care: on his request PROCESS (for the
+   process's repository) or the coordinator (for a product) drafts the whole text and shows it to
+   him in plain words, or he types it himself. The session places the text he approved, unchanged,
+   in a pull request that changes only that file, and never merges it. He reads the changed file on
+   the pull request's page and lands it by clicking Merge. A draft has no effect until he lands it.
+   No session changes his approvals on its own, and no session merges a change to them. (Option B
+   of 20 November 2026, below, replaced an earlier reading that no session may draft them: the
+   authority to change them is his alone; drafting is work done for him.) Where one of the two files differs between two branches, he
    chooses which of his own committed versions stands, and GitHub's own buttons carry it out (part
    6, section 2).
 2. **The forbidden commands** are a technical list, the same for every repository. PROCESS keeps it
@@ -703,7 +706,9 @@ It changed design parts 1, 3, 4, 6, 7 and 10; build texts 1, 4 and 6; the coordi
 PROCESS's starting texts; and the starting-texts index. Researched in
 `process/research/owner-acts-without-files-20nov.md`.
 
-**The owner's words.** "Decision: as recommended" — 20 November 2026.
+**The owner's words.** "Decision: as recommended" — 20 November 2026. On who drafts the
+approvals' wording (A: he writes every word; B: PROCESS or the coordinator drafts, he decides and
+lands it by his click): "Decision: option B" — 20 November 2026.
 
 ## Earlier decisions not yet migrated
 

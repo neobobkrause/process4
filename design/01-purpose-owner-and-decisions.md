@@ -24,7 +24,7 @@ Length: 82 lines. Last section: "7. Known weaknesses of AI sessions".
 | Tell the coordinator things; give marked decisions and instructions | Whenever he chooses |
 | Approve a public release | Once for each public release |
 | At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
-| Give the wording of his standing approvals by typing it in a session, and land it, with the forbidden commands, by clicking Merge on the pull request that carries it, in the product's repository and in the process's (part 6, section 2) | At the start, then only when the wording must change |
+| Decide the wording of his standing approvals, drafted for him on request or typed by him in a session, and land it, with the forbidden commands, by clicking Merge on the pull request that carries it, in the product's repository and in the process's (part 6, section 2) | At the start, then only when the wording must change |
 | Change a permission or rule setting in GitHub or in the hosting account | Very occasionally |
 | Connect the harness to GitHub, and enter the deploy token and other secret values, from a page the process writes | At the start of a product, at an account switch, and before a token expires |
 | Approve with a click the change a session proposes when the sessions' environment lacks the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |

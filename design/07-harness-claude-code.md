@@ -9,7 +9,7 @@ Everything in this part is specific to Claude Code.
 | Term in parts 1 to 6 | On Claude Code |
 |---|---|
 | Session | A session in Claude Code's cloud, handed a copy of one repository when it starts |
-| The owner's standing approvals | A block of the owner's own words in the repository's `CLAUDE.md`, read once when a session starts |
+| The owner's standing approvals | A block of the owner's text in the repository's `CLAUDE.md`, read once when a session starts |
 | Forbidden commands | The deny list in the repository's `settings.json`. A session that holds more than one repository loads no deny list |
 | Unattended mode and the permission checker | Auto mode: the platform's automatic checker judges each risky act and may refuse it |
 | One session starting another | A separate session on the account, started by a session |
@@ -68,7 +68,7 @@ As measured on Claude Code:
 4. Make the rule for every branch: no deleting and no overwriting, with no one excepted.
 5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories.
 6. Make the deploy token and enter the secret values in the fields of Claude's cloud environment settings page. A session checks that environment carries the process's permissions-management settings; where they are missing, he approves with a click the change it proposes (section 5).
-7. Type his approvals in PROCESS's session, and land them, with the forbidden commands, on the process repository's main branch by clicking Merge on the pull requests PROCESS opens (part 6, section 2).
+7. Decide his approvals in PROCESS's session, drafted there on his request or typed by him, and land them, with the forbidden commands, on the process repository's main branch by clicking Merge on the pull requests PROCESS opens (part 6, section 2).
 8. Do the same for the product, in a plain session he starts on the product's repository for this one act, which also makes the tranche branch from main.
 9. Start ROOT: the product's repository alone, the tranche branch, Auto mode, a plain prompt.
 10. Once the required test run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing.

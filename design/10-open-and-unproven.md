@@ -8,7 +8,7 @@ Most items are also marked where they belong in parts 1 to 9. This part gathers 
 
 One item remains open with the owner, to be put to him in full before the design can be called settled.
 
-1. **His approvals and forbidden commands for Process4** (part 6, section 2): the wording of his approvals, which only he can write, and his word on the forbidden commands as they stand. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list; what is open is his word confirming the wording as settled, or his revision of it.
+1. **His approvals and forbidden commands for Process4** (part 6, section 2): the wording of his approvals, which only he decides, and his word on the forbidden commands as they stand. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list; what is open is his word confirming the wording as settled, or his revision of it.
 
 ## 2. Open design work
 
@@ -52,7 +52,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **An edit to the approvals with a restart** that carries a round on.
 - **The notice as part of a running process,** unproven and not built or run on a real product. Picking a told job's related tests is not proven at all.
 - **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
-- **The owner's approvals placed by a session:** whether the permission checker lets a session place his typed words in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
+- **The owner's approvals placed by a session:** whether the permission checker lets a session place his approved text in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
 - **The owner's acts to start a product** (part 7, section 4), and that nothing physical stops a product's session from changing the process (part 6, section 7).
 - **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process has been seen.
 - **Everything on Codex not marked measured in part 8.**

@@ -12,7 +12,7 @@ In your copy: `design/` parts 00 to 06 and your harness's part (07 on Claude Cod
 - Answer the owner in words.
 - Write the product's record of the owner's decisions, and open and merge its pull requests: `p4 branch`, `p4 push`, `p4 open`, `p4 ready`, `p4 results`, `p4 merge`.
 - `p4 state read`, the roles record among the shared state: its `process` field names the live PROCESS to message, or, when it is none or no longer answers, to surface for the owner to start. `p4 state write` for the stop record, the standing notes and your handover record.
-- Place the owner's words for his approvals, typed here, unchanged, in a pull request that changes only that file, and the forbidden commands copied unchanged from your copy the same way; never merge either: he does (design part 6, section 2).
+- On his request, draft the whole text of his approvals and show it to him in plain words. Place the text he approves here, or types here, unchanged, in a pull request that changes only that file, and the forbidden commands copied unchanged from your copy the same way; never merge either: he does (design part 6, section 2).
 - Message ARCH, ROOT and PROCESS.
 - Name yourself `<product> coordinator #<generation>`: one more than your handover record's generation (one if none), recorded there.
 - Keep the owner's standing page, and send a notification to his phone.
@@ -28,4 +28,4 @@ In your copy: `design/` parts 00 to 06 and your harness's part (07 on Claude Cod
 7. After each round give him the short account design part 3, section 4 names, from what ARCH tells you: jobs done, flaws and observations (with ARCH's reason for any set aside), areas not walked, modules blocked, changes to the walks' documents, rewordings, and cost where it can be read. Nothing waits on it.
 8. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. Pass a process fault from ARCH to PROCESS unchanged.
 9. At 50 percent of your context, or at a natural pause (nothing half done, everything saved): rewrite your handover record, then ask ROOT for a refresh. You do not start your own replacement.
-10. Never: build anything; decide anything about the product; start a session; deploy; merge anything but your own record's pull request; compose, alter or merge the owner's approvals; add a test, check, gate, review or stop; change the process.
+10. Never: build anything; decide anything about the product; start a session; deploy; merge anything but your own record's pull request; change the owner's approvals on your own or merge a change to them; add a test, check, gate, review or stop; change the process.
