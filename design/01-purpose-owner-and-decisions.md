@@ -12,15 +12,15 @@ Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
 ## 2. Where the process stops
 
 - The process owns what can be proven in the repository and on the machines that run the tests.
-- Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. No session directly holds a production key; a product's production secret may be used through a secret-management facility to produce the installer, and the release process may use a release token with the privileges to publish, but no session holds such a key directly in its environment (the owner's decision, 20 November 2026).
+- Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. No session directly holds a production key; a product's production secret may be used through a secret-management facility to produce the installer, and the release process may use a release token with the privileges to publish, but no session holds such a key directly in its environment.
 - For those three the process provides written procedures (part 3, section 8). The owner, or whoever runs the product, carries them out.
 
 ## 3. The owner's acts
 
 | Act | When |
 |---|---|
-| Start ROOT | At each start or restart of development; after any full stop; and, as **Claude decided**, after each edit to his approvals (part 4, section 7) and when the harness's limit on depth is near (part 4, section 6) |
-| Start PROCESS, and start its refresh | **Claude decided** (decision C, 19 November 2026): when a process change is needed, or PROCESS asks to refresh; the coordinator surfaces the prompt on his standing page and notifies him (part 4, section 5; part 6, sections 6–7) |
+| Start ROOT | At each start or restart of development; after any full stop; and after each edit to his approvals (part 4, section 7) and when the harness's limit on depth is near (part 4, section 6) |
+| Start PROCESS, and start its refresh | When a process change is needed, or PROCESS asks to refresh; the coordinator surfaces the prompt on his standing page and notifies him (part 4, section 5; part 6, sections 6–7) |
 | Tell the coordinator things; give marked decisions and instructions | Whenever he chooses |
 | Approve a public release | Once for each public release |
 | At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
@@ -49,16 +49,16 @@ Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
 - A question is put to him inline, in one form: a title; the question; an explanation of the issue; options, each with its own identity; the recommendation and its reasons; and the freedom to set the options aside.
 - No technical question is brought to him. The AI decides it and reports it in one plain line.
 - No session assures him that something will work. Each claim put to him says what is proven and what is not, names its source, and calls anything unread or unmeasured unknown.
-- One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. **Claude decided:** the coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show.
+- One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. The coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show.
 - He can see each open job's progress and status without speaking to it (part 4, section 9).
 - When the process is completely blocked he gets one plain message with a numbered list of what is his to do. In every other case the stop is recorded as a named blocker and other work goes on.
 
 ## 6. Working principles
 
-- Every problem is either an architecture bug or an implementation error. **Settled (the owner, 20 November 2026):** an architecture bug is corrected by rewriting the part of the design it belongs to, never by appending to it; an implementation error is corrected in the code or text that has it.
+- Every problem is either an architecture bug or an implementation error. An architecture bug is corrected by rewriting the part of the design it belongs to, never by appending to it; an implementation error is corrected in the code or text that has it.
 - A workaround is not a fix.
 - Two kinds of refusal are kept apart. An act the permission checker refused is never retried elsewhere. An act a session declined only because its instructions did not name it may be given to a new session whose instructions do.
-- A third case is kept apart from both. Where the permission checker refuses an act the owner's approvals and the permissions-management settings (part 7, section 5) sanction, and the refusal is non-substantive — the checker allowed an identical act before or invites another attempt, or the act was refused only because the session malformed the command, mixing a forbidden command into a legitimate one — the session makes the sanctioned act again, cleanly: it keeps its prior state, re-attempts at its next wake or after a short wait, and brings the matter to the owner if it persists. This is not working a refusal around (section 7): a genuinely unsanctioned act is still never reworded or handed on, a relayed consent (part 3, section 6) is still not retried, and three refusals in a row still stop the session. The owner's decision for the PROCESS refresh fault, 19 November 2026.
+- A third case is kept apart from both. Where the permission checker refuses an act the owner's approvals and the permissions-management settings (part 7, section 5) sanction, and the refusal is non-substantive — the checker allowed an identical act before or invites another attempt, or the act was refused only because the session malformed the command, mixing a forbidden command into a legitimate one — the session makes the sanctioned act again, cleanly: it keeps its prior state, re-attempts at its next wake or after a short wait, and brings the matter to the owner if it persists. This is not working a refusal around (section 7): a genuinely unsanctioned act is still never reworded or handed on, a relayed consent (part 3, section 6) is still not retried, and three refusals in a row still stop the session.
 - Workers are the standing way a long-lived role keeps heavy reading out of its own context: a narrow brief, a short answer in a set shape, and the worker ends when its work is done. A brief may hand the worker a decision to make, which it reports with its grounds. No worker is briefed to review another session's work.
 - A hard open question gets a session of its own with a written brief and a bounded task, and ends with a written result once the result is usable.
 - A session saves its work to the repository before its turn ends.
@@ -66,7 +66,7 @@ Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
 
 ## 7. Known weaknesses of AI sessions
 
-Process4 steps around the situations where a known weakness does harm, and does not rely on repairing the harm afterwards. For each, the sign that it is near and what the session then does. **Claude decided** this first list; it grows only at PROCESS.
+Process4 steps around the situations where a known weakness does harm, and does not rely on repairing the harm afterwards. For each, the sign that it is near and what the session then does. This list grows only at PROCESS.
 
 | Weakness | The sign | What the session does |
 |---|---|---|

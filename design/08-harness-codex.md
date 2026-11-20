@@ -48,4 +48,4 @@ Everything in this part is specific to Codex. Where the Codex side is not known 
 
 ## 3. What the owner fills
 
-The list of what the design needs that nothing shows for Codex is kept in the working folder as `codex_shortcomings_to_fill.md`. As each is filled, the row above is rewritten in place.
+The list of what the design needs that nothing shows for Codex is kept in the working folder. As each is filled, the row above is rewritten in place.

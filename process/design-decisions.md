@@ -302,6 +302,31 @@ with the four-values change above.
 **The owner's words.** "Decision: as recommended" — 20 November 2026 (on the standing page,
 the two-findings item; option (a) for each finding).
 
+### Subject: The design document carries no history — enforcing the separation
+
+**The rule as it now stands.** The design document (the files in `design/`) states the design
+as it now stands and carries no history of how it evolved, beyond naming where a figure or a
+quotation comes from (design part 0, section 1; part 5, section 4). The history lives elsewhere:
+the owner's dated decisions in this record, and the reasons and evidence in the background
+document. To enforce this, the design was cleaned of the history that had accumulated in it:
+draft and version lineage ("the seventh draft", "the sixth draft"); dated decision provenance
+("Settled (the owner, <date>)", "the owner's decision, <date>", labels such as "decision C" and
+"fault D"); references to the predecessor process ("the process before this one"); working-file
+and evidence paths (`process4/working/…` and the like); change-narratives (how a rule came to be
+or was withdrawn); and the authorship marks "Claude decided", "Reading" and "Settled". A rule
+that a mark had introduced now stands plainly; the marks legend (part 0, section 3) keeps only
+"Open" and "Unproven", which flag the design's present status. Part 10, section 1 ("Open with the
+owner") is reduced to the one genuinely-open item (the wording of the standing approvals), its
+settled-decision recaps removed as duplicates of this record. The present-status content — what
+is unproven, what is still open, and the trial — stays, cleaned of its dated history.
+
+No rule changed: the cleanup only relocated provenance and removed narrative; the design still
+meets the process4 requirements, and it added no test, gate, review or stop. The starting-texts
+index's measured byte figures were updated to the cleaned parts' sizes in the same step. The
+build texts and the index still carry their own history and are not part of this change.
+
+**The owner's words.** "Decision: I agree with your recommendations in the Judgement calls for the owner section. Do it." — 20 November 2026 (on PROCESS's research note `process/research/design-history-separation-20nov.md`; his recommendations there: keep the cleaned present-status and collapse part 10 section 1 (option 1), strip the "Claude decided" mark, and produce one combined downloadable copy).
+
 ### Subject: How a tranche ends, and what shows its journeys complete
 
 **The rule as it now stands.** No change. A tranche ends when its rounds' partial walks

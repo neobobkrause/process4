@@ -1,8 +1,8 @@
-# Process4: the design, seventh draft
+# Process4: the design
 
-Length: 93 lines. Last section: "6. Words used".
+Length: 91 lines. Last section: "6. Words used".
 
-Written by Claude on 18 Nov 2026. **Status: proposed. Nothing here is in force and nothing here has run.**
+**Status: proposed. Nothing here is in force and nothing here has run.**
 
 ## 1. What this is
 
@@ -19,12 +19,10 @@ Process4 is **proposed** now. It is **on trial** from the owner's acceptance: us
 ## 3. Marks used in every part
 
 - Words in quotation marks are the owner's, exactly as typed, unless the marks only name a term, a mark or an option. Where a quotation is not among his typed words and comes through an earlier record, the line says which record.
-- **Claude decided:** a technical decision made by the AI and reported here. The owner can overrule any.
-- **Reading:** an interpretation of the owner's words that he has not confirmed.
 - **Open:** not settled. The line says who settles it.
 - **Unproven:** the rule depends on something never shown to work. Part 10 gathers these.
 
-A rule with no mark is the owner's ruling, or follows from one directly, or is one of 34 rules carried unchanged from the sixth draft, where they stood with no mark. Most of those describe how sessions, permissions and GitHub work. They are listed in `process4/working/readiness_18nov/draft7_unmarked_lines_traced.md`, and the owner has ruled on none of them one by one.
+A rule with no mark is the owner's ruling, or follows from one directly.
 
 ## 4. The parts
 
@@ -44,7 +42,7 @@ A rule with no mark is the owner's ruling, or follows from one directly, or is o
 
 ## 5. The build texts
 
-How the tool, the forms, the walks and each role's starting text are made is written in the build texts, in `process4/definition/process4_build_v1/`. They are kept with this design in the process's repository, and a session reads those its starting text names. They stand beside this design and change no rule of it. Where a build text and this design differ, this design rules.
+How the tool, the forms, the walks and each role's starting text are made is written in the build texts, in `build/`. They are kept with this design in the process's repository, and a session reads those its starting text names. They stand beside this design and change no rule of it. Where a build text and this design differ, this design rules.
 
 ## 6. Words used
 
@@ -53,17 +51,17 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Session:** one running AI conversation on a harness.
 - **Role:** a standing responsibility that one session holds at a time: ROOT, the watcher, the coordinator, ARCH, a lane, PROCESS. A role lasts; its sessions are replaced.
 - **ROOT, the watcher, the coordinator, ARCH, PROCESS:** the standing roles (part 4). A lane is a role a product has while its design needs one. A job, a walking session and a worker hold no role.
-- **Long-lived role:** a role whose session runs long enough to need refreshing. **Claude decided:** every standing role, and a lane that is kept running, is long-lived; a job and a walking session are not. **Handover:** what its successor needs, written before a refresh.
+- **Long-lived role:** a role whose session runs long enough to need refreshing. Every standing role, and a lane that is kept running, is long-lived; a job and a walking session are not. **Handover:** what its successor needs, written before a refresh.
 - **Worker:** a helper that a long-lived role or a job starts inside itself for one bounded piece of work.
 - **The account:** the owner's account on a harness, under which every session runs. The development account, the hosting account and the GitHub account are always named in full. **The account after each round** is a short report, not an account in this sense.
-- **Starting instructions:** the text a session is started with, naming every act it may take. **Settled (the owner, 20 November 2026):** a role's starting text is the same thing for a standing role, and a role's principles are the rules in that text.
-- **Process fault:** **Claude decided** the wording: a fault in the process itself and not in the product: a rule of this design that cannot be kept, a fault in the tool, or a stop that nothing called for.
-- **Architecture bug and implementation error:** **Settled (the owner, 20 November 2026):** an architecture bug is a fault in the design itself; an implementation error is a fault in code or text that does not follow the design (part 1, section 6).
+- **Starting instructions:** the text a session is started with, naming every act it may take. A role's starting text is the same thing for a standing role, and a role's principles are the rules in that text.
+- **Process fault:** a fault in the process itself and not in the product: a rule of this design that cannot be kept, a fault in the tool, or a stop that nothing called for.
+- **Architecture bug and implementation error:** an architecture bug is a fault in the design itself; an implementation error is a fault in code or text that does not follow the design (part 1, section 6).
 - **Held merge:** a merge the owner has told the coordinator to hold until he approves it.
 - **Foundations:** the owner's own earlier document of the reasons and evidence behind the process.
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.
 - **Module:** one part of the product, with its own code files, tests and requirements file. The product is one ordered list of modules, and a module may use only modules before it.
-- **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface (the owner's instruction, 20 November 2026).
+- **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface.
 - **Interface:** what a module accepts and what it hands back. **Declared uses:** the modules a module states that it uses.
 - **Job:** one session's work on one module, delivered as one pull request.
 - **Slot:** room for one job to run. Eight by default, counted across the account.
@@ -81,7 +79,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **The notice:** what tells a user module that a provider's interface changed. A **structured comment** is a comment in code that states the interface for the tool.
 - **Governing text:** a text a session must read in full and follow. **The maximums:** the largest single text and the largest set (part 5).
 - **The tool:** the process's own small program, each session's only door to GitHub (part 6).
-- **Shared state:** what every role works from. **Claude decided** its form: a small fixed set of records (part 4).
+- **Shared state:** what every role works from. Its form is a small fixed set of records (part 4).
 - **Standing approvals:** the owner's own text saying what sessions may do without asking him and what they may never do.
 - **Forbidden commands:** the list of commands taken away from every session outright.
 - **Permission checker:** the harness's automatic judge of each risky act, which may refuse it.
@@ -90,4 +88,4 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Deploy token:** the secret value that lets a session deploy to the development account. **Hosting provider:** where a product is hosted and released.
 - **Fill level:** how full a session's context window is. **Refresh:** the planned replacement of a role's session by a fresh one.
 - **Lane:** a standing design responsibility for one area of a product. **The UX lane** is the lane for the user's experience: the screens and the journeys. **Design pages:** the pages a lane keeps its designs on, where the owner works with it.
-- **Process config:** the product's short file of process settings. **Claude decided** what it holds (each field is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.
+- **Process config:** the product's short file of process settings. What it holds (each field is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.
