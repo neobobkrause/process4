@@ -745,6 +745,17 @@ test, gate, review or stop. Researched in `process/research/civicsmith-lane-poin
 **The owner's words.** "Decision: B" — 20 November 2026 (a comment on his standing page, on the
 item "Waiting for you: fixes the civicsmith lane found in the setup steps").
 
+### Subject: A session can set its own name (seen to work)
+
+**The rule as it now stands.** Design part 7 records, as a measured fact, that a role session in
+Auto mode can set its own name with the harness's set-session-title: PROCESS #1, #4 and #5 named
+themselves, and the trial's ROOT, watcher, ARCH and coordinator sessions carry their standard names.
+The item is removed from part 7, section 3 ("Not proven on Claude Code"). It records a measured fact
+and adds no test, gate, review or stop. Option A of two (A: record it; B: no change).
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026 (a comment on his standing
+page, on the item "Record that a role session can name itself").
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
