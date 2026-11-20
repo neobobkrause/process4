@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Process4 Waiting for Bob</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;600&display=swap">
+<style>
+:root{--bg:#f7f8f6;--fg:#1d2420;--muted:#5b6660;--line:#d9dfdb;--accent:#1f6f54;--wait:#a35a00;--card:#ffffff;
+--display:"Source Serif 4",Georgia,serif;--body:Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141816;--fg:#e6ebe8;--muted:#9aa6a0;--line:#2c3430;--accent:#5cc49c;--wait:#f0a64a;--card:#1b201d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141816;--fg:#e6ebe8;--muted:#9aa6a0;--line:#2c3430;--accent:#5cc49c;--wait:#f0a64a;--card:#1b201d;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding:28px 16px 48px}
+main{max-width:44rem;margin:0 auto;display:grid;gap:28px}
+h1{font:600 1.9rem/1.2 var(--display);margin:0}
+h2{font:600 .78rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.updated{color:var(--muted);font-size:.9rem;margin-top:6px}
+p{margin:0 0 8px}
+ul,ol{margin:0;padding-left:1.3rem;display:grid;gap:6px}
+.later{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
+</style></head><body>
+<main>
+<header>
+<h1>What is waiting for you</h1>
+<p class="updated">Updated 20 Nov 2026, 13:50 UTC. A fresh session, titled "Process4: set-up and trial, continued (refresh 5 of 19 Nov)", now keeps this page. The one before it got too full to go on. One matter at a time. Reply in your session with Claude.</p>
+</header>
+
+<section>
+<h2>Waiting for you</h2>
+<p><b>Nothing waits for you now.</b></p>
+<ul>
+<li><b>The trial is stopped on your word</b> ("Instruction: stop all work", about 14:59 UTC). <b>Your stop held.</b> The trial's ROOT woke on its hourly timer at 15:33 and again at 16:33 UTC. Each time it read your stop, left it in place and started nothing. That was seen twice. The stop stays until you lift it in the trial coordinator's session. Nothing presses you to lift it.</li>
+<li><b>Still to try, once you lift the stop.</b> These are on the coordinator's page (https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb). You type a stop and a held merge while jobs are running. A job is replaced after its third failed test run. You edit your approvals, followed by a restart. Each one will come to you with steps when its moment comes.</li>
+</ul>
+</section>
+
+<section class="later">
+<h2>Starting the next session: your steps (you asked for these)</h2>
+<p><b>The repository really is neobobkrause/process3.</b> That is where this job keeps its notes. The starting text below tells the new session to read the design from neobobkrause/process4, where your work with PROCESS has changed it. This text replaces the one in the comment thread.</p>
+<ol>
+<li>Open claude.ai/code and start a new session.</li>
+<li>Choose the repository neobobkrause/process3 and the branch claude/process4-design-handoff-7w8nh8.</li>
+<li>Choose the model Claude Opus 5.5 and Auto mode.</li>
+<li>Copy all of the text in the box below, paste it in, and send it.</li>
+</ol>
+<pre style="white-space:pre-wrap;border:1px solid var(--line);border-radius:6px;padding:12px;font-size:.9rem">You take over the Process4 set-up and trial work as the coordinating session. Work on branch claude/process4-design-handoff-7w8nh8 of neobobkrause/process3 and push only there. First fetch that branch and be at its newest commit (2d03b10 or later).
+
+Read in full, and confirm the line count of each: process4/working/handoff_20nov_coordinating_session_5.md (the latest handoff; it rules over earlier ones, and passes on facts and where work stands, not rules); handoff_19nov_coordinating_session_4.md, _3.md and _2.md; sections 1 and 5 of handoff_19nov_coordinating_session.md; then the design's eleven parts and the build texts as they stand on main of neobobkrause/process4 (folders design/ and build/, by a plain clone of that public repository), not the older drafts in process3's process4/definition/; then process4/working/trial/setup_log_19nov.md.
+
+I direct you. After reading, tell me in two or three plain lines that you have taken over and what you are doing, then carry on as the handoff's section 0 says. Change no rule of the design without a message of mine beginning "Decision:" or "Instruction:". Put anything for me on my page (https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT; read it with the Artifact tool, then publish with its url), one matter at a time, with the design's words and mine in full. Keep messages in the conversation short. I am not a GitHub user, so give me numbered click-by-click steps for any act of mine. Every session you start uses the model claude-opus-5-5. Read your fill with get_session (no id), field context_usage; at 40 percent write a handoff, push it, and tell me.</pre>
+<p>If you would rather not have a coordinating session any more, because you now work with PROCESS and the trial coordinator directly, simply don't start one. Nothing in the trial depends on it.</p>
+</section>
+
+<section>
+<h2>Which page shows what</h2>
+<ul>
+<li>This page, your own, holds anything I bring you about the design itself.</li>
+<li>The trial coordinator's page holds what the trial product needs from you.</li>
+<li>You work with PROCESS directly, in your session titled "PROCESS".</li>
+</ul>
+</section>
+
+<section>
+<h2>Still owed to you, later</h2>
+<ul>
+<li>The same additions to process3's own approvals file that you made in process4. The steps are in your comment thread. When you reply "done" there, I'll read the file back to check it.</li>
+<li>A plan, as a document, for bringing Process3's tools and ways of working into line with the design.</li>
+</ul>
+</section>
+
+<section>
+<h2>Done since your last look</h2>
+<ul>
+<li>Round 4 ran on the tool's new piece (14:44 to 14:54 UTC). Two parts changed, and the tool told the two parts that use them. Both checked and found nothing to change. Seen once.</li>
+<li>Round 3: seven jobs merged. Your "do invoice first" and your limit of 2 jobs at once both held, seen once.</li>
+<li>The trial product moved onto the tool's new piece (version 6be2618), on your decision.</li>
+<li>Stage 1 of the trial: the tool made 20 merges, and nothing was refused.</li>
+</ul>
+</section>
+</main>
+</body></html>
