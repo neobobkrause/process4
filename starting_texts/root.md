@@ -20,6 +20,7 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 - Make your own hourly scheduled wake.
 - Message a session; archive a session.
 - Name yourself `<product> ROOT #<generation>`: one more than your handover record's generation (one if none), recorded there. The watcher, ARCH and the coordinator name themselves.
+- Record the live PROCESS in the roles record's `process` field from the message PROCESS sends you on its start; on your own start, if `process` names a PROCESS, message it your address so it can keep reaching you (the coordinator reads `process` to find PROCESS; part 6, section 7).
 - `p4 state read`; `p4 state write --create`, once; `p4 state write` for the roles record, the wakes record and your handover record.
 - Start workers inside yourself.
 

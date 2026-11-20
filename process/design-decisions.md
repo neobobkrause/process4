@@ -144,9 +144,11 @@ create, which the permission checker resisted. At its refresh point PROCESS rewr
 handover record and asks the coordinator; the coordinator puts the start prompt on the
 owner's standing page and notifies him; the owner starts the successor, which starts only
 from the shared state and the repository and records its own liveness in PROCESS's record
-in the process's repository. The coordinator reads that record to find PROCESS running
-(and so does not ask the owner to start a second), and surfaces the prompt whenever PROCESS
-is stopped or asks to refresh (design part 4, section 5; part 6, sections 6–7; part 1,
+in the process's repository. (How the **coordinator** finds the live PROCESS was changed on
+20 November 2026 — see "How the coordinator finds the live PROCESS" below — because the
+cross-repository read this entry first relied on is refused in practice; owner-start of
+PROCESS, this entry's substance, is unchanged.) The coordinator surfaces the prompt whenever
+PROCESS is stopped or asks to refresh (design part 4, section 5; part 6, sections 6–7; part 1,
 section 3; the PROCESS, ROOT and coordinator starting texts). ROOT no longer starts or
 refreshes PROCESS.
 
@@ -601,6 +603,37 @@ Researched in `process/research/session-naming-standardization-20nov.md`.
 **The owner's words.** "how a job is named decision: as recommended" — 20 November 2026 (the job
 name is `<product> <module> #N`, option (a)). "Options for the whole change:decision: s
 recommended" — 20 November 2026 (adopt the convention, option B).
+
+### Subject: How the coordinator finds the live PROCESS
+
+**The rule as it now stands.** The coordinator finds the live PROCESS from its **own product's
+`roles` record** (`process` field), a local read of its own repository — never a cross-repository
+read. ROOT writes that field, learning the live PROCESS from a **message PROCESS sends ROOT on
+start**; PROCESS knows which product's ROOT to message from a `products` registry in its own
+`handover-process` record (each product it serves and that product's ROOT session), seeded by the
+owner once per product, and kept current because ROOT, on its own start, messages the PROCESS
+named in `roles.process` its new address. When `roles.process` is none or names a session that no
+longer answers, the coordinator surfaces starting PROCESS on the owner's standing page (design
+part 6, section 6). No session writes another repository's state and no session reads it across
+repositories; only cross-repository **messages** pass, which are not refused.
+
+This corrected the measured fault that a refreshed coordinator could not determine the live
+PROCESS: decision C (19 November 2026) had the coordinator read `handover-process` across
+repositories with `state read --repository`, but a `gh api` read of another repository's issue is
+refused (HTTP 403 — a session is scoped to its own repository; design part 7, section 3), so the
+coordinator fell back to asking the owner on every refresh. This supersedes **only** that
+cross-repository-read mechanism; decision C's settled point that **the owner starts and refreshes
+PROCESS** stands. It changed design part 4, section 5 and part 6, section 7; build text 5,
+sections 2 and 4 (the `roles.process` field and the `products` registry); and the PROCESS, ROOT
+and coordinator starting texts. It needs no tool change (the `roles` and `handover-process`
+records are stored and read as arbitrary JSON) and adds no test, gate, review or stop; it replaces
+a broken mechanism with one that uses only proven channels (same-repository state and
+cross-repository messaging). Option C of five put to the owner (A no change; B add_repo push, an
+over-grant; C messaging registration, recommended; D persist the owner's answer, the fallback
+within C; E find PROCESS by its standardized session name, worth measuring). Researched in
+`process/research/coordinator-cannot-read-process-liveness-20nov.md`.
+
+**The owner's words.** "Decision: option C" — 20 November 2026.
 
 ## Earlier decisions not yet migrated
 

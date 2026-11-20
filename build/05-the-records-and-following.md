@@ -1,4 +1,4 @@
-Length: 210 lines. Last section: "8. Unproven, and not settled here".
+Length: 213 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -34,8 +34,10 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 
 ```json
 { "root": "session_01A", "watcher": "session_01B", "arch": "session_01C",
-  "coordinator": "session_01D", "process": "none", "written": "2026-11-20T09:00Z" }
+  "coordinator": "session_01D", "process": "session_01G", "written": "2026-11-20T09:00Z" }
 ```
+
+`process` is the live PROCESS session, written by ROOT from the message PROCESS sends it on start (section 4); it is `"none"` until a PROCESS has announced itself, or when the recorded one no longer answers. The coordinator reads it here, never across repositories.
 
 **Lanes.** `state write lanes` refuses a record that names a second live session for a lane the present record shows live (the design's own refusal).
 
@@ -113,10 +115,11 @@ them when it starts them.
 
 ## 4. In the process's repository
 
-The process's repository has an issue of the same label and form, made by PROCESS with `state write --create`. It holds three records, all written by PROCESS: `handover-process`; `lanes`, for PROCESS's own lanes; and `changes`, the running record of the changes now proposed. **Decided here:** the coordinator finds PROCESS running by `state read handover-process --repository <the process's repository>`: the block names the session and `live` (the owner's decision C, 19 Nov 2026; design part 6, section 7).
+The process's repository has an issue of the same label and form, made by PROCESS with `state write --create`. It holds three records, all written by PROCESS: `handover-process`; `lanes`, for PROCESS's own lanes; and `changes`, the running record of the changes now proposed. **Decided here (the owner's decision "option C", 20 Nov 2026; design part 6, section 7; part 4, section 5):** a product's sessions cannot read the process repository's state across repositories (a `gh api` read of another repository's issue is refused, HTTP 403; design part 7, section 3), but a cross-repository message is not refused. So the coordinator does **not** read `handover-process`. Instead `handover-process` carries a `products` registry — each product PROCESS serves and that product's ROOT session — and PROCESS, on start, reads it locally and messages each product's ROOT its own session and generation. ROOT writes the live PROCESS into that product's own `roles` record `process` field (section 2), which the coordinator reads locally. The owner seeds a product's ROOT into the registry once; thereafter, on its own start, ROOT messages the PROCESS named in `roles.process` its new address, so the registry stays current without any cross-repository read. (This supersedes decision C's 19 Nov cross-repository read of `handover-process`, which was refused in practice; owner-start of PROCESS stands.)
 
 ```json
-{ "role": "process", "session": "session_01G", "live": true, "generation": 4, "written": "2026-11-20T11:30Z" }
+{ "role": "process", "session": "session_01G", "live": true, "generation": 4,
+  "products": [ { "product": "acme-shop", "root": "session_01A" } ], "written": "2026-11-20T11:30Z" }
 { "changes": [ { "change": "shorter job text", "pull_request": 12, "waits_for": "the owner's choice" } ] }
 ```
 
