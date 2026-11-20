@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 116 lines. Last section: "6. Open, and who settles it".
+Length: 127 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -76,6 +76,17 @@ What the texts leave unassigned (research/process4-for-a-product.md §3). This l
   architecture bug placed against a named module. Nothing refuses a breach (design part 2 §1), so the
   list is what holds it. Good practice records the existing breaches as a baseline and shrinks it to
   none (research/conversion-best-practice.md §1).
+- **Cycles: one module for each cycle, then split by jobs.** The owner, 20 Nov 2026: civicsmith2 has
+  cyclic references within modules and other source-code issues that made it hard to close a round.
+  Process4's order allows a module to use only modules before it (design part 2 §1), so a cycle has no
+  valid order. The lane's design: the set-up session puts each strongly connected group of modules
+  (each set that reach each other) into one module, so the first list is valid as written and no
+  product code changes before Process4 runs. Breaking each merged module apart, behind interfaces, is
+  then tranche work done by jobs under Process4, an architecture matter ARCH places (part 1 §6). The
+  first tranche is chosen from modules outside the largest group where it can be. The groups come from
+  the reading report (`civicsmith2-reading-brief.md` item 7). Rejected: breaking the cycles by hand
+  before the move, which would be product work under no process; and leaving the cycles in the list,
+  which a list with backward uses cannot hold.
 - **Every file owned.** Each file belongs to exactly one module; unowned files are assigned in the same
   pull request as the list.
 - **Requirements files from what exists.** Each module's requirements come from Process3's requirement
