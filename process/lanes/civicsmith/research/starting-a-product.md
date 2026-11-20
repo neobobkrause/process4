@@ -1,4 +1,4 @@
-Length: 122 lines. Last section: "5. Candidate points to raise with PROCESS".
+Length: 121 lines. Last section: "5. Candidate points to raise with PROCESS".
 
 # Starting a product on Process4: the owner's acts, and what the trial taught
 
@@ -32,8 +32,8 @@ The trial did acts 1-8 before stage 0 (build/04 §2), act 10 at stage 1, act 9 a
 - The process repo's approvals allow PROCESS to make that proposal (CLAUDE.md).
 
 What exists:
-- The BIO block (process-refresh-cross-repo §"decisive fact") trusts "every neobobkrause/* GitHub repo" and sanctions messaging, starting and archiving among this account's role sessions, PROCESS included.
-- The current handover names a **BioDefault** environment for PROCESS (process/handover.md, start check 1).
+- The BIO block trusts "every neobobkrause/* GitHub repo" and sanctions messaging, starting and archiving among the account's role sessions (process-refresh-cross-repo).
+- PROCESS now runs on **BioDefault** (process/handover.md, check 1).
 
 What civicsmith needs (**inference** from the above):
 - The environment its sessions run under carries the block.
@@ -54,12 +54,12 @@ For civicsmith:
 1. The owner starts civicsmith ROOT (act 9). It names itself `civicsmith ROOT #1`. Its shared state is created by `state write --create`.
 2. PROCESS's registry needs `{product: civicsmith, root: <id>}`. The texts have PROCESS ask the owner "where a product you serve has no ROOT in the registry", but only as part of PROCESS's start (process.md line 20).
 3. Until PROCESS messages civicsmith ROOT, `roles.process` stays "none", and the coordinator surfaces "start PROCESS" on the owner's standing page even though a PROCESS is running (part 6 §7). See §5 point 4.
-4. Messaging across repos within one account works. Reading state across repos (`gh api`) is refused with a 403 (part 7 §3).
+4. Cross-repo messaging works in one account; cross-repo `gh api` reads get 403 (part 7 §3).
 
 ## 3. Trial faults that bear on a product with existing history
 
 **a. Tranche branch not made from main.**
-- Fault: `p4-tranche` had its own root commit, shared no merge-base with main, and could not merge into it.
+- Fault: `p4-tranche` had its own root commit and could not merge into main.
 - Cause: build text 4 stage 1 read as if the repo were empty. Act 8 and part 6 §2 already said "from main".
 - **Fixed in text:** build/04 stage 1 now says "also where main already holds an earlier history" (PR #93, `56a8c18`; decision "fix the setup text").
 - One-off repair: option C, an unrelated-histories join by ARCH (PR 383, merge commit `96a4dd7`), followed by the owner's PR 384 from main into the tranche. Done 20 Nov.
@@ -94,8 +94,8 @@ For civicsmith:
 5. **Who writes the first Process4 content on an existing product**, and where, before ROOT starts. That content is `process.json`, the module list, the `module-tests` workflow, `.claude/settings.json` and the shared-state issue. The trial used a plain session acting as ARCH, which ran `state write --create` in ROOT's place (build/04 stage 1). Part 7 §4 names no actor or act for it. The ROOT prompt needs `process.json` to exist (starting_texts/root.md part A).
 6. A module list for real code: the trial's modules were made-up (build/04 §5); the reader on real code and test times are unknown.
 7. Whether Process3's leftovers on civicsmith main (workflows, `.claude/` files, rulesets, issues and open PRs) interfere with Process4.
-8. Cross-repo create or archive of sessions (part 7 §3). The account's session ceiling: starts once failed silently at about 50.
-9. Session naming by set-session-title. It has worked three times for PROCESS, and that result is not yet recorded as seen (desk.html).
+8. Cross-repo session create or archive (part 7 §3); the account's session ceiling (~50 once).
+9. Set-session-title naming: worked three times for PROCESS, not yet recorded (desk.html).
 10. The checker passing merges at a real rate on a real product (part 6 §5).
 
 ## 5. Candidate points to raise with PROCESS
@@ -111,8 +111,7 @@ For civicsmith:
    - The text gives no route that keeps to "never edits a file" if the placing is refused. The handover's fallback, "his one-time copy into GitHub's editor", contradicts part 1 §3.
 3b. Part 6 §2 says a coordinator drafts a product's approvals, but at act 8 no coordinator exists. Who drafts at first landing: PROCESS, or the plain session? The text is silent.
 4. **Registry when a product starts while PROCESS is already running.**
-   - Grounds: process.md line 20 runs the ask-the-owner step only "on start"; ROOT messages PROCESS only if `roles.process` already names it (root.md line 23).
-   - A new product's ROOT and a running PROCESS therefore never meet unless the owner tells PROCESS. Meanwhile the coordinator would ask for a second PROCESS.
+   - Grounds: process.md line 20 asks the owner only "on start"; ROOT messages PROCESS only if `roles.process` names it (root.md line 23). So they never meet unless the owner tells PROCESS, and the coordinator meanwhile asks for a second PROCESS.
 5. **Part 7 §4 still says "Not known: whether act 10 can be done before act 9".** The trial did act 10 before act 9 (setup_log 01:43 to 03:21). Only "before the run's first report" is still unknown. This would record a measured fact.
 6. **Part 7 §4's "none of it has been carried out for Process4"** is out of date: the trial carried out acts 1-10. "Carried out for the trial, not for a real product" would record a measured fact.
 7. **The `autoMode` wording names repos by owner prefix** (`neobobkrause/*`). If civicsmith's repo has another owner, the check must catch that the block does not cover it.
