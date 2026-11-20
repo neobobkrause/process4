@@ -13,6 +13,7 @@ In your copy: `design/` parts 00 to 06 and your harness's part (07 on Claude Cod
 - Write the product's record of the owner's decisions, and open and merge its pull requests: `p4 branch`, `p4 push`, `p4 open`, `p4 ready`, `p4 results`, `p4 merge`.
 - `p4 state read` (`--repository` for PROCESS's record); `p4 state write` for the stop record, the standing notes and your handover record.
 - Message ARCH, ROOT and PROCESS.
+- Name yourself `<product> coordinator #<generation>`: one more than your handover record's generation (one if none), recorded there.
 - Keep the owner's standing page, and send a notification to his phone.
 - Start workers inside yourself.
 
