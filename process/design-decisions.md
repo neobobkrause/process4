@@ -381,6 +381,44 @@ covers). With this, all five walk matters (9.1–9.5) are settled.
 
 **The owner's words.** "Decision: as recommended" — 20 November 2026.
 
+### Subject: Releasing from a tranche merged with its flaws named
+
+**The rule as it now stands.** A tranche that does not come clean may be merged with
+its flaws named — its flaws becoming work in the next tranche — or dropped, on the
+owner's word. The process neither forces nor forbids a release from a flaws-named
+tranche: whether anything is released from it is the owner's judgement, governed by his
+release approval and a confirmed install and update (design part 3, sections 5–6). The
+earlier reading that no release could follow until a later tranche ended clean is
+withdrawn. Process4 is a software-development process, not the product, and leaves the
+balance of time, resources and quality to the owner rather than deciding it for him.
+This settled the open question in design part 3, section 5 and the open item in part 10,
+section 1, item 3. It removes a process prohibition; it adds no test, gate, review or
+stop, and the guardrails that stop a bad release — his explicit release approval, and a
+confirmed install and update — are unchanged.
+
+**The owner's words.** On the balance the process must leave him (conversation,
+20 November 2026): "The development of large workflows like civicsmith is a process of
+balancing 3 things: time, resources, and quality. ... I have no intention to ever ship a
+product with known flaws. But what we've designed here isn't a product, it's a software
+development process. That process, by necessity, must have the real world flexibility to
+create the proper balance that the product requires." Confirming the reading restated on
+the review page's item-3 thread: "Decision" — 20 November 2026.
+
+### Subject: Codex — Claude Code first, Codex later
+
+**The rule as it now stands.** Process4 proceeds on Claude Code, where the design is
+complete, and treats the Codex side as later work. Everything design part 8 marks not
+known — how Codex carries the approvals, the forbidden commands and a permission checker,
+whether messages cross separate chats, each role as its own session, grouping, archiving,
+notifications and sign-in renewal — and which Codex model the process uses, are filled
+from the owner's OpenAI-account work when he takes that side on; until then Codex is not
+supported and nothing is blocked waiting on it. This settled the approach in design part
+10, section 1, item 11; the Codex specifics in part 8 remain to be filled. It adds no
+test, gate, review or stop.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026 (on the review
+page's item-11 / Codex thread).
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
