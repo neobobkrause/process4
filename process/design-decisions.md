@@ -369,6 +369,18 @@ section 1). It removes a step; it adds no test, gate, review or stop.
 
 **The owner's words.** "Decision: Remove the owner's tranche-approval" — 20 November 2026.
 
+### Subject: Parts walked by hand (walk matter 9.5)
+
+**The rule as it now stands.** A walking session walks by hand — operates the running product
+in its browser, in its own words — whatever a screen or journey page describes that no written
+step covers; a walk is measured against the document, not only against its written steps
+(option a; build text `03-the-walks.md`, section 3 and section 9; design part 10, section 1,
+item 9). This catches a missing or weakened step, which under the alternative would be checked
+by no one. It adds no test, gate, review or stop (the walk already exists; this says what it
+covers). With this, all five walk matters (9.1–9.5) are settled.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
