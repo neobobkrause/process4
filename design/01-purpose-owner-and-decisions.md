@@ -1,6 +1,6 @@
 # Part 1. Purpose, the owner, his decisions, and working principles
 
-Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
+Length: 82 lines. Last section: "7. Known weaknesses of AI sessions".
 
 ## 1. What Process4 is for
 
@@ -24,12 +24,13 @@ Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
 | Tell the coordinator things; give marked decisions and instructions | Whenever he chooses |
 | Approve a public release | Once for each public release |
 | At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
-| Commit his standing approvals and the list of forbidden commands, in the product's repository and in the process's | At the start, then only when the wording must change |
+| Give the wording of his standing approvals by typing it in a session, and land it, with the forbidden commands, by clicking Merge on the pull request that carries it, in the product's repository and in the process's (part 6, section 2) | At the start, then only when the wording must change |
 | Change a permission or rule setting in GitHub or in the hosting account | Very occasionally |
 | Connect the harness to GitHub, and enter the deploy token and other secret values, from a page the process writes | At the start of a product, at an account switch, and before a token expires |
-| Confirm the sessions' environment carries the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |
+| Approve with a click the change a session proposes when the sessions' environment lacks the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |
 | Connect an AI account to the development deployment | Before an external walk of journeys that use AI |
 
+- Every act of his is clicks on pages named by their full address, or words he types into a session or into a field of a form. No act asks him to edit a file or type a command. His standing page gives each act's steps that way: each page by its full address, each button by its exact label, and what he should see after each click.
 - Each act with a known date appears on his standing page before the date, with the steps.
 - Every reasonable effort is made to renew a token before it expires, so that no full stop is needed. Once a new token is in place, fresh sessions start with it before the old one expires. A full stop happens only if the token is not replaced in time.
 - A harness runs AI sessions only on what the owner's subscription covers. Anything that would cost more comes to him first.

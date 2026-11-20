@@ -18,14 +18,14 @@ Everything is tried in the trial repository, on made-up modules. No product is t
 
 Before stage 0:
 
-1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals and forbidden commands for Process4; a proposal for him is in `process4/working/design_work_18nov/owner_acts_and_approvals.md`. Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9. Whether it can be done before act 9 is not known (the design, part 7, section 4); stage 1 is where that is tried.
-2. His trial wording of his forbidden commands must allow the one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.
+1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals, which he types in a session; the forbidden commands are PROCESS's technical list (the design, part 6, section 2). Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9. Whether it can be done before act 9 is not known (the design, part 7, section 4); stage 1 is where that is tried.
+2. The trial's forbidden commands must allow the one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.
 3. His word on where the process's repository is, and whether it is public. Build text 1 assumes it is public.
 4. His word that a session may build the tool (the design's part 4, section 11).
 
 Nothing below can start until these are done. They are his alone.
 
-**Who builds.** The tool is first built by a building session that holds the process's repository alone. It puts there the tool in `tool/`, the workflow in `shims/`, the starting texts in `starting_texts/`, the design's eleven parts in `design/` and the build texts in `build/` (build text 1, section 2). The owner merges each of that session's pull requests himself (the design, part 4, section 11). Until the tool exists it pushes to its own working branch and opens its pull requests by the harness's ordinary means, as the owner's present approvals allow (the design, part 4, section 11).
+**Who builds.** The tool is first built by a building session that holds the process's repository alone. It puts there the tool in `tool/`, the workflow in `shims/`, the starting texts in `starting_texts/`, the design's eleven parts in `design/` and the build texts in `build/` (build text 1, section 2). The tool is now built; the owner merges none of its pull requests (the design, part 4, section 11). Until the tool exists it pushes to its own working branch and opens its pull requests by the harness's ordinary means, as the owner's present approvals allow (the design, part 4, section 11).
 
 **Stage 4** uses the repository that holds the notice's proof. It is public, and a session cloned it for reading on 19 Nov.
 
@@ -64,7 +64,7 @@ Breaks, if it fails: merging by the tool with nobody watching; the two-part run 
 Built: no command. The texts for ROOT, the watcher, ARCH and the coordinator. His act 9, starting ROOT, is done here for the first time.
 
 Tried:
-1. A plain-started ROOT fetches the newest copy, comes up on his newest approvals and forbidden commands, also straight after he commits an edit, and starts the watcher, ARCH and the coordinator (item 1).
+1. A plain-started ROOT fetches the newest copy, comes up on his newest approvals and forbidden commands, also straight after he lands an edit, and starts the watcher, ARCH and the coordinator (item 1).
 2. The records take writes with no merge and are read in one call; rewriting a comment notifies no one; the size a comment holds (item 4, and the carrier's own trials). The records' forms are in build text 5.
 3. The hourly wake rouses ROOT. The watcher takes over from a ROOT that has died, and from one that asks (item 5).
 4. A successor starts only from the shared state and the repository: ARCH is replaced while a job is open, and the job obeys the new one (item 3).
@@ -126,7 +126,7 @@ The steps of an account switch, on the sessions' side and on his, and what is re
 | Stage | His part |
 |---|---|
 | Before stage 0 | His acts 1 to 8; his wording of the approvals and of the forbidden commands, allowing stage 0's script; where the process's repository is; his word that a session may build the tool |
-| While the tool is first built | Start the building session on the process's repository; merge each of its pull requests |
+| While the tool is first built | Start the building session on the process's repository (done; the tool is built) |
 | 0 | Start one plain session |
 | 1 | Start one plain session; act 10, once the run has reported |
 | 2 | Act 9, start ROOT; one edit to his approvals |

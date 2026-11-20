@@ -658,6 +658,53 @@ coordination first).
 
 **The owner's words.** "Decision: B — Move PROCESS to the new account too (to simplify this first account switch)" — 20 November 2026.
 
+### Subject: The owner never edits a file or types a command
+
+**The rule as it now stands.** Every act of the owner's is clicks on pages named by their full
+address, or words he types into a session or into a field of a form. No act asks him to edit a
+file or type a command, and his standing page gives each act's steps that way (design part 1,
+section 3). In particular:
+
+1. **His approvals.** He types their words in a session: the coordinator's for a product,
+   PROCESS's for the process's repository. That session places his words, unchanged, in a pull
+   request that changes only that file, and never merges it. He reads the changed file on the pull
+   request's page and lands it by clicking Merge. No session composes or alters his approvals, and
+   no session merges a change to them. Where one of the two files differs between two branches, he
+   chooses which of his own committed versions stands, and GitHub's own buttons carry it out (part
+   6, section 2).
+2. **The forbidden commands** are a technical list, the same for every repository. PROCESS keeps it
+   among the process's files and changes it only as a process change on his marked decision. A
+   session copies it, unchanged, into a repository by a pull request he lands with a click (part 6,
+   section 2).
+3. **The environment's permissions-management settings.** A session reads the environment and
+   tells him whether it carries them. Where they are missing, the session proposes the change
+   through the harness's approval prompt, and he approves it with a click. He never pastes a
+   script (part 7, sections 4 and 5; build text 6, section 3).
+4. **The tool's first build.** The rule that the owner merged each pull request of the building
+   session himself is removed. The tool is built, only PROCESS changes it, and the owner merges
+   none of its pull requests (part 4, section 11; build texts 1 and 4).
+5. **The support procedures** for promoting a release, rolling one back, and handling a reported
+   problem are each written for him as clicks (part 3, section 8).
+
+Kept as they stand, as recommended: a held merge, made only when he asks for one; and his choice
+for a tranche that does not come clean, between merging it into main with its flaws named and
+dropping it (part 3, section 5). His click on Merge for a change to his own approvals is the one
+guard that keeps a session from changing them. That click lands on the tranche branch, not main.
+
+This answered a measured fault. The trial's tranche could not merge into main because its
+approvals file differed between the two branches. The design's only route to settle that, and
+every approvals edit, was the owner editing a file, which he does not do. The change adds no test,
+gate, review or stop: it replaces file-editing acts with clicks. Unproven: that the permission
+checker lets a session place his typed words in his approvals file; and in a repository whose
+approvals forbid a session to change that file (the process's repository among them), the route
+works only once his approvals allow it. Option B, with sub-choice (ii) for the forbidden commands,
+of three put to the owner (A no change; B choose, don't type; C sessions resolve, write and merge).
+It changed design parts 1, 3, 4, 6, 7 and 10; build texts 1, 4 and 6; the coordinator's and
+PROCESS's starting texts; and the starting-texts index. Researched in
+`process/research/owner-acts-without-files-20nov.md`.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

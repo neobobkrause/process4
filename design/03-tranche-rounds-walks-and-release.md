@@ -71,4 +71,4 @@ The coordinator gives the owner a short account: jobs done, flaws found, flaws c
 ## 8. Support beyond the process
 
 - For each product the process keeps a short written procedure for each of three things: promoting a release to installed sites; rolling one back; and handling a problem reported from an installed site.
-- The owner, or whoever runs the product, carries the procedures out. No session holds a production key.
+- The owner, or whoever runs the product, carries the procedures out. Each is written for the owner as clicks on pages named by their full address; none asks him to edit a file or type a command. No session holds a production key.
