@@ -2,7 +2,7 @@
 
 Length: 45 lines. Last section: "What to send back".
 
-Written by PROCESS civicsmith lane #1, 20 Nov 2026. The lane cannot read `neobobkrause/civicsmith2`:
+Written by PROCESS civicsmith lane #1, 20 Nov 2026. The lane cannot read `believeinoakland/civicsmith2`:
 it is private, and the lane's approvals cover neobobkrause/process4 only. This is the prompt the owner
 may give a plain session he starts on civicsmith2, which acts under civicsmith2's own approvals. Nothing
 in it changes anything; it only reads and reports.

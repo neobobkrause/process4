@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 86 lines. Last section: "8. From the owner, 20 Nov 2026, later (conversation, not a marked decision)".
+Length: 97 lines. Last section: "9. The repository's owner (20 Nov 2026)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -84,3 +84,14 @@ problems that need to be resolved before process4 development can begin."
 His words, as typed: "A — I'll start the read-only session on civicsmith2" and "The problems in
 civicsmith2 that I'm referring to are related to cyclic references within modules and other source code
 issues that have made it difficult to close a round without addressing."
+
+## 9. The repository's owner (20 Nov 2026)
+
+The owner later asked, as typed: "Clone the repository believeinoakland/civicsmith2 into this session."
+So civicsmith2 is under the owner `believeinoakland`, not `neobobkrause` as first given (§7).
+`believeinoakland` is also the GitHub account that marks this lane's pull requests ready (PR 100 events), i.e.
+the sessions' account. The lane did not clone it: the standing approvals in neobobkrause/process4 make a
+session's acts on a product's repository only from a session started there, one repository per session.
+Bearing on point 7: the environment's `autoMode` block trusts repositories by owner (`neobobkrause/*`,
+research/starting-a-product.md §2); a repository under `believeinoakland` is not covered by that wording.
+Inference until the environment is read.

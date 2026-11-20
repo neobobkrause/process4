@@ -19,7 +19,7 @@ differ, the design rules. Steps that wait on the owner's facts are marked so.
 
 ## 2. Before anything: what the owner has told the lane, and what is still to learn
 
-Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `neobobkrause/civicsmith2`; its
+Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `believeinoakland/civicsmith2`; its
 founding documents are in it; no work is in flight; its languages can be seen in it; and "there are
 several problems that need to be resolved before process4 development can begin".
 
@@ -44,7 +44,7 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
 3. **Branch rule (act 4).** No deleting and no overwriting on every branch, no one excepted.
 4. **Environment check (act 6) [7].** A session reads the cloud environment the sessions will run under
    and confirms its permissions-management settings name civicsmith's repository. They name
-   repositories by owner, so a repository under any other owner must be added, by the owner's click on
+   repositories by owner (`neobobkrause/*`), and civicsmith2 is under `believeinoakland`, so it must be added, by the owner's click on
    the change the session proposes (part 7 §5). The deploy token for the development Cloudflare account
    is entered then.
 5. **The set-up session (act 8) [1, 3].** One plain session the owner starts on civicsmith's repository
