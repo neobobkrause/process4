@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 57 lines. Last section: "5. Unknown: what we could not learn and who must tell us".
+Length: 66 lines. Last section: "6. From PROCESS #5, by message, 20 Nov 2026 (added by the lane)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -55,3 +55,12 @@ The owner (he holds the private repo and the accounts), unless marked PROCESS:
 - Civicsmith's own standing approvals and forbidden commands for Process4.
 - Whether its main holds the earlier process's history, so the tranche branch is made from main's newest commit (the trial's fault).
 - PROCESS: the conversion plan itself (design part 10 §2 item 2), the per-product procedures (part 3 §8), and what "civicsmith's setup" covers step by step; the source of the "~200 modules" figure.
+
+## 6. From PROCESS #5, by message, 20 Nov 2026 (added by the lane)
+
+- What the lane is for, in the owner's words of 20 Nov 2026 as PROCESS relayed them: "I'm starting to think about the steps involved in moving civicsmith development to process4. Create a process4 civicsmith lane for working through those issues. Any action it takes to update process4 will be by communicating with PROCESS." So "those issues" are the steps of the move: civicsmith's conversion plan (design part 0 §1; part 10 §2 item 2).
+- About 200 modules; hosted on Cloudflare; its AI journeys exist (the walks' AI decisions were made with civicsmith in mind). PROCESS's standing recommendation: civicsmith's setup, then a small first tranche as the proof.
+- From the account's session titles (9 Nov, process3 era): civicsmith ran under Process3 with a copy repository called "civicsmith-copy", pinned to process3 commits ("pin move", "layer/14", jobs such as "credentials", "op-declarations", "ai-accounts"). PROCESS has not read civicsmith's repositories and does not know their exact names, language, size or founding documents.
+- Measured on the trial (process/research/tranche-unrelated-to-main-20nov.md): a reused repository's main must be the tranche branch's base, and main's ruleset must require `module-tests` (the trial's still required Process3's `gate`). Both bear directly on a Process3 repository moving to Process4.
+- The account switch moved PROCESS and products to one Claude account (design part 7 §3).
+- PROCESS asks the lane to put to the owner: the repository name(s); whether the real civicsmith or civicsmith-copy is converted; the founding documents and where they are.
