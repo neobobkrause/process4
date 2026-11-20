@@ -273,6 +273,17 @@ next-tranche work (part 3, section 6).
 
 **The owner's words.** "Decision: No session directly holds a production key. But a product's production secret key may be used their a secret management facility to produce the installer. Similarly, the release process may require the use of a release token that grants it the necessary privileges in order to publish a release." — 20 November 2026. On the install/update success definition, confirming the reading restated to him on the review page: "Decision" — 20 November 2026.
 
+### Subject: An urgent fix while a tranche is open
+
+**The rule as it now stands.** When an urgent fix is needed while a tranche is open, the open
+tranche is paused on the owner's word; the fix is built as its own tranche from the main
+branch and merged; the paused tranche then takes the main branch in and goes on (part 3,
+section 7). This settled the open question in part 3, section 7 and the open item in part 10,
+section 1, item 5, confirming the reading restated to him on the review page. It adds no test,
+gate, review or stop.
+
+**The owner's words.** On the urgent-fix question, confirming the reading restated on the review page: "Decision" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
