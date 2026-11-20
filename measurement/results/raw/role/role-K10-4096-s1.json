@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-4096-s1",
+ "K": 10,
+ "bytes": 3986,
+ "singleRules": 27,
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 46,
+  "firstLast": 46,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "KB-3829",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "RN-1162",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "GW-7178",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: A\nS3: D\nS4: D\nS5: C\nS6: A\nS7: B\nS8: A\nS9: D\nS10: D\nS11: C\nS12: A\nS13: C\nS14: D\nS15: A\nS16: C\nS17: A\nS18: B\nS19: A\nS20: A\nS21: D\nS22: C\nS23: B\nS24: B\nS25: B\nS26: C\nS27: D\nQ1: KB-3829\nQ2: RN-1162\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: GW-7178",
+ "compactions": 0,
+ "cost": 0.10627500000000001,
+ "status": "CLEAN",
+ "seconds": 28
+}

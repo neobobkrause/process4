@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-6144-s3",
+ "K": 10,
+ "bytes": 6181,
+ "singleRules": 27,
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 58,
+  "firstLast": 58,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "GX-6695",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "RV-8730",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "JX-7026",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: D\nS3: C\nS4: C\nS5: A\nS6: B\nS7: B\nS8: C\nS9: D\nS10: C\nS11: C\nS12: C\nS13: B\nS14: B\nS15: B\nS16: D\nS17: B\nS18: C\nS19: B\nS20: C\nS21: C\nS22: C\nS23: B\nS24: C\nS25: A\nS26: A\nS27: C\nQ1: GX-6695\nQ2: NOT STATED\nQ3: RV-8730\nQ4: JX-7026\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.12307300000000002,
+ "status": "CLEAN",
+ "seconds": 28
+}

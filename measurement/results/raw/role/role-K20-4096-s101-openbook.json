@@ -1,0 +1,53 @@
+{
+ "id": "role-K20-4096-s101-openbook",
+ "K": 20,
+ "bytes": 4145,
+ "singleRules": 46,
+ "seed": 101,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "GC-8023",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "QV-8483",
+   "ok": true
+  },
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "QR-2843",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: C\nS3: C\nS4: C\nS5: A\nS6: B\nS7: D\nS8: A\nS9: C\nS10: A\nS11: A\nS12: B\nS13: C\nS14: A\nS15: D\nS16: C\nS17: C\nS18: C\nS19: D\nS20: B\nS21: C\nS22: A\nS23: A\nS24: C\nS25: D\nS26: C\nS27: C\nS28: B\nS29: A\nS30: D\nS31: B\nS32: A\nS33: B\nS34: A\nS35: B\nS36: A\nS37: C\nS38: A\nS39: D\nS40: C\nS41: C\nS42: C\nS43: C\nS44: D\nS45: C\nS46: A\nS47: C\nS48: D\nS49: B\nQ1: GC-8023\nQ2: NOT STATED\nQ3: QV-8483\nQ4: QR-2843\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.0786918,
+ "status": "CLEAN",
+ "seconds": 7
+}

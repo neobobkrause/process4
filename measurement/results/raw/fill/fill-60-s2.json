@@ -1,0 +1,326 @@
+{
+ "id": "fill-60-s2",
+ "pct": 60,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 600000,
+ "answerCtx": 600557,
+ "fillPct": 60.06,
+ "inTolerance": true,
+ "filesRead": 41,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 302,
+   "firstLast": 302,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on.",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused; REST worked.",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED. Build text 4 sets no dollar budget per stage.",
+   "ok": true
+  },
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.",
+   "ok": true
+  },
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more.",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run.",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests`, source GitHub Actions.",
+   "ok": true
+  },
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake.",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CC-6620",
+    "answer": "CC-6620",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "NF-3585",
+    "answer": "NF-3585",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SX-5255",
+    "answer": "SX-5255",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PW-4474",
+    "answer": "PW-4474",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "VM-5873",
+    "answer": "VM-5873",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "RD-5680",
+    "answer": "RD-5680",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "ZW-6002",
+    "answer": "ZW-6002",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WJ-8255",
+    "answer": "WJ-8255",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QG-5611",
+    "answer": "QG-5611",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "FM-5849",
+    "answer": "FM-5849",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FR-9613",
+    "answer": "FR-9613",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "HX-9109",
+    "answer": "HX-9109",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 121,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 13484,
+   "maxCtx": 13484,
+   "uses": 1,
+   "reply": "READ COMPLETE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 146873,
+   "maxCtx": 146873,
+   "uses": 10,
+   "reply": "DONE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 296712,
+   "maxCtx": 296712,
+   "uses": 11,
+   "reply": "DONE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 428542,
+   "maxCtx": 428542,
+   "uses": 10,
+   "reply": "DONE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 581337,
+   "maxCtx": 581337,
+   "uses": 11,
+   "reply": "DONE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 594454,
+   "maxCtx": 594454,
+   "uses": 1,
+   "reply": "DONE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 599816,
+   "maxCtx": 599816,
+   "uses": 1,
+   "reply": "READ COMPLETE.",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 600557,
+   "maxCtx": 600557,
+   "uses": 0,
+   "reply": "1. CC-6620\n2. NF-3585\n3. SX-5255\n4. `tool-tests`\n5. The most doubtful thing that everything else rests on.\n6. PW-4474\n7. 150\n8. GraphQL was refused; REST worked.\n9. VM-5873\n10. `--development`\n11. RD-",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 6.02,
+ "reply": "1. CC-6620\n2. NF-3585\n3. SX-5255\n4. `tool-tests`\n5. The most doubtful thing that everything else rests on.\n6. PW-4474\n7. 150\n8. GraphQL was refused; REST worked.\n9. VM-5873\n10. `--development`\n11. RD-5680\n12. NOT STATED. Build text 4 sets no dollar budget per stage.\n13. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.\n14. Twenty or more.\n15. ZW-6002\n16. WJ-8255\n17. NOT STATED\n18. At its third failed run.\n19. QG-5611\n20. `module-tests`, source GitHub Actions.\n21. FM-5849\n22. FR-9613\n23. HX-9109\n24. The hourly wake.\n25. NOT STATED\n\nHANDOVER\nI read carrier.md in full. It is build text 2b plus most of build text 2. Its header says 125 lines, but the file runs past that and ends cut off mid-sentence in two stray \"Notes\" sections. I also read notes-001 to notes-041, which are Process4 audits, drafts, evidence and filler. notes-019 and notes-020 are identical, and notes-020 was read twice because the first call returned no result. Last, I read requirements.md (build text 4, the order of building and trying the tool). From that reading alone I answered 25 questions: 22 from what I read and 3 marked NOT STATED (Bramble folio, Fennel roster, a per-stage dollar budget). No files were changed. Nothing else remains unless more work is assigned.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 98
+}

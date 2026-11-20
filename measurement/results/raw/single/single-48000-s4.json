@@ -1,0 +1,174 @@
+{
+ "id": "single-48000-s4",
+ "kind": "single",
+ "bytes": 48000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:44.046Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 48000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 427,
+   "firstLast": 427,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 21277,
+  "cost": 0.15049880000000002,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NT-3849\n2. CT-7256\n3. DS-7158\n4. QX-9358\n5. LS-2324\n6. CS-8483\n7. NC-3660\n8. ZR-5849\n9. DL-5208\n10. GT-3172\n11. KB-8616\n12. MR-9192\n13. NOT STATED\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 20550,
+  "cost": 0.3044186,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "NT-3849",
+    "answer": "NT-3849",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CT-7256",
+    "answer": "CT-7256",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "DS-7158",
+    "answer": "DS-7158",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QX-9358",
+    "answer": "QX-9358",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "LS-2324",
+    "answer": "LS-2324",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CS-8483",
+    "answer": "CS-8483",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NC-3660",
+    "answer": "NC-3660",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZR-5849",
+    "answer": "ZR-5849",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "DL-5208",
+    "answer": "DL-5208",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "GT-3172",
+    "answer": "GT-3172",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "KB-8616",
+    "answer": "KB-8616",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "MR-9192",
+    "answer": "MR-9192",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 22
+}

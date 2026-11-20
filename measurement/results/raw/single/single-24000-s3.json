@@ -1,0 +1,174 @@
+{
+ "id": "single-24000-s3",
+ "kind": "single",
+ "bytes": 24000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:46.658Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 24000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 196,
+   "firstLast": 196,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nNote: the file ends mid-sentence at line 196 (\"Text measure writes\").",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 12299,
+  "cost": 0.0826954,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NOT STATED\n2. NOT STATED\n3. ZK-6531\n4. FW-2642\n5. XZ-2152\n6. NV-7480\n7. RG-4051\n8. ZH-4967\n9. HS-7355\n10. KF-8836\n11. TV-3683\n12. QH-6127\n13. KG-5263\n14. HH-4981",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 11602,
+  "cost": 0.16507120000000003,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Tamarind log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "ZK-6531",
+    "answer": "ZK-6531",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "FW-2642",
+    "answer": "FW-2642",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "XZ-2152",
+    "answer": "XZ-2152",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "NV-7480",
+    "answer": "NV-7480",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "RG-4051",
+    "answer": "RG-4051",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "ZH-4967",
+    "answer": "ZH-4967",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HS-7355",
+    "answer": "HS-7355",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "KF-8836",
+    "answer": "KF-8836",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "TV-3683",
+    "answer": "TV-3683",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QH-6127",
+    "answer": "QH-6127",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "KG-5263",
+    "answer": "KG-5263",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "HH-4981",
+    "answer": "HH-4981",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 24
+}

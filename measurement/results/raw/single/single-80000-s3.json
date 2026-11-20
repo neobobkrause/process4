@@ -1,0 +1,44 @@
+{
+ "id": "single-80000-s3",
+ "kind": "single",
+ "bytes": 80000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:11.349Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 503,
+   "firstLast": 503,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I couldn't read the whole file. The single plain Read call stopped at line 503 of 621 because of the tool's size limit, so I haven't seen lines 504–621. That part covers the rest of build text 4 from Stage 2 onward, including its section 5, \"What the trial cannot show\".\n\nYou asked me to read the file once and nothing else, so I didn't make another call. I can answer questions about lines 1–503. For anything in the unread part, I'll say I haven't seen it rather than guess.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 25846,
+  "cost": 0.1911316,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 503,
+   "firstLast": 503,
+   "firstErr": null
+  }
+ ],
+ "seconds": 13
+}

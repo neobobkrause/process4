@@ -1,0 +1,394 @@
+{
+ "id": "set-220000-s3",
+ "kind": "set",
+ "bytes": 220000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:13.024Z",
+ "coverage": [
+  {
+   "file": "01-starting_texts-00-index.md",
+   "bytes": 9705,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 83,
+   "firstLast": 83,
+   "firstErr": null
+  },
+  {
+   "file": "02-design-10-open-and-unproven.md",
+   "bytes": 14330,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 112,
+   "firstLast": 112,
+   "firstErr": null
+  },
+  {
+   "file": "03-design-02-modules-jobs-tests-and-the-notice.md",
+   "bytes": 16706,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "04-build-02-the-forms.md",
+   "bytes": 14730,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 180,
+   "firstLast": 180,
+   "firstErr": null
+  },
+  {
+   "file": "05-starting_texts-coordinator.md",
+   "bytes": 3868,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-00-index.md",
+   "bytes": 10891,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 94,
+   "firstLast": 94,
+   "firstErr": null
+  },
+  {
+   "file": "07-build-06-the-account-switch.md",
+   "bytes": 9576,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 154,
+   "firstLast": 154,
+   "firstErr": null
+  },
+  {
+   "file": "08-starting_texts-walking-session.md",
+   "bytes": 3622,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "09-starting_texts-arch.md",
+   "bytes": 3842,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "10-design-04-roles-and-sessions.md",
+   "bytes": 22563,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 164,
+   "firstLast": 164,
+   "firstErr": null
+  },
+  {
+   "file": "11-build-04-the-trial.md",
+   "bytes": 14722,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  {
+   "file": "12-design-06-rules-permissions-and-changing-the-process.md",
+   "bytes": 11025,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 77,
+   "firstLast": 77,
+   "firstErr": null
+  },
+  {
+   "file": "13-build-01b-the-commands.md",
+   "bytes": 12181,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "14-design-07-harness-claude-code.md",
+   "bytes": 9586,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "15-starting_texts-process.md",
+   "bytes": 4086,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "16-build-01-the-tool-and-the-required-run.md",
+   "bytes": 15280,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 108,
+   "firstLast": 108,
+   "firstErr": null
+  },
+  {
+   "file": "17-design-05-reading-and-documents.md",
+   "bytes": 5996,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "18-build-03-the-walks.md",
+   "bytes": 21035,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 201,
+   "firstLast": 201,
+   "firstErr": null
+  },
+  {
+   "file": "19-design-08-harness-codex.md",
+   "bytes": 4508,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "20-design-09-hosting-cloudflare.md",
+   "bytes": 2613,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "21-appendix-working-notes.md",
+   "bytes": 2815,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 33,
+   "firstLast": 33,
+   "firstErr": null
+  },
+  {
+   "file": "22-starting_texts-job.md",
+   "bytes": 3631,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "23-starting_texts-watcher.md",
+   "bytes": 2689,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 23,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 84035,
+  "cost": 0.729991,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. WR-3583\n2. ZV-9378\n3. KC-9296\n4. HJ-2833\n5. NOT STATED\n6. QG-6588\n7. NOT STATED\n8. QG-1190\n9. BV-8447\n10. KG-8797\n11. WH-1516\n12. PN-9093\n13. MQ-1690\n14. PN-5877",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 83280,
+  "cost": 1.3904508,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "WR-3583",
+    "answer": "WR-3583",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZV-9378",
+    "answer": "ZV-9378",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "KC-9296",
+    "answer": "KC-9296",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "HJ-2833",
+    "answer": "HJ-2833",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "QG-6588",
+    "answer": "QG-6588",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "QG-1190",
+    "answer": "QG-1190",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "BV-8447",
+    "answer": "BV-8447",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "KG-8797",
+    "answer": "KG-8797",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "WH-1516",
+    "answer": "WH-1516",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "PN-9093",
+    "answer": "PN-9093",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "MQ-1690",
+    "answer": "MQ-1690",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PN-5877",
+    "answer": "PN-5877",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 39
+}

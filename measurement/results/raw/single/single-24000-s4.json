@@ -1,0 +1,174 @@
+{
+ "id": "single-24000-s4",
+ "kind": "single",
+ "bytes": 24000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:44.108Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 24000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 227,
+   "firstLast": 227,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 13071,
+  "cost": 0.08373119999999999,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. VK-3110\n2. PB-7023\n3. ST-1367\n4. QW-7737\n5. VB-5484\n6. GP-7310\n7. PB-7358\n8. HD-6633\n9. TT-4098\n10. RT-3257\n11. FX-3337\n12. NOT STATED\n13. NOT STATED\n14. LW-5157",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 12345,
+  "cost": 0.171991,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "VK-3110",
+    "answer": "VK-3110",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "PB-7023",
+    "answer": "PB-7023",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "ST-1367",
+    "answer": "ST-1367",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "QW-7737",
+    "answer": "QW-7737",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "VB-5484",
+    "answer": "VB-5484",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "GP-7310",
+    "answer": "GP-7310",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "PB-7358",
+    "answer": "PB-7358",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "HD-6633",
+    "answer": "HD-6633",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "TT-4098",
+    "answer": "TT-4098",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RT-3257",
+    "answer": "RT-3257",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FX-3337",
+    "answer": "FX-3337",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "LW-5157",
+    "answer": "LW-5157",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 22
+}

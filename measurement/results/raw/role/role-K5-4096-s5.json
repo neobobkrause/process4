@@ -1,0 +1,61 @@
+{
+ "id": "role-K5-4096-s5",
+ "K": 5,
+ "bytes": 3846,
+ "singleRules": 11,
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 43,
+  "firstLast": 43,
+  "firstErr": null
+ },
+ "rulesApplied": 5,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "CF-9683",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "WF-8431",
+   "ok": true
+  },
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "PS-5142",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: C\nS3: A\nS4: B\nS5: A\nS6: A\nS7: D\nS8: B\nS9: D\nS10: A\nS11: D\nS12: A\nS13: B\nS14: C\nS15: D\nQ1: CF-9683\nQ2: WF-8431\nQ3: PS-5142\nQ4: NOT STATED\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.09224819999999999,
+ "status": "CLEAN",
+ "seconds": 27
+}

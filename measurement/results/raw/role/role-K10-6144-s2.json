@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-6144-s2",
+ "K": 10,
+ "bytes": 6176,
+ "singleRules": 27,
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 58,
+  "firstLast": 58,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "GH-1439",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "WW-3988",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "MM-5305",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: A\nS3: D\nS4: D\nS5: A\nS6: D\nS7: D\nS8: A\nS9: D\nS10: A\nS11: C\nS12: C\nS13: D\nS14: A\nS15: C\nS16: D\nS17: D\nS18: C\nS19: D\nS20: C\nS21: A\nS22: B\nS23: D\nS24: C\nS25: B\nS26: C\nS27: A\nQ1: GH-1439\nQ2: NOT STATED\nQ3: WW-3988\nQ4: MM-5305\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1230398,
+ "status": "CLEAN",
+ "seconds": 28
+}

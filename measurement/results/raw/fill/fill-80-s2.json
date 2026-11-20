@@ -1,0 +1,336 @@
+{
+ "id": "fill-80-s2",
+ "pct": 80,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 800000,
+ "answerCtx": 803645,
+ "fillPct": 80.36,
+ "inTolerance": true,
+ "filesRead": 57,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 302,
+   "firstLast": 302,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more",
+   "ok": true
+  },
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests` (source GitHub Actions)",
+   "ok": true
+  },
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run",
+   "ok": true
+  },
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused; REST worked",
+   "ok": true
+  },
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Bramble folio",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "FM-5849",
+    "answer": "FM-5849",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CC-6620",
+    "answer": "CC-6620",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "HX-9109",
+    "answer": "HX-9109",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PW-4474",
+    "answer": "PW-4474",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SX-5255",
+    "answer": "SX-5255",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "NF-3585",
+    "answer": "NF-3585",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "ZW-6002",
+    "answer": "ZW-6002",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QG-5611",
+    "answer": "QG-5611",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WJ-8255",
+    "answer": "WJ-8255",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FR-9613",
+    "answer": "FR-9613",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "VM-5873",
+    "answer": "VM-5873",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "RD-5680",
+    "answer": "RD-5680",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 114,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 13489,
+   "maxCtx": 13489,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 145973,
+   "maxCtx": 145973,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 278680,
+   "maxCtx": 278680,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 417926,
+   "maxCtx": 417926,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 555257,
+   "maxCtx": 555257,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 697462,
+   "maxCtx": 697462,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 797347,
+   "maxCtx": 797347,
+   "uses": 7,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 802905,
+   "maxCtx": 802905,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 803645,
+   "maxCtx": 803645,
+   "uses": 0,
+   "reply": "1. NOT STATED\n2. Twenty or more\n3. NOT STATED\n4. FM-5849\n5. 150\n6. CC-6620\n7. `module-tests` (source GitHub Actions)\n8. HX-9109\n9. PW-4474\n10. The hourly wake\n11. SX-5255\n12. NF-3585\n13. At its third ",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 7.89,
+ "reply": "1. NOT STATED\n2. Twenty or more\n3. NOT STATED\n4. FM-5849\n5. 150\n6. CC-6620\n7. `module-tests` (source GitHub Actions)\n8. HX-9109\n9. PW-4474\n10. The hourly wake\n11. SX-5255\n12. NF-3585\n13. At its third failed run\n14. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will\n15. NOT STATED\n16. `--development`\n17. ZW-6002\n18. QG-5611\n19. WJ-8255\n20. GraphQL was refused; REST worked\n21. `tool-tests`\n22. FR-9613\n23. VM-5873\n24. The most doubtful thing that everything else rests on\n25. RD-5680\n\nHANDOVER\n\nI read carrier.md, notes-001 to notes-057 and requirements.md (build text 4, the order of building and trying). carrier.md's first line says it is 125 lines long, but the file holds 302: build texts 2b and 2 are joined together and end in two broken stub sections. I answered 25 questions from memory, without opening any file again. Two codes asked about, Bramble folio and Fennel roster, appear nowhere in carrier.md, and build text 4 sets no dollar budget per stage. I answered those three NOT STATED. Build text 4 names two different required checks: `tool-tests` for the process's repository, and `module-tests` for act 10's ruleset. Nothing is left to do unless more questions come.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 114
+}

@@ -1,0 +1,61 @@
+{
+ "id": "role-K5-4096-s2",
+ "K": 5,
+ "bytes": 3849,
+ "singleRules": 11,
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 43,
+  "firstLast": 43,
+  "firstErr": null
+ },
+ "rulesApplied": 5,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Lichen manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "CR-2654",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": true,
+   "answer": "BC-5765",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "FX-9391",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: A\nS5: D\nS6: A\nS7: C\nS8: B\nS9: D\nS10: B\nS11: A\nS12: D\nS13: A\nS14: A\nS15: A\nQ1: NOT STATED\nQ2: CR-2654\nQ3: BC-5765\nQ4: FX-9391\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.09244219999999999,
+ "status": "CLEAN",
+ "seconds": 24
+}

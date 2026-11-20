@@ -1,0 +1,174 @@
+{
+ "id": "single-12000-s1",
+ "kind": "single",
+ "bytes": 12000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:46.834Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 12000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 119,
+   "firstLast": 119,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nThe file looks incomplete. Its header says it has 198 lines and that the last section is \"9. The owner's to settle\", but the file stops at line 118. After section 5 it has two broken fragments (\"## 1. Notes on the comment tranche\", \"## 1. Notes on the issue listing\") that end mid-sentence. Sections 6 to 9 are missing.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8522,
+  "cost": 0.051280000000000006,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NOT STATED\n2. CX-2858\n3. GR-7067\n4. BW-7385\n5. NOT STATED\n6. FZ-8191\n7. KS-4653\n8. XV-1607\n9. TK-3797\n10. GX-5473\n11. TR-8865\n12. VK-3771\n13. CL-2332\n14. HR-7382",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 7918,
+  "cost": 0.10414380000000001,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Mallow schedule",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CX-2858",
+    "answer": "CX-2858",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GR-7067",
+    "answer": "GR-7067",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "BW-7385",
+    "answer": "BW-7385",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "FZ-8191",
+    "answer": "FZ-8191",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "KS-4653",
+    "answer": "KS-4653",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "XV-1607",
+    "answer": "XV-1607",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "TK-3797",
+    "answer": "TK-3797",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "GX-5473",
+    "answer": "GX-5473",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "TR-8865",
+    "answer": "TR-8865",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "VK-3771",
+    "answer": "VK-3771",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CL-2332",
+    "answer": "CL-2332",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "HR-7382",
+    "answer": "HR-7382",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 23
+}

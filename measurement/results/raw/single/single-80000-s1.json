@@ -1,0 +1,44 @@
+{
+ "id": "single-80000-s1",
+ "kind": "single",
+ "bytes": 80000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:11.585Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 585,
+   "firstLast": 585,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I didn't finish reading carrier.md, so I can't reply READ COMPLETE.\n\nThe single Read call stopped at line 585 of 701 because it hit the tool's size cap. I got everything up to the start of \"Part 7. The harness table for Claude Code\" (its table ends after the \"Session\" row). Lines 586–701 are unread, including the rest of Part 7, section 5 (\"The permissions-management settings\"), and whatever follows it.\n\nYou asked for one plain Read call and nothing more, so I haven't read further. The file also says a session acts only on what it has read in full. I can answer questions on lines 1–585, but not on anything past that.\n\nTo get the whole file, I could re-read it with `allow_large`, or read lines 586 onward in a second call.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 26963,
+  "cost": 0.2022664,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 80000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 585,
+   "firstLast": 585,
+   "firstErr": null
+  }
+ ],
+ "seconds": 13
+}

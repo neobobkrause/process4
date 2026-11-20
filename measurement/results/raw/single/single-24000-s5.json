@@ -1,0 +1,174 @@
+{
+ "id": "single-24000-s5",
+ "kind": "single",
+ "bytes": 24000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:45.553Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 24000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 188,
+   "firstLast": 188,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 12598,
+  "cost": 0.0833868,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. XD-1172\n2. VT-1846\n3. CL-9731\n4. MB-1947\n5. NS-5187\n6. NOT STATED\n7. WK-5541\n8. ST-9773\n9. JK-5493\n10. CH-1360\n11. KX-7279\n12. VG-5189\n13. NOT STATED\n14. CV-3361",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 11875,
+  "cost": 0.1726066,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "XD-1172",
+    "answer": "XD-1172",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "VT-1846",
+    "answer": "VT-1846",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CL-9731",
+    "answer": "CL-9731",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "MB-1947",
+    "answer": "MB-1947",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "NS-5187",
+    "answer": "NS-5187",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WK-5541",
+    "answer": "WK-5541",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "ST-9773",
+    "answer": "ST-9773",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JK-5493",
+    "answer": "JK-5493",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CH-1360",
+    "answer": "CH-1360",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "KX-7279",
+    "answer": "KX-7279",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "VG-5189",
+    "answer": "VG-5189",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CV-3361",
+    "answer": "CV-3361",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 25
+}

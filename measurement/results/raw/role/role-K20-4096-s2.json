@@ -1,0 +1,61 @@
+{
+ "id": "role-K20-4096-s2",
+ "K": 20,
+ "bytes": 4145,
+ "singleRules": 46,
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 46,
+  "firstLast": 46,
+  "firstErr": null
+ },
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "RN-5069",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "PM-8619",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "FS-7860",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: B\nS3: D\nS4: A\nS5: B\nS6: C\nS7: D\nS8: D\nS9: C\nS10: B\nS11: C\nS12: A\nS13: B\nS14: A\nS15: B\nS16: B\nS17: D\nS18: C\nS19: C\nS20: C\nS21: A\nS22: D\nS23: C\nS24: A\nS25: C\nS26: C\nS27: D\nS28: A\nS29: D\nS30: C\nS31: A\nS32: D\nS33: B\nS34: B\nS35: B\nS36: D\nS37: B\nS38: A\nS39: B\nS40: C\nS41: C\nS42: C\nS43: A\nS44: B\nS45: D\nS46: B\nS47: C\nS48: C\nS49: C\nQ1: RN-5069\nQ2: PM-8619\nQ3: FS-7860\nQ4: NOT STATED\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1330778,
+ "status": "CLEAN",
+ "seconds": 30
+}

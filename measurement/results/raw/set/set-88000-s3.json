@@ -1,0 +1,294 @@
+{
+ "id": "set-88000-s3",
+ "kind": "set",
+ "bytes": 88000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:03.944Z",
+ "coverage": [
+  {
+   "file": "01-build-06-the-account-switch.md",
+   "bytes": 9742,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 158,
+   "firstLast": 158,
+   "firstErr": null
+  },
+  {
+   "file": "02-build-01b-the-commands.md",
+   "bytes": 12236,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "03-starting_texts-coordinator.md",
+   "bytes": 3868,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "04-design-07-harness-claude-code.md",
+   "bytes": 9586,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-10-open-and-unproven.md",
+   "bytes": 14382,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 112,
+   "firstLast": 112,
+   "firstErr": null
+  },
+  {
+   "file": "06-build-02-the-forms.md",
+   "bytes": 14784,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 182,
+   "firstLast": 182,
+   "firstErr": null
+  },
+  {
+   "file": "07-starting_texts-job.md",
+   "bytes": 3579,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-08-harness-codex.md",
+   "bytes": 4450,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "09-starting_texts-process.md",
+   "bytes": 4142,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "10-appendix-working-notes.md",
+   "bytes": 2531,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 32,
+   "firstLast": 32,
+   "firstErr": null
+  },
+  {
+   "file": "11-design-09-hosting-cloudflare.md",
+   "bytes": 2613,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "12-starting_texts-watcher.md",
+   "bytes": 2744,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "13-starting_texts-lane.md",
+   "bytes": 3343,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 13,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 37255,
+  "cost": 0.31113060000000003,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. JN-9467\n2. NOT STATED\n3. WG-7186\n4. TW-9226\n5. WP-6507\n6. SN-5007\n7. CW-9441\n8. BH-5080\n9. PQ-8223\n10. HX-8993\n11. BJ-1675\n12. BS-6174\n13. NOT STATED\n14. KL-9870",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 36530,
+  "cost": 0.5984904,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "JN-9467",
+    "answer": "JN-9467",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WG-7186",
+    "answer": "WG-7186",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "TW-9226",
+    "answer": "TW-9226",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WP-6507",
+    "answer": "WP-6507",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "SN-5007",
+    "answer": "SN-5007",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CW-9441",
+    "answer": "CW-9441",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "BH-5080",
+    "answer": "BH-5080",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "PQ-8223",
+    "answer": "PQ-8223",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "HX-8993",
+    "answer": "HX-8993",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "BJ-1675",
+    "answer": "BJ-1675",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "BS-6174",
+    "answer": "BS-6174",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "KL-9870",
+    "answer": "KL-9870",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 29
+}

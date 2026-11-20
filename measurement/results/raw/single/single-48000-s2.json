@@ -1,0 +1,174 @@
+{
+ "id": "single-48000-s2",
+ "kind": "single",
+ "bytes": 48000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:44.521Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 48000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 444,
+   "firstLast": 444,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 20765,
+  "cost": 0.14454299999999998,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. SJ-5291\n2. CC-8973\n3. DZ-4218\n4. CM-6057\n5. NOT STATED\n6. JL-7243\n7. QZ-8482\n8. KG-2969\n9. GL-6611\n10. DN-4395\n11. JP-7421\n12. BF-8872\n13. PN-9272\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 20040,
+  "cost": 0.2944228,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SJ-5291",
+    "answer": "SJ-5291",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CC-8973",
+    "answer": "CC-8973",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DZ-4218",
+    "answer": "DZ-4218",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CM-6057",
+    "answer": "CM-6057",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "JL-7243",
+    "answer": "JL-7243",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "QZ-8482",
+    "answer": "QZ-8482",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "KG-2969",
+    "answer": "KG-2969",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "GL-6611",
+    "answer": "GL-6611",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "DN-4395",
+    "answer": "DN-4395",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "JP-7421",
+    "answer": "JP-7421",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "BF-8872",
+    "answer": "BF-8872",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "PN-9272",
+    "answer": "PN-9272",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 22
+}

@@ -1,0 +1,174 @@
+{
+ "id": "single-12000-s4",
+ "kind": "single",
+ "bytes": 12000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:45.774Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 12000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 119,
+   "firstLast": 119,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nThe file was not complete, though. Its header says it is 198 lines long and ends with section 9, \"The owner's to settle\", but only 118 lines were there. It stops partway through section 5, followed by two broken fragments: \"Comment comment replaces lis\" and \"Table module shows valu\". Sections 6 to 9 are missing, so I can't answer questions about them from this file.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8515,
+  "cost": 0.050223000000000004,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. SJ-2390\n2. NOT STATED\n3. PV-7652\n4. PK-5698\n5. GF-9635\n6. CG-8580\n7. JX-8976\n8. VP-1092\n9. GX-1133\n10. VC-6896\n11. MJ-6642\n12. JV-7258\n13. NOT STATED\n14. RH-7099",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 7914,
+  "cost": 0.1030748,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "SJ-2390",
+    "answer": "SJ-2390",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "PV-7652",
+    "answer": "PV-7652",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "PK-5698",
+    "answer": "PK-5698",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GF-9635",
+    "answer": "GF-9635",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CG-8580",
+    "answer": "CG-8580",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "JX-8976",
+    "answer": "JX-8976",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "VP-1092",
+    "answer": "VP-1092",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GX-1133",
+    "answer": "GX-1133",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "VC-6896",
+    "answer": "VC-6896",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "MJ-6642",
+    "answer": "MJ-6642",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JV-7258",
+    "answer": "JV-7258",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "RH-7099",
+    "answer": "RH-7099",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 23
+}

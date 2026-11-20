@@ -1,0 +1,174 @@
+{
+ "id": "single-76000-s4",
+ "kind": "single",
+ "bytes": 76000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:24:32.300Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 76000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 599,
+   "firstLast": 599,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30537,
+  "cost": 0.22461899999999999,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. JC-6336\n2. RR-3457\n3. DS-9177\n4. ZN-5435\n5. DW-1550\n6. HG-6015\n7. NH-2569\n8. BH-6557\n9. GK-9223\n10. DG-3743\n11. NOT STATED\n12. NOT STATED\n13. PD-1618\n14. HS-3829",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 29807,
+  "cost": 0.45259479999999996,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "JC-6336",
+    "answer": "JC-6336",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "RR-3457",
+    "answer": "RR-3457",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "DS-9177",
+    "answer": "DS-9177",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "ZN-5435",
+    "answer": "ZN-5435",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DW-1550",
+    "answer": "DW-1550",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HG-6015",
+    "answer": "HG-6015",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NH-2569",
+    "answer": "NH-2569",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "BH-6557",
+    "answer": "BH-6557",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "GK-9223",
+    "answer": "GK-9223",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "DG-3743",
+    "answer": "DG-3743",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "PD-1618",
+    "answer": "PD-1618",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "HS-3829",
+    "answer": "HS-3829",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 28
+}

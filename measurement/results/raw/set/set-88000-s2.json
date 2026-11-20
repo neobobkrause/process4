@@ -1,0 +1,264 @@
+{
+ "id": "set-88000-s2",
+ "kind": "set",
+ "bytes": 88000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:02.769Z",
+ "coverage": [
+  {
+   "file": "01-design-07-harness-claude-code.md",
+   "bytes": 9742,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 86,
+   "firstLast": 86,
+   "firstErr": null
+  },
+  {
+   "file": "02-design-01-purpose-owner-and-decisions.md",
+   "bytes": 10547,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "03-build-01b-the-commands.md",
+   "bytes": 12181,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "04-appendix-working-notes.md",
+   "bytes": 2708,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 37,
+   "firstLast": 37,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-05-reading-and-documents.md",
+   "bytes": 6103,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 65,
+   "firstLast": 65,
+   "firstErr": null
+  },
+  {
+   "file": "06-build-02-the-forms.md",
+   "bytes": 14839,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 182,
+   "firstLast": 182,
+   "firstErr": null
+  },
+  {
+   "file": "07-starting_texts-arch.md",
+   "bytes": 3842,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "08-starting_texts-job.md",
+   "bytes": 3579,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "09-build-06-the-account-switch.md",
+   "bytes": 9576,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 154,
+   "firstLast": 154,
+   "firstErr": null
+  },
+  {
+   "file": "10-build-04-the-trial.md",
+   "bytes": 14883,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 148,
+   "firstLast": 148,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 10,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 36804,
+  "cost": 0.3033102,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. NOT STATED\n2. WR-5927\n3. NC-2802\n4. LF-1024\n5. RK-8238\n6. FM-6880\n7. XG-5363\n8. NOT STATED\n9. MB-7635\n10. CM-2689\n11. HB-9809\n12. SS-4344\n13. WZ-7903\n14. QS-1771",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 35999,
+  "cost": 0.585402,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Tamarind log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WR-5927",
+    "answer": "WR-5927",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "NC-2802",
+    "answer": "NC-2802",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "LF-1024",
+    "answer": "LF-1024",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RK-8238",
+    "answer": "RK-8238",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "FM-6880",
+    "answer": "FM-6880",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "XG-5363",
+    "answer": "XG-5363",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "MB-7635",
+    "answer": "MB-7635",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CM-2689",
+    "answer": "CM-2689",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "HB-9809",
+    "answer": "HB-9809",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "SS-4344",
+    "answer": "SS-4344",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "WZ-7903",
+    "answer": "WZ-7903",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "QS-1771",
+    "answer": "QS-1771",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 30
+}

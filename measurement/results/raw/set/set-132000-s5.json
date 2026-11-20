@@ -1,0 +1,294 @@
+{
+ "id": "set-132000-s5",
+ "kind": "set",
+ "bytes": 132000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:02.447Z",
+ "coverage": [
+  {
+   "file": "01-starting_texts-root.md",
+   "bytes": 3785,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 37,
+   "firstLast": 37,
+   "firstErr": null
+  },
+  {
+   "file": "02-starting_texts-arch.md",
+   "bytes": 3898,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "03-build-02b-the-comment-and-the-listing.md",
+   "bytes": 10371,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 128,
+   "firstLast": 128,
+   "firstErr": null
+  },
+  {
+   "file": "04-starting_texts-walking-session.md",
+   "bytes": 3622,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "05-design-08-harness-codex.md",
+   "bytes": 4450,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 52,
+   "firstLast": 52,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10310,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "07-appendix-working-notes.md",
+   "bytes": 3125,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 39,
+   "firstLast": 39,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-04-roles-and-sessions.md",
+   "bytes": 22568,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 164,
+   "firstLast": 164,
+   "firstErr": null
+  },
+  {
+   "file": "09-build-04-the-trial.md",
+   "bytes": 14777,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 146,
+   "firstLast": 146,
+   "firstErr": null
+  },
+  {
+   "file": "10-build-05-the-records-and-following.md",
+   "bytes": 17077,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 205,
+   "firstLast": 205,
+   "firstErr": null
+  },
+  {
+   "file": "11-build-01b-the-commands.md",
+   "bytes": 12181,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "12-build-02-the-forms.md",
+   "bytes": 14842,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 182,
+   "firstLast": 182,
+   "firstErr": null
+  },
+  {
+   "file": "13-design-00-index.md",
+   "bytes": 10994,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 96,
+   "firstLast": 96,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 13,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 52981,
+  "cost": 0.4359154,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. JB-7558\n2. NOT STATED\n3. SL-9567\n4. NOT STATED\n5. KG-9081\n6. WC-6363\n7. HB-6736\n8. JN-4470\n9. WW-4754\n10. QM-1093\n11. PF-3181\n12. JT-1381\n13. CS-6236\n14. PR-1777",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 52260,
+  "cost": 0.8434952,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JB-7558",
+    "answer": "JB-7558",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "SL-9567",
+    "answer": "SL-9567",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "KG-9081",
+    "answer": "KG-9081",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "WC-6363",
+    "answer": "WC-6363",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "HB-6736",
+    "answer": "HB-6736",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "JN-4470",
+    "answer": "JN-4470",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "WW-4754",
+    "answer": "WW-4754",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "QM-1093",
+    "answer": "QM-1093",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "PF-3181",
+    "answer": "PF-3181",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "JT-1381",
+    "answer": "JT-1381",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CS-6236",
+    "answer": "CS-6236",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "PR-1777",
+    "answer": "PR-1777",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 27
+}

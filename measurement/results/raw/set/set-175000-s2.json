@@ -1,0 +1,354 @@
+{
+ "id": "set-175000-s2",
+ "kind": "set",
+ "bytes": 175000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:10.606Z",
+ "coverage": [
+  {
+   "file": "01-starting_texts-lane.md",
+   "bytes": 3338,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 29,
+   "firstLast": 29,
+   "firstErr": null
+  },
+  {
+   "file": "02-starting_texts-root.md",
+   "bytes": 3729,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 35,
+   "firstLast": 35,
+   "firstErr": null
+  },
+  {
+   "file": "03-build-01-the-tool-and-the-required-run.md",
+   "bytes": 15388,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "04-starting_texts-arch.md",
+   "bytes": 3893,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "05-build-02-the-forms.md",
+   "bytes": 14730,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 180,
+   "firstLast": 180,
+   "firstErr": null
+  },
+  {
+   "file": "06-build-05-the-records-and-following.md",
+   "bytes": 17077,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 205,
+   "firstLast": 205,
+   "firstErr": null
+  },
+  {
+   "file": "07-build-01b-the-commands.md",
+   "bytes": 12181,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10365,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "09-design-01-purpose-owner-and-decisions.md",
+   "bytes": 10545,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 84,
+   "firstLast": 84,
+   "firstErr": null
+  },
+  {
+   "file": "10-appendix-working-notes.md",
+   "bytes": 3772,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 41,
+   "firstLast": 41,
+   "firstErr": null
+  },
+  {
+   "file": "11-design-09-hosting-cloudflare.md",
+   "bytes": 2613,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 30,
+   "firstLast": 30,
+   "firstErr": null
+  },
+  {
+   "file": "12-starting_texts-walking-session.md",
+   "bytes": 3674,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 31,
+   "firstLast": 31,
+   "firstErr": null
+  },
+  {
+   "file": "13-build-02b-the-comment-and-the-listing.md",
+   "bytes": 10264,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 126,
+   "firstLast": 126,
+   "firstErr": null
+  },
+  {
+   "file": "14-design-05-reading-and-documents.md",
+   "bytes": 5996,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "15-design-06-rules-permissions-and-changing-the-process.md",
+   "bytes": 10971,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "16-starting_texts-watcher.md",
+   "bytes": 2689,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 28,
+   "firstLast": 28,
+   "firstErr": null
+  },
+  {
+   "file": "17-design-02-modules-jobs-tests-and-the-notice.md",
+   "bytes": 16646,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "18-design-04-roles-and-sessions.md",
+   "bytes": 22629,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 164,
+   "firstLast": 164,
+   "firstErr": null
+  },
+  {
+   "file": "19-design-08-harness-codex.md",
+   "bytes": 4500,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 54,
+   "firstLast": 54,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 19,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 67863,
+  "cost": 0.5763872,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. LV-3367\n2. GZ-6615\n3. SK-2540\n4. QQ-5124\n5. GL-4645\n6. XD-2198\n7. NOT STATED\n8. JJ-7736\n9. FJ-7219\n10. VJ-9241\n11. HD-3686\n12. WZ-4374\n13. CM-1844\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 67137,
+  "cost": 1.103103,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "LV-3367",
+    "answer": "LV-3367",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "GZ-6615",
+    "answer": "GZ-6615",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "SK-2540",
+    "answer": "SK-2540",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "QQ-5124",
+    "answer": "QQ-5124",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "GL-4645",
+    "answer": "GL-4645",
+    "ok": true
+   },
+   {
+    "subject": "Rowan folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "XD-2198",
+    "answer": "XD-2198",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "JJ-7736",
+    "answer": "JJ-7736",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "FJ-7219",
+    "answer": "FJ-7219",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "VJ-9241",
+    "answer": "VJ-9241",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "HD-3686",
+    "answer": "HD-3686",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "WZ-4374",
+    "answer": "WZ-4374",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "CM-1844",
+    "answer": "CM-1844",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 35
+}

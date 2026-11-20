@@ -1,0 +1,44 @@
+{
+ "id": "single-88000-s3",
+ "kind": "single",
+ "bytes": 88000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:22:12.141Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 574,
+   "firstLast": 574,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "The file wasn't fully read, so I can't reply READ COMPLETE. The one Read call was cut off at line 574 of 771 because of the tool's size limit. I have lines 1–574, which end partway through build text 2b, section 5, in the `@optable` example. I haven't seen lines 575–771, which include the rest of that text and its section 6, \"An interface listing\".\n\nYou asked for a single plain Read with no offset, so I didn't open the file again. If you want the rest, I can read it with `offset=575` or re-read the whole file with `allow_large`. Otherwise, I'll answer your questions from lines 1–574 and tell you when an answer may depend on the part I haven't read.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 27525,
+  "cost": 0.208124,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 88000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 574,
+   "firstLast": 574,
+   "firstErr": null
+  }
+ ],
+ "seconds": 14
+}

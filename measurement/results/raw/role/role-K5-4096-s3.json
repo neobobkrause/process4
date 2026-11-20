@@ -1,0 +1,61 @@
+{
+ "id": "role-K5-4096-s3",
+ "K": 5,
+ "bytes": 3848,
+ "singleRules": 11,
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 43,
+  "firstLast": 43,
+  "firstErr": null
+ },
+ "rulesApplied": 5,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Rowan folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "BS-9097",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "GW-5640",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "QB-7890",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: B\nS3: C\nS4: C\nS5: B\nS6: A\nS7: C\nS8: A\nS9: D\nS10: A\nS11: B\nS12: A\nS13: D\nS14: D\nS15: A\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: BS-9097\nQ4: GW-5640\nQ5: QB-7890",
+ "compactions": 0,
+ "cost": 0.09238579999999999,
+ "status": "CLEAN",
+ "seconds": 27
+}

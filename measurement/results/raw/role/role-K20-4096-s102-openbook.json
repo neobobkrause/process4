@@ -1,0 +1,53 @@
+{
+ "id": "role-K20-4096-s102-openbook",
+ "K": 20,
+ "bytes": 4146,
+ "singleRules": 46,
+ "seed": 102,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Vellum schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "VV-6435",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "VQ-5982",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "RT-8087",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: C\nS5: B\nS6: C\nS7: C\nS8: D\nS9: D\nS10: D\nS11: B\nS12: A\nS13: A\nS14: D\nS15: C\nS16: A\nS17: A\nS18: C\nS19: C\nS20: D\nS21: C\nS22: D\nS23: C\nS24: C\nS25: B\nS26: D\nS27: C\nS28: B\nS29: B\nS30: D\nS31: D\nS32: D\nS33: C\nS34: B\nS35: C\nS36: A\nS37: D\nS38: C\nS39: C\nS40: A\nS41: C\nS42: B\nS43: A\nS44: A\nS45: C\nS46: B\nS47: A\nS48: A\nS49: A\nQ1: NOT STATED\nQ2: VV-6435\nQ3: VQ-5982\nQ4: RT-8087\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.0780278,
+ "status": "CLEAN",
+ "seconds": 8
+}

@@ -1,0 +1,174 @@
+{
+ "id": "single-12000-s5",
+ "kind": "single",
+ "bytes": 12000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:47.544Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 12000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 119,
+   "firstLast": 119,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nNote: the file says it is 198 lines long and that its last section is \"9. The owner's to settle\", but only 119 lines came back. It stops partway through section 5, followed by two stray \"## 1. Notes…\" fragments. Sections 6–9 were not in what I read.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8513,
+  "cost": 0.0503076,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. BF-5351\n2. NOT STATED\n3. JJ-8593\n4. QB-4213\n5. BW-1371\n6. MN-1141\n7. NT-8132\n8. JR-5831\n9. NOT STATED\n10. FP-4489\n11. WS-5429\n12. HP-5343\n13. QV-8342\n14. ST-2022",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 7878,
+  "cost": 0.10285140000000001,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "BF-5351",
+    "answer": "BF-5351",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Linden log",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "JJ-8593",
+    "answer": "JJ-8593",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "QB-4213",
+    "answer": "QB-4213",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "BW-1371",
+    "answer": "BW-1371",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "MN-1141",
+    "answer": "MN-1141",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "NT-8132",
+    "answer": "NT-8132",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "JR-5831",
+    "answer": "JR-5831",
+    "ok": true
+   },
+   {
+    "subject": "Saffron survey",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "FP-4489",
+    "answer": "FP-4489",
+    "ok": true
+   },
+   {
+    "subject": "Sorrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "WS-5429",
+    "answer": "WS-5429",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "HP-5343",
+    "answer": "HP-5343",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "QV-8342",
+    "answer": "QV-8342",
+    "ok": true
+   },
+   {
+    "subject": "Heron docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "ST-2022",
+    "answer": "ST-2022",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 23
+}

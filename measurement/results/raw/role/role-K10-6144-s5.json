@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-6144-s5",
+ "K": 10,
+ "bytes": 6185,
+ "singleRules": 27,
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 58,
+  "firstLast": 58,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "JP-2663",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "FM-1259",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "KS-7327",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: D\nS3: A\nS4: C\nS5: A\nS6: C\nS7: B\nS8: B\nS9: C\nS10: A\nS11: D\nS12: B\nS13: C\nS14: B\nS15: B\nS16: B\nS17: D\nS18: B\nS19: B\nS20: C\nS21: D\nS22: D\nS23: C\nS24: A\nS25: A\nS26: B\nS27: B\nQ1: JP-2663\nQ2: FM-1259\nQ3: KS-7327\nQ4: NOT STATED\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1242094,
+ "status": "CLEAN",
+ "seconds": 27
+}

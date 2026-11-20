@@ -1,0 +1,61 @@
+{
+ "id": "role-K10-4096-s2",
+ "K": 10,
+ "bytes": 3980,
+ "singleRules": 27,
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 46,
+  "firstLast": 46,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 3,
+ "probes": [
+  {
+   "subject": "Quartz roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "NT-7854",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": true,
+   "answer": "ZD-4376",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "QZ-9384",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: B\nS3: A\nS4: B\nS5: A\nS6: D\nS7: A\nS8: A\nS9: B\nS10: A\nS11: A\nS12: B\nS13: A\nS14: A\nS15: A\nS16: B\nS17: C\nS18: C\nS19: A\nS20: A\nS21: B\nS22: B\nS23: D\nS24: B\nS25: B\nS26: D\nS27: B\nQ1: NOT STATED\nQ2: NT-7854\nQ3: ZD-4376\nQ4: QZ-9384\nQ5: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1062418,
+ "status": "CLEAN",
+ "seconds": 26
+}

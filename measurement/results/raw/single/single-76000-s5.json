@@ -1,0 +1,174 @@
+{
+ "id": "single-76000-s5",
+ "kind": "single",
+ "bytes": 76000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:24:31.920Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 76000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 728,
+   "firstLast": 728,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30897,
+  "cost": 0.2263192,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. PZ-1093\n2. SD-3468\n3. SZ-7063\n4. WS-1316\n5. VK-4624\n6. NOT STATED\n7. SX-8927\n8. NC-5596\n9. NOT STATED\n10. FT-7856\n11. RX-1160\n12. GG-8408\n13. PF-6675\n14. MM-8195",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 30174,
+  "cost": 0.46155100000000004,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "PZ-1093",
+    "answer": "PZ-1093",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SD-3468",
+    "answer": "SD-3468",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "SZ-7063",
+    "answer": "SZ-7063",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "WS-1316",
+    "answer": "WS-1316",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "VK-4624",
+    "answer": "VK-4624",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "SX-8927",
+    "answer": "SX-8927",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "NC-5596",
+    "answer": "NC-5596",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FT-7856",
+    "answer": "FT-7856",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RX-1160",
+    "answer": "RX-1160",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "GG-8408",
+    "answer": "GG-8408",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "PF-6675",
+    "answer": "PF-6675",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "MM-8195",
+    "answer": "MM-8195",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 29
+}

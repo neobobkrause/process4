@@ -1,0 +1,174 @@
+{
+ "id": "single-12000-s3",
+ "kind": "single",
+ "bytes": 12000,
+ "seed": 3,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:47.307Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 12000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 124,
+   "firstLast": 124,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nNote: the file doesn't match its own header. The header says 28 lines ending at \"Rules\", but the file has 123 lines. After the Rules section, it continues with parts of other documents: design Part 5 and build text 5. It ends partway through a word (\"Measure field states read\").",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8641,
+  "cost": 0.0537714,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. JQ-2828\n2. PJ-5905\n3. FH-7825\n4. CP-9367\n5. MF-1888\n6. ZV-9512\n7. FQ-2955\n8. XL-3857\n9. GN-1334\n10. NOT STATED\n11. QQ-2111\n12. NOT STATED\n13. HM-7839\n14. ZD-1536",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 8001,
+  "cost": 0.1073992,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "JQ-2828",
+    "answer": "JQ-2828",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "PJ-5905",
+    "answer": "PJ-5905",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "FH-7825",
+    "answer": "FH-7825",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "CP-9367",
+    "answer": "CP-9367",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "MF-1888",
+    "answer": "MF-1888",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "ZV-9512",
+    "answer": "ZV-9512",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "FQ-2955",
+    "answer": "FQ-2955",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "XL-3857",
+    "answer": "XL-3857",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "GN-1334",
+    "answer": "GN-1334",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "QQ-2111",
+    "answer": "QQ-2111",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "HM-7839",
+    "answer": "HM-7839",
+    "ok": true
+   },
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "ZD-1536",
+    "answer": "ZD-1536",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 24
+}

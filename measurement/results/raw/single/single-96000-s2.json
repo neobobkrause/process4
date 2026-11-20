@@ -1,0 +1,44 @@
+{
+ "id": "single-96000-s2",
+ "kind": "single",
+ "bytes": 96000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:49.410Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 610,
+   "firstLast": 610,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I can't reply READ COMPLETE, because the read wasn't complete. The single plain Read of `carrier.md` stopped at the 25,000-token cap and returned only lines 1–610 of 891. Lines 611–891 weren't shown: the rest of Part 1 from its section 3 onward (\"The owner's acts\"), and whatever comes after it.\n\nI followed your instruction to make only one plain Read call, so I didn't fetch the rest. I can answer questions about lines 1–610, but anything in lines 611–891 I haven't seen. If you want all of it, let me make one more Read for lines 611–891, or re-read the whole file with `allow_large`.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 27386,
+  "cost": 0.20559159999999999,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 610,
+   "firstLast": 610,
+   "firstErr": null
+  }
+ ],
+ "seconds": 19
+}

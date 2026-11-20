@@ -1,0 +1,44 @@
+{
+ "id": "single-96000-s1",
+ "kind": "single",
+ "bytes": 96000,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:49.001Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 641,
+   "firstLast": 641,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "I haven't read all of carrier.md yet. My one Read call stopped at line 641 because of the tool's size limit, and the file has 957 lines. Lines 642–957 are unread: they start in the middle of build text 4 at \"Stage 3. A round's jobs\", and I don't know what comes after that.\n\nYour instructions said to read the file once, with no offset or limit, so I didn't read it a second time. If you want questions answered from the whole file, I need one more Read call, either with `allow_large: true` or starting at line 642. Should I make it? If not, I can answer from lines 1–641 and will say so whenever a question needs the rest.",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 26148,
+  "cost": 0.1956272,
+  "isError": false
+ },
+ "status": "MECHANICAL-CUT",
+ "cut": [
+  {
+   "file": "carrier.md",
+   "bytes": 96000,
+   "nReads": 1,
+   "firstWhole": false,
+   "coveredAll": false,
+   "covered": 641,
+   "firstLast": 641,
+   "firstErr": null
+  }
+ ],
+ "seconds": 19
+}

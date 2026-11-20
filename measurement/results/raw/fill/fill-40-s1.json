@@ -1,0 +1,306 @@
+{
+ "id": "fill-40-s1",
+ "pct": 40,
+ "seed": 1,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "window": 1000000,
+ "targetTokens": 400000,
+ "answerCtx": 397934,
+ "fillPct": 39.79,
+ "inTolerance": true,
+ "filesRead": 28,
+ "coverage": {
+  "carrier": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 186,
+   "firstLast": 186,
+   "firstErr": null
+  },
+  "task": {
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 144,
+   "firstLast": 144,
+   "firstErr": null
+  },
+  "fillCut": []
+ },
+ "task": [
+  {
+   "q": "In stage 2, what rouses ROOT?",
+   "neg": false,
+   "answer": "The hourly wake.",
+   "ok": true
+  },
+  {
+   "q": "How many recorded changes does the notice's proof hold in its repository?",
+   "neg": false,
+   "answer": "150 recorded changes.",
+   "ok": true
+  },
+  {
+   "q": "Which status check does act 10's branch ruleset require?",
+   "neg": false,
+   "answer": "`module-tests`, with GitHub Actions as its source.",
+   "ok": true
+  },
+  {
+   "q": "What must the owner's trial wording of his forbidden commands allow for stage 0?",
+   "neg": false,
+   "answer": "The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.",
+   "ok": true
+  },
+  {
+   "q": "In stage 0's run on 19 Nov, which GitHub interface was refused, and which worked?",
+   "neg": false,
+   "answer": "GraphQL was refused and REST worked.",
+   "ok": true
+  },
+  {
+   "q": "What dollar budget does build text 4 set for each stage?",
+   "neg": true,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "q": "Which option of `release prepare` makes stage 6's first trial release?",
+   "neg": false,
+   "answer": "`--development`",
+   "ok": true
+  },
+  {
+   "q": "In stage 1, how many merges made by the tool must pass the permission checker?",
+   "neg": false,
+   "answer": "Twenty or more.",
+   "ok": true
+  },
+  {
+   "q": "Under build text 4's rule of the order, which doubtful thing is tried first?",
+   "neg": false,
+   "answer": "The most doubtful thing that everything else rests on.",
+   "ok": true
+  },
+  {
+   "q": "In stage 3, at what point is a job replaced?",
+   "neg": false,
+   "answer": "At its third failed run.",
+   "ok": true
+  },
+  {
+   "q": "What is the name of the process repository's own required run?",
+   "neg": false,
+   "answer": "`tool-tests`",
+   "ok": true
+  }
+ ],
+ "taskOk": 10,
+ "taskNegOk": true,
+ "probes": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "XH-4067",
+    "answer": "XH-4067",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "FM-1528",
+    "answer": "FM-1528",
+    "ok": true
+   },
+   {
+    "subject": "Cobalt survey",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "CK-9448",
+    "answer": "CK-9448",
+    "ok": true
+   },
+   {
+    "subject": "Damson ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "VK-9330",
+    "answer": "VK-9330",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "ZS-3442",
+    "answer": "ZS-3442",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "XL-1935",
+    "answer": "XL-1935",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZK-9342",
+    "answer": "ZK-9342",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "BT-3159",
+    "answer": "BT-3159",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "DK-6879",
+    "answer": "DK-6879",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "ZJ-6218",
+    "answer": "ZJ-6218",
+    "ok": true
+   },
+   {
+    "subject": "Vetch checklist",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "SB-6062",
+    "answer": "SB-6062",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "HH-9040",
+    "answer": "HH-9040",
+    "ok": true
+   }
+  ]
+ },
+ "handoverWords": 108,
+ "handoverOk": true,
+ "compactions": 0,
+ "notes": [],
+ "turns": [
+  {
+   "name": "carrier",
+   "ctx": 12626,
+   "maxCtx": 12626,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 147057,
+   "maxCtx": 147057,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 284021,
+   "maxCtx": 284021,
+   "uses": 10,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "fill",
+   "ctx": 391827,
+   "maxCtx": 391827,
+   "uses": 8,
+   "reply": "DONE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "task-read",
+   "ctx": 397188,
+   "maxCtx": 397188,
+   "uses": 1,
+   "reply": "READ COMPLETE",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  },
+  {
+   "name": "answer",
+   "ctx": 397934,
+   "maxCtx": 397934,
+   "uses": 0,
+   "reply": "**Part 1**\n\n1. XH-4067\n2. FM-1528\n3. CK-9448\n4. The hourly wake.\n5. 150 recorded changes.\n6. `module-tests`, with GitHub Actions as its source.\n7. The one path stage 0 takes: a script of a few lines, ",
+   "notes": [],
+   "compactions": 0,
+   "isError": false
+  }
+ ],
+ "cost": 14.18,
+ "reply": "**Part 1**\n\n1. XH-4067\n2. FM-1528\n3. CK-9448\n4. The hourly wake.\n5. 150 recorded changes.\n6. `module-tests`, with GitHub Actions as its source.\n7. The one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.\n8. GraphQL was refused and REST worked.\n9. VK-9330\n10. NOT STATED\n11. ZS-3442\n12. XL-1935\n13. NOT STATED\n14. ZK-9342\n15. NOT STATED\n16. BT-3159\n17. `--development`\n18. Twenty or more.\n19. The most doubtful thing that everything else rests on.\n20. DK-6879\n21. ZJ-6218\n22. SB-6062\n23. HH-9040\n24. At its third failed run.\n25. `tool-tests`\n\n**HANDOVER**\n\nI read carrier.md, which holds the roles-and-sessions design part and the codes scattered through it. I read notes-001 to notes-028: background on Process3 and Process4, including audits, ledgers, Codex context research and filler inventory lines. I read requirements.md (build text 4: the order of building and trying, stages 0 to 7). I answered 25 questions from memory. Codes come from carrier.md. Three answers are NOT STATED: the Willow almanac, the Nettle inventory, and a dollar budget per stage. None of those appears in what I read. Nothing remains unless the answers need checking against the files. I edited no files and ran no commands other than reads.",
+ "reopened": 0,
+ "status": "CLEAN",
+ "seconds": 67
+}

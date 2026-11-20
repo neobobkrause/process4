@@ -1,0 +1,174 @@
+{
+ "id": "single-48000-s5",
+ "kind": "single",
+ "bytes": 48000,
+ "seed": 5,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:43.876Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 48000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 350,
+   "firstLast": 350,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 20679,
+  "cost": 0.1447558,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. XB-4363\n2. RK-2209\n3. SQ-5075\n4. DH-4383\n5. NOT STATED\n6. NS-1605\n7. XF-3783\n8. FG-2301\n9. JF-7786\n10. WQ-3739\n11. KW-1865\n12. BM-6548\n13. XL-2346\n14. NOT STATED",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 19959,
+  "cost": 0.2939676,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "XB-4363",
+    "answer": "XB-4363",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RK-2209",
+    "answer": "RK-2209",
+    "ok": true
+   },
+   {
+    "subject": "Thistle register",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "SQ-5075",
+    "answer": "SQ-5075",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DH-4383",
+    "answer": "DH-4383",
+    "ok": true
+   },
+   {
+    "subject": "Mallow schedule",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "NS-1605",
+    "answer": "NS-1605",
+    "ok": true
+   },
+   {
+    "subject": "Bramble folio",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "XF-3783",
+    "answer": "XF-3783",
+    "ok": true
+   },
+   {
+    "subject": "Basalt ledger",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "FG-2301",
+    "answer": "FG-2301",
+    "ok": true
+   },
+   {
+    "subject": "Tamarind log",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "JF-7786",
+    "answer": "JF-7786",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "WQ-3739",
+    "answer": "WQ-3739",
+    "ok": true
+   },
+   {
+    "subject": "Indigo tally",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "KW-1865",
+    "answer": "KW-1865",
+    "ok": true
+   },
+   {
+    "subject": "Vellum schedule",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "BM-6548",
+    "answer": "BM-6548",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "XL-2346",
+    "answer": "XL-2346",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 21
+}

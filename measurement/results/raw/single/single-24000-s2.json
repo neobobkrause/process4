@@ -1,0 +1,174 @@
+{
+ "id": "single-24000-s2",
+ "kind": "single",
+ "bytes": 24000,
+ "seed": 2,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:19:43.585Z",
+ "coverage": [
+  {
+   "file": "carrier.md",
+   "bytes": 24000,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 196,
+   "firstLast": 196,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE",
+  "uses": 1,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 13229,
+  "cost": 0.0848548,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. FX-4991\n2. LC-5555\n3. QF-4080\n4. XV-8633\n5. SK-4789\n6. HL-6517\n7. CR-3570\n8. NOT STATED\n9. FX-5566\n10. NOT STATED\n11. VL-6204\n12. ZT-7960\n13. RW-8387\n14. ZK-1335",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 12506,
+  "cost": 0.1744426,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Quince census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "FX-4991",
+    "answer": "FX-4991",
+    "ok": true
+   },
+   {
+    "subject": "Hazel manifest",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "LC-5555",
+    "answer": "LC-5555",
+    "ok": true
+   },
+   {
+    "subject": "Zircon digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "QF-4080",
+    "answer": "QF-4080",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "XV-8633",
+    "answer": "XV-8633",
+    "ok": true
+   },
+   {
+    "subject": "Yarrow journal",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "SK-4789",
+    "answer": "SK-4789",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "HL-6517",
+    "answer": "HL-6517",
+    "ok": true
+   },
+   {
+    "subject": "Lichen manifest",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "CR-3570",
+    "answer": "CR-3570",
+    "ok": true
+   },
+   {
+    "subject": "Oriel journal",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Marigold index",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "FX-5566",
+    "answer": "FX-5566",
+    "ok": true
+   },
+   {
+    "subject": "Juniper tally",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "VL-6204",
+    "answer": "VL-6204",
+    "ok": true
+   },
+   {
+    "subject": "Plover digest",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "ZT-7960",
+    "answer": "ZT-7960",
+    "ok": true
+   },
+   {
+    "subject": "Quartz roster",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "RW-8387",
+    "answer": "RW-8387",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "ZK-1335",
+    "answer": "ZK-1335",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 20
+}

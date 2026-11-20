@@ -1,0 +1,16 @@
+{
+  "what": "One fresh session (claude-opus-5-5, effort medium) read eight files with one plain Read each, in parallel; for each, whether the first Read returned every line. g = concatenated real design/ + build/ texts; p = real process3 prose (process4_disposition.md + process4_counterarguments.md, table-dense).",
+  "date": "2026-11-20",
+  "files": [
+    {"file": "g60000.md", "bytes": 59087, "lines": 453, "whole": true},
+    {"file": "g64000.md", "bytes": 63847, "lines": 492, "whole": true},
+    {"file": "g68000.md", "bytes": 67933, "lines": 509, "whole": true},
+    {"file": "g72000.md", "bytes": 71843, "lines": 533, "whole": true},
+    {"file": "p60000.md", "bytes": 59516, "lines": 298, "whole": true},
+    {"file": "p64000.md", "bytes": 63381, "lines": 309, "whole": true},
+    {"file": "p68000.md", "bytes": 67409, "lines": 329, "whole": false, "returned_lines": 263, "returned_chars_with_line_numbers": 53915},
+    {"file": "p72000.md", "bytes": 71880, "lines": 346, "whole": false, "returned_lines": 260, "returned_chars_with_line_numbers": 53285}
+  ],
+  "earlier_probe": "A 96,000-byte concatenation of design/ + build/ came back cut after line 516 (69,864 bytes). The tool result itself carried no cut notice; the session noticed and read the rest with an offset Read.",
+  "note": "The cut is set by tokens (about 25,000), not bytes: real governing prose reads whole to at least 76,000 bytes; table-dense prose is cut between 63,381 and 67,409 bytes. When a file is cut, the part returned is well short of the cap (53-70 KB here)."
+}

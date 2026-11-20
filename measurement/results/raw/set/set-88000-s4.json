@@ -1,0 +1,264 @@
+{
+ "id": "set-88000-s4",
+ "kind": "set",
+ "bytes": 88000,
+ "seed": 4,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "date": "2026-11-20T05:26:05.086Z",
+ "coverage": [
+  {
+   "file": "01-build-01b-the-commands.md",
+   "bytes": 12394,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 45,
+   "firstLast": 45,
+   "firstErr": null
+  },
+  {
+   "file": "02-appendix-working-notes.md",
+   "bytes": 2612,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 35,
+   "firstLast": 35,
+   "firstErr": null
+  },
+  {
+   "file": "03-design-06-rules-permissions-and-changing-the-process.md",
+   "bytes": 10971,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 75,
+   "firstLast": 75,
+   "firstErr": null
+  },
+  {
+   "file": "04-design-10-open-and-unproven.md",
+   "bytes": 14271,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 110,
+   "firstLast": 110,
+   "firstErr": null
+  },
+  {
+   "file": "05-build-04-the-trial.md",
+   "bytes": 14832,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 148,
+   "firstLast": 148,
+   "firstErr": null
+  },
+  {
+   "file": "06-design-01-purpose-owner-and-decisions.md",
+   "bytes": 10488,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 82,
+   "firstLast": 82,
+   "firstErr": null
+  },
+  {
+   "file": "07-design-05-reading-and-documents.md",
+   "bytes": 5996,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 63,
+   "firstLast": 63,
+   "firstErr": null
+  },
+  {
+   "file": "08-design-03-tranche-rounds-walks-and-release.md",
+   "bytes": 10423,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 77,
+   "firstLast": 77,
+   "firstErr": null
+  },
+  {
+   "file": "09-starting_texts-lane.md",
+   "bytes": 3345,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 27,
+   "firstLast": 27,
+   "firstErr": null
+  },
+  {
+   "file": "10-design-09-hosting-cloudflare.md",
+   "bytes": 2668,
+   "nReads": 1,
+   "firstWhole": true,
+   "coveredAll": true,
+   "covered": 32,
+   "firstLast": 32,
+   "firstErr": null
+  }
+ ],
+ "turn1": {
+  "reply": "READ COMPLETE\n\nOne problem: `02-appendix-working-notes.md` looks truncated or damaged. It has no \"Length / Last section\" header. It stops mid-word (\"windo\"), and the last heading is unfinished (\"## 1. Notes on th\"). Its section numbers also repeat (\"3.\" is followed by \"1.\" twice). I read everything it contains, but I can't rely on it as a complete text. The other nine files were complete, and their line counts matched their headers.",
+  "uses": 10,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 35436,
+  "cost": 0.295886,
+  "isError": false
+ },
+ "turn2": {
+  "reply": "1. DJ-6092\n2. KQ-8574\n3. NOT STATED\n4. CW-5669\n5. QQ-2418\n6. NM-5679\n7. FM-9644\n8. NJ-9283\n9. ZW-5535\n10. NOT STATED\n11. JF-3824\n12. QC-7439\n13. VG-4555\n14. XL-4929",
+  "uses": 0,
+  "compactions": 0,
+  "notes": [],
+  "ctx": 34853,
+  "cost": 0.5643098,
+  "isError": false
+ },
+ "score": {
+  "recall": 12,
+  "of": 12,
+  "negOk": 2,
+  "negOf": 2,
+  "missedClasses": [],
+  "invalid": false,
+  "clean": true,
+  "detail": [
+   {
+    "subject": "Orchid register",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "DJ-6092",
+    "answer": "DJ-6092",
+    "ok": true
+   },
+   {
+    "subject": "Umber ledger",
+    "planted": true,
+    "zone": "early",
+    "depth": "shallow",
+    "expected": "KQ-8574",
+    "answer": "KQ-8574",
+    "ok": true
+   },
+   {
+    "subject": "Quince census",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Nettle inventory",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "CW-5669",
+    "answer": "CW-5669",
+    "ok": true
+   },
+   {
+    "subject": "Ember register",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "QQ-2418",
+    "answer": "QQ-2418",
+    "ok": true
+   },
+   {
+    "subject": "Fennel roster",
+    "planted": true,
+    "zone": "middle",
+    "depth": "shallow",
+    "expected": "NM-5679",
+    "answer": "NM-5679",
+    "ok": true
+   },
+   {
+    "subject": "Kestrel catalogue",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "FM-9644",
+    "answer": "FM-9644",
+    "ok": true
+   },
+   {
+    "subject": "Jasper index",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "NJ-9283",
+    "answer": "NJ-9283",
+    "ok": true
+   },
+   {
+    "subject": "Garnet docket",
+    "planted": true,
+    "zone": "late",
+    "depth": "shallow",
+    "expected": "ZW-5535",
+    "answer": "ZW-5535",
+    "ok": true
+   },
+   {
+    "subject": "Cinder checklist",
+    "planted": false,
+    "expected": "NOT STATED",
+    "answer": "NOT STATED",
+    "ok": true
+   },
+   {
+    "subject": "Willow almanac",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "JF-3824",
+    "answer": "JF-3824",
+    "ok": true
+   },
+   {
+    "subject": "Pewter almanac",
+    "planted": true,
+    "zone": "early",
+    "depth": "deep",
+    "expected": "QC-7439",
+    "answer": "QC-7439",
+    "ok": true
+   },
+   {
+    "subject": "Walnut inventory",
+    "planted": true,
+    "zone": "late",
+    "depth": "deep",
+    "expected": "VG-4555",
+    "answer": "VG-4555",
+    "ok": true
+   },
+   {
+    "subject": "Alder census",
+    "planted": true,
+    "zone": "middle",
+    "depth": "deep",
+    "expected": "XL-4929",
+    "answer": "XL-4929",
+    "ok": true
+   }
+  ]
+ },
+ "status": "CLEAN",
+ "seconds": 28
+}
