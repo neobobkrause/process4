@@ -22,23 +22,22 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS #5. One matter at a time.</p>
+<p class="updated">Updated 20 Nov 2026 by PROCESS #5, after your "Decision: option C".</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: getting the trial's finished work onto main</h2>
-<p><b>The question.</b> How should the trial's tranche branch (<code>p4-tranche</code>) reach main?</p>
-<p><b>The problem, plainly.</b> <code>p4-tranche</code> was started on its own, not from main, so the two branches share no history and GitHub has nothing to merge. The design already says a tranche branch is made from main; the trial's setup text never said so for a repository that already had history. The work itself is fine: round 6 is done and nothing is open.</p>
-<p><b>The options.</b></p>
-<ul>
-<li><b>C — Join the two histories (recommended).</b> ARCH makes one branch from main whose content is exactly <code>p4-tranche</code>'s, except your approvals file and the forbidden-commands file, which keep main's newer versions. That one commit is tied to both branches. ARCH opens a pull request into main and merges it. Nothing is rerun, nothing is deleted, your branch rule is untouched, and from then on the tranche goes on from <code>p4-tranche</code> and future merges into main work. Then one more pull request carries your new approvals from main onto <code>p4-tranche</code>; you click Merge on it.</li>
-<li><b>B — Copy only.</b> Same first step, but not tied to <code>p4-tranche</code>. The work reaches main, but the next tranche hits the same wall unless you first loosen your branch rule, delete <code>p4-tranche</code>, and a session remakes it.</li>
-<li><b>D — Start a fresh tranche from main and rerun the jobs.</b> Throws away finished work.</li>
-<li><b>A — No change.</b> The work stays off main.</li>
-</ul>
-<p><b>What is proven.</b> The tool already makes a branch from main and opens and merges a pull request into main. Not yet shown: that the permission checker lets ARCH merge this particular pull request. If it refuses, you click Merge on the pull request instead.</p>
-<p><b>Also proposed, separately:</b> one sentence in the trial's setup text saying the tranche branch starts from main, so this cannot recur. "No change" is also fine there, because the design already says it.</p>
-<p><b>To choose:</b> type here, for example <code>Decision: C, and fix the setup text</code>. Then you type one instruction in the trial coordinator's session, which I will give you word for word, and ARCH does the rest. Afterwards I give you one page to check: it should list exactly two changed files.</p>
+<h2>Waiting for you: two short steps to finish getting the trial's work onto main</h2>
+<p>You chose <b>option C</b> (20 Nov). The trial's coordinator has ARCH's exact steps.</p>
+<ol>
+<li><b>Now.</b> Open the session titled <b>process3-probes coordinator</b> and type:<div class="draft">Instruction: carry out PROCESS's option C now — ARCH joins p4-tranche to main by the steps PROCESS #5 sent you. The stop stays for everything else.</div>You should see it record your words and tell ARCH. ARCH then merges one pull request into main and the coordinator tells you its number.</li>
+<li><b>After that pull request has merged</b> (carries your new approvals onto the tranche branch):
+<ol>
+<li>Open <b>https://github.com/neobobkrause/process3-probes/compare/p4-tranche...main</b>. You should see "Able to merge" and, under Files changed, exactly two files: <code>CLAUDE.md</code> and <code>.claude/settings.json</code>. If you see more files, stop and tell me.</li>
+<li>Click <b>Create pull request</b>, then <b>Create pull request</b> again on the form.</li>
+<li>Wait for the check <b>module-tests</b> to show a green tick (a minute or two), then click <b>Merge pull request</b> and <b>Confirm merge</b>. You should see "Pull request successfully merged and closed". Do not click "Delete branch".</li>
+</ol></li>
+</ol>
+<p>You do not need to delete <code>p4-tranche</code>: the trial goes on from it. Then tell the coordinator when to lift the stop.</p>
 </section>
 
 <section class="card">
