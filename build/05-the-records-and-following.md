@@ -107,7 +107,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 
 ## 4. In the process's repository
 
-The process's repository has an issue of the same label and form, made by PROCESS with `state write --create`. It holds three records, all written by PROCESS: `handover-process`; `lanes`, for PROCESS's own lanes; and `changes`, the running record of the changes now proposed. **Decided here:** ROOT finds PROCESS running by `state read handover-process --repository <the process's repository>`: the block names the session and `live`.
+The process's repository has an issue of the same label and form, made by PROCESS with `state write --create`. It holds three records, all written by PROCESS: `handover-process`; `lanes`, for PROCESS's own lanes; and `changes`, the running record of the changes now proposed. **Decided here:** the coordinator finds PROCESS running by `state read handover-process --repository <the process's repository>`: the block names the session and `live` (the owner's decision C, 19 Nov 2026; design part 6, section 7).
 
 ```json
 { "role": "process", "session": "session_01G", "live": true, "written": "2026-11-20T11:30Z" }
