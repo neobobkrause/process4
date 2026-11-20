@@ -22,7 +22,6 @@ Length: 81 lines. Last section: "7. Known weaknesses of AI sessions".
 | Start ROOT | At each start or restart of development; after any full stop; and, as **Claude decided**, after each edit to his approvals (part 4, section 7) and when the harness's limit on depth is near (part 4, section 6) |
 | Start PROCESS, and start its refresh | **Claude decided** (decision C, 19 November 2026): when a process change is needed, or PROCESS asks to refresh; the coordinator surfaces the prompt on his standing page and notifies him (part 4, section 5; part 6, sections 6–7) |
 | Tell the coordinator things; give marked decisions and instructions | Whenever he chooses |
-| Approve or change ARCH's proposal for a tranche | Before each tranche opens |
 | Approve a public release | Once for each public release |
 | At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
 | Commit his standing approvals and the list of forbidden commands, in the product's repository and in the process's | At the start, then only when the wording must change |
