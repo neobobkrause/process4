@@ -9,7 +9,7 @@ Most items are also marked where they belong in parts 1 to 9. This part gathers 
 Each of these is to be put to him in full, with its options, before the design can be called settled.
 
 1. **The four values** (part 5, section 2): whether the four provisional figures are the ones he meant, and what they become when the second measurement reports.
-2. **How a tranche ends** (part 3, section 5): that clean partial walks end it, and what shows that the journeys named for the tranche complete.
+2. **How a tranche ends** (part 3, section 5): **settled (the owner, 20 November 2026): no change** — the rounds' partial walks, each scoped to what the round changed, are what shows the tranche's journeys complete; no end-of-tranche sweep is added.
 3. **A tranche merged with its flaws named** (part 3, section 5): that no release follows until a later tranche ends clean.
 4. **Publishing a release** (part 3, section 6): who carries out the act once he has approved; and what "successful" means for the install and the update.
 5. **An urgent fix while a tranche is open** (part 3, section 7).

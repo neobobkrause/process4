@@ -228,6 +228,19 @@ finding it answers is in the verification sweep, `process/research/verification-
 
 **The owner's words.** "Decision: change the way the limit is measured as you've recommended." — 20 November 2026.
 
+### Subject: How a tranche ends, and what shows its journeys complete
+
+**The rule as it now stands.** No change. A tranche ends when its rounds' partial walks
+(internal and external) come clean, each walk scoped by ARCH to the areas that round changed;
+what shows that the journeys named for the tranche complete is those partial walks themselves,
+not any added end-of-tranche sweep. The final-round-sweep reading once proposed in design
+part 3, section 5 is not adopted. A full external walk stays opt-in, made only on the owner's
+request (part 3, section 3). This settled the open question in part 3, section 5 and the open
+item in part 10, section 1, item 2; it changes no testing or walk rule and adds no test, gate,
+review or stop.
+
+**The owner's words.** "Decision: make no changes to the testing policy we've defined and confirmed ad nausium." — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
