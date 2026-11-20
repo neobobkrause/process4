@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 80 lines. Last section: "7. From the owner, 20 Nov 2026 (conversation, not a marked decision)".
+Length: 86 lines. Last section: "8. From the owner, 20 Nov 2026, later (conversation, not a marked decision)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -78,3 +78,9 @@ problems that need to be resolved before process4 development can begin."
   repository is private. The lane's approvals cover neobobkrause/process4 only, so the lane does not read
   it. Its languages, founding documents and the "several problems" are learnt from a session started in
   civicsmith2 under its own approvals, or from the owner (see `civicsmith2-reading-brief.md`).
+
+## 8. From the owner, 20 Nov 2026, later (conversation, not a marked decision)
+
+His words, as typed: "A — I'll start the read-only session on civicsmith2" and "The problems in
+civicsmith2 that I'm referring to are related to cyclic references within modules and other source code
+issues that have made it difficult to close a round without addressing."

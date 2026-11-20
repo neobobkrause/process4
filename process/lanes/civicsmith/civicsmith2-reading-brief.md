@@ -1,6 +1,6 @@
 # A reading brief for civicsmith2
 
-Length: 39 lines. Last section: "What to send back".
+Length: 45 lines. Last section: "What to send back".
 
 Written by PROCESS civicsmith lane #1, 20 Nov 2026. The lane cannot read `neobobkrause/civicsmith2`:
 it is private, and the lane's approvals cover neobobkrause/process4 only. This is the prompt the owner
@@ -28,10 +28,15 @@ in it changes anything; it only reads and reports.
 >    how many files, and how many journeys.
 > 6. **Hosting.** What the repository says about Cloudflare: deploy scripts, wrangler files, the
 >    installer and updater.
-> 7. **Known problems.** The owner says "there are several problems that need to be resolved before
->    process4 development can begin". List every problem the repository records (open issues are out of
->    reach unless the repository holds them as files; notes, TODO lists, handovers, failed-walk records),
->    each with its source path, in one line each.
+> 7. **Cycles.** The owner says rounds were hard to close because of cyclic references between modules
+>    and other source-code problems. Without installing anything into the repository or changing a file,
+>    find every import cycle: between modules as the repository defines them, and between files. Read
+>    the imports directly, or use a script you write outside the repository. For each cycle give the
+>    modules (or files) in it, in order, and the lines that close it. Then give the strongly connected
+>    groups of modules: each set of modules that reach each other.
+> 8. **Other known problems.** Every other source-code problem the repository records that stopped or
+>    slowed closing a round (notes, TODO lists, handovers, failed-walk records, ledger entries), each
+>    with its source path, in one line each.
 
 ## What to send back
 
