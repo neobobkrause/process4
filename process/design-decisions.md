@@ -327,6 +327,23 @@ build texts and the index still carry their own history and are not part of this
 
 **The owner's words.** "Decision: I agree with your recommendations in the Judgement calls for the owner section. Do it." — 20 November 2026 (on PROCESS's research note `process/research/design-history-separation-20nov.md`; his recommendations there: keep the cleaned present-status and collapse part 10 section 1 (option 1), strip the "Claude decided" mark, and produce one combined downloadable copy).
 
+### Subject: Showing a record entry is for transparency, not an approval gate
+
+**The rule as it now stands.** When PROCESS (or the coordinator) records a decision and shows
+the owner the rewritten entry, the showing is for transparency — so he can catch a
+misrecording — and is not an approval gate. The change merges on the owner's marked decision
+once the required check passes, without waiting for a further approval; if he later objects to
+the entry it is rewritten in place (his exact dated words are never edited). This corrected
+design part 5, section 5 and the PROCESS starting text (rule 4), where "shown to the owner once
+before it stands" had been read as requiring a separate approval to merge — a stop nothing
+called for, since the owner's standing approvals already let sessions merge into main once the
+required check passes, without a person's review. It removes a self-imposed gate; it adds no
+test, gate, review or stop, and it preserves the owner's controls: a change still merges only on
+his marked decision for it, the required check must pass, and the entry is still shown and still
+corrigible.
+
+**The owner's words.** "Decision: fix it" — 20 November 2026 (approving the clarification PROCESS described, after "We need to fix that. You have the charter to do so.").
+
 ### Subject: How a tranche ends, and what shows its journeys complete
 
 **The rule as it now stands.** No change. A tranche ends when its rounds' partial walks
