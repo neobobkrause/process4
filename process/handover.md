@@ -58,6 +58,16 @@ ROOT on BioDefault (one repository), and name it so PROCESS seeds the `products`
 Offered on the page (not decided): record in design part 7 §3 that a role session naming itself
 has now worked twice (PROCESS #1, #4).
 
+## Approvals changed (20 Nov 2026, PROCESS #4)
+
+Process changes merged today on the owner's marked decisions: the owner never edits a file or types a
+command (PR #85), and PROCESS or the coordinator drafts his approvals while he decides and lands them by
+his click (PR #86). PROCESS drafted his process4 approvals (`process/research/approvals-draft-process4-20nov.md`);
+the owner landed that text on main himself, word for word (commit 2276962). It lets PROCESS place a text he
+approved in a pull request that changes only CLAUDE.md or .claude/settings.json (never merging it), and
+propose environment-settings changes through the harness's approval prompt. PROCESS #4 started under the
+older text; the new text governs from PROCESS #5.
+
 ## Read this first — merge behaviour
 
 **Showing the owner a record entry is transparency, not an approval gate** (design part 5 §2/§5;
