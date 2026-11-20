@@ -343,6 +343,17 @@ after the round. This settled walk matters 9.2 and 9.3 (build text 3, section 9;
 
 **The owner's words.** On 9.2: "Decision: agreed, except that the “what must be present” wording is set per journey by the UX design lane." — 20 November 2026. On 9.3: "Decision: A" — 20 November 2026.
 
+### Subject: A flaw set aside by ARCH (walk matter 9.4)
+
+**The rule as it now stands.** ARCH may rule that a walker's entry is none of the three flaw
+kinds and set it aside, with the reason named in the account after the round, which is what
+lets the owner see and overrule it (option a; build text `03-the-walks.md`, section 6, outcome
+3, and section 9; design part 10, section 1, item 9). ARCH already decides the product's
+technical matters, so this keeps a routine judgment with ARCH while keeping it visible to the
+owner. It adds no test, gate, review or stop.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
