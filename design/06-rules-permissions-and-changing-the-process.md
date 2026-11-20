@@ -17,7 +17,7 @@ Length: 74 lines. Last section: "8. Process4 develops itself".
 - **Claude decided** where they live: in the product's repository on the tranche branch, carried to the main branch by each tranche's merge, so that every session starts from a commit that holds them; and in the process's repository on its main branch.
 - **Claude decided:** his two files are first committed on the main branch, and the tranche branch is made from it. A later edit is a pull request on the tranche branch that he opens and merges himself, after telling the coordinator to stop (part 4, section 7).
 - The ordered list of his acts to start a product is in part 7, section 4, for Claude Code. For Codex it is not known (part 8).
-- **Open (the owner):** the wording of his approvals and forbidden commands for Process4. A proposal for him to adopt or change, with each change from the present wording, is in `process4/working/design_work_18nov/owner_acts_and_approvals.md`. Until he commits his own wording, no session can run under Process4.
+- **Open (the owner):** the wording of his approvals and forbidden commands for Process4, which only he writes. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list in each repository (part 7, section 1); what is open is his word confirming that wording as settled, or his revision of it. (The working-proposal file an earlier draft cited is not in this repository.)
 
 ## 3. Forbidden commands and GitHub's rules
 
