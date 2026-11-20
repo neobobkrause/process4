@@ -4,10 +4,11 @@ Developed 20 November 2026 by PROCESS (via a worker), on the owner's instruction
 develop a bounded, conservative protocol for empirically fixing the four reading values of
 design part 5 §2 — "workable numbers we can rely on," not the true limits. This is PROCESS
 research (rule 3): the grounds for a later proposal to the owner on the four figures.
-Status: proposed; nothing here is in force. It is run in the trial repository
-(`neobobkrause/process3-probes`) by a lead session; the lead-session prompt is in
-`measurement-lead-session-prompt-20nov.md` beside this file. A lead session should be able
-to pick this up and run it unaided.
+Status: proposed; nothing here is in force. It is run by a lead session in a Claude Code
+session with the Process4 repository mounted — which carries the real governing texts
+(`design/`, `build/`, `starting_texts/`) this protocol uses as carriers. The initial
+prompt is `initial-prompt.md` beside this file, and `README.md` says how to start it. A
+lead session should be able to pick this up and run it unaided.
 
 The worker could not reach the prior first-measurement material in the public process3 repo
 (`process4/working/reading_measurements/RESULTS.md`, `RERUN_PROMPT.md`); if the lead can
