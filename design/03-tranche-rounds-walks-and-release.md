@@ -47,7 +47,7 @@ The coordinator gives the owner a short account: jobs done, flaws found, flaws c
 ## 5. How a tranche ends
 
 - **Reading:** a tranche ends when a round's partial walks, internal and external, both come clean; or, where the owner asked for a full external walk, when that walk is clean.
-- **Open (the owner):** what shows that the journeys named for the tranche do complete at its end, when a round's walks cover only the areas that round changed. **Reading:** in the round that would end the tranche, ARCH adds to the external walk's areas every journey named for the tranche that no earlier round of the tranche walked clean.
+- **Settled (the owner, 20 November 2026): no change.** What shows that the journeys named for the tranche complete at its end is the rounds' partial walks themselves, each scoped to the areas that round changed; the testing policy is unchanged, and no end-of-tranche sweep is added. A full external walk remains available only on the owner's request (section 3). His decision is in the record of decisions.
 - When the tranche ends, ARCH merges the tranche branch into the main branch as a whole, by pull request. None of the tests runs on that pull request.
 - A tranche that does not come clean goes on in rounds until the owner says. He then chooses between merging it with its flaws named, with no release from it, and dropping it.
 - **Reading:** a tranche merged with its flaws named has not ended in the sense of section 6. Its flaws become work in the next tranche, and a release can be made once a later tranche ends clean.
