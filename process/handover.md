@@ -3,15 +3,14 @@
 **Interim and pre-live.** A bridge used while nothing is in force and the tool is still being
 first built. Once the process repo's shared-state issue fully carries the handover, it lives
 there in the `handover-process` record (design part 4 §4; build text 5 §4) and this file is
-retired. The process repo's shared-state issue now EXISTS (issue #33), and `handover-process`
+retired. The process repo's shared-state issue EXISTS (issue #33), and `handover-process`
 carries PROCESS liveness; during first-build this file stays the detailed handover.
 
-Last written: 2026-11-20, by PROCESS `session_012hdw2R18xbdETqTENSyT1M`, at the owner's
-instruction to refresh at ~80% context. **`main` tip is `fc2644b`; tool 105/105.** A clean
-pause: every decision below is recorded and merged; nothing is half-done. Under the owner's
+Last written: 2026-11-20, by PROCESS `session_012hdw2QyQ372mHkyQ1z8Nze`, at a clean pause.
+**`main` tip is `56e7a62`; tool-tests green (CI passed on every PR this session).** Every
+decision and correction below is recorded and merged; nothing is half-done. Under the owner's
 decision C, **PROCESS refresh is the owner's act** — he starts the successor from the prompt
-PROCESS hands him (below), surfaced by the coordinator on his standing page when a product is
-running.
+PROCESS hands him, surfaced by the coordinator on his standing page when a product is running.
 
 ## The owner's standing direction (19–20 Nov 2026)
 
@@ -21,8 +20,8 @@ designed remainder, correct measured faults, and merge building/correction work 
 standing approvals (tool-tests green) WITHOUT per-step go-aheads. A marked "Decision:"/
 "Instruction:" is required only to change a RULE/requirement or to record an approval; record
 his exact words verbatim and update the design in the same step. The owner is anti-caution-creep:
-the process must leave HIM the balance of time/resources/quality, not decide it for him; never
-add a test/gate/review/stop; prefer "no change" / removing unnecessary owner gates.
+never add a test/gate/review/stop; prefer "no change" / removing unnecessary owner gates. He
+works fast and redirects often; stay responsive and keep the open-points page current.
 
 ## What a successor reads first (PROCESS starting text)
 
@@ -30,126 +29,92 @@ In full, in order: all eleven design parts (`design/00`–`design/10`); then
 `build/05-the-records-and-following.md`; then `process/design-decisions.md`; then PROCESS's own
 folder (`process/`, including `process/research/`); then this handover.
 
-## This session's work (20 Nov) — all recorded and merged to `main`
+## State of the owner-open review page — ONLY ITEM 1 (THE FIGURES) REMAINS OPEN
 
-The owner's agenda (A owner-open review doc; B verification sweep; C shared-state issue) is DONE,
-option C (the ROOT-refresh fault) is fixed, and the owner then settled most owner-open items
-live via comments on the review page.
+Page "Process4 Open Points": **https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU** (Version 9;
+this session watches it — comments to Claude wake the session). Every owner-open item is now
+settled or closed except **item 1 (the four size figures)**. Do not redo settled work.
 
-- **Option C — PROCESS refresh (PR #32).** The OWNER starts and refreshes PROCESS, not ROOT
-  (his "Decision: option C (for now)"). ROOT's cross-repo start of PROCESS was never proven and a
-  sibling cross-repo lifecycle act (ROOT archiving the process-repo PROCESS session) was refused
-  twice even post-decision-B; so owner-start is the designed path. Decision B's other
-  clarifications (non-substantive re-attempt; role→address resolution; successor registration)
-  stand for every other cross-repo act. Grounds:
-  `process/research/root-refresh-of-process-failed-again-19nov.md`.
-- **Verification sweep (agenda B) — PR #34.** Six workers; **process4 is sound** (tool 105/105,
-  all commands/records/texts conform). Findings in `process/research/verification-sweep-19nov.md`.
-  Four cheap consistency fixes done in #34. **STILL QUEUED (corrections, no rule change; each
-  build text must be read in full first):** (a) build/01b — update `ready`/`results`/`close`
-  command specs to show `--branch`/current-branch default; (b) **process.md** — add "interrupt"
-  to its lane acts (needs a small offsetting trim; see size note); (c) **00-index.md** — refresh
-  stale raw-byte and "as filled" tables and line count. NOTE: build/04 and build/06's old
-  PROCESS-refresh references were effectively superseded by option C — re-check and reconcile them.
-- **Shared-state issue (agenda C) — done.** Created process repo issue **#33**
-  (`state write --create --process`); `handover-process` carries PROCESS liveness.
-- **Owner-open review (agenda A) — the "Process4 Open Points" page:**
-  **https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU** (this session watches it; comments to
-  Claude wake this session). The owner settled items on it by marked comments; each settlement
-  was recorded verbatim in `design-decisions.md`, applied to the design, and merged. **The page's
-  "settled" markers were synced for items 1, 2, 4, 5, 6, 7, 9.1; NOT yet for item 3, item 8, the
-  rest of item 9, or item 11 — sync them in one pass.**
+- **Item 1 (the four figures) — OPEN, protocol ready to run.** The owner asked for an empirical
+  measurement, not just to confirm the provisional figures. The protocol is developed and lives
+  in **`measurement/`**: `protocol.md` (the method — bounded ~100–140 fresh reading sessions,
+  conservative, rounds down with a margin, with a tightening rule), `initial-prompt.md` (the
+  prompt for a CC session with THIS repo mounted — it builds carriers from the real
+  `design/`/`build/`/`starting_texts/`), `README.md`, and `results/` (where the lead writes its
+  report). **The owner runs it** (any CC account, repo mounted, fixing the reading sessions'
+  model+effort to production). When the report lands, **PROCESS folds the four recommended
+  numbers into a proposal for the owner** (he settles the figures; a session never sets them).
+  Grounds: `process/research/queued-consistency-and-option-c-ripple-20nov.md`.
 
-### Owner-open items — settled this session (all merged, words in `design-decisions.md`)
+### Owner-open items settled or closed THIS session (all merged; words in `design-decisions.md`)
 
-- **1 size limits:** the 4,096-byte role-text limit is measured against a role's instructions
-  proper, leaving the one mechanical fetch line out of the count (PR #35). The four size FIGURES
-  themselves remain provisional (still open — see below).
-- **2 how a tranche ends:** no change to the testing/walk policy; no end-of-tranche sweep (PR #36).
-- **4 publishing a release:** Process4 builds+tests the installer (fresh install AND upgrade on a
-  dev account); on the owner's approval ARCH publishes by placing the installer at the
-  distribution point using a release token; a production secret may be used via a secret-management
-  facility to produce the installer; **no session directly holds a production key**; installs/updates
-  on real sites are user-initiated. "Successful" = finishes with no error and the site starts
-  (PRs #38, #39).
-- **6 terminology + told-job tests:** "provider"/"user" defined (PR #37); the three told-job test
-  readings confirmed (PR #41).
-- **7 the smaller readings:** confirmed as recommended; each inline "Reading" flipped to settled
-  in parts 0–6 (PR #42).
-- **9 the five walk matters:** 9.1 UX lane maintains the journey list, no per-tranche owner
-  approval (PR #43); 9.2 AI step judged as a module test, "what must be present" set per journey by
-  the UX lane (PR #44); 9.3 option A — a tranche may end with AI journeys recorded not walked
-  (PR #44); 9.4 option a — ARCH may set a walker's entry aside as no flaw, reason in the account
-  (PR #45); 9.5 option a — the session walks by hand what no step covers (PR #47).
-- **Tranche-approval REMOVED (PR #46):** a tranche opens because the product has work to do
-  (changed requirements, lane issues, flaws, notices); ARCH decides its scope; no owner proposal
-  or approval before a tranche. The owner directs continuously via the coordinator/lanes/marked
-  instructions and still approves releases.
+- **3 flawed-tranche release (PR #51):** the process leaves the release judgement to the owner —
+  it neither forces nor forbids a release from a flaws-named tranche; his release approval + a
+  clean install/update stay the guardrails. His word: "Decision" on the item-3 thread.
+- **11 Codex (PR #51):** Claude Code first, Codex later. His word: "Decision: as recommended".
+- **12 round-done deadlock (PR #53) — close the gap:** a walk-flaw (or job-flaw) module whose
+  job closes unmerged with a nothing-to-change record (handing the flaw back to ARCH) is now
+  finished for the round. Changed design part 2 §4, the tool's `finished` (`tool/lib/round.mjs`),
+  `build/01b` command 12, and `tool/test/round.test.mjs` (a new walk-flaw-handback test). His
+  word: "open item 12: decided - close the gap".
+- **13 lane→coordinator (PR #55) — option A (via ARCH):** a lane passes the owner's marked words
+  to ARCH, which relays them to the coordinator exactly as typed; no new channel. Changed design
+  part 1 §4, `lane.md` rule 4, `arch.md` rule 7. His word: "open item 13: decided - A".
+- **8 approvals/forbidden-commands wording — CLOSED (not a decision).** It was mis-framed. The
+  wording is committed and in force: the owner's `CLAUDE.md` standing-approvals block + the
+  `.claude/settings.json` deny list. The only defect was a dangling design citation to a
+  working-draft file that never carried over; fixed in PR #50. Nothing is open; the owner edits
+  the wording himself if he ever wants to (no session may). Page item 8 is marked Closed.
+- (Items 1[method], 2, 4, 5, 6, 7, 9, 10 were settled by the prior session — PRs #35–#47.)
 
-### Owner-open items — STILL OPEN (awaiting the owner's marked word)
+### Consistency corrections merged this session (standing direction; no rule change)
 
-- **3 a tranche merged with its flaws named:** PROCESS reframed the recommendation to **leave the
-  release judgment to the owner** (no process prohibition on releasing from a flaws-named tranche;
-  the real guardrails — his release approval + a clean install/update — stay). Awaiting his marked
-  decision. (Design part 3 §5 still has the old "Reading" that no release follows until a later
-  clean tranche — flip it when he decides.)
-- **8 his standing approvals and forbidden commands wording:** the file the design/page cite
-  (`process4/working/design_work_18nov/owner_acts_and_approvals.md`) is **missing from the public
-  process3 repo** (confirmed by cloning it). The real, in-force text is the owner's committed
-  `CLAUDE.md` standing-approvals block + `.claude/settings.json` deny list. This item is the owner's
-  to author (no session writes/relays the approvals). Options put to him: (a) confirm the committed
-  wording as settled and PROCESS fixes the dangling citation; (b) he revises. Awaiting his word.
-  **Fix the dangling citation (design part 6 §2 and part 10 §1 item 8) either way.**
-- **1 (the figures):** confirm the four provisional size figures, and what the two measured ones
-  become after a second measurement. (The measurement METHOD is settled; the figures are not.)
-- **11 Codex:** everything design part 8 marks not known, from the owner's OpenAI account, plus
-  which Codex model. Recommendation: proceed on Claude Code, Codex later. Awaiting his word.
-- **10 "at most ten rules":** already settled (no action).
-
-### Two verification findings that are the owner's to settle (bring options; may be rule changes)
-
-- **Round-done deadlock (VW3 GAP 1):** a walk-flaw-only module whose job closes unmerged can hang
-  round-done (design part 2 §4 sanctions the scenario but gives the module no path to finished/
-  dropped). Needs a design clarification + small tool correction.
-- **Lane→coordinator channel (VW4-1):** `lane.md` rule 4 has a lane pass the owner's marked words
-  to the coordinator, but its acts grant no such channel and the design routes lane traffic through
-  ARCH. Resolve by routing via ARCH or granting the channel. (Related to the lane readings.)
+Verification-sweep findings + option-C ripples, all merged:
+- **PR #49:** `build/01b` `ready`/`results`/`close` specs (`[<pr>] [--branch]` current-branch
+  default) and "Nothing here is built" wording; option-C reconciliation in `build/04` stage 3,
+  `build/05` §4, `build/01b` §16, and `arch.md` rule 8 (the owner starts PROCESS / the
+  coordinator finds it, not ROOT).
+- **PR #50:** `process.md` gained the "interrupt" lane act (with offsetting trims, now 4,086B);
+  item-8 dangling citation fixed in design/06 §2 and design/10 §1 item 8.
+- **PR #56:** `starting_texts/00-index.md` refreshed — §1 byte table and §2 design-part sizes
+  and role-set totals were badly stale (the design grew since 18 Nov: part 04 is now 22,455B,
+  the largest single text under 24,000; the largest reading set is a job's at 150,244B, under
+  175,000); as-filled subsection rewritten for the 20 Nov fetch-line-excluded rule; line count
+  fixed to 74; §4 item 4 marked settled by decision 13. `coordinator.md` made plain ASCII (two
+  option-C em-dashes → commas, now 3,862B).
+- **PR #52:** added the measurement protocol + lead prompt as research; **PR #54** moved them
+  into `measurement/` for the repo-mounted run (superseding the earlier process3-probes prompt).
 
 ## Operational / the owner's (not authoring)
 
-- **Validate option C + stages 5–7 in the trial** (`neobobkrause/process3-probes`): the owner tells
-  the coordinator "move to the latest Process4 version"; a fresh ROOT/coordinator load option C;
-  then the owner-start PROCESS refresh, the walks, the release and the account switch can be
-  exercised (trial items). Cross-repo session *create* is no longer a dependency.
-- **The first real tranche** (the proof) and the civicsmith conversion (its conversion plan + the
-  owner's setup acts + the autoMode settings on its env).
+- **Run the figures measurement** (owner): start a CC session with process4 mounted, give it
+  `measurement/initial-prompt.md`, fix the reading model+effort; it reports to `measurement/
+  results/`; PROCESS then proposes the four figures.
+- **Validate option C + trial stages 5–7** in `neobobkrause/process3-probes` (owner-start PROCESS
+  refresh, walks, release, account switch). Cross-repo session *create* is no longer a dependency.
+- **The first real tranche** (the proof) and the civicsmith conversion (its conversion plan +
+  the owner's setup acts + the autoMode settings on its env).
 - **Per-product** promote/rollback/support procedures (design part 3 §8), written at conversion.
-
-## Size note (role starting texts)
-
-Measured with a realistic 40-char commit fill and `<copy>` left literal (how the tool fills):
-`process.md` 4,091, `coordinator.md` 4,078, `root.md` 3,770 — all under 4,096. **Thin margins.**
-Adding "interrupt" to process.md (queued fix) needs an offsetting trim. Per the owner's decision
-(PR #35), measure against the role's instructions proper, leaving the fetch line out of the count —
-so the real headroom is larger for fetch-line-carrying texts; measure with literal replacement, not
-`sed`.
 
 ## Known environment facts (do not relearn the hard way)
 
-- The tool works from this session: `node tool/p4.mjs <cmd>` reaches GitHub (spawns `gh` as a
-  child). Only a DIRECT `gh`/git command is refused by the deny list — by design, not the tool
-  being blocked. No MCP merge tool; use `p4 merge <pr>`.
-- Flow for each change: branch from main (`git checkout -b work/<name> origin/main`) → edit →
-  `git add` + commit → `node tool/p4.mjs push` (push only `work/`/`job/` branches, NOT
-  `claude/...`) → `p4 open --title "..."` → `p4 ready <pr>` → `p4 results <pr>` until `passed` →
-  `p4 merge <pr>`. tool-tests runs ~2 min when tool/shims/starting_texts/tool-tests.yml changed;
-  design/process-only PRs pass at once but a queued run can briefly refuse the merge ("required
-  status check ... is queued/in progress") — wait and retry, not a permission refusal.
-- **Classifier noise (decision B in action):** `p4 merge` is sometimes refused as "Destructive or
-  Unwanted Actions". Recovery: run `git status` alone, then `p4 merge <pr>` alone. Never chain
-  p4/git acts.
-- `cd tool && npm ci` pins TypeScript 5.6.3; a red suite locally is usually TS 6.x, not a real break.
-- Answering owner comments on the page: load `ArtifactComments`; read the thread, reply (plain,
-  ≤4096B), and `resolve` once applied. A bare "Decision" on a thread settles that thread's subject;
-  if ambiguous, confirm the object before recording. Record only marked "Decision:"/"Instruction:"
-  words; ask once about plain agreements.
+- The tool works from a mounted-repo session: `node tool/p4.mjs <cmd>` reaches GitHub (spawns
+  `gh`). A DIRECT `gh`/git command is refused by the deny list — by design. No MCP merge tool.
+- Flow per change: `git checkout -b work/<name> origin/main` → edit → `git add` + commit →
+  `node tool/p4.mjs push` (push only `work/`/`job/` branches, NOT `claude/...`) → `p4 open
+  --title "..."` → `p4 ready <pr>` → `p4 results <pr>` until `passed` → `p4 merge <pr>`.
+  tool-tests runs ~2 min when `tool/`/`shims/`/`starting_texts/`/`tool-tests.yml` changed;
+  design/process/measurement-only PRs pass at once.
+- **Merge refusals:** classifier noise ("Destructive or Unwanted Actions") → run `git status`
+  alone, then `p4 merge <pr>` alone; never chain. A transient GitHub "Protected branch update
+  failed (HTTP 405)" also happens right after the check goes green → re-check `results` (confirm
+  passed) and retry `merge` once; it cleared on retry for PR #55.
+- `cd tool && npm ci` pins TypeScript 5.6.3 (a red local suite is usually TS 6.x). The full
+  `node --test` suite is slow (>120s, notice-proof fixtures); the GitHub `tool-tests` run is the
+  authoritative full-suite check — trust it rather than re-running locally.
+- Agent workers with `isolation: worktree` create `.claude/worktrees/…` which auto-cleans when
+  the worker finishes; do not commit it.
+- **Answering owner comments on the page:** load `ArtifactComments`; a bare "Decision" on a
+  thread settles that thread's restated subject; record only marked "Decision:"/"Instruction:"
+  words verbatim; ask once about unmarked "decided"/agreements, then record on his confirmation.
+  Sync the page's markers (settled/closed) and resolve threads after each decision lands.
