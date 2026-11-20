@@ -102,8 +102,8 @@ account:
    its branch and pull request. The round goes on from the round record (the design, part
    4, section 7; part 3, section 1).
 6. A process change that was mid-flight at PROCESS is resumed by the owner starting PROCESS
-   in the process's repository, or ROOT starting it, by the refresh path (the design, part
-   4, section 5; part 6, section 4).
+   in the process's repository, surfaced by the coordinator on the owner's standing page
+   (the design, part 4, section 5; part 6, section 7; the owner's decision C, 19 Nov 2026).
 
 ## 5. What is read to show it lost no work
 

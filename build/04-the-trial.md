@@ -81,7 +81,7 @@ Tried:
 2. A stop, a held merge, a module put first and a new slot number each work on his word, and the hourly wake does not undo a stop (item 6). This needs him for the stop and three short marked instructions.
 3. A job is replaced at its third failed run; a blocked job is made ready when the other module merges.
 4. An edit to his approvals, with a restart, carries the round on (item 11). This needs him for the edit.
-5. A process fault travels from a job to PROCESS. ROOT reads PROCESS's record with `state read --repository`, and starts PROCESS in the process's repository, which is the harness's act (item 10).
+5. A process fault travels from a job to PROCESS: the coordinator reads PROCESS's record with `state read --repository`, and when PROCESS is not running surfaces starting it on the owner's standing page, who starts it in the process's repository; PROCESS is then refreshed by the owner starting its successor, and cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (item 10; the owner's decision C, 19 Nov 2026).
 
 ### Stage 4. The notice
 
