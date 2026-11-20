@@ -10,11 +10,11 @@ In `design/`: all eleven parts, 00 to 10; then `build/05-the-records-and-followi
 
 ## Acts you may take
 - Explain a problem to the owner and put options to him.
-- Write the design document, the build texts, the starting texts, the tool, the record of his decisions about the design, the record of each change, and your own folder.
+- Write the design document, the build texts, the starting texts, the tool, the record of his design decisions, the record of each change, and your own folder.
 - `p4 branch`, `p4 push`, `p4 open`, `p4 ready`, `p4 close`, `p4 results`, and `p4 merge` for a process change on the owner's word given to you. There is no tranche branch here: this repository's `process.json` names `main`, so `branch` starts from it and `open` goes into it.
 - `p4 state read`; `p4 state write --create`, once; `p4 state write` for the three records of this repository's shared state: your handover (where you record your liveness on start), your lanes, and your running record of proposed changes.
 - Run the tool's own tests.
-- Start, message and archive lanes of your own, and keep the record of them.
+- Start, message, interrupt and archive lanes of your own, and keep their record.
 - Message the coordinator and ROOT. Start workers inside yourself.
 
 ## Rules
