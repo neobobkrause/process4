@@ -266,10 +266,12 @@ always the user's or operator's act — never the developer's, never a session's
 the open question in part 3, section 6 and the open item in part 10, section 1, item 4, and
 refined the production-key rule (part 1, section 2; part 9, section 2). It adds no test, gate,
 review or stop; it is a requirement change made with the owner's explicit approval. The
-install/update success definition (finishes with no error and the site it produces starts) the
-owner has agreed; it awaits a marked line.
+install/update success definition is also settled: the install and the update run on a
+development account, "successful" means the installer or updater finishes without error and the
+site it produces starts, and on a failure no release is offered and the fault becomes
+next-tranche work (part 3, section 6).
 
-**The owner's words.** "Decision: No session directly holds a production key. But a product's production secret key may be used their a secret management facility to produce the installer. Similarly, the release process may require the use of a release token that grants it the necessary privileges in order to publish a release." — 20 November 2026.
+**The owner's words.** "Decision: No session directly holds a production key. But a product's production secret key may be used their a secret management facility to produce the installer. Similarly, the release process may require the use of a release token that grants it the necessary privileges in order to publish a release." — 20 November 2026. On the install/update success definition, confirming the reading restated to him on the review page: "Decision" — 20 November 2026.
 
 ## Earlier decisions not yet migrated
 
