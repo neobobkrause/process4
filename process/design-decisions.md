@@ -241,6 +241,17 @@ review or stop.
 
 **The owner's words.** "Decision: make no changes to the testing policy we've defined and confirmed ad nausium." — 20 November 2026.
 
+### Subject: The terms "provider" and "user"
+
+**The rule as it now stands.** The design document refers to a module that provides a service
+to other modules through an interface as a **provider**, and a module that uses the service of
+another module through the provider's interface as a **user**. This is the owner's marked
+instruction; the design already defined and used these terms (part 0, section 6; part 2), and
+the definition in part 0, section 6 is reworded to his phrasing in the same step. It adds no
+test, gate, review or stop; it fixes terminology.
+
+**The owner's words.** "Instruction: The design document should refer to a module that provides a service to other modules through an interface as a \"provider\". A module that uses the service of another module through the provider's interface is referred to as a \"user.\"" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
