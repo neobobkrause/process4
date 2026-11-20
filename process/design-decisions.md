@@ -330,6 +330,19 @@ walk matters (9.2–9.5) remain open.
 
 **The owner's words.** "Decision: the UX design lane maintains the list of journeys. That's the list to use, and I don't need to approve that list after a tranche." — 20 November 2026.
 
+### Subject: AI journeys in walks (walk matters 9.2 and 9.3)
+
+**The rule as it now stands.** (9.2) A step of a journey that uses AI is judged as a module
+test is judged — a different but still valid answer does not fail it — and the "what must be
+present" wording the step's `expects` line carries is set **per journey by the UX design
+lane** (build text `03-the-walks.md`, section 5). (9.3) When no AI account is connected to the
+development deployment, journeys that use AI are recorded **not walked**, and a tranche **may
+still end** with them recorded not walked (option A); each is named not walked in the account
+after the round. This settled walk matters 9.2 and 9.3 (build text 3, section 9; design part
+10, section 1, item 9). It adds no test, gate, review or stop.
+
+**The owner's words.** On 9.2: "Decision: agreed, except that the “what must be present” wording is set per journey by the UX design lane." — 20 November 2026. On 9.3: "Decision: A" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
