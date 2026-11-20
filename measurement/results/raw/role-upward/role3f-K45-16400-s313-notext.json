@@ -1,0 +1,534 @@
+{
+ "id": "role3f-K45-16400-s313-notext",
+ "K": 45,
+ "bytes": 16430,
+ "params": [
+  "the coordinator",
+  "before",
+  4,
+  60,
+  "--held",
+  "--nothing-to-change",
+  "the coordinator",
+  "the watcher",
+  "a passing test names it",
+  "ROOT",
+  120,
+  32000,
+  "invoices/test/out/",
+  "check",
+  "reset to the branch and reapply your commits",
+  "ARCH",
+  "higher",
+  "common/errors.js",
+  "the coordinator",
+  "results",
+  "ROOT",
+  "your module and pull request",
+  "is marked [walk]",
+  "included",
+  120,
+  "your job block",
+  "listing",
+  "the server's local time",
+  "decimal strings",
+  4,
+  "ROOT",
+  "the watcher",
+  "related",
+  100,
+  12,
+  "test_*.js",
+  "DD Mon YYYY",
+  2,
+  "INV-",
+  "eight spaces",
+  200,
+  "ARCH",
+  800,
+  "@online",
+  "the watcher"
+ ],
+ "seed": 313,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 14,
+ "rulesFailed": [
+  1,
+  5,
+  6,
+  11,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  20,
+  21,
+  23,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  36,
+  37,
+  38,
+  40,
+  41,
+  42,
+  44,
+  45
+ ],
+ "completeness": 0.311,
+ "scenariosWrong": [
+  {
+   "id": "45a",
+   "rules": [
+    42
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "35n",
+   "rules": [
+    21
+   ],
+   "kind": "near",
+   "expected": "A",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "6a",
+   "rules": [
+    18
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "5a",
+   "rules": [
+    14
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "21a",
+   "rules": [
+    38
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "40a",
+   "rules": [
+    15
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "15a",
+   "rules": [
+    34
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "10a",
+   "rules": [
+    30
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "19a",
+   "rules": [
+    29
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "28a",
+   "rules": [
+    17
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "18a",
+   "rules": [
+    6
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "27a",
+   "rules": [
+    37
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "39a",
+   "rules": [
+    13
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "20a",
+   "rules": [
+    20
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "29a",
+   "rules": [
+    23
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "13a",
+   "rules": [
+    33
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "37a",
+   "rules": [
+    36
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "26a",
+   "rules": [
+    31
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "16a",
+   "rules": [
+    5
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "44a",
+   "rules": [
+    45
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "31a",
+   "rules": [
+    44
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "42a",
+   "rules": [
+    16
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "17a",
+   "rules": [
+    26
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "33a",
+   "rules": [
+    41
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "35a",
+   "rules": [
+    21
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "36a",
+   "rules": [
+    32
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "9a",
+   "rules": [
+    28
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "1a",
+   "rules": [
+    11
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "14a",
+   "rules": [
+    25
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "22a",
+   "rules": [
+    1
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "7a",
+   "rules": [
+    40
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  },
+  {
+   "id": "32a",
+   "rules": [
+    27
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (no role text given)"
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 0,
+ "probes": [
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  }
+ ],
+ "reply": "S1: NOT STATED (no role text given)\nS2: C\nS3: A\nS4: NOT STATED (no role text given)\nS5: NOT STATED (no role text given)\nS6: B\nS7: C\nS8: NOT STATED (no role text given)\nS9: B\nS10: A\nS11: D\nS12: B\nS13: B\nS14: C\nS15: D\nS16: B\nS17: C\nS18: C\nS19: NOT STATED (no role text given)\nS20: NOT STATED (no role text given)\nS21: B\nS22: B\nS23: B\nS24: B\nS25: NOT STATED (no role text given)\nS26: NOT STATED (no role text given)\nS27: NOT STATED (no role text given)\nS28: A\nS29: A\nS30: D\nS31: D\nS32: B\nS33: NOT STATED (no role text given)\nS34: C\nS35: B\nS36: A\nS37: C\nS38: A\nS39: D\nS40: NOT STATED (no role text given)\nS41: C\nS42: B\nS43: NOT STATED (no role text given)\nS44: D\nS45: NOT STATED (no role text given)\nS46: A\nS47: NOT STATED (no role text given)\nS48: NOT STATED (no role text given)\nS49: D\nS50: D\nS51: C\nS52: B\nS53: A\nS54: A\nS55: NOT STATED (no role text given)\nS56: A\nS57: A\nS58: B\nS59: B\nS60: A\nS61: A\nS62: C\nS63: A\nS64: A\nS65: B\nS66: C\nS67: A\nS68: D\nS69: C\nS70: B\nS71: B\nS72: B\nS73: NOT STATED (no role text given)\nS74: C\nS75: C\nS76: C\nS77: C\nS78: B\nS79: D\nS80: NOT STATED (no role text given)\nS81: B\nS82: NOT STATED (no role text given)\nS83: D\nS84: D\nS85: B\nS86: D\nS87: D\nS88: B\nS89: B\nS90: NOT STATED (no role text given)\nS91: NOT STATED (no role text given)\nS92: C\nS93: A\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1065238,
+ "status": "DIRTY",
+ "seconds": 20
+}

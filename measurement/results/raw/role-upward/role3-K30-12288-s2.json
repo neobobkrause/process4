@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-12288-s2",
+ "K": 30,
+ "bytes": 12321,
+ "params": [
+  "ROOT",
+  "after",
+  5,
+  50,
+  "--stuck",
+  "--no-change",
+  "PROCESS",
+  "the watcher",
+  "the internal walk passes",
+  "the watcher",
+  300,
+  20000,
+  "invoices/build/test/",
+  "listing",
+  "start a new branch from it",
+  "the coordinator",
+  "lower",
+  "invoices/codes.js",
+  "the watcher",
+  "ready",
+  "the watcher",
+  "the requirement numbers concerned",
+  "involves a date",
+  "excluded",
+  100,
+  "your job block",
+  "related",
+  "UTC",
+  "pairs of main and smallest units",
+  4
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 150,
+  "firstLast": 150,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "HK-2762",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": true,
+   "answer": "HN-4537",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "XT-8327",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "HD-6370",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "MX-5596",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "VG-6519",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: D\nS3: A\nS4: C\nS5: D\nS6: C\nS7: D\nS8: D\nS9: C\nS10: D\nS11: D\nS12: B\nS13: D\nS14: A\nS15: B\nS16: A\nS17: C\nS18: A\nS19: B\nS20: B\nS21: A\nS22: C\nS23: A\nS24: C\nS25: B\nS26: D\nS27: A\nS28: D\nS29: C\nS30: D\nS31: C\nS32: D\nS33: D\nS34: A\nS35: D\nS36: B\nS37: D\nS38: B\nS39: D\nS40: C\nS41: A\nS42: C\nS43: B\nS44: D\nS45: B\nS46: D\nS47: B\nS48: B\nS49: D\nS50: B\nS51: B\nS52: D\nS53: C\nS54: B\nS55: D\nS56: C\nS57: B\nS58: B\nS59: D\nS60: B\nS61: B\nS62: B\nS63: C\nQ1: HK-2762\nQ2: HN-4537\nQ3: XT-8327\nQ4: HD-6370\nQ5: MX-5596\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: VG-6519",
+ "compactions": 0,
+ "cost": 0.20307780000000003,
+ "status": "CLEAN",
+ "seconds": 30
+}

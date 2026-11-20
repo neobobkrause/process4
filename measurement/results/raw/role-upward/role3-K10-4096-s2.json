@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-4096-s2",
+ "K": 10,
+ "bytes": 4158,
+ "params": [
+  "ARCH",
+  "after",
+  3,
+  30,
+  "--held",
+  "--noop",
+  "ARCH",
+  "the watcher",
+  "the internal walk passes",
+  "the coordinator"
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 50,
+  "firstLast": 50,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "VN-7214",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "VP-1337",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "XX-6436",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "VW-1048",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "ZJ-1728",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "MK-4335",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: C\nS3: D\nS4: D\nS5: C\nS6: B\nS7: A\nS8: A\nS9: A\nS10: C\nS11: A\nS12: B\nS13: C\nS14: B\nS15: B\nS16: C\nS17: D\nS18: B\nS19: A\nS20: A\nS21: B\nS22: D\nS23: A\nQ1: VN-7214\nQ2: NOT STATED\nQ3: VP-1337\nQ4: XX-6436\nQ5: VW-1048\nQ6: ZJ-1728\nQ7: NOT STATED\nQ8: MK-4335",
+ "compactions": 0,
+ "cost": 0.1004626,
+ "status": "CLEAN",
+ "seconds": 26
+}

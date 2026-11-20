@@ -1,0 +1,115 @@
+{
+ "id": "role3-K30-16384-s102-openbook",
+ "K": 30,
+ "bytes": 16504,
+ "params": [
+  "ARCH",
+  "after",
+  4,
+  30,
+  "--blocked",
+  "--no-change",
+  "PROCESS",
+  "the watcher",
+  "the internal walk passes",
+  "the coordinator",
+  60,
+  32000,
+  "invoices/test/tmp/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "ARCH",
+  "higher",
+  "invoices/errors.json",
+  "the coordinator",
+  "results",
+  "the coordinator",
+  "the requirement numbers concerned",
+  "can be seen on screen",
+  "excluded",
+  80,
+  "your job block",
+  "check",
+  "the server's local time",
+  "whole numbers of the smallest unit",
+  1
+ ],
+ "seed": 102,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 29,
+ "rulesFailed": [
+  20
+ ],
+ "completeness": 0.967,
+ "scenariosWrong": [
+  {
+   "id": "6a",
+   "rules": [
+    20
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "A",
+   "ok": false
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "BF-5741",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "JQ-3171",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "TS-9156",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": true,
+   "answer": "KJ-7437",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "KX-9907",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "FL-4522",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: A\nS5: B\nS6: D\nS7: A\nS8: A\nS9: B\nS10: B\nS11: D\nS12: C\nS13: A\nS14: C\nS15: B\nS16: A\nS17: A\nS18: C\nS19: B\nS20: A\nS21: D\nS22: A\nS23: D\nS24: B\nS25: B\nS26: D\nS27: B\nS28: A\nS29: D\nS30: B\nS31: A\nS32: A\nS33: C\nS34: B\nS35: D\nS36: D\nS37: C\nS38: B\nS39: D\nS40: D\nS41: D\nS42: D\nS43: C\nS44: D\nS45: D\nS46: C\nS47: D\nS48: C\nS49: D\nS50: D\nS51: A\nS52: B\nS53: D\nS54: C\nS55: C\nS56: A\nS57: B\nS58: C\nS59: C\nS60: A\nS61: D\nS62: D\nS63: D\nQ1: BF-5741\nQ2: JQ-3171\nQ3: TS-9156\nQ4: KJ-7437\nQ5: NOT STATED\nQ6: KX-9907\nQ7: NOT STATED\nQ8: FL-4522",
+ "compactions": 0,
+ "cost": 0.1271478,
+ "status": "DIRTY",
+ "seconds": 16
+}

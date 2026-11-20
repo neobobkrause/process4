@@ -1,0 +1,125 @@
+{
+ "id": "role3f-K45-32768-s6",
+ "K": 45,
+ "bytes": 32771,
+ "params": [
+  "ROOT",
+  "after",
+  2,
+  60,
+  "--stuck",
+  "--nothing-to-change",
+  "the coordinator",
+  "ROOT",
+  "ARCH says so",
+  "the watcher",
+  200,
+  16000,
+  "invoices/build/test/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "the coordinator",
+  "higher",
+  "invoices/errors.js",
+  "the coordinator",
+  "ready",
+  "the watcher",
+  "your branch and module",
+  "can be seen on screen",
+  "included",
+  100,
+  "ARCH's message",
+  "related",
+  "the customer's time zone",
+  "whole numbers of the smallest unit",
+  3,
+  "the coordinator",
+  "ARCH",
+  "check",
+  60,
+  12,
+  "*_test.js",
+  "MM/DD/YYYY",
+  5,
+  "job:",
+  "two spaces",
+  100,
+  "ROOT",
+  1500,
+  "@online",
+  "the watcher"
+ ],
+ "seed": 6,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 301,
+  "firstLast": 301,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "FP-1305",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "MZ-6326",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "GF-8611",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "WJ-7514",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "NW-5072",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "RH-7357",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: C\nS3: B\nS4: B\nS5: Report it to ROOT in one message; do not fix it myself.\nS6: Run no test; `p4 close --nothing-to-change`.\nS7: B\nS8: Report it to the coordinator, written once; do not fix it or work round it.\nS9: A\nS10: D\nS11: A\nS12: Run `p4 related`, fix what it reports in my module, then `p4 push`.\nS13: Send it to the coordinator naming R-14; never reinterpret it.\nS14: C\nS15: C\nS16: A\nS17: Last act is `p4 ready`.\nS18: B\nS19: The coordinator's written agreement.\nS20: Put them under `invoices/build/test/`, never committed.\nS21: C\nS22: B\nS23: A\nS24: A\nS25: 03/05/2026\nS26: A\nS27: D\nS28: B\nS29: A\nS30: C\nS31: B\nS32: A\nS33: C\nS34: D\nS35: Tell ARCH before fixing it.\nS36: D\nS37: C\nS38: C\nS39: `p4 check`\nS40: C\nS41: A\nS42: Tag it `@online`.\nS43: B\nS44: B\nS45: C\nS46: Return an error carrying a code from `invoices/errors.js`, not a bare string.\nS47: B\nS48: B\nS49: B\nS50: A\nS51: C\nS52: C\nS53: A\nS54: C\nS55: C\nS56: A\nS57: D\nS58: Indent it with two spaces.\nS59: D\nS60: D\nS61: C\nS62: D\nS63: Send it back to the watcher, with the reason.\nS64: B\nS65: D\nS66: C\nS67: A\nS68: D\nS69: C\nS70: D\nS71: B\nS72: C\nS73: B\nS74: C\nS75: Begin it with `job:`.\nS76: C\nS77: Name it with the `_test.js` ending, e.g. `parseInvoice_test.js`.\nS78: C\nS79: A\nS80: `p4 push --stuck ledger \"<why>\"`, then stop (last act `p4 ready`).\nS81: Ask ROOT before renaming it.\nS82: A\nS83: A\nS84: D\nS85: D\nS86: Store it in the customer's time zone; convert only when displaying.\nS87: A\nS88: Run `p4 related` first and name the tests it lists in my message to ARCH.\nS89: A\nS90: B\nS91: C\nS92: B\nS93: C\nQ1: FP-1305\nQ2: MZ-6326\nQ3: GF-8611\nQ4: WJ-7514\nQ5: NOT STATED\nQ6: NW-5072\nQ7: RH-7357\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.4532682,
+ "status": "CLEAN",
+ "seconds": 27
+}

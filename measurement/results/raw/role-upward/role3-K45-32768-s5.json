@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-32768-s5",
+ "K": 45,
+ "bytes": 32886,
+ "params": [
+  "ARCH",
+  "before",
+  2,
+  50,
+  "--blocked",
+  "--nothing-to-change",
+  "ROOT",
+  "the coordinator",
+  "ARCH says so",
+  "the watcher",
+  60,
+  24000,
+  "invoices/build/test/",
+  "results",
+  "start a new branch from it",
+  "ARCH",
+  "lower",
+  "invoices/errors.js",
+  "the watcher",
+  "results",
+  "the coordinator",
+  "your branch and pull request",
+  "is marked [walk]",
+  "excluded",
+  80,
+  "`listing`",
+  "listing",
+  "the server's local time",
+  "whole numbers of the smallest unit",
+  1,
+  "the watcher",
+  "the coordinator",
+  "uses",
+  80,
+  3,
+  "*.spec.js",
+  "DD Mon YYYY",
+  2,
+  "job:",
+  "tabs",
+  500,
+  "the watcher",
+  200,
+  "@online",
+  "ARCH"
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 381,
+  "firstLast": 381,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "PL-5374",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "HD-1075",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "FN-4702",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "WH-9817",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "ZV-3510",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "ZW-8160",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: C\nS5: C\nS6: A\nS7: D\nS8: D\nS9: D\nS10: D\nS11: A\nS12: A\nS13: A\nS14: D\nS15: C\nS16: C\nS17: C\nS18: B\nS19: B\nS20: B\nS21: A\nS22: D\nS23: C\nS24: C\nS25: A\nS26: A\nS27: B\nS28: C\nS29: C\nS30: C\nS31: A\nS32: C\nS33: A\nS34: B\nS35: B\nS36: B\nS37: A\nS38: C\nS39: A\nS40: A\nS41: D\nS42: A\nS43: C\nS44: D\nS45: C\nS46: C\nS47: C\nS48: A\nS49: B\nS50: C\nS51: B\nS52: D\nS53: D\nS54: A\nS55: A\nS56: D\nS57: C\nS58: C\nS59: B\nS60: B\nS61: C\nS62: C\nS63: C\nS64: A\nS65: D\nS66: B\nS67: B\nS68: B\nS69: A\nS70: C\nS71: A\nS72: C\nS73: D\nS74: C\nS75: D\nS76: A\nS77: B\nS78: B\nS79: B\nS80: A\nS81: B\nS82: A\nS83: B\nS84: B\nS85: B\nS86: B\nS87: C\nS88: D\nS89: C\nS90: A\nS91: B\nS92: C\nS93: A\nQ1: PL-5374\nQ2: HD-1075\nQ3: FN-4702\nQ4: WH-9817\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: ZV-3510\nQ8: ZW-8160",
+ "compactions": 0,
+ "cost": 0.4221222,
+ "status": "CLEAN",
+ "seconds": 23
+}

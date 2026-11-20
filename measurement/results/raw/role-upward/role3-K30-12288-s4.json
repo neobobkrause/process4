@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-12288-s4",
+ "K": 30,
+ "bytes": 12419,
+ "params": [
+  "ROOT",
+  "before",
+  3,
+  30,
+  "--held",
+  "--no-change",
+  "ROOT",
+  "the watcher",
+  "it is merged",
+  "ROOT",
+  60,
+  32000,
+  "invoices/build/test/",
+  "check",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "lower",
+  "invoices/errors.js",
+  "the watcher",
+  "check",
+  "the coordinator",
+  "your module and pull request",
+  "involves money",
+  "included",
+  120,
+  "the notice's uses",
+  "listing",
+  "UTC",
+  "decimal strings",
+  4
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 152,
+  "firstLast": 152,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Cinder checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "PS-8370",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "TZ-5664",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": true,
+   "answer": "FF-7764",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "QL-8008",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "NF-8968",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "FV-3242",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: D\nS3: D\nS4: C\nS5: A\nS6: D\nS7: D\nS8: C\nS9: A\nS10: D\nS11: D\nS12: B\nS13: D\nS14: A\nS15: B\nS16: D\nS17: A\nS18: D\nS19: C\nS20: C\nS21: D\nS22: A\nS23: B\nS24: A\nS25: A\nS26: D\nS27: A\nS28: B\nS29: C\nS30: A\nS31: C\nS32: A\nS33: D\nS34: A\nS35: B\nS36: C\nS37: D\nS38: A\nS39: C\nS40: D\nS41: B\nS42: B\nS43: A\nS44: A\nS45: C\nS46: D\nS47: A\nS48: B\nS49: A\nS50: C\nS51: C\nS52: C\nS53: D\nS54: D\nS55: C\nS56: B\nS57: A\nS58: C\nS59: D\nS60: A\nS61: C\nS62: D\nS63: A\nQ1: NOT STATED\nQ2: PS-8370\nQ3: TZ-5664\nQ4: FF-7764\nQ5: NOT STATED\nQ6: QL-8008\nQ7: NF-8968\nQ8: FV-3242",
+ "compactions": 0,
+ "cost": 0.2130186,
+ "status": "CLEAN",
+ "seconds": 33
+}

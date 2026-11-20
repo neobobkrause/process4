@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-8192-s1",
+ "K": 10,
+ "bytes": 8334,
+ "params": [
+  "the watcher",
+  "after",
+  3,
+  50,
+  "--waiting",
+  "--nothing-to-change",
+  "ARCH",
+  "the watcher",
+  "the internal walk passes",
+  "the coordinator"
+ ],
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 102,
+  "firstLast": 102,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "RX-8639",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "RD-5993",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "VJ-5723",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "TG-8846",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "GW-5002",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "MR-7098",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: B\nS3: C\nS4: A\nS5: B\nS6: D\nS7: C\nS8: A\nS9: A\nS10: A\nS11: D\nS12: C\nS13: A\nS14: C\nS15: C\nS16: A\nS17: A\nS18: C\nS19: C\nS20: C\nS21: C\nS22: B\nS23: B\nQ1: RX-8639\nQ2: RD-5993\nQ3: NOT STATED\nQ4: VJ-5723\nQ5: TG-8846\nQ6: GW-5002\nQ7: NOT STATED\nQ8: MR-7098",
+ "compactions": 0,
+ "cost": 0.1337382,
+ "status": "CLEAN",
+ "seconds": 28
+}

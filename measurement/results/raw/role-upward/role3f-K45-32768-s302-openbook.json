@@ -1,0 +1,117 @@
+{
+ "id": "role3f-K45-32768-s302-openbook",
+ "K": 45,
+ "bytes": 32837,
+ "params": [
+  "the coordinator",
+  "before",
+  3,
+  50,
+  "--blocked",
+  "--no-change",
+  "ROOT",
+  "the watcher",
+  "a passing test names it",
+  "the watcher",
+  300,
+  32000,
+  "invoices/build/test/",
+  "listing",
+  "rebase onto the branch",
+  "the watcher",
+  "lower",
+  "invoices/codes.js",
+  "the coordinator",
+  "push",
+  "the watcher",
+  "your branch and module",
+  "involves money",
+  "included",
+  140,
+  "the notice's uses",
+  "check",
+  "the customer's time zone",
+  "whole numbers of thousandths of the main unit",
+  3,
+  "the watcher",
+  "ROOT",
+  "check",
+  100,
+  12,
+  "*.test.js",
+  "Mon DD, YYYY",
+  2,
+  "[invoices]",
+  "tabs",
+  100,
+  "ARCH",
+  1500,
+  "@online",
+  "the watcher"
+ ],
+ "seed": 302,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "RC-1729",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "DF-9134",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "JZ-3653",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "BX-6552",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "LC-3809",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": true,
+   "answer": "SS-8209",
+   "ok": true
+  }
+ ],
+ "reply": "S1: Ask ARCH before renaming\nS2: D\nS3: C\nS4: B\nS5: Begin the message with `[invoices]`\nS6: Return an error code from `invoices/codes.js`, never a bare string\nS7: A\nS8: Mar 05, 2026\nS9: Tell ROOT before fixing it\nS10: D\nS11: C\nS12: `parseInvoice.test.js`\nS13: `p4 check`\nS14: Run no test; `p4 close --no-change`\nS15: D\nS16: D\nS17: D\nS18: A\nS19: Run `p4 listing`, fix what it reports, then `p4 push`\nS20: C\nS21: D\nS22: A\nS23: C\nS24: A\nS25: D\nS26: A\nS27: D\nS28: A\nS29: B\nS30: D\nS31: B\nS32: A\nS33: B\nS34: C\nS35: D\nS36: Store it in the customer's time zone; convert only when displaying\nS37: D\nS38: Under `invoices/build/test/`, never committed\nS39: A\nS40: A\nS41: D\nS42: D\nS43: D\nS44: D\nS45: D\nS46: A\nS47: A\nS48: Indent it with tabs\nS49: C\nS50: D\nS51: C\nS52: `p4 push --blocked ledger \"<why>\"`, then stop\nS53: C\nS54: C\nS55: B\nS56: C\nS57: D\nS58: B\nS59: Tag it `@online`\nS60: D\nS61: C\nS62: A\nS63: A\nS64: D\nS65: C\nS66: D\nS67: D\nS68: D\nS69: A\nS70: B\nS71: B\nS72: C\nS73: A\nS74: Send it back to the watcher, with the reason\nS75: A\nS76: D\nS77: The watcher's\nS78: A\nS79: D\nS80: Send R-14 to the watcher, with its number; never reinterpret it\nS81: Tell ROOT, written once; don't fix it or work round it\nS82: B\nS83: B\nS84: C\nS85: C\nS86: B\nS87: C\nS88: A\nS89: Run `p4 check` first; name the tests it lists to ARCH\nS90: Last act is `p4 push`\nS91: C\nS92: Tell the coordinator, in one message; don't fix it\nS93: B\nQ1: RC-1729\nQ2: NOT STATED\nQ3: DF-9134\nQ4: JZ-3653\nQ5: BX-6552\nQ6: NOT STATED\nQ7: LC-3809\nQ8: SS-8209",
+ "compactions": 0,
+ "cost": 0.2047038,
+ "status": "CLEAN",
+ "seconds": 23
+}

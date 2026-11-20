@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-32768-s2",
+ "K": 45,
+ "bytes": 32822,
+ "params": [
+  "the watcher",
+  "before",
+  3,
+  60,
+  "--stuck",
+  "--unchanged",
+  "ROOT",
+  "the watcher",
+  "ARCH says so",
+  "the coordinator",
+  200,
+  24000,
+  "invoices/test/out/",
+  "results",
+  "start a new branch from it",
+  "the watcher",
+  "lower",
+  "common/errors.js",
+  "the watcher",
+  "push",
+  "ROOT",
+  "your module and pull request",
+  "is marked [walk]",
+  "excluded",
+  140,
+  "`listing`",
+  "listing",
+  "the firm's time zone",
+  "whole numbers of the smallest unit",
+  1,
+  "ARCH",
+  "ARCH",
+  "uses",
+  40,
+  8,
+  "test_*.js",
+  "DD Mon YYYY",
+  3,
+  "invoices:",
+  "four spaces",
+  200,
+  "the coordinator",
+  1500,
+  "@remote",
+  "the coordinator"
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 239,
+  "firstLast": 239,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "VH-1065",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "NL-1336",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "XJ-8411",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "SG-5882",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "LP-8780",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "DB-2133",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: D\nS4: A\nS5: C\nS6: D\nS7: C\nS8: A\nS9: A\nS10: B\nS11: A\nS12: D\nS13: D\nS14: D\nS15: B\nS16: C\nS17: D\nS18: C\nS19: D\nS20: C\nS21: C\nS22: B\nS23: C\nS24: B\nS25: A\nS26: C\nS27: A\nS28: B\nS29: C\nS30: B\nS31: C\nS32: A\nS33: C\nS34: D\nS35: B\nS36: C\nS37: C\nS38: A\nS39: A\nS40: C\nS41: B\nS42: B\nS43: D\nS44: A\nS45: D\nS46: B\nS47: A\nS48: C\nS49: A\nS50: A\nS51: B\nS52: D\nS53: D\nS54: C\nS55: D\nS56: C\nS57: A\nS58: A\nS59: C\nS60: D\nS61: D\nS62: D\nS63: B\nS64: B\nS65: C\nS66: A\nS67: A\nS68: C\nS69: D\nS70: C\nS71: D\nS72: A\nS73: B\nS74: C\nS75: D\nS76: D\nS77: A\nS78: D\nS79: B\nS80: B\nS81: D\nS82: B\nS83: A\nS84: B\nS85: A\nS86: D\nS87: A\nS88: C\nS89: B\nS90: B\nS91: D\nS92: B\nS93: C\nQ1: VH-1065\nQ2: NL-1336\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: XJ-8411\nQ6: SG-5882\nQ7: LP-8780\nQ8: DB-2133",
+ "compactions": 0,
+ "cost": 0.43233699999999997,
+ "status": "CLEAN",
+ "seconds": 27
+}

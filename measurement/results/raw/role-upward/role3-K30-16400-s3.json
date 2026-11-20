@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-16400-s3",
+ "K": 30,
+ "bytes": 16514,
+ "params": [
+  "the coordinator",
+  "after",
+  5,
+  40,
+  "--stuck",
+  "--unchanged",
+  "the coordinator",
+  "ARCH",
+  "a passing test names it",
+  "a lane",
+  200,
+  20000,
+  "invoices/build/test/",
+  "check",
+  "rebase onto the branch",
+  "ROOT",
+  "lower",
+  "invoices/errors.js",
+  "ROOT",
+  "ready",
+  "the watcher",
+  "your module and pull request",
+  "can be seen on screen",
+  "excluded",
+  140,
+  "your job block",
+  "results",
+  "the customer's time zone",
+  "whole numbers of the smallest unit",
+  2
+ ],
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 185,
+  "firstLast": 185,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Cinder checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "WJ-2614",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "DD-9018",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "TC-2743",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "WK-6632",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "TG-9264",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "JL-4334",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: C\nS3: D\nS4: C\nS5: C\nS6: B\nS7: C\nS8: B\nS9: C\nS10: B\nS11: B\nS12: C\nS13: A\nS14: B\nS15: C\nS16: D\nS17: B\nS18: B\nS19: B\nS20: D\nS21: D\nS22: D\nS23: D\nS24: B\nS25: B\nS26: D\nS27: A\nS28: B\nS29: B\nS30: C\nS31: D\nS32: A\nS33: C\nS34: C\nS35: A\nS36: D\nS37: C\nS38: B\nS39: D\nS40: A\nS41: A\nS42: C\nS43: A\nS44: C\nS45: B\nS46: A\nS47: D\nS48: B\nS49: A\nS50: C\nS51: D\nS52: B\nS53: A\nS54: A\nS55: A\nS56: D\nS57: A\nS58: A\nS59: B\nS60: C\nS61: D\nS62: A\nS63: C\nQ1: NOT STATED\nQ2: WJ-2614\nQ3: DD-9018\nQ4: TC-2743\nQ5: WK-6632\nQ6: TG-9264\nQ7: JL-4334\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.2475946,
+ "status": "CLEAN",
+ "seconds": 25
+}

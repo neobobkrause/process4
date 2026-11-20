@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-16384-s4",
+ "K": 10,
+ "bytes": 16389,
+ "params": [
+  "ROOT",
+  "before",
+  2,
+  60,
+  "--stuck",
+  "--no-change",
+  "ARCH",
+  "the watcher",
+  "a passing test names it",
+  "the coordinator"
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 204,
+  "firstLast": 204,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "ZR-2971",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "KD-9256",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "CB-9734",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "LF-9324",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "FH-2732",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "TC-4646",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: D\nS3: B\nS4: D\nS5: C\nS6: C\nS7: D\nS8: C\nS9: B\nS10: B\nS11: A\nS12: C\nS13: B\nS14: B\nS15: A\nS16: D\nS17: A\nS18: A\nS19: B\nS20: C\nS21: C\nS22: B\nS23: A\nQ1: ZR-2971\nQ2: KD-9256\nQ3: CB-9734\nQ4: LF-9324\nQ5: NOT STATED\nQ6: FH-2732\nQ7: NOT STATED\nQ8: TC-4646",
+ "compactions": 0,
+ "cost": 0.231263,
+ "status": "CLEAN",
+ "seconds": 21
+}

@@ -1,0 +1,115 @@
+{
+ "id": "role3-K30-16384-s101-openbook",
+ "K": 30,
+ "bytes": 16439,
+ "params": [
+  "ROOT",
+  "before",
+  3,
+  30,
+  "--blocked",
+  "--noop",
+  "PROCESS",
+  "the coordinator",
+  "it is merged",
+  "ROOT",
+  200,
+  16000,
+  "invoices/test/out/",
+  "related",
+  "rebase onto the branch",
+  "the coordinator",
+  "higher",
+  "common/errors.js",
+  "the watcher",
+  "check",
+  "ROOT",
+  "your branch and module",
+  "can be seen on screen",
+  "excluded",
+  80,
+  "`listing`",
+  "listing",
+  "the firm's time zone",
+  "whole numbers of thousandths of the main unit",
+  1
+ ],
+ "seed": 101,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 29,
+ "rulesFailed": [
+  1
+ ],
+ "completeness": 0.967,
+ "scenariosWrong": [
+  {
+   "id": "6a",
+   "rules": [
+    1
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "D",
+   "ok": false
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Sorrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": true,
+   "answer": "XD-1680",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "HW-2832",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "FC-7229",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "ZV-2011",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "BJ-8847",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "XN-8008",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: A\nS3: B\nS4: C\nS5: B\nS6: B\nS7: B\nS8: D\nS9: A\nS10: A\nS11: D\nS12: B\nS13: A\nS14: C\nS15: B\nS16: D\nS17: A\nS18: C\nS19: D\nS20: B\nS21: C\nS22: B\nS23: B\nS24: C\nS25: B\nS26: A\nS27: A\nS28: D\nS29: D\nS30: D\nS31: C\nS32: D\nS33: B\nS34: B\nS35: C\nS36: D\nS37: C\nS38: C\nS39: A\nS40: A\nS41: D\nS42: B\nS43: B\nS44: B\nS45: A\nS46: D\nS47: D\nS48: C\nS49: B\nS50: B\nS51: B\nS52: B\nS53: B\nS54: B\nS55: D\nS56: D\nS57: D\nS58: D\nS59: D\nS60: D\nS61: D\nS62: B\nS63: B\nQ1: NOT STATED\nQ2: XD-1680\nQ3: NOT STATED\nQ4: HW-2832\nQ5: FC-7229\nQ6: ZV-2011\nQ7: BJ-8847\nQ8: XN-8008",
+ "compactions": 0,
+ "cost": 0.1258358,
+ "status": "DIRTY",
+ "seconds": 16
+}

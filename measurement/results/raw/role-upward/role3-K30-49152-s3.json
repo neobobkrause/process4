@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-49152-s3",
+ "K": 30,
+ "bytes": 49269,
+ "params": [
+  "the coordinator",
+  "before",
+  2,
+  50,
+  "--blocked",
+  "--no-change",
+  "PROCESS",
+  "ROOT",
+  "it is merged",
+  "a lane",
+  200,
+  32000,
+  "invoices/test/out/",
+  "check",
+  "merge the branch",
+  "ROOT",
+  "higher",
+  "invoices/errors.js",
+  "the coordinator",
+  "push",
+  "ROOT",
+  "your branch and pull request",
+  "involves a date",
+  "excluded",
+  100,
+  "the notice's uses",
+  "results",
+  "the firm's time zone",
+  "pairs of main and smallest units",
+  3
+ ],
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 491,
+  "firstLast": 491,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "PH-5138",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "ZR-5563",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "HG-6642",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "LN-1599",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "XF-1604",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "FQ-9728",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: D\nS3: C\nS4: A\nS5: C\nS6: B\nS7: A\nS8: A\nS9: D\nS10: C\nS11: A\nS12: D\nS13: B\nS14: C\nS15: A\nS16: B\nS17: A\nS18: D\nS19: C\nS20: B\nS21: C\nS22: C\nS23: B\nS24: C\nS25: C\nS26: A\nS27: D\nS28: C\nS29: B\nS30: C\nS31: D\nS32: C\nS33: C\nS34: B\nS35: B\nS36: B\nS37: D\nS38: C\nS39: B\nS40: D\nS41: D\nS42: B\nS43: B\nS44: D\nS45: B\nS46: C\nS47: D\nS48: D\nS49: C\nS50: B\nS51: C\nS52: C\nS53: D\nS54: D\nS55: C\nS56: A\nS57: D\nS58: B\nS59: B\nS60: A\nS61: B\nS62: A\nS63: B\nQ1: PH-5138\nQ2: ZR-5563\nQ3: HG-6642\nQ4: LN-1599\nQ5: XF-1604\nQ6: FQ-9728\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.6019994,
+ "status": "CLEAN",
+ "seconds": 27
+}

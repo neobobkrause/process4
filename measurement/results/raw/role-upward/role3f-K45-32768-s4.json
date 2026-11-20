@@ -1,0 +1,125 @@
+{
+ "id": "role3f-K45-32768-s4",
+ "K": 45,
+ "bytes": 32732,
+ "params": [
+  "the watcher",
+  "after",
+  2,
+  50,
+  "--blocked",
+  "--nothing-to-change",
+  "PROCESS",
+  "ROOT",
+  "a passing test names it",
+  "ROOT",
+  120,
+  32000,
+  "invoices/test/out/",
+  "related",
+  "start a new branch from it",
+  "ROOT",
+  "lower",
+  "invoices/errors.js",
+  "ROOT",
+  "check",
+  "ROOT",
+  "your branch and module",
+  "involves a date",
+  "excluded",
+  80,
+  "`listing`",
+  "results",
+  "UTC",
+  "decimal strings",
+  1,
+  "ARCH",
+  "the watcher",
+  "listing",
+  60,
+  5,
+  "*.test.js",
+  "Mon DD, YYYY",
+  3,
+  "job:",
+  "tabs",
+  200,
+  "the coordinator",
+  800,
+  "@slow",
+  "ARCH"
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 248,
+  "firstLast": 248,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "XX-2100",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "CB-1671",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "FM-6341",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "WK-6752",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "BX-1264",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "XF-9492",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: Mar 05, 2026\nS2: B\nS3: C\nS4: Write them under `invoices/test/out/`; never commit them\nS5: Run `p4 results` before `ready`, and name the tests it lists in the message to ARCH\nS6: B\nS7: D\nS8: B\nS9: B\nS10: B\nS11: D\nS12: C\nS13: B\nS14: D\nS15: D\nS16: B\nS17: `parseInvoice.test.js`\nS18: D\nS19: Report it to the watcher before fixing it\nS20: B\nS21: A\nS22: B\nS23: A\nS24: B\nS25: A\nS26: D\nS27: C\nS28: D\nS29: Send it back to ARCH, with the reason\nS30: A\nS31: C\nS32: A\nS33: Ask the coordinator before renaming it\nS34: C\nS35: C\nS36: C\nS37: B\nS38: A\nS39: D\nS40: Return an error carrying a code from `invoices/errors.js`, never a bare string\nS41: D\nS42: A\nS43: C\nS44: Report it to PROCESS, written once; do not fix it or work round it\nS45: D\nS46: C\nS47: B\nS48: C\nS49: B\nS50: Tag the test `@slow`\nS51: D\nS52: A\nS53: B\nS54: Indent it with tabs\nS55: D\nS56: A\nS57: D\nS58: D\nS59: C\nS60: C\nS61: D\nS62: `p4 listing`\nS63: C\nS64: C\nS65: C\nS66: Run `p4 related`, fix what it reports in the module, then `p4 push`\nS67: Report it to the watcher in one message; never fix it myself\nS68: Send R-14 to ARCH, with its number; never reinterpret it\nS69: ROOT\nS70: B\nS71: D\nS72: A\nS73: Run no test; `p4 close --nothing-to-change`\nS74: D\nS75: D\nS76: B\nS77: C\nS78: Store it in UTC; convert only when displaying\nS79: D\nS80: B\nS81: C\nS82: C\nS83: D\nS84: `p4 push --blocked ledger \"<why>\"`, then stop (last act `p4 check`)\nS85: Make `p4 check` the last act\nS86: Begin it with `job:`\nS87: D\nS88: B\nS89: C\nS90: A\nS91: A\nS92: D\nS93: D\nQ1: XX-2100\nQ2: CB-1671\nQ3: FM-6341\nQ4: WK-6752\nQ5: NOT STATED\nQ6: BX-1264\nQ7: XF-9492\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.41747979999999996,
+ "status": "CLEAN",
+ "seconds": 42
+}

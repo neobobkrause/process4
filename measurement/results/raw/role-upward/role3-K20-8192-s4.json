@@ -1,0 +1,100 @@
+{
+ "id": "role3-K20-8192-s4",
+ "K": 20,
+ "bytes": 8239,
+ "params": [
+  "the coordinator",
+  "after",
+  5,
+  60,
+  "--blocked",
+  "--no-change",
+  "the coordinator",
+  "ROOT",
+  "the internal walk passes",
+  "ROOT",
+  120,
+  16000,
+  "invoices/.scratch/",
+  "results",
+  "start a new branch from it",
+  "ROOT",
+  "lower",
+  "invoices/errors.json",
+  "ROOT",
+  "check"
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 100,
+  "firstLast": 100,
+  "firstErr": null
+ },
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "NJ-2192",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "JK-9010",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "ST-4218",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "BW-8042",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": true,
+   "answer": "NP-8450",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "DW-9742",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: A\nS3: C\nS4: D\nS5: D\nS6: A\nS7: A\nS8: D\nS9: D\nS10: C\nS11: B\nS12: C\nS13: C\nS14: A\nS15: C\nS16: B\nS17: A\nS18: A\nS19: C\nS20: D\nS21: A\nS22: B\nS23: A\nS24: C\nS25: D\nS26: A\nS27: C\nS28: C\nS29: B\nS30: B\nS31: D\nS32: B\nS33: A\nS34: C\nS35: B\nS36: D\nS37: B\nS38: B\nS39: C\nS40: D\nS41: D\nS42: B\nS43: C\nQ1: NJ-2192\nQ2: JK-9010\nQ3: ST-4218\nQ4: NOT STATED\nQ5: BW-8042\nQ6: NP-8450\nQ7: NOT STATED\nQ8: DW-9742",
+ "compactions": 0,
+ "cost": 0.1555458,
+ "status": "CLEAN",
+ "seconds": 30
+}

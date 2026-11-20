@@ -1,0 +1,110 @@
+{
+ "id": "role3f-K30-49152-s5",
+ "K": 30,
+ "bytes": 49137,
+ "params": [
+  "ARCH",
+  "before",
+  3,
+  40,
+  "--blocked",
+  "--nothing-to-change",
+  "ROOT",
+  "ROOT",
+  "ARCH says so",
+  "the coordinator",
+  200,
+  20000,
+  "invoices/test/tmp/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "ARCH",
+  "higher",
+  "common/errors.js",
+  "ROOT",
+  "push",
+  "the watcher",
+  "your module and pull request",
+  "is marked [walk]",
+  "excluded",
+  140,
+  "the notice's uses",
+  "related",
+  "the firm's time zone",
+  "pairs of main and smallest units",
+  2
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 346,
+  "firstLast": 346,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "NZ-8861",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "WV-8409",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "KP-3557",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "HQ-9730",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "RX-4856",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "GB-2804",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: Last act is `p4 push`\nS3: ARCH's written agreement\nS4: D\nS5: C\nS6: D\nS7: C\nS8: Put them under `invoices/test/tmp/`, never committed\nS9: A\nS10: D\nS11: `p4 push --blocked ledger \"<why>\"`, then stop\nS12: B\nS13: D\nS14: C\nS15: A\nS16: A\nS17: C\nS18: B\nS19: Store it in the firm's time zone; convert only when displaying\nS20: A\nS21: Return an error carrying a code from `common/errors.js`, never a bare string\nS22: A\nS23: A\nS24: B\nS25: C\nS26: A\nS27: C\nS28: Report it to ROOT, written once; do not fix it or work round it\nS29: B\nS30: D\nS31: A\nS32: C\nS33: C\nS34: A\nS35: C\nS36: C\nS37: Run `p4 related` first, and name the tests it lists in the message to ARCH\nS38: A\nS39: D\nS40: D\nS41: A\nS42: A\nS43: C\nS44: A\nS45: Run `p4 related`, fix what it reports in the module, then `p4 push`\nS46: Run no test; `p4 close --nothing-to-change`\nS47: C\nS48: B\nS49: B\nS50: B\nS51: D\nS52: D\nS53: C\nS54: C\nS55: D\nS56: Report it to ARCH in one message (naming `invoices` and PR #212); never fix it myself\nS57: A\nS58: D\nS59: D\nS60: D\nS61: C\nS62: B\nS63: B\nQ1: NZ-8861\nQ2: WV-8409\nQ3: KP-3557\nQ4: HQ-9730\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: RX-4856\nQ8: GB-2804",
+ "compactions": 0,
+ "cost": 0.553171,
+ "status": "CLEAN",
+ "seconds": 38
+}

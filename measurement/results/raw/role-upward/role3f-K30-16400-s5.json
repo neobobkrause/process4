@@ -1,0 +1,110 @@
+{
+ "id": "role3f-K30-16400-s5",
+ "K": 30,
+ "bytes": 16505,
+ "params": [
+  "ARCH",
+  "after",
+  2,
+  50,
+  "--held",
+  "--unchanged",
+  "PROCESS",
+  "the coordinator",
+  "a passing test names it",
+  "the coordinator",
+  60,
+  32000,
+  "invoices/.scratch/",
+  "listing",
+  "merge the branch",
+  "ARCH",
+  "lower",
+  "invoices/errors.js",
+  "ROOT",
+  "check",
+  "the watcher",
+  "your branch and module",
+  "can be seen on screen",
+  "included",
+  120,
+  "the notice's uses",
+  "results",
+  "the firm's time zone",
+  "decimal strings",
+  1
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 158,
+  "firstLast": 158,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Quartz roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "BP-1596",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "XS-8426",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "XM-1213",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "VC-6684",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "DZ-1579",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "LK-6172",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: C\nS3: A\nS4: Run `p4 results` first, and name the tests it lists in the message to ARCH\nS5: B\nS6: C\nS7: B\nS8: A\nS9: A\nS10: C\nS11: C\nS12: D\nS13: D\nS14: A\nS15: A\nS16: B\nS17: Report it to PROCESS, written once; do not fix it or work round it\nS18: B\nS19: `p4 push --held ledger \"<why>\"`, then stop (last act `p4 check`)\nS20: Store it in the firm's time zone; convert only when displaying\nS21: B\nS22: Run `p4 listing` and fix what it reports in the module, then `p4 push`\nS23: Tell ARCH in one message; never fix it yourself\nS24: B\nS25: A\nS26: C\nS27: A\nS28: Last act is `p4 check`\nS29: A\nS30: D\nS31: D\nS32: B\nS33: B\nS34: B\nS35: D\nS36: D\nS37: B\nS38: B\nS39: A\nS40: ARCH's written agreement\nS41: A\nS42: Run no test; `p4 close --unchanged`\nS43: D\nS44: C\nS45: C\nS46: C\nS47: D\nS48: B\nS49: B\nS50: A\nS51: D\nS52: D\nS53: B\nS54: A\nS55: B\nS56: B\nS57: D\nS58: Return an error carrying a code from `invoices/errors.js`, never a bare string\nS59: Put them under `invoices/.scratch/`, never committed\nS60: B\nS61: D\nS62: A\nS63: D\nQ1: NOT STATED\nQ2: BP-1596\nQ3: XS-8426\nQ4: XM-1213\nQ5: VC-6684\nQ6: DZ-1579\nQ7: LK-6172\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.2498978,
+ "status": "CLEAN",
+ "seconds": 38
+}

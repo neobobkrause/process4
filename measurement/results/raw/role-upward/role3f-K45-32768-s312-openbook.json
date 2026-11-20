@@ -1,0 +1,132 @@
+{
+ "id": "role3f-K45-32768-s312-openbook",
+ "K": 45,
+ "bytes": 32854,
+ "params": [
+  "the watcher",
+  "after",
+  3,
+  30,
+  "--held",
+  "--noop",
+  "PROCESS",
+  "the coordinator",
+  "a passing test names it",
+  "the watcher",
+  300,
+  24000,
+  "invoices/.scratch/",
+  "listing",
+  "rebase onto the branch",
+  "ROOT",
+  "lower",
+  "invoices/errors.json",
+  "the watcher",
+  "check",
+  "ARCH",
+  "your branch and pull request",
+  "involves money",
+  "excluded",
+  80,
+  "`listing`",
+  "check",
+  "the server's local time",
+  "decimal strings",
+  4,
+  "ARCH",
+  "the coordinator",
+  "check",
+  100,
+  3,
+  "test_*.js",
+  "DD Mon YYYY",
+  2,
+  "job:",
+  "eight spaces",
+  50,
+  "the watcher",
+  800,
+  "@net",
+  "ROOT"
+ ],
+ "seed": 312,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 44,
+ "rulesFailed": [
+  15
+ ],
+ "completeness": 0.978,
+ "scenariosWrong": [
+  {
+   "id": "18a",
+   "rules": [
+    15
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "R",
+   "ok": false,
+   "free": true,
+   "answer": "Return an error carrying a code from `invoices/errors.json`"
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "XJ-7150",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": true,
+   "answer": "LT-4641",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "LT-5665",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "PN-7945",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "FB-9490",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "VQ-5066",
+   "ok": true
+  }
+ ],
+ "reply": "S1: Ask the watcher before renaming it\nS2: C\nS3: A\nS4: 05 Mar 2026\nS5: D\nS6: A\nS7: A\nS8: B\nS9: A\nS10: B\nS11: Run `p4 listing` and fix what it reports, then `p4 push`\nS12: C\nS13: D\nS14: A\nS15: B\nS16: D\nS17: B\nS18: Send it back to ROOT, with the reason\nS19: B\nS20: C\nS21: D\nS22: D\nS23: Run no test; `p4 close --noop`\nS24: A\nS25: C\nS26: C\nS27: B\nS28: D\nS29: Store it in the server's local time; convert only when displaying\nS30: A\nS31: `p4 push --held ledger \"<why>\"`, then stop\nS32: D\nS33: B\nS34: Tag it `@net`\nS35: D\nS36: B\nS37: Begin it with `job:`\nS38: C\nS39: B\nS40: A\nS41: D\nS42: A\nS43: A\nS44: ROOT's written agreement\nS45: D\nS46: B\nS47: C\nS48: Return an error carrying a code from `invoices/errors.json`\nS49: D\nS50: A\nS51: D\nS52: A\nS53: A\nS54: B\nS55: B\nS56: C\nS57: B\nS58: `p4 check`\nS59: D\nS60: D\nS61: A\nS62: Indent it with eight spaces\nS63: B\nS64: A\nS65: Last act is `p4 check`\nS66: D\nS67: Put them under `invoices/.scratch/`, never committed\nS68: Send it to ARCH with its number (R-14); do not reinterpret it\nS69: A\nS70: C\nS71: B\nS72: Report it to the watcher in one message; don't fix it\nS73: Run `p4 check` before `ready`; name its listed tests to ARCH\nS74: C\nS75: A\nS76: Report it to the coordinator before fixing it\nS77: C\nS78: C\nS79: B\nS80: D\nS81: A\nS82: B\nS83: `test_parseInvoice.js`\nS84: C\nS85: A\nS86: B\nS87: D\nS88: C\nS89: B\nS90: C\nS91: Report it to PROCESS once; don't fix or work round it\nS92: A\nS93: B\nQ1: XJ-7150\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: LT-4641\nQ5: LT-5665\nQ6: PN-7945\nQ7: FB-9490\nQ8: VQ-5066",
+ "compactions": 0,
+ "cost": 0.2031958,
+ "status": "DIRTY",
+ "seconds": 21
+}

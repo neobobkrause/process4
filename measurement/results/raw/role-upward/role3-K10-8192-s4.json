@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-8192-s4",
+ "K": 10,
+ "bytes": 8309,
+ "params": [
+  "ARCH",
+  "before",
+  4,
+  40,
+  "--stuck",
+  "--nothing-to-change",
+  "ROOT",
+  "ARCH",
+  "the internal walk passes",
+  "the watcher"
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 102,
+  "firstLast": 102,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "HL-5379",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "JJ-7492",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": true,
+   "answer": "DK-5468",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": true,
+   "answer": "XB-8659",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "CV-3110",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "XL-4719",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: C\nS3: B\nS4: A\nS5: C\nS6: B\nS7: A\nS8: C\nS9: D\nS10: C\nS11: A\nS12: D\nS13: A\nS14: C\nS15: D\nS16: D\nS17: C\nS18: A\nS19: D\nS20: B\nS21: A\nS22: C\nS23: A\nQ1: HL-5379\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: JJ-7492\nQ5: DK-5468\nQ6: XB-8659\nQ7: CV-3110\nQ8: XL-4719",
+ "compactions": 0,
+ "cost": 0.1321098,
+ "status": "CLEAN",
+ "seconds": 26
+}

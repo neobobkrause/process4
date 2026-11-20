@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-49152-s1",
+ "K": 30,
+ "bytes": 49013,
+ "params": [
+  "the coordinator",
+  "after",
+  3,
+  50,
+  "--held",
+  "--nothing-to-change",
+  "ROOT",
+  "the coordinator",
+  "the internal walk passes",
+  "ROOT",
+  200,
+  16000,
+  "invoices/.scratch/",
+  "related",
+  "rebase onto the branch",
+  "ARCH",
+  "higher",
+  "common/errors.js",
+  "the coordinator",
+  "ready",
+  "ROOT",
+  "your branch and pull request",
+  "involves a date",
+  "excluded",
+  100,
+  "ARCH's message",
+  "listing",
+  "the server's local time",
+  "pairs of main and smallest units",
+  1
+ ],
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 466,
+  "firstLast": 466,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Umber ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "JR-9777",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "TW-6915",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "PJ-6319",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "LJ-9660",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Nettle inventory",
+   "planted": true,
+   "answer": "NM-2539",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "CS-8770",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: B\nS3: A\nS4: D\nS5: C\nS6: B\nS7: C\nS8: D\nS9: D\nS10: A\nS11: D\nS12: C\nS13: B\nS14: D\nS15: A\nS16: B\nS17: D\nS18: C\nS19: A\nS20: A\nS21: C\nS22: C\nS23: B\nS24: C\nS25: D\nS26: B\nS27: A\nS28: D\nS29: C\nS30: A\nS31: A\nS32: C\nS33: C\nS34: C\nS35: B\nS36: A\nS37: D\nS38: D\nS39: A\nS40: C\nS41: B\nS42: C\nS43: A\nS44: C\nS45: D\nS46: A\nS47: A\nS48: A\nS49: D\nS50: D\nS51: C\nS52: A\nS53: B\nS54: B\nS55: C\nS56: B\nS57: D\nS58: B\nS59: B\nS60: C\nS61: A\nS62: D\nS63: A\nQ1: NOT STATED\nQ2: JR-9777\nQ3: TW-6915\nQ4: PJ-6319\nQ5: LJ-9660\nQ6: NOT STATED\nQ7: NM-2539\nQ8: CS-8770",
+ "compactions": 0,
+ "cost": 0.5410858000000001,
+ "status": "CLEAN",
+ "seconds": 26
+}

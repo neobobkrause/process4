@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-4096-s5",
+ "K": 10,
+ "bytes": 4188,
+ "params": [
+  "the coordinator",
+  "after",
+  5,
+  60,
+  "--blocked",
+  "--noop",
+  "PROCESS",
+  "ARCH",
+  "the internal walk passes",
+  "ROOT"
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 52,
+  "firstLast": 52,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "MX-1236",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "KB-6804",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": true,
+   "answer": "JS-5772",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "QK-3965",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "XT-6718",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "XJ-2161",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: B\nS5: D\nS6: A\nS7: B\nS8: B\nS9: B\nS10: B\nS11: C\nS12: A\nS13: C\nS14: B\nS15: A\nS16: C\nS17: D\nS18: B\nS19: A\nS20: C\nS21: A\nS22: C\nS23: B\nQ1: MX-1236\nQ2: KB-6804\nQ3: JS-5772\nQ4: QK-3965\nQ5: XT-6718\nQ6: XJ-2161\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.0989662,
+ "status": "CLEAN",
+ "seconds": 25
+}

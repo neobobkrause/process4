@@ -1,0 +1,125 @@
+{
+ "id": "role3f-K45-16400-s1",
+ "K": 45,
+ "bytes": 16465,
+ "params": [
+  "the coordinator",
+  "before",
+  2,
+  40,
+  "--stuck",
+  "--nothing-to-change",
+  "ROOT",
+  "ROOT",
+  "it is merged",
+  "a lane",
+  200,
+  16000,
+  "invoices/build/test/",
+  "listing",
+  "rebase onto the branch",
+  "the coordinator",
+  "lower",
+  "common/errors.js",
+  "the coordinator",
+  "ready",
+  "the coordinator",
+  "your branch and pull request",
+  "involves a date",
+  "included",
+  100,
+  "ARCH's message",
+  "results",
+  "the server's local time",
+  "pairs of main and smallest units",
+  3,
+  "ROOT",
+  "the coordinator",
+  "uses",
+  80,
+  12,
+  "*.spec.js",
+  "YYYY-MM-DD",
+  4,
+  "INV-",
+  "tabs",
+  50,
+  "ARCH",
+  200,
+  "@remote",
+  "the watcher"
+ ],
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 217,
+  "firstLast": 217,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Alder census",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "JS-1032",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "MC-4528",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "KQ-7665",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "DK-1212",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "VH-2359",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "JR-5097",
+   "ok": true
+  }
+ ],
+ "reply": "S1: Report it to the coordinator in one message; never fix it myself\nS2: Last act is `p4 ready`\nS3: `parseInvoice.spec.js`\nS4: Store it in the server's local time; convert only when displaying\nS5: C\nS6: D\nS7: A\nS8: D\nS9: A\nS10: Indent it with tabs\nS11: A\nS12: D\nS13: B\nS14: C\nS15: C\nS16: B\nS17: Return an error carrying a code from `common/errors.js`, never a bare string\nS18: B\nS19: B\nS20: The coordinator's written agreement\nS21: D\nS22: A\nS23: `p4 push --stuck ledger \"<why>\"`, then stop (last act `p4 ready`)\nS24: C\nS25: D\nS26: D\nS27: C\nS28: A\nS29: D\nS30: Tag the test `@remote`\nS31: A\nS32: D\nS33: A\nS34: Begin the commit message with `INV-`\nS35: D\nS36: D\nS37: D\nS38: Run no test; `p4 close --nothing-to-change`\nS39: D\nS40: C\nS41: A\nS42: C\nS43: B\nS44: 2026-03-05\nS45: B\nS46: Send it back to the watcher, with the reason\nS47: Run `p4 listing` and fix what it reports, then `p4 push`; last act `p4 ready`\nS48: Report it to ROOT, written once; do not fix or work round it\nS49: C\nS50: C\nS51: `p4 uses`\nS52: D\nS53: C\nS54: C\nS55: C\nS56: C\nS57: D\nS58: D\nS59: D\nS60: B\nS61: A\nS62: A\nS63: C\nS64: Tell the coordinator before fixing it\nS65: B\nS66: B\nS67: D\nS68: B\nS69: D\nS70: B\nS71: B\nS72: Run `p4 results` first and name the tests it lists in my message to ARCH\nS73: Send it to ROOT with its number, R-14; never reinterpret it\nS74: A\nS75: A\nS76: D\nS77: D\nS78: A\nS79: C\nS80: A\nS81: C\nS82: A\nS83: D\nS84: B\nS85: A\nS86: C\nS87: B\nS88: A\nS89: C\nS90: D\nS91: B\nS92: Ask ARCH before renaming it\nS93: Put them under `invoices/build/test/`, never committed\nQ1: NOT STATED\nQ2: JS-1032\nQ3: MC-4528\nQ4: KQ-7665\nQ5: DK-1212\nQ6: NOT STATED\nQ7: VH-2359\nQ8: JR-5097",
+ "compactions": 0,
+ "cost": 0.29729820000000007,
+ "status": "CLEAN",
+ "seconds": 41
+}

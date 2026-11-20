@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-8192-s1",
+ "K": 45,
+ "bytes": 8210,
+ "params": [
+  "the watcher",
+  "after",
+  5,
+  60,
+  "--waiting",
+  "--nothing-to-change",
+  "the coordinator",
+  "the coordinator",
+  "it is merged",
+  "the coordinator",
+  120,
+  16000,
+  "invoices/build/test/",
+  "results",
+  "merge the branch",
+  "the coordinator",
+  "higher",
+  "invoices/errors.json",
+  "the watcher",
+  "results",
+  "ROOT",
+  "the requirement numbers concerned",
+  "can be seen on screen",
+  "included",
+  80,
+  "the notice's uses",
+  "results",
+  "the server's local time",
+  "whole numbers of thousandths of the main unit",
+  3,
+  "the watcher",
+  "the watcher",
+  "listing",
+  40,
+  12,
+  "*.spec.js",
+  "DD Mon YYYY",
+  5,
+  "INV-",
+  "tabs",
+  50,
+  "the coordinator",
+  1500,
+  "@remote",
+  "the coordinator"
+ ],
+ "seed": 1,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 105,
+  "firstLast": 105,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "XP-5203",
+   "ok": true
+  },
+  {
+   "subject": "Nettle inventory",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "MJ-3391",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "KT-8992",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "JL-2548",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "CD-4929",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "BM-5293",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: C\nS4: D\nS5: D\nS6: A\nS7: A\nS8: C\nS9: B\nS10: B\nS11: A\nS12: C\nS13: D\nS14: A\nS15: C\nS16: C\nS17: B\nS18: C\nS19: B\nS20: B\nS21: B\nS22: B\nS23: B\nS24: C\nS25: A\nS26: D\nS27: B\nS28: A\nS29: B\nS30: A\nS31: B\nS32: B\nS33: A\nS34: C\nS35: D\nS36: B\nS37: D\nS38: D\nS39: A\nS40: B\nS41: D\nS42: A\nS43: B\nS44: D\nS45: C\nS46: A\nS47: D\nS48: A\nS49: B\nS50: D\nS51: A\nS52: C\nS53: B\nS54: B\nS55: D\nS56: D\nS57: C\nS58: A\nS59: B\nS60: B\nS61: C\nS62: C\nS63: D\nS64: B\nS65: C\nS66: B\nS67: B\nS68: D\nS69: A\nS70: A\nS71: D\nS72: D\nS73: D\nS74: B\nS75: B\nS76: D\nS77: B\nS78: A\nS79: B\nS80: C\nS81: B\nS82: C\nS83: D\nS84: B\nS85: C\nS86: C\nS87: B\nS88: D\nS89: C\nS90: B\nS91: B\nS92: B\nS93: D\nQ1: NOT STATED\nQ2: XP-5203\nQ3: NOT STATED\nQ4: MJ-3391\nQ5: KT-8992\nQ6: JL-2548\nQ7: CD-4929\nQ8: BM-5293",
+ "compactions": 0,
+ "cost": 0.20068940000000002,
+ "status": "CLEAN",
+ "seconds": 26
+}

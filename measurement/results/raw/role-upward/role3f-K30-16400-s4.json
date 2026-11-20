@@ -1,0 +1,110 @@
+{
+ "id": "role3f-K30-16400-s4",
+ "K": 30,
+ "bytes": 16289,
+ "params": [
+  "the watcher",
+  "after",
+  5,
+  40,
+  "--blocked",
+  "--unchanged",
+  "ROOT",
+  "ARCH",
+  "ARCH says so",
+  "the watcher",
+  300,
+  24000,
+  "invoices/.scratch/",
+  "results",
+  "merge the branch",
+  "ROOT",
+  "lower",
+  "invoices/errors.js",
+  "the coordinator",
+  "check",
+  "ARCH",
+  "your branch and module",
+  "involves a date",
+  "excluded",
+  140,
+  "the notice's uses",
+  "related",
+  "the firm's time zone",
+  "decimal strings",
+  4
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 178,
+  "firstLast": 178,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "BR-8417",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "VH-3132",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "QR-8671",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "LJ-1784",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "FV-9598",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "SN-7137",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: A\nS4: D\nS5: D\nS6: D\nS7: C\nS8: A\nS9: C\nS10: B\nS11: A\nS12: C\nS13: D\nS14: B\nS15: Last act is `p4 check`\nS16: C\nS17: Write them under `invoices/.scratch/`, never committed\nS18: A\nS19: A\nS20: A\nS21: C\nS22: D\nS23: D\nS24: D\nS25: A\nS26: B\nS27: B\nS28: B\nS29: D\nS30: C\nS31: Run `p4 results` and fix what it reports, then `p4 push`\nS32: Return an error carrying a code from `invoices/errors.js`, not a bare string\nS33: ROOT's written agreement\nS34: B\nS35: B\nS36: C\nS37: Run no test; `p4 close --unchanged`\nS38: Store it in the firm's time zone; convert only when displaying\nS39: A\nS40: D\nS41: A\nS42: C\nS43: Report it to ROOT, written once; do not fix or work round it\nS44: A\nS45: Run `p4 related` first, and name the tests it lists in the message to ARCH\nS46: A\nS47: A\nS48: C\nS49: D\nS50: B\nS51: D\nS52: C\nS53: C\nS54: `p4 push --blocked ledger \"<why>\"`, then stop (last act `p4 check`)\nS55: C\nS56: C\nS57: B\nS58: D\nS59: C\nS60: B\nS61: C\nS62: A\nS63: Report it to the watcher in one message; never fix it yourself\nQ1: BR-8417\nQ2: VH-3132\nQ3: NOT STATED\nQ4: QR-8671\nQ5: LJ-1784\nQ6: FV-9598\nQ7: NOT STATED\nQ8: SN-7137",
+ "compactions": 0,
+ "cost": 0.2505582,
+ "status": "CLEAN",
+ "seconds": 39
+}
