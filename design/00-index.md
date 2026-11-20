@@ -56,9 +56,9 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Long-lived role:** a role whose session runs long enough to need refreshing. **Claude decided:** every standing role, and a lane that is kept running, is long-lived; a job and a walking session are not. **Handover:** what its successor needs, written before a refresh.
 - **Worker:** a helper that a long-lived role or a job starts inside itself for one bounded piece of work.
 - **The account:** the owner's account on a harness, under which every session runs. The development account, the hosting account and the GitHub account are always named in full. **The account after each round** is a short report, not an account in this sense.
-- **Starting instructions:** the text a session is started with, naming every act it may take. **Reading:** a role's starting text is the same thing for a standing role, and a role's principles are the rules in that text.
+- **Starting instructions:** the text a session is started with, naming every act it may take. **Settled (the owner, 20 November 2026):** a role's starting text is the same thing for a standing role, and a role's principles are the rules in that text.
 - **Process fault:** **Claude decided** the wording: a fault in the process itself and not in the product: a rule of this design that cannot be kept, a fault in the tool, or a stop that nothing called for.
-- **Architecture bug and implementation error:** **Reading:** an architecture bug is a fault in the design itself; an implementation error is a fault in code or text that does not follow the design (part 1, section 6).
+- **Architecture bug and implementation error:** **Settled (the owner, 20 November 2026):** an architecture bug is a fault in the design itself; an implementation error is a fault in code or text that does not follow the design (part 1, section 6).
 - **Held merge:** a merge the owner has told the coordinator to hold until he approves it.
 - **Foundations:** the owner's own earlier document of the reasons and evidence behind the process.
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.

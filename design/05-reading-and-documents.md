@@ -28,7 +28,7 @@ All four are **provisional**. They stand, on the owner's word, until a second me
 
 ## 3. Keeping texts under the maximums
 
-- Each role's principles are concise, sufficient for the role to be performed correctly, and unambiguously clear. Whenever they are changed, every effort is made to keep them short enough to be read in full and not scanned. Where that cannot be done, the matter comes to the owner to find a solution. **Reading:** PROCESS brings it to him.
+- Each role's principles are concise, sufficient for the role to be performed correctly, and unambiguously clear. Whenever they are changed, every effort is made to keep them short enough to be read in full and not scanned. Where that cannot be done, the matter comes to the owner to find a solution. **Settled (the owner, 20 November 2026):** PROCESS brings it to him.
 - **Claude decided:** the size of a role's starting text is a rule, not a refusal among the tool's tests.
 - A module's requirements file is kept under the single-text maximum as a rule ARCH applies; ARCH splits the module when a file nears it (part 2).
 - Nothing refuses a job or a merge for size.
@@ -52,7 +52,7 @@ All four are **provisional**. They stand, on the owner's word, until a second me
 
 ## 6. Each product's ranking page
 
-- Each product has one short page, kept by ARCH and read by every role, that ranks its kinds of governing text: mission, principles, standards, requirements, design decisions. **Reading:** mission is highest and design decisions lowest.
+- Each product has one short page, kept by ARCH and read by every role, that ranks its kinds of governing text: mission, principles, standards, requirements, design decisions. **Settled (the owner, 20 November 2026):** mission is highest and design decisions lowest.
 - A lower one never overrides a higher one. A session that finds two in conflict follows the higher and tells ARCH.
 
 ## 7. Where things are kept now

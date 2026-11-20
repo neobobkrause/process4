@@ -104,6 +104,6 @@ The tool decides both, because each has one right answer. **Claude decided** the
 ## 9. Changes that are not a job's
 
 - **The mechanical edit.** **Claude decided:** a worker in ARCH's session makes it as one change covering every affected module, and it is merged once; and the moment: when no job is open, between a round's last merge and its internal walk. A module where the change needs judgment gets its own job. **Unproven:** which test run GitHub requires on that one change.
-- **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing. **Reading:** the owner has not confirmed this.
+- **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing. **Settled (the owner, 20 November 2026):** the owner has not confirmed this.
 - **Requirement text, the module list, and the process's named files.** **Claude decided:** these change no code and no tests, so their pull requests merge through the tool with no module tests run. The required test run reports on every pull request. It passes at once when no module's code or tests changed, and on the tranche's own pull request into the main branch, where none of the tests runs (part 3, section 5).
 - **The owner's approvals and forbidden commands** are committed by the owner alone (part 6).
