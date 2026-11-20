@@ -1,28 +1,28 @@
 # Part 5. Reading in full, and the documents
 
-Length: 61 lines. Last section: "7. Where things are kept now".
+Length: 62 lines. Last section: "7. Where things are kept now".
 
 ## 1. Reading in full
 
 - A session acts only on what it has read in full or measured.
 - Every text a session must read in full, and every set of texts read together, is kept below a measured maximum size. Nothing can ensure a full reading; keeping below the maximum reliably results in one.
 - The maximums and the fill level are chosen by one yardstick: after a session has read what it must, there is room for a worthwhile piece of correct work and a handover before the fill level.
-- The Codex maximums are used on both harnesses, because they rest on real measurements and Codex context windows are in effect the more constrained.
+- The maximums are used on both harnesses, with one exception: the largest single text is set per harness — 60,000 bytes on Claude Code, measured there on 20 November 2026, and 24,000 bytes on Codex until Codex is measured (section 2; part 7, section 2). The Claude Code measurement showed the Codex single-text figure to be far below what Claude Code reads whole, so that one value is no longer the more constrained. The set, role-text and fill-level figures also come from the Claude Code measurement and apply on both harnesses, with a Codex re-measurement owed; where Codex shows no fill level, the refresh comes only at a natural pause (part 8).
 - Sessions are refreshed so that compaction is never needed. In the owner's words, the process has "session refresh requirements that rigorously eleminate the need for compaction".
 - **Claude decided:** each governing text says at its top how long it is and what its last section is.
 
 ## 2. The four values
 
-All four are **provisional**. They stand, on the owner's word, until a second measurement reports. **Reading:** these four are the values he meant by "these current values", his words of 18 Nov to the session he was working with.
+All four were settled by the owner's marked decision of 20 November 2026 (the record of decisions), on the reading-fidelity measurement of that day: Claude Code, model `claude-opus-5-5`, effort `medium`, a 1,000,000-token window (`measurement/results/`). They are no longer provisional on Claude Code. A Codex re-measurement is owed before they govern there (part 8); the single-text figure is already set per harness.
 
-| Value | Provisional figure | What it rests on |
+| Value | Figure | What it rests on |
 |---|---|---|
-| The largest single text read in full | 24,000 bytes | The largest size shown to work on Codex. On Claude Code every size up to it was read whole, in a first measurement the owner judged too weak to rely on |
-| The largest set of texts read together | 175,000 bytes | The largest set shown to work on Codex, on a set that was almost all filler. On Claude Code a set of 165,358 bytes was read whole, in the same first measurement |
-| A role's starting text | 4,096 bytes, and at most ten rules | Proposed by Claude. "At most ten rules" is kept from the process before this one. Not measured |
-| The fill level for a refresh | 40 percent | The owner's words of 17 Nov: "process4's policy of refreshing sessions when the context window exceeds 40% or more". Not measured |
+| The largest single text read in full | 60,000 bytes on Claude Code; 24,000 bytes on Codex until Codex is measured | Measured on Claude Code: governing prose read whole up to the harness's mechanical read-cut, about 25,000 tokens (about 76,000 bytes of dense prose). 60,000 is 20 percent below the largest clean read. 24,000 is the largest size shown to work on Codex and governs there until Codex is measured (part 7, section 2; part 8) |
+| The largest set of texts read together | 175,000 bytes | Measured on Claude Code: read whole at every size up to 220,000 bytes, with a 25 percent margin kept. It was also the largest set shown to work on Codex. Codex re-measurement owed |
+| A role's starting text | 8,192 bytes, and at most ten rules | Measured on Claude Code: a role text was read and its rules applied with no error far beyond this, at 45 rules and 32.9 KB. 8,192 is a modest raise from 4,096 for breathing room; the rule count stays ten, and the conciseness rule (section 3) keeps the texts short. Codex re-measurement owed |
+| The fill level for a refresh | 50 percent | Measured on Claude Code: reading stayed clean at every fill up to 80 percent. The owner set 50 percent so that session refreshes, which are expensive and slow, are minimised while leaving room to work on. On Codex no fill level can be read, so the refresh comes only at a natural pause (part 8) |
 
-- The first two are sizes shown to work. Neither is a size at which reading was shown to fail.
+- These are floors shown to work on Claude Code, not sizes at which reading was shown to fail; each keeps a margin below the largest clean read.
 - **The owner's decision, 20 November 2026:** the role's-text limit is measured against the role's instructions proper, leaving the one mechanical fetch line (the clone command, run once and never reread) out of the count, so boilerplate does not crowd out the rules (part 4, section 11).
 - **Claude decided:** where a harness shows no fill level (part 8), the refresh comes only at a natural pause.
 

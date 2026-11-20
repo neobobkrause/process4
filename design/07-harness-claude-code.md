@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 81 lines. Last section: "5. The permissions-management settings".
+Length: 82 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -39,9 +39,10 @@ Everything in this part is specific to Claude Code.
 
 ## 2. Reading, as measured
 
-From the first measurement of 18 Nov, on one model with a 1,000,000-token window. The owner judged that measurement too weak to rely on; these are what it saw.
+From the measurement of 20 November 2026 (model `claude-opus-5-5`, effort `medium`, a 1,000,000-token window; `measurement/results/report.md`). It supersedes the weaker first measurement of 18 Nov.
 
-- A plain read returns a file whole up to 25,000 tokens. A larger file comes back cut, and the notice of the cut arrives apart from the read's result.
+- A plain read returns a file whole up to the harness's mechanical cut, about 25,000 tokens: about 76,000 bytes of dense governing prose, and about 63,000 bytes of table-dense prose. The single-text maximum on Claude Code, 60,000 bytes, sits below both (part 5, section 2).
+- A file past the cut comes back as a partial read. In this harness version the tool result carried no notice of the cut, so a session that did not compare the lines returned against the file's length would act on part of a text. The guard is keeping the single-text maximum below the cut, which 60,000 is.
 - A file over 256 KB is refused, with no lines returned.
 
 ## 3. Not proven on Claude Code
