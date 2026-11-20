@@ -18,7 +18,7 @@ Everything in this part is specific to Claude Code.
 | Secret values, the deploy token among them | Settings of Claude's cloud environment, entered by the owner. The only route measured to work |
 | Instruction files loaded at start | `CLAUDE.md` and `settings.json`. The product's `CLAUDE.md` stays under thirty lines |
 | Worker | A helper the session starts inside itself. A worker cannot start workers (seen once) |
-| Fill level | The session can read how full its context is |
+| Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way, seen once on 20 Nov); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |
 | Compaction | A full context is shrunk automatically, which loses what was read |
 | The time a session can run one thing | About thirty minutes for one command, as recorded in the process before this one |
 | Archiving | A session can be archived and unarchived |

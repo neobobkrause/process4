@@ -274,6 +274,34 @@ and slow, and thus should be minimized. So the fill level should be set to 50% -
 leaves a lot of room to continue work up to the 74% when compaction can occur." — 20 November
 2026.
 
+### Subject: Two reading-measurement findings — a silent cut read, and reading a session's own fill
+
+**The rule as it now stands.** Two findings from the 20 November reading measurement
+(`measurement/results/report.md`, `role-text-upward.md`) are settled, each as recommended
+(option (a)).
+
+- **A cut read is silent (finding 1): no further change.** When a single text exceeds the
+  harness's read-cut (about 25,000 tokens), a plain read returns a partial file and, in this
+  harness version, the tool result carries no notice of the cut (design part 7, section 2, now
+  records this). The guard is that the single-text maximum (60,000 bytes on Claude Code) sits
+  below the cut, and every governing text states its line count and last section at its top
+  (part 5, section 1), so a short read can be caught. No reading check, gate or stop is added.
+- **A session reading its own fill (finding 2): part 7, section 1 records how.** A session
+  reads its fill from the harness's own usage data (`get_session`, field `context_usage`), the
+  route the role sessions use; a bare headless `claude -p` reader cannot see it and guesses
+  (early, the safe way, seen once on 20 November). Where a session cannot read its fill, it
+  refreshes only at a natural pause (part 5, section 2; part 8). This corrected the flat
+  statement in part 7, section 1 that "the session can read how full its context is", and
+  bears on the 50 percent refresh trigger settled in the entry above.
+
+It adds no test, gate, review or stop: finding 1 adds nothing (the guard already holds and the
+measured fact is recorded), and finding 2 records a measured nuance and leans on the existing
+natural-pause fallback. Changed design part 7, section 1; part 7, section 2 was already updated
+with the four-values change above.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026 (on the standing page,
+the two-findings item; option (a) for each finding).
+
 ### Subject: How a tranche ends, and what shows its journeys complete
 
 **The rule as it now stands.** No change. A tranche ends when its rounds' partial walks
