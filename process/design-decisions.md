@@ -211,6 +211,23 @@ coordinator text needed the clause.
 
 **The owner's words.** "Instruction: add the prevition piece of the coordinator recording-path problem fix as you've described." — 19 November 2026.
 
+### Subject: How the starting-text size limit is measured
+
+**The rule as it now stands.** A role's starting-text size limit (4,096 bytes, a provisional
+figure — part 5, section 2) is measured against the role's **instructions proper**, with the
+one mechanical **fetch line** left out of the count: the single clone command a session runs
+once at start to fetch its read-only copy of the process, and never rereads. The limit exists
+so a role's rules are read in full, not skimmed; the fetch line carries only names and
+addresses (the pinned process version's commit id, the repository), not rules, so counting it
+against the budget measured the wrong thing. This changed design part 4, section 11 (the
+measurement rule) and part 5, section 2 (a note). It removes nothing a role reads and adds no
+test, gate, review or stop; texts that carry a fetch line (every role but PROCESS, which has
+none) gain headroom. The four size values themselves stay provisional and open (part 10,
+section 1, item 1). Surfaced by the owner's question on the review page; the size-headroom
+finding it answers is in the verification sweep, `process/research/verification-sweep-19nov.md`.
+
+**The owner's words.** "Decision: change the way the limit is measured as you've recommended." — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

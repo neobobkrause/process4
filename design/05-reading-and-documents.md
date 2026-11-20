@@ -23,6 +23,7 @@ All four are **provisional**. They stand, on the owner's word, until a second me
 | The fill level for a refresh | 40 percent | The owner's words of 17 Nov: "process4's policy of refreshing sessions when the context window exceeds 40% or more". Not measured |
 
 - The first two are sizes shown to work. Neither is a size at which reading was shown to fail.
+- **The owner's decision, 20 November 2026:** the role's-text limit is measured against the role's instructions proper, leaving the one mechanical fetch line (the clone command, run once and never reread) out of the count, so boilerplate does not crowd out the rules (part 4, section 11).
 - **Claude decided:** where a harness shows no fill level (part 8), the refresh comes only at a natural pause.
 
 ## 3. Keeping texts under the maximums
