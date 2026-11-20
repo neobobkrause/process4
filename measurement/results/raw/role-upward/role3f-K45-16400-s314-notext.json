@@ -1,0 +1,496 @@
+{
+ "id": "role3f-K45-16400-s314-notext",
+ "K": 45,
+ "bytes": 16536,
+ "params": [
+  "the watcher",
+  "before",
+  2,
+  50,
+  "--waiting",
+  "--nothing-to-change",
+  "ARCH",
+  "ARCH",
+  "a passing test names it",
+  "ROOT",
+  60,
+  20000,
+  "invoices/test/tmp/",
+  "listing",
+  "rebase onto the branch",
+  "ARCH",
+  "higher",
+  "invoices/codes.js",
+  "ROOT",
+  "push",
+  "the coordinator",
+  "the requirement numbers concerned",
+  "involves a date",
+  "included",
+  100,
+  "`listing`",
+  "related",
+  "UTC",
+  "whole numbers of thousandths of the main unit",
+  4,
+  "the watcher",
+  "the coordinator",
+  "uses",
+  40,
+  8,
+  "*.test.js",
+  "YYYY-MM-DD",
+  2,
+  "[invoices]",
+  "eight spaces",
+  100,
+  "the coordinator",
+  800,
+  "@slow",
+  "ROOT"
+ ],
+ "seed": 314,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 16,
+ "rulesFailed": [
+  1,
+  3,
+  5,
+  6,
+  9,
+  10,
+  11,
+  12,
+  14,
+  15,
+  16,
+  21,
+  23,
+  24,
+  25,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  35,
+  38,
+  39,
+  40,
+  41,
+  42,
+  44
+ ],
+ "completeness": 0.356,
+ "scenariosWrong": [
+  {
+   "id": "18a",
+   "rules": [
+    23
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "1a",
+   "rules": [
+    39
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "T",
+   "ok": false,
+   "free": true,
+   "answer": "Tell ARCH in one message (exact form NOT STATED)"
+  },
+  {
+   "id": "14a",
+   "rules": [
+    29
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "5a",
+   "rules": [
+    41
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (push with blocked flag and stop; flag not given)"
+  },
+  {
+   "id": "27a",
+   "rules": [
+    12
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "32a",
+   "rules": [
+    31
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "21a",
+   "rules": [
+    38
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "33a",
+   "rules": [
+    40
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "26a",
+   "rules": [
+    14
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "28a",
+   "rules": [
+    9
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "7a",
+   "rules": [
+    1
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "16a",
+   "rules": [
+    10
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "31a",
+   "rules": [
+    32
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (tell ARCH)"
+  },
+  {
+   "id": "9a",
+   "rules": [
+    27
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "36a",
+   "rules": [
+    24
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "17a",
+   "rules": [
+    28
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "40a",
+   "rules": [
+    33
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "13a",
+   "rules": [
+    44
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "23a",
+   "rules": [
+    42
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "20a",
+   "rules": [
+    35
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "44a",
+   "rules": [
+    11
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "37a",
+   "rules": [
+    6
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "6a",
+   "rules": [
+    21
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED (close with nothing-to-change flag; flag not given)"
+  },
+  {
+   "id": "42a",
+   "rules": [
+    25
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "29a",
+   "rules": [
+    30
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "22a",
+   "rules": [
+    3
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "45a",
+   "rules": [
+    15
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "39a",
+   "rules": [
+    16
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "N",
+   "ok": false,
+   "free": true,
+   "answer": "NOT STATED"
+  },
+  {
+   "id": "19a",
+   "rules": [
+    5
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 0,
+ "probes": [
+  {
+   "subject": "Juniper tally",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Nettle inventory",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Jasper index",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  }
+ ],
+ "reply": "S1: NOT STATED\nS2: B\nS3: B\nS4: A\nS5: C\nS6: A\nS7: D\nS8: A\nS9: D\nS10: Tell ARCH in one message (exact form NOT STATED)\nS11: D\nS12: B\nS13: B\nS14: NOT STATED\nS15: C\nS16: A\nS17: NOT STATED (push with blocked flag and stop; flag not given)\nS18: NOT STATED\nS19: NOT STATED\nS20: A\nS21: A\nS22: B\nS23: D\nS24: A\nS25: C\nS26: D\nS27: D\nS28: A\nS29: B\nS30: A\nS31: NOT STATED\nS32: B\nS33: B\nS34: B\nS35: B\nS36: D\nS37: NOT STATED\nS38: C\nS39: NOT STATED\nS40: D\nS41: NOT STATED\nS42: D\nS43: NOT STATED (tell ARCH)\nS44: A\nS45: D\nS46: B\nS47: A\nS48: NOT STATED\nS49: D\nS50: D\nS51: D\nS52: D\nS53: A\nS54: C\nS55: NOT STATED\nS56: D\nS57: A\nS58: C\nS59: NOT STATED\nS60: B\nS61: A\nS62: B\nS63: B\nS64: NOT STATED\nS65: D\nS66: NOT STATED\nS67: B\nS68: NOT STATED\nS69: NOT STATED (close with nothing-to-change flag; flag not given)\nS70: NOT STATED\nS71: D\nS72: C\nS73: B\nS74: C\nS75: B\nS76: D\nS77: C\nS78: C\nS79: A\nS80: A\nS81: C\nS82: C\nS83: B\nS84: D\nS85: C\nS86: NOT STATED\nS87: NOT STATED\nS88: D\nS89: C\nS90: D\nS91: C\nS92: A\nS93: A\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.11014380000000001,
+ "status": "DIRTY",
+ "seconds": 21
+}

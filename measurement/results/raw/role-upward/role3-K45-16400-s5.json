@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-16400-s5",
+ "K": 45,
+ "bytes": 16536,
+ "params": [
+  "ARCH",
+  "after",
+  3,
+  40,
+  "--held",
+  "--unchanged",
+  "ROOT",
+  "the coordinator",
+  "the internal walk passes",
+  "ROOT",
+  60,
+  16000,
+  "invoices/build/test/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "the coordinator",
+  "lower",
+  "invoices/errors.js",
+  "ARCH",
+  "push",
+  "the coordinator",
+  "your branch and pull request",
+  "can be seen on screen",
+  "excluded",
+  80,
+  "ARCH's message",
+  "listing",
+  "the customer's time zone",
+  "whole numbers of the smallest unit",
+  1,
+  "ARCH",
+  "the coordinator",
+  "listing",
+  80,
+  3,
+  "*.test.js",
+  "YYYY-MM-DD",
+  2,
+  "job:",
+  "four spaces",
+  500,
+  "the coordinator",
+  400,
+  "@slow",
+  "the watcher"
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 232,
+  "firstLast": 232,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "NP-7684",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "NS-7802",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "BH-6186",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "LP-5788",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": true,
+   "answer": "JD-4217",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "HG-9553",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: A\nS3: D\nS4: D\nS5: A\nS6: D\nS7: C\nS8: B\nS9: D\nS10: B\nS11: B\nS12: C\nS13: C\nS14: C\nS15: C\nS16: B\nS17: D\nS18: C\nS19: C\nS20: D\nS21: A\nS22: D\nS23: C\nS24: A\nS25: D\nS26: D\nS27: D\nS28: A\nS29: A\nS30: C\nS31: A\nS32: B\nS33: B\nS34: D\nS35: A\nS36: C\nS37: B\nS38: D\nS39: A\nS40: C\nS41: B\nS42: A\nS43: B\nS44: D\nS45: D\nS46: C\nS47: A\nS48: B\nS49: B\nS50: A\nS51: B\nS52: B\nS53: D\nS54: C\nS55: D\nS56: B\nS57: A\nS58: D\nS59: A\nS60: A\nS61: B\nS62: B\nS63: B\nS64: A\nS65: D\nS66: B\nS67: C\nS68: C\nS69: B\nS70: A\nS71: C\nS72: B\nS73: C\nS74: A\nS75: C\nS76: D\nS77: C\nS78: D\nS79: A\nS80: B\nS81: D\nS82: B\nS83: D\nS84: B\nS85: A\nS86: D\nS87: C\nS88: C\nS89: C\nS90: A\nS91: B\nS92: D\nS93: C\nQ1: NP-7684\nQ2: NS-7802\nQ3: BH-6186\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: LP-5788\nQ7: JD-4217\nQ8: HG-9553",
+ "compactions": 0,
+ "cost": 0.2851826,
+ "status": "CLEAN",
+ "seconds": 26
+}

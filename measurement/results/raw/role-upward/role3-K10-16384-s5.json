@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-16384-s5",
+ "K": 10,
+ "bytes": 16454,
+ "params": [
+  "ARCH",
+  "before",
+  4,
+  50,
+  "--blocked",
+  "--no-change",
+  "ARCH",
+  "the watcher",
+  "the internal walk passes",
+  "a lane"
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 206,
+  "firstLast": 206,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Nettle inventory",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "LR-8970",
+   "ok": true
+  },
+  {
+   "subject": "Quince census",
+   "planted": true,
+   "answer": "JH-2224",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "XC-7630",
+   "ok": true
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "LL-7372",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "LM-3000",
+   "ok": true
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "QZ-6160",
+   "ok": true
+  },
+  {
+   "subject": "Jasper index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: B\nS3: D\nS4: B\nS5: B\nS6: D\nS7: D\nS8: D\nS9: A\nS10: C\nS11: D\nS12: B\nS13: B\nS14: B\nS15: A\nS16: C\nS17: A\nS18: C\nS19: D\nS20: B\nS21: C\nS22: D\nS23: C\nQ1: NOT STATED\nQ2: LR-8970\nQ3: JH-2224\nQ4: XC-7630\nQ5: LL-7372\nQ6: LM-3000\nQ7: QZ-6160\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.199969,
+ "status": "CLEAN",
+ "seconds": 25
+}

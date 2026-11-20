@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-32768-s4",
+ "K": 45,
+ "bytes": 32732,
+ "params": [
+  "the watcher",
+  "after",
+  2,
+  50,
+  "--blocked",
+  "--nothing-to-change",
+  "PROCESS",
+  "ROOT",
+  "a passing test names it",
+  "ROOT",
+  120,
+  32000,
+  "invoices/test/out/",
+  "related",
+  "start a new branch from it",
+  "ROOT",
+  "lower",
+  "invoices/errors.js",
+  "ROOT",
+  "check",
+  "ROOT",
+  "your branch and module",
+  "involves a date",
+  "excluded",
+  80,
+  "`listing`",
+  "results",
+  "UTC",
+  "decimal strings",
+  1,
+  "ARCH",
+  "the watcher",
+  "listing",
+  60,
+  5,
+  "*.test.js",
+  "Mon DD, YYYY",
+  3,
+  "job:",
+  "tabs",
+  200,
+  "the coordinator",
+  800,
+  "@slow",
+  "ARCH"
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 248,
+  "firstLast": 248,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "XX-2100",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "CB-1671",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "FM-6341",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "WK-6752",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "BX-1264",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "XF-9492",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: B\nS3: C\nS4: A\nS5: D\nS6: B\nS7: D\nS8: B\nS9: B\nS10: B\nS11: D\nS12: C\nS13: B\nS14: D\nS15: D\nS16: B\nS17: C\nS18: D\nS19: C\nS20: B\nS21: A\nS22: B\nS23: A\nS24: B\nS25: A\nS26: D\nS27: C\nS28: D\nS29: A\nS30: A\nS31: C\nS32: A\nS33: A\nS34: C\nS35: C\nS36: C\nS37: B\nS38: A\nS39: D\nS40: C\nS41: D\nS42: A\nS43: C\nS44: B\nS45: D\nS46: C\nS47: B\nS48: C\nS49: B\nS50: B\nS51: D\nS52: A\nS53: B\nS54: A\nS55: D\nS56: A\nS57: D\nS58: D\nS59: C\nS60: C\nS61: D\nS62: C\nS63: C\nS64: C\nS65: C\nS66: C\nS67: B\nS68: D\nS69: C\nS70: B\nS71: D\nS72: A\nS73: C\nS74: D\nS75: D\nS76: B\nS77: C\nS78: A\nS79: D\nS80: B\nS81: C\nS82: C\nS83: D\nS84: B\nS85: A\nS86: C\nS87: D\nS88: B\nS89: C\nS90: A\nS91: A\nS92: D\nS93: D\nQ1: XX-2100\nQ2: CB-1671\nQ3: FM-6341\nQ4: WK-6752\nQ5: NOT STATED\nQ6: BX-1264\nQ7: XF-9492\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.4127974,
+ "status": "CLEAN",
+ "seconds": 29
+}

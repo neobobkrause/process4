@@ -1,0 +1,125 @@
+{
+ "id": "role3f-K45-16400-s3",
+ "K": 45,
+ "bytes": 16407,
+ "params": [
+  "the coordinator",
+  "after",
+  3,
+  60,
+  "--waiting",
+  "--no-change",
+  "the coordinator",
+  "the coordinator",
+  "the internal walk passes",
+  "the coordinator",
+  200,
+  20000,
+  "invoices/test/out/",
+  "listing",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "higher",
+  "invoices/errors.js",
+  "the watcher",
+  "ready",
+  "ARCH",
+  "your module and pull request",
+  "can be seen on screen",
+  "included",
+  140,
+  "ARCH's message",
+  "check",
+  "the customer's time zone",
+  "decimal strings",
+  3,
+  "the watcher",
+  "ARCH",
+  "uses",
+  100,
+  5,
+  "test_*.js",
+  "DD Mon YYYY",
+  3,
+  "INV-",
+  "eight spaces",
+  50,
+  "ROOT",
+  800,
+  "@slow",
+  "the watcher"
+ ],
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 203,
+  "firstLast": 203,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "GT-8320",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "KX-7757",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "DV-7709",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "CL-7620",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "QS-1750",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "QD-9046",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: D\nS3: Ask ROOT before renaming it.\nS4: A\nS5: A\nS6: A\nS7: D\nS8: A\nS9: B\nS10: Run `p4 listing` and fix what it reports, `p4 push`, then `p4 ready` as the last act.\nS11: D\nS12: C\nS13: B\nS14: D\nS15: C\nS16: C\nS17: C\nS18: A\nS19: B\nS20: D\nS21: C\nS22: C\nS23: C\nS24: D\nS25: C\nS26: A\nS27: Report it to the coordinator, written once; do not fix or work round it.\nS28: C\nS29: B\nS30: B\nS31: D\nS32: The watcher's written agreement.\nS33: B\nS34: D\nS35: Run no test; `p4 close --no-change`.\nS36: B\nS37: D\nS38: D\nS39: D\nS40: B\nS41: B\nS42: Report it to the coordinator in one message; never fix it yourself.\nS43: A\nS44: Store it in the customer's time zone; convert only when displaying.\nS45: Begin it with `INV-`.\nS46: C\nS47: Name it `test_parseInvoice.js` (`test_*.js`).\nS48: B\nS49: C\nS50: B\nS51: D\nS52: Indent it with eight spaces.\nS53: Tag it `@slow`.\nS54: A\nS55: C\nS56: Run `p4 uses`.\nS57: A\nS58: `p4 push --waiting ledger \"<why>\"`, then stop (last act `p4 ready`).\nS59: D\nS60: B\nS61: B\nS62: A\nS63: Send it back to the watcher, with the reason.\nS64: A\nS65: 05 Mar 2026 (DD Mon YYYY).\nS66: D\nS67: B\nS68: A\nS69: A\nS70: A\nS71: B\nS72: C\nS73: C\nS74: A\nS75: B\nS76: B\nS77: C\nS78: Put them under `invoices/test/out/`, never committed.\nS79: C\nS80: B\nS81: Report it to ARCH before fixing it.\nS82: B\nS83: B\nS84: B\nS85: D\nS86: A\nS87: Return an error carrying a code from `invoices/errors.js`, not a bare string.\nS88: C\nS89: Run `p4 check` first and name the tests it lists in the message to ARCH.\nS90: Last act is `p4 ready`.\nS91: B\nS92: Send it to the watcher, naming R-14; do not reinterpret it.\nS93: D\nQ1: GT-8320\nQ2: KX-7757\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: DV-7709\nQ6: CL-7620\nQ7: QS-1750\nQ8: QD-9046",
+ "compactions": 0,
+ "cost": 0.2827394,
+ "status": "CLEAN",
+ "seconds": 42
+}

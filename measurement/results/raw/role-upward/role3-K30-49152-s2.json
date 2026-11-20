@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-49152-s2",
+ "K": 30,
+ "bytes": 49277,
+ "params": [
+  "the watcher",
+  "before",
+  4,
+  60,
+  "--waiting",
+  "--nothing-to-change",
+  "PROCESS",
+  "the coordinator",
+  "ARCH says so",
+  "the watcher",
+  120,
+  32000,
+  "invoices/.scratch/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "higher",
+  "invoices/errors.js",
+  "ARCH",
+  "check",
+  "the watcher",
+  "the requirement numbers concerned",
+  "involves money",
+  "excluded",
+  120,
+  "ARCH's message",
+  "related",
+  "the customer's time zone",
+  "whole numbers of thousandths of the main unit",
+  2
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 392,
+  "firstLast": 392,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "BD-6710",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "RK-7792",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "TR-2059",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": true,
+   "answer": "RK-8533",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "DD-2835",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "SW-6734",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: A\nS3: C\nS4: C\nS5: B\nS6: C\nS7: C\nS8: D\nS9: B\nS10: A\nS11: D\nS12: C\nS13: A\nS14: C\nS15: B\nS16: C\nS17: B\nS18: C\nS19: C\nS20: D\nS21: A\nS22: C\nS23: C\nS24: A\nS25: A\nS26: A\nS27: A\nS28: A\nS29: C\nS30: C\nS31: D\nS32: C\nS33: A\nS34: D\nS35: C\nS36: D\nS37: C\nS38: C\nS39: B\nS40: A\nS41: C\nS42: C\nS43: C\nS44: B\nS45: D\nS46: C\nS47: A\nS48: B\nS49: D\nS50: D\nS51: C\nS52: B\nS53: A\nS54: C\nS55: D\nS56: D\nS57: A\nS58: C\nS59: C\nS60: B\nS61: A\nS62: B\nS63: A\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: BD-6710\nQ4: RK-7792\nQ5: TR-2059\nQ6: RK-8533\nQ7: DD-2835\nQ8: SW-6734",
+ "compactions": 0,
+ "cost": 0.513253,
+ "status": "CLEAN",
+ "seconds": 26
+}

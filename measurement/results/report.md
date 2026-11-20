@@ -16,7 +16,7 @@ Run 20 November 2026 by the lead session for the measurement, following `measure
 |---|---|---|---|---|
 | Single text | 24,000 B | **60,000 B** on Claude Code (24,000 stays until Codex is measured; see below) | 20% below P = 76,000; also below the smallest whole-read ceiling seen (64,000–67,000 B for dense text) | Confirmed with headroom. The limit is mechanical: no fidelity break was found below the cut |
 | Set of texts | 175,000 B | **175,000 B** (the rule allows 176,000) | 20% below P = 220,000, the largest size tested | Confirmed with headroom. No break found up to 220,000 |
-| Role text | 4,096 B / 10 rules | **4,096 B / 10 numbered rule lines** (design caps) | Passed at 20 lines (46 single rules) and at 6,187 B; the rule's figures, 19 rules and 5,120 B, sit above the caps | Confirmed with headroom, by both rule counts |
+| Role text | 4,096 B / 10 rules | **27,648 B / 44 numbered rule lines** (superseded; see `role-text-upward.md`) | Passed with 45 rules at 32.9 KB, and with 30 rules at 49 KB, on a battery that tells reading from guessing; 0.85 × 32,732 = 27,648; 45 − 1 = 44 | Can be raised. The first run's "confirmed at the caps" rested on a battery a session passed without the text |
 | Fill level | 40% | **40%** (the rule allows 65%; protocol 7.3 says not to raise it) | Passed at 80%; 80 − 15 = 65 | Confirmed with headroom. No fall-off found up to 80% |
 
 **Read first.** Nothing tested broke on fidelity. Every trial that got its text whole was clean: 103 trials and about 1,200 probe questions, with no position class missed and no negative control failed. So these numbers are floors shown to work, not limits found. The only boundary found is the harness's mechanical cut on a single read (about 25,000 tokens). The single-text figure comes from that cut. The other three come from the largest point tested and the design's caps. The protocol expects this on a 1M-token model (3.4, 6.3).
@@ -67,6 +67,9 @@ Each set held whole real governing files, plus one neutral filler appendix at a 
 **Codex note.** Re-measure on Codex. The window and per-read behaviour differ there.
 
 ## Value 3: a role's starting text
+
+**Superseded by `role-text-upward.md`.** The battery below could not tell reading from guessing: with no role text at all, a session got 37 of 40 rules right. Its passes are weak evidence, and the 4,096 / 10 verdict came from the design's caps, not from a break. The upward run uses a battery that a session without the text fails, and it finds 45 rules and 32.9 KB (also 30 rules and 49 KB) as safe as the current limit.
+
 
 The role text was a job's starting text. Its 20 numbered rule lines are lines 1–10 from the real `starting_texts/job.md`, lightly condensed, plus 10 realistic lines drawn from the other drafts (`arch.md`, `lane.md`, `coordinator.md`) and the design. The rest is the same text: identity, who directs, reading list, acts, and a neutral "About the module" section that pads to the byte target. Rule point R*k* uses lines 1..*k*.
 

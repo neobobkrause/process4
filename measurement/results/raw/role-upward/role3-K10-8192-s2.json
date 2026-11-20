@@ -1,0 +1,90 @@
+{
+ "id": "role3-K10-8192-s2",
+ "K": 10,
+ "bytes": 8309,
+ "params": [
+  "the coordinator",
+  "before",
+  2,
+  40,
+  "--held",
+  "--no-change",
+  "ROOT",
+  "the watcher",
+  "a passing test names it",
+  "ROOT"
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 102,
+  "firstLast": 102,
+  "firstErr": null
+ },
+ "rulesApplied": 10,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Hazel manifest",
+   "planted": true,
+   "answer": "PZ-8303",
+   "ok": true
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Orchid register",
+   "planted": true,
+   "answer": "MP-2825",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": true,
+   "answer": "SZ-2963",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "WZ-7996",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "GQ-4606",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "GZ-7369",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: D\nS3: A\nS4: A\nS5: B\nS6: B\nS7: D\nS8: C\nS9: C\nS10: B\nS11: B\nS12: B\nS13: D\nS14: D\nS15: D\nS16: B\nS17: A\nS18: D\nS19: B\nS20: C\nS21: D\nS22: C\nS23: D\nQ1: PZ-8303\nQ2: NOT STATED\nQ3: MP-2825\nQ4: NOT STATED\nQ5: SZ-2963\nQ6: WZ-7996\nQ7: GQ-4606\nQ8: GZ-7369",
+ "compactions": 0,
+ "cost": 0.137979,
+ "status": "CLEAN",
+ "seconds": 27
+}

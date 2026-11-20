@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-16400-s3",
+ "K": 45,
+ "bytes": 16407,
+ "params": [
+  "the coordinator",
+  "after",
+  3,
+  60,
+  "--waiting",
+  "--no-change",
+  "the coordinator",
+  "the coordinator",
+  "the internal walk passes",
+  "the coordinator",
+  200,
+  20000,
+  "invoices/test/out/",
+  "listing",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "higher",
+  "invoices/errors.js",
+  "the watcher",
+  "ready",
+  "ARCH",
+  "your module and pull request",
+  "can be seen on screen",
+  "included",
+  140,
+  "ARCH's message",
+  "check",
+  "the customer's time zone",
+  "decimal strings",
+  3,
+  "the watcher",
+  "ARCH",
+  "uses",
+  100,
+  5,
+  "test_*.js",
+  "DD Mon YYYY",
+  3,
+  "INV-",
+  "eight spaces",
+  50,
+  "ROOT",
+  800,
+  "@slow",
+  "the watcher"
+ ],
+ "seed": 3,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 203,
+  "firstLast": 203,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "GT-8320",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "KX-7757",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "DV-7709",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "CL-7620",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "QS-1750",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "QD-9046",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: D\nS3: C\nS4: A\nS5: A\nS6: A\nS7: D\nS8: A\nS9: B\nS10: B\nS11: D\nS12: C\nS13: B\nS14: D\nS15: C\nS16: C\nS17: C\nS18: A\nS19: B\nS20: D\nS21: C\nS22: C\nS23: C\nS24: D\nS25: C\nS26: A\nS27: A\nS28: C\nS29: B\nS30: B\nS31: D\nS32: B\nS33: B\nS34: D\nS35: D\nS36: B\nS37: D\nS38: D\nS39: D\nS40: B\nS41: B\nS42: C\nS43: A\nS44: B\nS45: A\nS46: C\nS47: C\nS48: B\nS49: C\nS50: B\nS51: D\nS52: C\nS53: C\nS54: A\nS55: C\nS56: C\nS57: A\nS58: B\nS59: D\nS60: B\nS61: B\nS62: A\nS63: A\nS64: A\nS65: C\nS66: D\nS67: B\nS68: A\nS69: A\nS70: A\nS71: B\nS72: C\nS73: C\nS74: A\nS75: B\nS76: B\nS77: C\nS78: C\nS79: C\nS80: B\nS81: C\nS82: B\nS83: B\nS84: B\nS85: D\nS86: A\nS87: D\nS88: C\nS89: A\nS90: D\nS91: B\nS92: C\nS93: D\nQ1: GT-8320\nQ2: KX-7757\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: DV-7709\nQ6: CL-7620\nQ7: QS-1750\nQ8: QD-9046",
+ "compactions": 0,
+ "cost": 0.2677706,
+ "status": "CLEAN",
+ "seconds": 26
+}

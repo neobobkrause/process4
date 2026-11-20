@@ -1,0 +1,117 @@
+{
+ "id": "role3f-K45-16400-s301-openbook",
+ "K": 45,
+ "bytes": 16339,
+ "params": [
+  "the watcher",
+  "before",
+  4,
+  30,
+  "--held",
+  "--noop",
+  "ARCH",
+  "the coordinator",
+  "ARCH says so",
+  "the watcher",
+  200,
+  20000,
+  "invoices/test/out/",
+  "results",
+  "merge the branch",
+  "ARCH",
+  "higher",
+  "invoices/codes.js",
+  "the watcher",
+  "push",
+  "ROOT",
+  "your branch and pull request",
+  "can be seen on screen",
+  "excluded",
+  100,
+  "`listing`",
+  "check",
+  "the firm's time zone",
+  "pairs of main and smallest units",
+  1,
+  "the coordinator",
+  "ROOT",
+  "related",
+  40,
+  3,
+  "*.test.js",
+  "YYYY-MM-DD",
+  4,
+  "invoices:",
+  "eight spaces",
+  100,
+  "the watcher",
+  800,
+  "@remote",
+  "the watcher"
+ ],
+ "seed": 301,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Heron docket",
+   "planted": true,
+   "answer": "XJ-7227",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "TG-8235",
+   "ok": true
+  },
+  {
+   "subject": "Ember register",
+   "planted": true,
+   "answer": "TR-1741",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "ZG-7640",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Hazel manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "KV-9622",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "HM-9497",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: C\nS3: Report it to the watcher, in one message; don't fix it\nS4: B\nS5: B\nS6: B\nS7: Run `p4 results`, fix what it reports, then `p4 push`\nS8: C\nS9: C\nS10: A\nS11: A\nS12: A\nS13: B\nS14: B\nS15: D\nS16: A\nS17: D\nS18: A\nS19: Begin it with `invoices:`\nS20: A\nS21: D\nS22: B\nS23: D\nS24: `p4 related`\nS25: A\nS26: `parseInvoice.test.js`\nS27: B\nS28: A\nS29: B\nS30: D\nS31: C\nS32: B\nS33: B\nS34: A\nS35: B\nS36: Ask the watcher first\nS37: A\nS38: B\nS39: Indent it with eight spaces\nS40: D\nS41: A\nS42: Return an error carrying a code from `invoices/codes.js`\nS43: Report it to ARCH, written once; don't fix or work round it\nS44: Write them under `invoices/test/out/`, never committed\nS45: D\nS46: B\nS47: C\nS48: Send it to the coordinator, with its number R-14\nS49: Send it back to the watcher, with the reason\nS50: D\nS51: Run `p4 check` first; name the tests it lists in the message to ARCH\nS52: C\nS53: D\nS54: A\nS55: B\nS56: Store it in the firm's time zone\nS57: Tag it `@remote`\nS58: C\nS59: C\nS60: 2026-03-05\nS61: A\nS62: B\nS63: Last act is `p4 push`\nS64: B\nS65: A\nS66: B\nS67: D\nS68: C\nS69: B\nS70: ARCH's written agreement\nS71: C\nS72: A\nS73: C\nS74: B\nS75: D\nS76: C\nS77: C\nS78: C\nS79: D\nS80: C\nS81: C\nS82: D\nS83: D\nS84: A\nS85: Tell ROOT before fixing it\nS86: C\nS87: `p4 push --held ledger \"<why>\"`, then stop\nS88: A\nS89: B\nS90: C\nS91: Run no test; `p4 close --noop`\nS92: B\nS93: B\nQ1: XJ-7227\nQ2: TG-8235\nQ3: TR-1741\nQ4: ZG-7640\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: KV-9622\nQ8: HM-9497",
+ "compactions": 0,
+ "cost": 0.1527678,
+ "status": "CLEAN",
+ "seconds": 19
+}

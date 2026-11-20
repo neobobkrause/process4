@@ -1,0 +1,117 @@
+{
+ "id": "role3-K45-32768-s202-openbook",
+ "K": 45,
+ "bytes": 32639,
+ "params": [
+  "ARCH",
+  "before",
+  2,
+  40,
+  "--waiting",
+  "--no-change",
+  "ROOT",
+  "ROOT",
+  "it is merged",
+  "the coordinator",
+  60,
+  24000,
+  "invoices/.scratch/",
+  "related",
+  "start a new branch from it",
+  "ROOT",
+  "higher",
+  "invoices/codes.js",
+  "ARCH",
+  "ready",
+  "ARCH",
+  "your branch and module",
+  "involves money",
+  "excluded",
+  80,
+  "ARCH's message",
+  "results",
+  "the firm's time zone",
+  "whole numbers of thousandths of the main unit",
+  2,
+  "ROOT",
+  "ARCH",
+  "listing",
+  60,
+  12,
+  "*_test.js",
+  "DD Mon YYYY",
+  5,
+  "job:",
+  "four spaces",
+  100,
+  "the watcher",
+  200,
+  "@slow",
+  "ARCH"
+ ],
+ "seed": 202,
+ "openbook": true,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "JH-9810",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "GN-8210",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "CJ-4169",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "VC-8835",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "QZ-3503",
+   "ok": true
+  },
+  {
+   "subject": "Linden log",
+   "planted": true,
+   "answer": "XN-3525",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: B\nS2: A\nS3: C\nS4: A\nS5: C\nS6: C\nS7: B\nS8: D\nS9: D\nS10: D\nS11: A\nS12: B\nS13: B\nS14: C\nS15: C\nS16: D\nS17: D\nS18: C\nS19: C\nS20: A\nS21: B\nS22: A\nS23: A\nS24: D\nS25: D\nS26: A\nS27: C\nS28: A\nS29: C\nS30: B\nS31: C\nS32: A\nS33: D\nS34: B\nS35: D\nS36: D\nS37: C\nS38: D\nS39: D\nS40: B\nS41: D\nS42: A\nS43: C\nS44: B\nS45: A\nS46: B\nS47: C\nS48: D\nS49: C\nS50: A\nS51: D\nS52: B\nS53: A\nS54: A\nS55: C\nS56: B\nS57: A\nS58: C\nS59: C\nS60: C\nS61: A\nS62: B\nS63: B\nS64: B\nS65: C\nS66: B\nS67: D\nS68: A\nS69: B\nS70: B\nS71: A\nS72: D\nS73: D\nS74: D\nS75: A\nS76: C\nS77: C\nS78: C\nS79: B\nS80: D\nS81: D\nS82: B\nS83: B\nS84: C\nS85: A\nS86: D\nS87: D\nS88: B\nS89: B\nS90: D\nS91: B\nS92: A\nS93: B\nQ1: JH-9810\nQ2: GN-8210\nQ3: NOT STATED\nQ4: CJ-4169\nQ5: VC-8835\nQ6: QZ-3503\nQ7: XN-3525\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.2025278,
+ "status": "CLEAN",
+ "seconds": 17
+}

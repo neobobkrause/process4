@@ -1,0 +1,110 @@
+{
+ "id": "role3f-K30-16400-s2",
+ "K": 30,
+ "bytes": 16512,
+ "params": [
+  "the watcher",
+  "before",
+  3,
+  60,
+  "--waiting",
+  "--unchanged",
+  "PROCESS",
+  "ARCH",
+  "a passing test names it",
+  "ROOT",
+  60,
+  16000,
+  "invoices/.scratch/",
+  "related",
+  "rebase onto the branch",
+  "ARCH",
+  "lower",
+  "invoices/codes.js",
+  "the coordinator",
+  "ready",
+  "ROOT",
+  "your branch and pull request",
+  "involves money",
+  "included",
+  80,
+  "your job block",
+  "listing",
+  "the firm's time zone",
+  "pairs of main and smallest units",
+  4
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 142,
+  "firstLast": 142,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Damson ledger",
+   "planted": true,
+   "answer": "HK-1479",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "SX-4352",
+   "ok": true
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "NG-4530",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": true,
+   "answer": "VC-8209",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "NN-5446",
+   "ok": true
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": true,
+   "answer": "XM-5028",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: C\nS3: A\nS4: D\nS5: D\nS6: Store it in the firm's time zone; convert only when displaying.\nS7: A\nS8: A\nS9: C\nS10: A\nS11: C\nS12: D\nS13: C\nS14: Run no test; `p4 close --unchanged`.\nS15: D\nS16: B\nS17: A\nS18: B\nS19: D\nS20: C\nS21: Return an error carrying a code from `invoices/codes.js`, not a bare string.\nS22: Report it to the watcher, in one message; do not fix it.\nS23: C\nS24: D\nS25: C\nS26: A\nS27: A\nS28: B\nS29: D\nS30: Put them under `invoices/.scratch/`, never committed.\nS31: C\nS32: B\nS33: D\nS34: A\nS35: C\nS36: A\nS37: D\nS38: A\nS39: B\nS40: B\nS41: Last act is `p4 ready`.\nS42: Report it to PROCESS, written once; do not fix or work round it.\nS43: A\nS44: A\nS45: Run `p4 related` and fix what it reports, then `p4 push`.\nS46: B\nS47: C\nS48: ARCH's written agreement.\nS49: C\nS50: D\nS51: C\nS52: D\nS53: `p4 push --waiting ledger \"<why>\"`, then stop (last act `p4 ready`).\nS54: A\nS55: D\nS56: C\nS57: D\nS58: A\nS59: B\nS60: D\nS61: B\nS62: Run `p4 listing` first; name its tests in the message to ARCH.\nS63: B\nQ1: NOT STATED\nQ2: HK-1479\nQ3: SX-4352\nQ4: NOT STATED\nQ5: NG-4530\nQ6: VC-8209\nQ7: NN-5446\nQ8: XM-5028",
+ "compactions": 0,
+ "cost": 0.2580554,
+ "status": "CLEAN",
+ "seconds": 36
+}

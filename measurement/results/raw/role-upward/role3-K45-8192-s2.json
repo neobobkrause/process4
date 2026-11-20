@@ -1,0 +1,125 @@
+{
+ "id": "role3-K45-8192-s2",
+ "K": 45,
+ "bytes": 8287,
+ "params": [
+  "the coordinator",
+  "before",
+  5,
+  40,
+  "--waiting",
+  "--nothing-to-change",
+  "PROCESS",
+  "the coordinator",
+  "a passing test names it",
+  "the coordinator",
+  300,
+  20000,
+  "invoices/test/tmp/",
+  "listing",
+  "start a new branch from it",
+  "the coordinator",
+  "higher",
+  "invoices/codes.js",
+  "the coordinator",
+  "push",
+  "the coordinator",
+  "your module and pull request",
+  "is marked [walk]",
+  "excluded",
+  120,
+  "your job block",
+  "related",
+  "UTC",
+  "pairs of main and smallest units",
+  1,
+  "ARCH",
+  "ARCH",
+  "related",
+  100,
+  3,
+  "*_test.js",
+  "YYYY-MM-DD",
+  2,
+  "job:",
+  "two spaces",
+  50,
+  "ROOT",
+  200,
+  "@remote",
+  "ROOT"
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 107,
+  "firstLast": 107,
+  "firstErr": null
+ },
+ "rulesApplied": 45,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "LG-3395",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "BZ-3057",
+   "ok": true
+  },
+  {
+   "subject": "Yarrow journal",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "NF-2408",
+   "ok": true
+  },
+  {
+   "subject": "Vellum schedule",
+   "planted": true,
+   "answer": "TX-4761",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "SF-4782",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": true,
+   "answer": "MK-4524",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: A\nS3: D\nS4: B\nS5: D\nS6: A\nS7: C\nS8: C\nS9: A\nS10: B\nS11: D\nS12: C\nS13: D\nS14: A\nS15: B\nS16: A\nS17: B\nS18: C\nS19: C\nS20: A\nS21: D\nS22: C\nS23: B\nS24: C\nS25: A\nS26: D\nS27: B\nS28: C\nS29: C\nS30: A\nS31: C\nS32: B\nS33: C\nS34: A\nS35: D\nS36: D\nS37: D\nS38: D\nS39: D\nS40: B\nS41: B\nS42: C\nS43: A\nS44: C\nS45: B\nS46: C\nS47: D\nS48: A\nS49: A\nS50: C\nS51: B\nS52: B\nS53: A\nS54: B\nS55: C\nS56: B\nS57: C\nS58: A\nS59: C\nS60: D\nS61: A\nS62: D\nS63: C\nS64: B\nS65: C\nS66: C\nS67: D\nS68: C\nS69: D\nS70: B\nS71: C\nS72: D\nS73: D\nS74: C\nS75: C\nS76: B\nS77: B\nS78: C\nS79: B\nS80: A\nS81: A\nS82: B\nS83: D\nS84: C\nS85: C\nS86: B\nS87: B\nS88: C\nS89: C\nS90: C\nS91: D\nS92: A\nS93: D\nQ1: LG-3395\nQ2: BZ-3057\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NF-2408\nQ6: TX-4761\nQ7: SF-4782\nQ8: MK-4524",
+ "compactions": 0,
+ "cost": 0.1979822,
+ "status": "CLEAN",
+ "seconds": 25
+}

@@ -1,0 +1,106 @@
+{
+ "id": "role2-K40-16384-s104-notext",
+ "K": 40,
+ "bytes": 16486,
+ "singleRules": 80,
+ "seed": 104,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 37,
+ "rulesFailed": [
+  10,
+  31,
+  39
+ ],
+ "completeness": 0.925,
+ "scenariosWrong": [
+  {
+   "id": "10n",
+   "rules": [
+    10
+   ],
+   "kind": "near",
+   "expected": "A",
+   "got": "D",
+   "ok": false
+  },
+  {
+   "id": "31a",
+   "rules": [
+    31
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "C",
+   "ok": false
+  },
+  {
+   "id": "39a",
+   "rules": [
+    39
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "A",
+   "ok": false
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 0,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Umber ledger",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Jasper index",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Garnet docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  }
+ ],
+ "reply": "S1: A\nS2: B\nS3: D\nS4: C\nS5: A\nS6: B\nS7: D\nS8: C\nS9: C\nS10: D\nS11: A\nS12: A\nS13: B\nS14: C\nS15: A\nS16: D\nS17: D\nS18: B\nS19: C\nS20: A\nS21: C\nS22: A\nS23: D\nS24: B\nS25: D\nS26: C\nS27: B\nS28: B\nS29: A\nS30: C\nS31: A\nS32: C\nS33: C\nS34: D\nS35: B\nS36: A\nS37: B\nS38: B\nS39: D\nS40: B\nS41: B\nS42: D\nS43: B\nS44: B\nS45: A\nS46: D\nS47: A\nS48: A\nS49: B\nS50: C\nS51: A\nS52: C\nS53: A\nS54: A\nS55: D\nS56: C\nS57: B\nS58: C\nS59: C\nS60: B\nS61: C\nS62: B\nS63: D\nS64: C\nS65: A\nS66: C\nS67: B\nS68: C\nS69: B\nS70: B\nS71: A\nS72: B\nS73: A\nS74: A\nS75: A\nS76: C\nS77: B\nS78: A\nS79: C\nS80: B\nS81: A\nS82: D\nS83: A\nS84: C\nS85: A\nS86: B\nS87: C\nS88: B\nS89: C\nS90: A\nS91: D\nS92: C\nS93: C\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.12460579999999999,
+ "status": "DIRTY",
+ "seconds": 15
+}

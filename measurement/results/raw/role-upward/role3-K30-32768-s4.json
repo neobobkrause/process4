@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-32768-s4",
+ "K": 30,
+ "bytes": 32205,
+ "params": [
+  "the watcher",
+  "after",
+  2,
+  40,
+  "--held",
+  "--noop",
+  "the coordinator",
+  "ARCH",
+  "it is merged",
+  "a lane",
+  120,
+  24000,
+  "invoices/build/test/",
+  "listing",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "higher",
+  "invoices/errors.json",
+  "the watcher",
+  "check",
+  "the coordinator",
+  "the requirement numbers concerned",
+  "involves money",
+  "included",
+  140,
+  "`listing`",
+  "related",
+  "UTC",
+  "whole numbers of thousandths of the main unit",
+  2
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 294,
+  "firstLast": 294,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "HZ-2797",
+   "ok": true
+  },
+  {
+   "subject": "Cobalt survey",
+   "planted": true,
+   "answer": "TH-1060",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "GQ-7419",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "GM-8013",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": true,
+   "answer": "SS-8399",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "HG-2126",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: D\nS3: D\nS4: A\nS5: A\nS6: B\nS7: B\nS8: D\nS9: B\nS10: B\nS11: A\nS12: D\nS13: D\nS14: B\nS15: B\nS16: B\nS17: C\nS18: C\nS19: A\nS20: A\nS21: A\nS22: C\nS23: B\nS24: C\nS25: B\nS26: D\nS27: B\nS28: A\nS29: D\nS30: D\nS31: B\nS32: B\nS33: C\nS34: D\nS35: D\nS36: A\nS37: B\nS38: A\nS39: B\nS40: C\nS41: B\nS42: C\nS43: C\nS44: A\nS45: A\nS46: B\nS47: B\nS48: D\nS49: D\nS50: A\nS51: A\nS52: A\nS53: C\nS54: C\nS55: A\nS56: C\nS57: A\nS58: A\nS59: D\nS60: B\nS61: B\nS62: C\nS63: A\nQ1: HZ-2797\nQ2: TH-1060\nQ3: GQ-7419\nQ4: NOT STATED\nQ5: GM-8013\nQ6: NOT STATED\nQ7: SS-8399\nQ8: HG-2126",
+ "compactions": 0,
+ "cost": 0.4091294,
+ "status": "CLEAN",
+ "seconds": 29
+}

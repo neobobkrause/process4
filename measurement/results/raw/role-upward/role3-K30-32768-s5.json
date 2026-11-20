@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-32768-s5",
+ "K": 30,
+ "bytes": 32773,
+ "params": [
+  "ARCH",
+  "before",
+  3,
+  40,
+  "--blocked",
+  "--nothing-to-change",
+  "PROCESS",
+  "the coordinator",
+  "it is merged",
+  "a lane",
+  60,
+  20000,
+  "invoices/.scratch/",
+  "check",
+  "rebase onto the branch",
+  "the coordinator",
+  "lower",
+  "invoices/errors.js",
+  "the coordinator",
+  "ready",
+  "the watcher",
+  "your branch and module",
+  "is marked [walk]",
+  "included",
+  120,
+  "your job block",
+  "results",
+  "UTC",
+  "decimal strings",
+  1
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 304,
+  "firstLast": 304,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "PF-5612",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "CN-5573",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "DS-6747",
+   "ok": true
+  },
+  {
+   "subject": "Marigold index",
+   "planted": true,
+   "answer": "GF-9455",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "HD-7227",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "DK-2937",
+   "ok": true
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  }
+ ],
+ "reply": "S1: A\nS2: D\nS3: A\nS4: A\nS5: C\nS6: B\nS7: A\nS8: C\nS9: D\nS10: D\nS11: C\nS12: A\nS13: B\nS14: C\nS15: D\nS16: A\nS17: C\nS18: C\nS19: B\nS20: B\nS21: A\nS22: C\nS23: B\nS24: C\nS25: A\nS26: C\nS27: C\nS28: A\nS29: B\nS30: B\nS31: D\nS32: B\nS33: D\nS34: B\nS35: A\nS36: C\nS37: C\nS38: C\nS39: C\nS40: C\nS41: B\nS42: D\nS43: D\nS44: B\nS45: A\nS46: B\nS47: A\nS48: D\nS49: A\nS50: D\nS51: C\nS52: B\nS53: B\nS54: A\nS55: C\nS56: B\nS57: C\nS58: C\nS59: A\nS60: A\nS61: B\nS62: D\nS63: C\nQ1: PF-5612\nQ2: CN-5573\nQ3: DS-6747\nQ4: GF-9455\nQ5: NOT STATED\nQ6: HD-7227\nQ7: DK-2937\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.3883634,
+ "status": "CLEAN",
+ "seconds": 26
+}

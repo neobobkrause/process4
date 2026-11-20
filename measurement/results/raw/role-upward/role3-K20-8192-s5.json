@@ -1,0 +1,100 @@
+{
+ "id": "role3-K20-8192-s5",
+ "K": 20,
+ "bytes": 8329,
+ "params": [
+  "ROOT",
+  "before",
+  4,
+  30,
+  "--held",
+  "--no-change",
+  "PROCESS",
+  "ARCH",
+  "ARCH says so",
+  "the coordinator",
+  300,
+  20000,
+  "invoices/test/out/",
+  "results",
+  "reset to the branch and reapply your commits",
+  "ARCH",
+  "lower",
+  "common/errors.js",
+  "the watcher",
+  "check"
+ ],
+ "seed": 5,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 102,
+  "firstLast": 102,
+  "firstErr": null
+ },
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "MV-6004",
+   "ok": true
+  },
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "PC-4224",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "HP-1003",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Cinder checklist",
+   "planted": true,
+   "answer": "BV-8500",
+   "ok": true
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Quartz roster",
+   "planted": true,
+   "answer": "LM-3011",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": true,
+   "answer": "LG-9888",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: C\nS3: C\nS4: C\nS5: A\nS6: C\nS7: A\nS8: C\nS9: C\nS10: D\nS11: D\nS12: D\nS13: C\nS14: B\nS15: C\nS16: B\nS17: A\nS18: D\nS19: D\nS20: D\nS21: B\nS22: A\nS23: D\nS24: D\nS25: B\nS26: A\nS27: B\nS28: B\nS29: C\nS30: A\nS31: A\nS32: A\nS33: A\nS34: D\nS35: D\nS36: A\nS37: B\nS38: D\nS39: A\nS40: D\nS41: A\nS42: B\nS43: B\nQ1: MV-6004\nQ2: PC-4224\nQ3: HP-1003\nQ4: NOT STATED\nQ5: BV-8500\nQ6: NOT STATED\nQ7: LM-3011\nQ8: LG-9888",
+ "compactions": 0,
+ "cost": 0.1543422,
+ "status": "CLEAN",
+ "seconds": 28
+}

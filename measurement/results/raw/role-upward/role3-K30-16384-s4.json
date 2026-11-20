@@ -1,0 +1,110 @@
+{
+ "id": "role3-K30-16384-s4",
+ "K": 30,
+ "bytes": 16443,
+ "params": [
+  "the watcher",
+  "after",
+  2,
+  40,
+  "--held",
+  "--noop",
+  "ARCH",
+  "the watcher",
+  "ARCH says so",
+  "the coordinator",
+  300,
+  24000,
+  "invoices/test/out/",
+  "results",
+  "rebase onto the branch",
+  "ROOT",
+  "lower",
+  "invoices/codes.js",
+  "ARCH",
+  "results",
+  "the coordinator",
+  "your branch and pull request",
+  "involves money",
+  "excluded",
+  120,
+  "ARCH's message",
+  "results",
+  "the firm's time zone",
+  "whole numbers of the smallest unit",
+  1
+ ],
+ "seed": 4,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 202,
+  "firstLast": 202,
+  "firstErr": null
+ },
+ "rulesApplied": 30,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "TN-3030",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "TZ-3559",
+   "ok": true
+  },
+  {
+   "subject": "Kestrel catalogue",
+   "planted": true,
+   "answer": "CX-5156",
+   "ok": true
+  },
+  {
+   "subject": "Juniper tally",
+   "planted": true,
+   "answer": "QT-1098",
+   "ok": true
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "ZH-4715",
+   "ok": true
+  },
+  {
+   "subject": "Vetch checklist",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Thistle register",
+   "planted": true,
+   "answer": "DJ-9234",
+   "ok": true
+  }
+ ],
+ "reply": "S1: D\nS2: C\nS3: C\nS4: A\nS5: B\nS6: C\nS7: B\nS8: D\nS9: C\nS10: C\nS11: A\nS12: A\nS13: C\nS14: A\nS15: B\nS16: D\nS17: B\nS18: C\nS19: A\nS20: A\nS21: A\nS22: B\nS23: D\nS24: D\nS25: C\nS26: C\nS27: C\nS28: C\nS29: A\nS30: B\nS31: A\nS32: B\nS33: A\nS34: B\nS35: C\nS36: A\nS37: B\nS38: D\nS39: B\nS40: D\nS41: A\nS42: D\nS43: D\nS44: A\nS45: B\nS46: B\nS47: D\nS48: C\nS49: B\nS50: D\nS51: C\nS52: C\nS53: A\nS54: B\nS55: C\nS56: A\nS57: A\nS58: D\nS59: C\nS60: B\nS61: C\nS62: A\nS63: C\nQ1: TN-3030\nQ2: NOT STATED\nQ3: TZ-3559\nQ4: CX-5156\nQ5: QT-1098\nQ6: ZH-4715\nQ7: NOT STATED\nQ8: DJ-9234",
+ "compactions": 0,
+ "cost": 0.2405498,
+ "status": "CLEAN",
+ "seconds": 32
+}

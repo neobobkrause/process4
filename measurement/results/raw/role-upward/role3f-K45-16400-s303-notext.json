@@ -1,0 +1,300 @@
+{
+ "id": "role3f-K45-16400-s303-notext",
+ "K": 45,
+ "bytes": 16520,
+ "params": [
+  "ROOT",
+  "before",
+  4,
+  40,
+  "--blocked",
+  "--nothing-to-change",
+  "PROCESS",
+  "ROOT",
+  "the internal walk passes",
+  "ROOT",
+  120,
+  32000,
+  "invoices/test/tmp/",
+  "related",
+  "reset to the branch and reapply your commits",
+  "the watcher",
+  "higher",
+  "common/errors.js",
+  "ARCH",
+  "push",
+  "ROOT",
+  "your module and pull request",
+  "can be seen on screen",
+  "included",
+  100,
+  "`listing`",
+  "check",
+  "the customer's time zone",
+  "whole numbers of thousandths of the main unit",
+  2,
+  "ARCH",
+  "ARCH",
+  "related",
+  60,
+  3,
+  "*.test.js",
+  "YYYY-MM-DD",
+  5,
+  "invoices:",
+  "eight spaces",
+  200,
+  "ARCH",
+  200,
+  "@net",
+  "ARCH"
+ ],
+ "seed": 303,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 32,
+ "rulesFailed": [
+  1,
+  8,
+  12,
+  24,
+  25,
+  26,
+  28,
+  31,
+  32,
+  35,
+  37,
+  38,
+  40
+ ],
+ "completeness": 0.711,
+ "scenariosWrong": [
+  {
+   "id": "9n",
+   "rules": [
+    24
+   ],
+   "kind": "near",
+   "expected": "D",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "22a",
+   "rules": [
+    37
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  },
+  {
+   "id": "1a",
+   "rules": [
+    1
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "R",
+   "ok": false,
+   "free": true,
+   "answer": "report it to ARCH in one message; do not fix `ledger`"
+  },
+  {
+   "id": "29a",
+   "rules": [
+    8
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "18a",
+   "rules": [
+    32
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "R",
+   "ok": false,
+   "free": true,
+   "answer": "return an error with a code from `common/errors.js`"
+  },
+  {
+   "id": "14a",
+   "rules": [
+    35
+   ],
+   "kind": "apply",
+   "expected": "D",
+   "got": "`",
+   "ok": false,
+   "free": true,
+   "answer": "`push`, then `ready`"
+  },
+  {
+   "id": "26a",
+   "rules": [
+    28
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "9a",
+   "rules": [
+    24
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "15a",
+   "rules": [
+    26
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "A",
+   "ok": false,
+   "free": false,
+   "answer": "A"
+  },
+  {
+   "id": "40a",
+   "rules": [
+    40
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "S",
+   "ok": false,
+   "free": true,
+   "answer": "start it with structured header comments"
+  },
+  {
+   "id": "17a",
+   "rules": [
+    12
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "B",
+   "ok": false,
+   "free": false,
+   "answer": "B"
+  },
+  {
+   "id": "35a",
+   "rules": [
+    38
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "D",
+   "ok": false,
+   "free": false,
+   "answer": "D"
+  },
+  {
+   "id": "28a",
+   "rules": [
+    31
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "S",
+   "ok": false,
+   "free": true,
+   "answer": "store it as a UTC timestamp"
+  },
+  {
+   "id": "21a",
+   "rules": [
+    25
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "C",
+   "ok": false,
+   "free": false,
+   "answer": "C"
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 0,
+ "probes": [
+  {
+   "subject": "Walnut inventory",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Alder census",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Basalt ledger",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Marigold index",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Zircon digest",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Lichen manifest",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  }
+ ],
+ "reply": "S1: A\nS2: B\nS3: B\nS4: B\nS5: C\nS6: B\nS7: A\nS8: A\nS9: A\nS10: C\nS11: B\nS12: A\nS13: `push --blocked ledger \"<reason>\"`, then stop\nS14: `push`, tell ARCH in one message, then stop\nS15: C\nS16: B\nS17: D\nS18: B\nS19: D\nS20: D\nS21: C\nS22: D\nS23: run `p4 check` first and name its tests to ARCH\nS24: A\nS25: D\nS26: report it to ARCH in one message; do not fix `ledger`\nS27: C\nS28: A\nS29: C\nS30: report it to ARCH at once\nS31: B\nS32: the watcher's\nS33: A\nS34: D\nS35: D\nS36: A\nS37: B\nS38: ask ARCH first, since it is exported\nS39: prefix with module: `invoices: fix date parsing`\nS40: `close --nothing-to-change`\nS41: D\nS42: tag it `@net`\nS43: report it to PROCESS as a process fault\nS44: A\nS45: return an error with a code from `common/errors.js`\nS46: C\nS47: `parseInvoice.test.js`\nS48: `push`, then `ready`\nS49: C\nS50: 2026-03-05\nS51: `close --nothing-to-change`, telling ARCH\nS52: C\nS53: write them under `invoices/test/tmp/`, never committed\nS54: A\nS55: A\nS56: A\nS57: C\nS58: A\nS59: `p4 related`\nS60: D\nS61: A\nS62: D\nS63: start it with structured header comments\nS64: A\nS65: A\nS66: D\nS67: B\nS68: B\nS69: A\nS70: B\nS71: B\nS72: C\nS73: B\nS74: C\nS75: B\nS76: C\nS77: C\nS78: D\nS79: A\nS80: A\nS81: A\nS82: A\nS83: C\nS84: tell ARCH, naming R-14\nS85: D\nS86: store it as a UTC timestamp\nS87: D\nS88: C\nS89: C\nS90: B\nS91: B\nS92: A\nS93: C\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.1155718,
+ "status": "DIRTY",
+ "seconds": 24
+}

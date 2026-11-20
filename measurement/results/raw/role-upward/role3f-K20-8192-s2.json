@@ -1,0 +1,100 @@
+{
+ "id": "role3f-K20-8192-s2",
+ "K": 20,
+ "bytes": 8314,
+ "params": [
+  "the coordinator",
+  "before",
+  3,
+  40,
+  "--blocked",
+  "--unchanged",
+  "the coordinator",
+  "the coordinator",
+  "ARCH says so",
+  "the watcher",
+  200,
+  32000,
+  "invoices/test/out/",
+  "results",
+  "rebase onto the branch",
+  "ARCH",
+  "higher",
+  "invoices/codes.js",
+  "ROOT",
+  "check"
+ ],
+ "seed": 2,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "coverage": {
+  "nReads": 1,
+  "firstWhole": true,
+  "coveredAll": true,
+  "covered": 109,
+  "firstLast": 109,
+  "firstErr": null
+ },
+ "rulesApplied": 20,
+ "rulesFailed": [],
+ "completeness": 1,
+ "scenariosWrong": [],
+ "negFail": [],
+ "probeRecall": 6,
+ "probes": [
+  {
+   "subject": "Tamarind log",
+   "planted": true,
+   "answer": "VL-8786",
+   "ok": true
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": true,
+   "answer": "HB-5069",
+   "ok": true
+  },
+  {
+   "subject": "Heron docket",
+   "planted": true,
+   "answer": "VQ-1636",
+   "ok": true
+  },
+  {
+   "subject": "Bramble folio",
+   "planted": true,
+   "answer": "KN-9183",
+   "ok": true
+  },
+  {
+   "subject": "Pewter almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Alder census",
+   "planted": true,
+   "answer": "SG-3237",
+   "ok": true
+  },
+  {
+   "subject": "Plover digest",
+   "planted": true,
+   "answer": "LM-2791",
+   "ok": true
+  }
+ ],
+ "reply": "S1: C\nS2: A\nS3: A\nS4: D\nS5: Write them under `invoices/test/out/`, never committed\nS6: D\nS7: B\nS8: C\nS9: D\nS10: Return an error carrying a code from `invoices/codes.js`, not a bare string\nS11: D\nS12: A\nS13: Run no test and `p4 close --unchanged`\nS14: C\nS15: B\nS16: A\nS17: D\nS18: A\nS19: B\nS20: B\nS21: C\nS22: Last act is `p4 check`\nS23: D\nS24: C\nS25: Run `p4 results` and fix what it reports before `p4 push`\nS26: C\nS27: A\nS28: A\nS29: C\nS30: D\nS31: D\nS32: D\nS33: C\nS34: A\nS35: Report it to the coordinator, written once; don't fix or work round it\nS36: A\nS37: ARCH's written agreement\nS38: B\nS39: `p4 push --blocked ledger \"<why>\"`, then stop (last act `p4 check`)\nS40: C\nS41: C\nS42: D\nS43: Report it to the coordinator in one message; don't fix it\nQ1: VL-8786\nQ2: HB-5069\nQ3: VQ-1636\nQ4: KN-9183\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: SG-3237\nQ8: LM-2791",
+ "compactions": 0,
+ "cost": 0.1560334,
+ "status": "CLEAN",
+ "seconds": 32
+}

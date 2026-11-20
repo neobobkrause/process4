@@ -1,0 +1,258 @@
+{
+ "id": "role3-K30-16384-s103-notext",
+ "K": 30,
+ "bytes": 16527,
+ "params": [
+  "ROOT",
+  "after",
+  2,
+  40,
+  "--stuck",
+  "--no-change",
+  "ROOT",
+  "ARCH",
+  "the internal walk passes",
+  "the coordinator",
+  120,
+  20000,
+  "invoices/test/out/",
+  "results",
+  "rebase onto the branch",
+  "ARCH",
+  "higher",
+  "invoices/errors.js",
+  "ROOT",
+  "push",
+  "ROOT",
+  "your module and pull request",
+  "involves money",
+  "excluded",
+  140,
+  "`listing`",
+  "results",
+  "UTC",
+  "pairs of main and smallest units",
+  1
+ ],
+ "seed": 103,
+ "openbook": false,
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "rulesApplied": 16,
+ "rulesFailed": [
+  1,
+  2,
+  7,
+  8,
+  9,
+  12,
+  13,
+  14,
+  20,
+  23,
+  27,
+  28,
+  29,
+  30
+ ],
+ "completeness": 0.533,
+ "scenariosWrong": [
+  {
+   "id": "23a",
+   "rules": [
+    29
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "B",
+   "ok": false
+  },
+  {
+   "id": "26a",
+   "rules": [
+    12
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "D",
+   "ok": false
+  },
+  {
+   "id": "29a",
+   "rules": [
+    20
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "C",
+   "ok": false
+  },
+  {
+   "id": "22a",
+   "rules": [
+    14
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "D",
+   "ok": false
+  },
+  {
+   "id": "21a",
+   "rules": [
+    8
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "C",
+   "ok": false
+  },
+  {
+   "id": "24a",
+   "rules": [
+    2
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "B",
+   "ok": false
+  },
+  {
+   "id": "7a",
+   "rules": [
+    27
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "B",
+   "ok": false
+  },
+  {
+   "id": "2a",
+   "rules": [
+    30
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "B",
+   "ok": false
+  },
+  {
+   "id": "17a",
+   "rules": [
+    1
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "B",
+   "ok": false
+  },
+  {
+   "id": "9a",
+   "rules": [
+    28
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "D",
+   "ok": false
+  },
+  {
+   "id": "19a",
+   "rules": [
+    13
+   ],
+   "kind": "apply",
+   "expected": "A",
+   "got": "C",
+   "ok": false
+  },
+  {
+   "id": "10a",
+   "rules": [
+    7
+   ],
+   "kind": "apply",
+   "expected": "C",
+   "got": "A",
+   "ok": false
+  },
+  {
+   "id": "1a",
+   "rules": [
+    9
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "D",
+   "ok": false
+  },
+  {
+   "id": "14a",
+   "rules": [
+    23
+   ],
+   "kind": "apply",
+   "expected": "B",
+   "got": "A",
+   "ok": false
+  }
+ ],
+ "negFail": [],
+ "probeRecall": 0,
+ "probes": [
+  {
+   "subject": "Mallow schedule",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Oriel journal",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Indigo tally",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Sorrel catalogue",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Fennel roster",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Rowan folio",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  },
+  {
+   "subject": "Willow almanac",
+   "planted": false,
+   "answer": "NOT STATED",
+   "ok": true
+  },
+  {
+   "subject": "Saffron survey",
+   "planted": true,
+   "answer": "NOT STATED",
+   "ok": false
+  }
+ ],
+ "reply": "S1: B\nS2: B\nS3: D\nS4: D\nS5: D\nS6: B\nS7: C\nS8: B\nS9: D\nS10: B\nS11: B\nS12: A\nS13: D\nS14: B\nS15: C\nS16: A\nS17: C\nS18: C\nS19: B\nS20: D\nS21: C\nS22: D\nS23: B\nS24: B\nS25: C\nS26: B\nS27: D\nS28: B\nS29: A\nS30: C\nS31: A\nS32: C\nS33: D\nS34: C\nS35: A\nS36: D\nS37: A\nS38: B\nS39: C\nS40: A\nS41: D\nS42: D\nS43: D\nS44: C\nS45: A\nS46: A\nS47: C\nS48: D\nS49: B\nS50: C\nS51: D\nS52: A\nS53: D\nS54: B\nS55: A\nS56: C\nS57: C\nS58: C\nS59: C\nS60: A\nS61: D\nS62: B\nS63: A\nQ1: NOT STATED\nQ2: NOT STATED\nQ3: NOT STATED\nQ4: NOT STATED\nQ5: NOT STATED\nQ6: NOT STATED\nQ7: NOT STATED\nQ8: NOT STATED",
+ "compactions": 0,
+ "cost": 0.0857638,
+ "status": "DIRTY",
+ "seconds": 18
+}
