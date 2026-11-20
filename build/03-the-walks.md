@@ -24,7 +24,7 @@ Marks: **Decided here:** a choice made in this text, with what it gives and cost
 
 - The owner, 14 Nov: "screens and journeys are kept in docs/development/ux-substrate/ in the product repo".
 - On the product's main branch the folder held 133 files, a Screens page and a Journeys page among them. On the building branch the Journeys page was removed on 6 Nov; the Screens page there is a copy of 28 Oct, with the data it is built from.
-- Three lists of journeys disagree: 27, 27 and 32. Of the 32, three begin at the website or the installer and six have steps only the AI assistant can do. Which list counts is open with the owner.
+- Three lists of journeys disagree: 27, 27 and 32. Of the 32, three begin at the website or the installer and six have steps only the AI assistant can do. Which list counts is settled (the owner, 20 November 2026): the UX design lane maintains the journey list, and that is the list to use.
 - Not recorded: how many screens there are, and how large either document is.
 
 **Seen today, on this session's machine only.** Headless Chrome driven by Playwright 1.63 opened a page served on the same machine in under a second, and an outside page through the machine's proxy. One try. A cloud environment has a list of allowed hosts.
@@ -191,7 +191,7 @@ Items 6 to 8 are the design's trial items 8 and 14 made smaller. A trial can bre
 
 ## 9. The owner's to settle
 
-1. **Which list of journeys counts, and the form of the two documents.** Open already (the design, part 10). Section 2 here needs the documents as pages in the folder, one for each group of screens and each journey.
+1. **Which list of journeys counts — settled (the owner, 20 November 2026):** the UX design lane maintains the list of journeys; that is the list to use, and the owner does not approve it per tranche. The form of the two documents stays as section 2 decides: pages in the folder, one for each group of screens and each journey.
 2. **What "proper results" means for a journey that uses AI,** where its page does not say. The ruling's words are his; section 5 only says where the answer is written.
 3. **Whether a tranche can end while a journey that uses AI is left unwalked** because no AI account is connected. This bears on "all journeys can be completed".
 4. **A flaw set aside by ARCH.** Section 6 lets ARCH rule that a walker's entry is none of the three things. If he holds that only he, or only a change to the document, can clear a flaw, outcome 3 goes.

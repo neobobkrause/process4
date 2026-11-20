@@ -315,6 +315,21 @@ its own lanes (part 6, section 8). This settled part 10, section 1, item 7; each
 
 **The owner's words.** "Decision: as recommended" — 20 November 2026.
 
+### Subject: Which list of journeys counts (walk matter 9.1)
+
+**The rule as it now stands.** The UX design lane maintains the product's list of journeys;
+that maintained list is the list the walks use, and the owner does not approve it per tranche.
+This settled the first of the five walk matters the owner was to settle (build text
+`03-the-walks.md`, section 9, item 1; the "which list counts" question recorded there in
+section 1 and in design part 10, section 1, item 9), and confirms the UX lane's ownership of
+the walks' documents (design part 3, section 3; part 4, section 3). The form of the two
+documents stays as build text 3, section 2 decides (a page per screen group and per journey,
+with an index). The owner still approves each tranche (part 3, section 1); he simply does not
+separately approve the journey list. It adds no test, gate, review or stop. The other four
+walk matters (9.2–9.5) remain open.
+
+**The owner's words.** "Decision: the UX design lane maintains the list of journeys. That's the list to use, and I don't need to approve that list after a tranche." — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

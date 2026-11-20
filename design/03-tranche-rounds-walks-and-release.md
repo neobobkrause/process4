@@ -30,7 +30,7 @@ Length: 74 lines. Last section: "8. Support beyond the process".
 
 **The walks' documents.**
 
-- The Screens document and the journeys are pages kept in the product repository's folder named in the process config. **Reading:** the UX lane owns them (part 4, section 3).
+- The Screens document and the journeys are pages kept in the product repository's folder named in the process config. **Settled (the owner, 20 November 2026):** the UX lane owns them and maintains the journey list, which is the list to use; the owner does not approve that list per tranche (part 4, section 3).
 - During a tranche they change only to correct an error a walk has shown, and each such change is named in the account after the round.
 
 **Who makes a walk.**
