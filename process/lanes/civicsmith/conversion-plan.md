@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 127 lines. Last section: "6. Open, and who settles it".
+Length: 128 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -23,8 +23,8 @@ Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `believe
 founding documents are in it; no work is in flight; its languages can be seen in it; and "there are
 several problems that need to be resolved before process4 development can begin".
 
-Still to learn, from a session started in civicsmith2 under its own approvals (the lane cannot read a
-private repository; `civicsmith2-reading-brief.md`) or from the owner: the founding documents' paths and
+Still to learn, from a session started in civicsmith2 under its own approvals (the lane's approvals cover
+process4 only; `civicsmith2-reading-brief.md`) or from the owner: the founding documents' paths and
 content, the languages and tools, the module count, Process3's traces, and the several problems. The
 problems are resolved before act 1 of section 3, or placed in the plan where each belongs.
 
@@ -43,9 +43,10 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
    required `gate`, and the merge into main was blocked until the owner changed it.
 3. **Branch rule (act 4).** No deleting and no overwriting on every branch, no one excepted.
 4. **Environment check (act 6) [7].** A session reads the cloud environment the sessions will run under
-   and confirms its permissions-management settings name civicsmith's repository. They name
-   repositories by owner (`neobobkrause/*`), and civicsmith2 is under `believeinoakland`, so it must be added, by the owner's click on
-   the change the session proposes (part 7 §5). The deploy token for the development Cloudflare account
+   and confirms its permissions-management settings name civicsmith's repository. PROCESS
+   measured (20 Nov 2026) that they trust only `neobobkrause/*`; civicsmith2 is under
+   `believeinoakland`, so the check finds it missing and the session proposes adding it, for the
+   owner's click on that change (part 7 §5). The deploy token for the development Cloudflare account
    is entered then.
 5. **The set-up session (act 8) [1, 3].** One plain session the owner starts on civicsmith's repository
    for this act alone, in this order (part 7 §4 act 8; part 6 §2):
