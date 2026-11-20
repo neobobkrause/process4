@@ -101,3 +101,7 @@ keeps the forbidden commands. Nothing in options B–D asks him to edit a file o
 Measured gap that remains: he landed his new approvals on main directly, where the design puts
 approvals edits on the tranche branch (part 6 §2); option C's follow-up pull request carries them
 to the tranche branch by his click.
+
+## The owner's choice
+
+"Decision: option C (But, god, I hope this doesn't take any more time. We've already sent 2 hours on this silly problem.) Go!" — 20 November 2026. Option C is carried out by the trial's ARCH on his instruction in the coordinator's session. The separate correction to build text 4, stage 1 was not chosen and is not made.
