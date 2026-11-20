@@ -25,20 +25,24 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS. I keep this page now — there is no separate coordinating session unless you start one. This page holds what I bring you about the design and the process; the trial product's own page is separate (linked below); you work with me directly in your session titled "PROCESS #1". One matter at a time.</p>
+<p class="updated">Updated 20 Nov 2026 by PROCESS #2, the first PROCESS on your new Claude account. This is the fresh copy of your standing page on this account; the earlier copy stays with the old account. You work with me directly in the session titled "PROCESS #2". One matter at a time.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you — the first account switch</h2>
-<p>Your decision today: <b>move both PROCESS and the trial to a new Claude account, together</b> ("Decision: B — Move PROCESS to the new account too"). Keeping them on one account is what lets them keep coordinating — splitting them across accounts would cut the link. Your steps in the new account, in order (no session can do these):</p>
+<h2>Waiting for you — finishing the account switch</h2>
+<p>What I confirmed on this account: <b>the shared state carried over untouched.</b> The tool read the process's records from GitHub, and I recorded myself in them as PROCESS #2.</p>
+<p>What I found: <b>this PROCESS session runs on the environment named "Default". That environment has no setup script, so the permissions settings (the <code>autoMode</code> block) are not loaded here.</b> On this account your "BioDefault" environment has the secrets and a setup script. I can't see that script's contents from here, so whether it holds the <code>autoMode</code> block is unknown. What this affects: my routine messages to the trial's ROOT and coordinator may be wrongly refused. Work inside this repository is not affected.</p>
 <ol>
-<li><b>Stop the trial first.</b> Tell the trial coordinator to stop; its open jobs push and stop.</li>
-<li><b>Connect GitHub.</b> In the new account, connect Claude to GitHub as the sessions' account and install Claude's GitHub App on both repositories — the process repo and the trial repo.</li>
-<li><b>Secrets.</b> In the new account's environment (the environment menu in the session title bar, then Edit), re-enter the deploy token and the other secrets: the Cloudflare token (<code>CLOUDFLARE_API_TOKEN</code>/<code>CF_TOKEN</code>, with <code>CLOUDFLARE_ACCOUNT_ID</code>/<code>CF_ACCT</code>) and the <code>api.cloudflare.com</code> network secret, plus the other variables the current environment has. You enter the values yourself; never paste them in chat.</li>
-<li><b>Permissions settings — don't skip.</b> Copy the current environment's <b>setup script</b> into the new account's environment. It writes the <code>autoMode</code> block that keeps the checker from wrongly refusing the roles' routine cross-session and cross-repository acts; without it the restart cannot complete.</li>
-<li><b>Start the roles in the new account.</b> Start ROOT on the trial repo (plain prompt) and PROCESS on the process repo. ROOT rebuilds everything from the shared state; the coordinator confirms nothing was lost.</li>
+<li><b>Start the trial's sessions on BioDefault.</b> When you start ROOT on <code>neobobkrause/process3-probes</code> (Auto mode, plain prompt), pick the BioDefault environment, after you confirm its setup script is the one you copied from the old account.</li>
+<li><b>Start my successors on BioDefault too</b> (choose one when you're ready):
+  <ul>
+  <li><b>A — Restart me now on BioDefault</b> (recommended before I message the trial). Start a new PROCESS session on <code>neobobkrause/process4</code>, main, Auto mode, in BioDefault, with the same prompt you gave me. I'll archive nothing. My handover is saved, and the new session will be PROCESS #3.</li>
+  <li><b>B — Keep me on Default for now.</b> I work only inside this repository. If a message to the trial is refused, I'll bring it to you.</li>
+  <li><b>C — No change.</b></li>
+  </ul></li>
+<li><b>Tell me the trial's new ROOT</b> once you've started it (its session title is enough). I record it once in my products list, and from then on I announce each new PROCESS to it myself.</li>
 </ol>
-<p>The shared state, the repositories, branches and open pull requests all live on GitHub, so they carry over untouched — confirming that is the point of this step. It is the trial's last and most doubtful step; I'll fix any process fault it surfaces on your word.</p>
+<p>Still yours from the switch checklist: GitHub connected and the GitHub App installed on both repositories (the tool reached GitHub from here, so the process repository is done). And the trial's own page is on the old account, so the trial's coordinator will need to republish it here.</p>
 </section>
 
 <section class="card">
@@ -53,7 +57,7 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>All the open points are settled or closed</b>, the four figures included (settled 20 Nov, now in the design). Your approvals wording is committed and in force. See the Open Points page: https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU</li>
+<li><b>All the open points are settled or closed</b>, the four figures included (settled 20 Nov, now in the design). Your approvals wording is committed and in force. The Open Points page (https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU) is on the old account; everything on it is settled and recorded in the decisions record.</li>
 <li><b>Civicsmith readiness:</b> I gave you an honest assessment in the session. The reading-limit risk I flagged is now largely answered — the limits have wide measured headroom. What stays unproven is scale (~200 modules), and walks/deployment/release by sessions on Cloudflare — the design's own position is that the first real tranche is the proof. I recommend phasing: run the figures into the design, do civicsmith's setup, then a small first tranche as the proof.</li>
 </ul>
 </section>
@@ -61,15 +65,15 @@ a{color:var(--accent)}
 <section>
 <h2>The trial</h2>
 <ul>
-<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>; its own page is https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb and holds what the trial product needs from you.</li>
+<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>. Its own page (https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb) is on the old account.</li>
 <li><b>The trial is on an old process version.</b> Its <code>process.json</code> pins process4 <code>7d8e529</code>; process4 has moved well past that (now carrying the round-done fix, the lane-routing fix and the settled reading limits, among others). To move it to the latest, tell the trial coordinator "move to the latest Process4 version" when you choose; nothing forces it.</li>
 <li><b>Still to try</b> (trial stages): a held merge and a stop reaching an open job; a job replaced at its third failed run; an approvals edit with a restart; stage 4 trials 2–3; stage 5 walks. Each comes to you with steps when its moment arrives.</li>
 </ul>
 </section>
 
 <section class="card">
-<h2>In motion — the account switch</h2>
-<p>The one thing waiting for you is the account switch at the top of this page. Once you have started ROOT and PROCESS in the new account, PROCESS #2 (running there) will publish a fresh copy of this page on the new account and give you its link — a standing page lives on the account it is published under, so this copy stays with the old account. The trial's own page is separate (linked above). (Process3-conformance and Codex work remain dropped, per your word.)</p>
+<h2>In motion</h2>
+<p>Nothing else is in motion. The trial is stopped until you start its ROOT on this account. Then, when you choose, tell its coordinator "move to the latest Process4 version" so it carries every fix since <code>7d8e529</code>. (Process3-conformance and Codex work stay dropped, per your word.)</p>
 </section>
 </main>
 </body></html>
