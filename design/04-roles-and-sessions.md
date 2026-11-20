@@ -41,7 +41,7 @@ The owner's rulings:
 - A lane decides design in its area. ARCH decides whether and when a design is built and whether it can be built as given. A design ARCH cannot build goes back to the lane.
 - The owner works with a lane through its design pages.
 
-**Reading:** the rest of this section stands as written; the owner has not confirmed each rule one by one.
+**Settled (the owner, 20 November 2026):** the rest of this section stands as written; the owner has not confirmed each rule one by one.
 
 - A lane has a folder of design knowledge in the product's repository, which it owns. It reads its area whole. It delivers designs, never product code.
 - The owner identifies the need for a lane, and ARCH opens it. The UX lane is always there. A product's other lanes are named in its process config.
@@ -55,7 +55,7 @@ The owner's rulings:
 
 **Claude decided:** a lane session uses no job slot. A fresh lane session begins by reading the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, and the tool refuses to write a second while the first is recorded as live.
 
-**Reading:** the questions ARCH puts to a lane, and its answers, are not kept as a running record. What a lane decides is written into its folder as design.
+**Settled (the owner, 20 November 2026):** the questions ARCH puts to a lane, and its answers, are not kept as a running record. What a lane decides is written into its folder as design.
 
 ## 4. The shared state
 
@@ -97,7 +97,7 @@ The owner's rulings:
 - **Claude decided** how PROCESS is refreshed (the owner's decision C for the PROCESS refresh, 19 November 2026). PROCESS is started and refreshed by the owner, not by ROOT, because it is the one owner-facing role and every refresh happens with the owner present; this removes the cross-repository session start, which the permission checker resisted even with the permissions-management settings in place (part 7, section 3). At its refresh point PROCESS rewrites its handover record and asks the coordinator, which puts the start prompt on the owner's standing page and notifies him; the owner starts the successor, the one way he already starts PROCESS (section 1). The successor starts only from the shared state and the repository, as any refresh does, and records its own liveness in PROCESS's record in the process's repository, where the coordinator reads it. Decision B's never-retry re-attempt, role-to-address resolution and successor registration stand unchanged for every other cross-repository act, cross-repository messaging among the roles among them (part 1, section 6; part 6, section 4).
 - A job that fills up or dies is replaced by ARCH with a new session that continues from the same branch and pull request.
 - A finished session is archived, not deleted. **Claude decided:** the session that started a session archives it; where the starter is gone, ROOT does.
-- Sessions other than ROOT and the watcher are relatively short-lived. **Reading:** a role such as ARCH lasts, while its sessions are refreshed often.
+- Sessions other than ROOT and the watcher are relatively short-lived. **Settled (the owner, 20 November 2026):** a role such as ARCH lasts, while its sessions are refreshed often.
 - **Unproven:** replacing ARCH while jobs are open.
 
 ## 6. ROOT and the watcher
@@ -136,7 +136,7 @@ The owner's rulings:
 - **A job fails its tests.** The job fixes its module and the tests run again. **Claude decided:** the tool counts the failed runs on a job's pull request from GitHub's own record. After two failed corrections (the third failed run on the pull request) it tells ARCH, which replaces the session with a fresh one. The fresh session first works out why the corrections were made, so as to foresee the others. If the replacement also fails twice (the fifth failed run), the module is recorded as blocked with the reason, its slot is freed, and the matter goes to ARCH as a design question.
 - **A loop that would not end. Claude decided** each end. A walk flaw that two modules' jobs have each handed back as needing no change there is not placed a third time; ARCH decides it as a design question. A job blocked twice by the same other module is the same: the boundary between the two is an architecture bug (part 2, section 8). A design that ARCH has sent back to a lane twice comes to the owner as a question, with both views. A chain of notices ends of itself, because a module is used only by modules after it. A tranche's rounds end on the owner's word (part 3, section 5), and takeovers by the watcher at the limit on depth (section 6). In each case other work goes on.
 - **A session dies or stops.** ROOT's hourly wake finds it, and it is woken or replaced as section 5 says.
-- **A stop nothing called for** is a process fault. Some need no change to Process4, for example a stop caused by a compaction; then the stopped session is woken or replaced. Each such case may be studied and reported to PROCESS. **Reading:** while Process4 is on trial every such stop is reported to PROCESS; the simpler handling applies once it is beyond trial.
+- **A stop nothing called for** is a process fault. Some need no change to Process4, for example a stop caused by a compaction; then the stopped session is woken or replaced. Each such case may be studied and reported to PROCESS. **Settled (the owner, 20 November 2026):** while Process4 is on trial every such stop is reported to PROCESS; the simpler handling applies once it is beyond trial.
 - **The process itself has a fault.** No session building a product fixes it or works round it (part 6, section 6).
 - **The process is completely blocked.** The owner gets one plain message with a numbered list of what is his to do.
 - **A stop on the owner's word.** He tells the coordinator, which writes the stop record and tells ARCH, which interrupts each job. **Claude decided:** it is lifted the same way: he tells the coordinator, which clears the record and tells ARCH, which wakes or replaces each job from its pull request. A stop takes effect in the turn in which a session receives it. ROOT reads the stop record at every wake, so that the hourly wake does not undo it.

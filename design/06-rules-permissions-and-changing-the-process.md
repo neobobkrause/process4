@@ -70,5 +70,5 @@ What follows from them:
 
 ## 8. Process4 develops itself
 
-- PROCESS may have lanes of its own for standing subjects, as needed. **Reading:** PROCESS starts its own lanes.
+- PROCESS may have lanes of its own for standing subjects, as needed. **Settled (the owner, 20 November 2026):** PROCESS starts its own lanes.
 - When a new model version arrives, PROCESS puts one question to the owner: which parts of the process, and which working rules that exist because of the permission checker, may no longer be needed. Nothing is removed or tried unless he says so.
