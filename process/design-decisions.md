@@ -436,6 +436,22 @@ tool's `finished` (`tool/lib/round.mjs`), build text 1b command 12, and the tool
 
 **The owner's words.** "open item 12: decided - close the gap" — 20 November 2026.
 
+### Subject: How a lane's marked owner-words reach the coordinator
+
+**The rule as it now stands.** When the owner gives a lane a marked decision on its design
+pages, the lane passes it to ARCH, which relays it to the coordinator exactly as typed for the
+record. A lane reaches the coordinator only through ARCH; lanes talk only to ARCH (design part
+4 §3), so no direct lane→coordinator channel is added. This resolved a contradiction the
+verification sweep found: lane.md rule 4 told the lane to pass the owner's marked words "to the
+coordinator exactly as typed," but a lane's granted acts reach only ARCH. Option A (route via
+ARCH) of two put to the owner (A: via ARCH; B: grant the lane a direct channel). It changed
+design part 1 §4, the lane starting text (rule 4) and ARCH's (rule 7). It adds no test, gate,
+review or stop, and no new channel: ARCH already reaches the coordinator, and a relayed
+decision for the record — as opposed to a standing note — is not refused by the permission
+checker (part 1 §4; part 3 §6).
+
+**The owner's words.** "open item 13: decided - A" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
