@@ -1,6 +1,6 @@
 # Points sent to PROCESS by the civicsmith lane
 
-Length: 40 lines. Last section: "Sent 20 Nov 2026".
+Length: 42 lines. Last section: "PROCESS's judgement, 20 Nov 2026".
 
 Each point is a place where a Process4 text is silent or out of date for moving an existing product.
 The lane changes no Process4 text; PROCESS decides. None adds a test, check, gate, review or stop.
@@ -33,3 +33,10 @@ Grounds are in `research/starting-a-product.md` §5 (A1–A8) and `research/proc
 9. **Requirements-file maximum.** build/02-the-forms.md line 98 says 24,000 bytes; design part 5 §2 sets
    the single-text maximum at 60,000 bytes on Claude Code (24,000 on Codex). The design rules (part 0 §5);
    the build line is out of date for Claude Code.
+
+## PROCESS's judgement, 20 Nov 2026
+
+PROCESS #5 judged the nine (`process/research/civicsmith-lane-points-20nov.md`) and puts them to the
+owner as one group: correct 1, 2, 3, 5, 6, 9 (its recommended option B); no change for 4 (the owner
+seeds a product's ROOT into PROCESS's registry once, build text 5 §4), 7 (carried as a check in the
+conversion plan) and 8 (the account switch is done). Nothing for the lane to do until he chooses.
