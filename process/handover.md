@@ -33,6 +33,17 @@ On start, confirm the switch landed with nothing lost:
    `CLOUDFLARE_ACCOUNT_ID`, `CF_ACCT`, `CS_TEST_CF_*`, `GITHUB_TOKEN`, `BIO_*`, `JOURNEY_*`, plus a
    `api.cloudflare.com` network secret). You do not touch these; the owner enters them.
 
+## PROCESS #2 start (20 Nov 2026, new account) — interim note
+
+PROCESS #2 (`session_018BhcefKKfotvWTYBfbkCeR`) started on the new account, named itself, read
+issue #33 (shared state carried over), and wrote `handover-process` generation 2. Found: it runs
+on the account's **Default** environment, which has **no setup script**, so the `autoMode` block
+is not loaded; the account's **BioDefault** environment has the secrets and a setup script
+(contents unreadable from Default). Put to the owner on the standing page: start the trial's ROOT
+and future PROCESS sessions on BioDefault (options A restart PROCESS there now / B stay / C no
+change). No trial session runs on this account yet; the `products` registry is still empty —
+ask the owner once for the trial's new ROOT.
+
 ## Read this first — merge behaviour
 
 **Showing the owner a record entry is transparency, not an approval gate** (design part 5 §2/§5;
@@ -62,8 +73,9 @@ merge the same way, under his standing direction.
 - **PROCESS keeps the owner's standing page** (his instruction; within approvals). He works fast,
   redirects often, and decides via page comments too (a comment webhook arrives as a queued
   notification — ReadNotifications).
-- **Standing page** "Process4 Waiting for Bob" (`3eWSU2EvP27ttdJBZGjDJT`, source
-  `coordination/owner_page/desk.html`): carries the **account-switch checklist** (the owner's acts).
+- **Standing page** "Process4 Waiting for Bob" — on the NEW account `SY4Ub7f1vwHN6fjvxz23iy`
+  (published by PROCESS #2; the old-account copy `3eWSU2EvP27ttdJBZGjDJT` is unreachable), source
+  `coordination/owner_page/desk.html`: carries the **account-switch checklist** (the owner's acts).
   Keep repo desk.html and the published page in sync (commit + publish via Artifact).
 - The owner is mid-switch; expect his acts in the new account, then he starts ROOT (trial) and
   PROCESS (this repo) there.
