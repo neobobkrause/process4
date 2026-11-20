@@ -1,120 +1,107 @@
 # PROCESS handover — interim
 
-**Interim and pre-live.** A bridge used while nothing is in force and the tool is still being
-first built. Once the process repo's shared-state issue fully carries the handover, it lives
-there in the `handover-process` record (design part 4 §4; build text 5 §4) and this file is
-retired. The process repo's shared-state issue EXISTS (issue #33), and `handover-process`
-carries PROCESS liveness; during first-build this file stays the detailed handover.
+**Interim and pre-live.** A bridge while nothing is in force and the tool is first being built.
+The process repo's shared-state issue EXISTS (#33); `handover-process` carries PROCESS liveness.
+During first-build this file stays the detailed handover.
 
-Last written: 2026-11-20, by PROCESS `session_012hdw2QyQ372mHkyQ1z8Nze`, at a clean pause.
-**`main` tip is `56e7a62`; tool-tests green (CI passed on every PR this session).** Every
-decision and correction below is recorded and merged; nothing is half-done. Under the owner's
-decision C, **PROCESS refresh is the owner's act** — he starts the successor from the prompt
-PROCESS hands him, surfaced by the coordinator on his standing page when a product is running.
+Last written: 2026-11-20, by PROCESS `session_012hdw2QyQ372mHkyQ1z8Nze`, **refreshing at ~66%
+context** at the owner's prompt. `main` tip `86e64eb`; tool-tests green on every PR this session.
+Under decision C, **PROCESS refresh is the owner's act**: he starts the successor. One task is
+part-applied-on-paper only (the figures decision below); nothing is half-written on disk.
 
-## The owner's standing direction (19–20 Nov 2026)
+## DO FIRST: apply the owner's figures decision (his marked words, not yet applied)
 
-Drive the goal autonomously: develop, test and evolve process4 until it meets its design
-requirements and can build the trial product and larger products (e.g. civicsmith). Build the
-designed remainder, correct measured faults, and merge building/correction work under the
-standing approvals (tool-tests green) WITHOUT per-step go-aheads. A marked "Decision:"/
-"Instruction:" is required only to change a RULE/requirement or to record an approval; record
-his exact words verbatim and update the design in the same step. The owner is anti-caution-creep:
-never add a test/gate/review/stop; prefer "no change" / removing unnecessary owner gates. He
-works fast and redirects often; stay responsive and keep the open-points page current.
+On 20 Nov the owner settled item 1 (the four reading values) on the standing-page thread
+`70f2987e` (artifact 3eWSU2EvP27ttdJBZGjDJT). **His exact words (verbatim, record them):**
+"decision: as recommended, except that session refreshes a expensive and slow, and thus should
+be minimized. So the fill level should be set to 50% - which still leaves a lot of room to
+continue work up to the 74% when compaction can occur."
 
-## What a successor reads first (PROCESS starting text)
+"As recommended" = PROCESS's proposal in `measurement/results/report.md` + the standing page.
+**The four figures to set (measured on Claude Code, Opus 5.5, medium — `measurement/results/`):**
+- **Single text: 60,000 B on Claude Code**; keep 24,000 for Codex until Codex is measured
+  (harness-specific — this relaxes part 5 §1 "Codex maximums govern both" for the single text).
+  Measured clean to 76,000; only limit is the harness read-cut (~25k tokens); 20% margin.
+- **Set of texts: 175,000 B, now measured** (drop "provisional"); clean to 220,000.
+- **Role's starting text: 8,192 B, at most ten rules** (a modest raise from 4,096 for breathing
+  room — texts were at 4,086/4,096; measured safe far beyond, 45 rules/32.9 KB; conciseness rule
+  part 5 §3 keeps them short). Rule COUNT stays 10.
+- **Fill level: 50%** (the owner's exception; was 40%). Measured clean to 80%.
 
-In full, in order: all eleven design parts (`design/00`–`design/10`); then
-`build/05-the-records-and-following.md`; then `process/design-decisions.md`; then PROCESS's own
-folder (`process/`, including `process/research/`); then this handover.
+**Apply it (one PR, "each decision is one PR"), file by file:**
+1. `process/design-decisions.md`: new entry "The four reading values (measurement)", his verbatim
+   words above + the rule as it now stands.
+2. `design/05-reading-and-documents.md` §2: rewrite the four-values table to the figures above;
+   change framing from "provisional / until a second measurement" to "measured 20 Nov on Claude
+   Code (Opus 5.5, medium); Codex re-measurement owed". Keep the 20-Nov fetch-line note (line 26).
+   §1 line 10: amend "Codex maximums govern both" — the single-text figure is now per-harness
+   (CC 60,000, Codex 24,000 until measured); the rest apply with Codex re-measurement owed.
+3. `design/07-harness-claude-code.md` §2 "Reading, as measured": replace the first (weak)
+   measurement with the new one — whole read to ~76,000 B / ~25k tokens; cut returns a PARTIAL
+   read; the single-text figure is 60,000; 256 KB refusal stands. (This is where the CC-specific
+   measured numbers live, per the design's harness-neutral-body structure.)
+4. All **starting texts** with a refresh rule: change "40 percent" → "50 percent" in
+   `process.md` r9, `arch.md` r9, `coordinator.md` r9, `root.md` r8, `watcher.md` r8, `lane.md`
+   r7, `job.md` r9, `walking-session.md` r9. (Check each stays plain ASCII and under the new
+   8,192 limit — trivial.)
+5. `starting_texts/00-index.md`: role-text limit 4,096 → 8,192 (line 9; the "provisional" note
+   line 28); the four-figures are now measured, not provisional.
+6. `design/10-open-and-unproven.md`: §1 item 1 → settled (measured, with the fill-level
+   exception at 50%); items 5 and 10 "under 4,096" → "under 8,192".
+7. Grep afterwards for stray "40 percent" / "4,096" / "provisional" (reading values) and fix.
+No tool change (the tool refuses nothing for size — part 6 §5), so tool-tests passes at once.
 
-## State of the owner-open review page — ONLY ITEM 1 (THE FIGURES) REMAINS OPEN
+**Show the rewritten design-decisions entry to the owner once before it stands (part 5 §5).**
 
-Page "Process4 Open Points": **https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU** (Version 9;
-this session watches it — comments to Claude wake the session). Every owner-open item is now
-settled or closed except **item 1 (the four size figures)**. Do not redo settled work.
+## Two measurement findings STILL OPEN for the owner (flagged, not decided)
 
-- **Item 1 (the four figures) — OPEN, protocol ready to run.** The owner asked for an empirical
-  measurement, not just to confirm the provisional figures. The protocol is developed and lives
-  in **`measurement/`**: `protocol.md` (the method — bounded ~100–140 fresh reading sessions,
-  conservative, rounds down with a margin, with a tightening rule), `initial-prompt.md` (the
-  prompt for a CC session with THIS repo mounted — it builds carriers from the real
-  `design/`/`build/`/`starting_texts/`), `README.md`, and `results/` (where the lead writes its
-  report). **The owner runs it** (any CC account, repo mounted, fixing the reading sessions'
-  model+effort to production). When the report lands, **PROCESS folds the four recommended
-  numbers into a proposal for the owner** (he settles the figures; a session never sets them).
-  Grounds: `process/research/queued-consistency-and-option-c-ripple-20nov.md`.
+From `measurement/results/report.md` and `role-text-upward.md`:
+- **A cut read is silent.** Over ~25k tokens a single Read returns a PARTIAL file with no
+  cut-notice in the tool result (this harness version) — revises design part 7 §2. Guard: keep
+  the single-text limit below the cut (60,000 is). Bring the owner options (a design note; a tool
+  or process guard) — do not add a gate on your own (rule 2).
+- **A headless session cannot read its own fill.** A `claude -p` reader guessed 70% when it was
+  16% — revises part 7 §1, and bears on the new 50% refresh trigger (a session must read its fill
+  to honour it; works interactively, doubtful headless). Bring the owner options.
 
-### Owner-open items settled or closed THIS session (all merged; words in `design-decisions.md`)
+## Current state (everything else merged)
 
-- **3 flawed-tranche release (PR #51):** the process leaves the release judgement to the owner —
-  it neither forces nor forbids a release from a flaws-named tranche; his release approval + a
-  clean install/update stay the guardrails. His word: "Decision" on the item-3 thread.
-- **11 Codex (PR #51):** Claude Code first, Codex later. His word: "Decision: as recommended".
-- **12 round-done deadlock (PR #53) — close the gap:** a walk-flaw (or job-flaw) module whose
-  job closes unmerged with a nothing-to-change record (handing the flaw back to ARCH) is now
-  finished for the round. Changed design part 2 §4, the tool's `finished` (`tool/lib/round.mjs`),
-  `build/01b` command 12, and `tool/test/round.test.mjs` (a new walk-flaw-handback test). His
-  word: "open item 12: decided - close the gap".
-- **13 lane→coordinator (PR #55) — option A (via ARCH):** a lane passes the owner's marked words
-  to ARCH, which relays them to the coordinator exactly as typed; no new channel. Changed design
-  part 1 §4, `lane.md` rule 4, `arch.md` rule 7. His word: "open item 13: decided - A".
-- **8 approvals/forbidden-commands wording — CLOSED (not a decision).** It was mis-framed. The
-  wording is committed and in force: the owner's `CLAUDE.md` standing-approvals block + the
-  `.claude/settings.json` deny list. The only defect was a dangling design citation to a
-  working-draft file that never carried over; fixed in PR #50. Nothing is open; the owner edits
-  the wording himself if he ever wants to (no session may). Page item 8 is marked Closed.
-- (Items 1[method], 2, 4, 5, 6, 7, 9, 10 were settled by the prior session — PRs #35–#47.)
+- **Owner-open review page** `617wp1vSKDpubVbwiGDpUU`: all items settled or closed; only item 1
+  (figures) was open and is now settled by the owner (apply above, then mark it settled + resolve
+  thread `70f2987e` on the standing page).
+- **PROCESS now keeps the owner's standing page** "Process4 Waiting for Bob"
+  (`3eWSU2EvP27ttdJBZGjDJT`; source `coordination/owner_page/desk.html`) — the owner's
+  instruction, within approvals (read state + edit pages; no change needed). No separate
+  coordinating session. After applying the figures, update that page (figures settled).
+- **The figures measurement ran** (someone started the lead session): `measurement/results/`
+  (report.md, role-text-upward.md, sweep.csv, raw/, harness/). 103 clean trials, ~$160.
+- **Decisions this session, merged** (PRs #49–#57, #61): 3 (flawed-tranche release → owner's
+  call), 11 (Codex: Claude Code first), 12 (round-done deadlock closed; tool + design + tests),
+  13 (lane→coordinator via ARCH), 8 (closed — wording committed/in force), plus consistency fixes
+  (build/01b, option-C ripples, process.md "interrupt", item-8 citation, 00-index refresh,
+  coordinator.md ASCII) and the measurement area + the standing-page takeover.
+- **Civicsmith readiness** (owner asked): assessed honestly — reading limits now have wide
+  measured headroom (eases it), but scale (~200 modules) and session-run walks/deployment/release
+  on Cloudflare are unproven; the design's position is the first real tranche is the proof.
+  Recommended phasing: figures into design → civicsmith setup → small first tranche as proof.
+- **The trial** (`neobobkrause/process3-probes`): stop LIFTED ("Decision: restart the build");
+  running on process4 `7d8e529` while main is far ahead (`86e64eb`). Moving it to latest is the
+  owner's coordinator-instruction when he chooses. Trial's own page: `JEbwfU3pjZFzGgEcsyxzmb`.
+- **Still owed the owner:** the Process3-conformance plan (offered, no answer); Codex measurement
+  + model (later, his OpenAI account).
 
-### Consistency corrections merged this session (standing direction; no rule change)
+## Known environment facts
 
-Verification-sweep findings + option-C ripples, all merged:
-- **PR #49:** `build/01b` `ready`/`results`/`close` specs (`[<pr>] [--branch]` current-branch
-  default) and "Nothing here is built" wording; option-C reconciliation in `build/04` stage 3,
-  `build/05` §4, `build/01b` §16, and `arch.md` rule 8 (the owner starts PROCESS / the
-  coordinator finds it, not ROOT).
-- **PR #50:** `process.md` gained the "interrupt" lane act (with offsetting trims, now 4,086B);
-  item-8 dangling citation fixed in design/06 §2 and design/10 §1 item 8.
-- **PR #56:** `starting_texts/00-index.md` refreshed — §1 byte table and §2 design-part sizes
-  and role-set totals were badly stale (the design grew since 18 Nov: part 04 is now 22,455B,
-  the largest single text under 24,000; the largest reading set is a job's at 150,244B, under
-  175,000); as-filled subsection rewritten for the 20 Nov fetch-line-excluded rule; line count
-  fixed to 74; §4 item 4 marked settled by decision 13. `coordinator.md` made plain ASCII (two
-  option-C em-dashes → commas, now 3,862B).
-- **PR #52:** added the measurement protocol + lead prompt as research; **PR #54** moved them
-  into `measurement/` for the repo-mounted run (superseding the earlier process3-probes prompt).
-
-## Operational / the owner's (not authoring)
-
-- **Run the figures measurement** (owner): start a CC session with process4 mounted, give it
-  `measurement/initial-prompt.md`, fix the reading model+effort; it reports to `measurement/
-  results/`; PROCESS then proposes the four figures.
-- **Validate option C + trial stages 5–7** in `neobobkrause/process3-probes` (owner-start PROCESS
-  refresh, walks, release, account switch). Cross-repo session *create* is no longer a dependency.
-- **The first real tranche** (the proof) and the civicsmith conversion (its conversion plan +
-  the owner's setup acts + the autoMode settings on its env).
-- **Per-product** promote/rollback/support procedures (design part 3 §8), written at conversion.
-
-## Known environment facts (do not relearn the hard way)
-
-- The tool works from a mounted-repo session: `node tool/p4.mjs <cmd>` reaches GitHub (spawns
-  `gh`). A DIRECT `gh`/git command is refused by the deny list — by design. No MCP merge tool.
-- Flow per change: `git checkout -b work/<name> origin/main` → edit → `git add` + commit →
-  `node tool/p4.mjs push` (push only `work/`/`job/` branches, NOT `claude/...`) → `p4 open
-  --title "..."` → `p4 ready <pr>` → `p4 results <pr>` until `passed` → `p4 merge <pr>`.
-  tool-tests runs ~2 min when `tool/`/`shims/`/`starting_texts/`/`tool-tests.yml` changed;
-  design/process/measurement-only PRs pass at once.
-- **Merge refusals:** classifier noise ("Destructive or Unwanted Actions") → run `git status`
-  alone, then `p4 merge <pr>` alone; never chain. A transient GitHub "Protected branch update
-  failed (HTTP 405)" also happens right after the check goes green → re-check `results` (confirm
-  passed) and retry `merge` once; it cleared on retry for PR #55.
-- `cd tool && npm ci` pins TypeScript 5.6.3 (a red local suite is usually TS 6.x). The full
-  `node --test` suite is slow (>120s, notice-proof fixtures); the GitHub `tool-tests` run is the
-  authoritative full-suite check — trust it rather than re-running locally.
-- Agent workers with `isolation: worktree` create `.claude/worktrees/…` which auto-cleans when
-  the worker finishes; do not commit it.
-- **Answering owner comments on the page:** load `ArtifactComments`; a bare "Decision" on a
-  thread settles that thread's restated subject; record only marked "Decision:"/"Instruction:"
-  words verbatim; ask once about unmarked "decided"/agreements, then record on his confirmation.
-  Sync the page's markers (settled/closed) and resolve threads after each decision lands.
+- `node tool/p4.mjs <cmd>` reaches GitHub; a direct `gh`/git command is denied by design. Flow:
+  `git checkout -b work/<name> origin/main` → edit → commit → `p4 push` (work/ or job/ only) →
+  `p4 open --title` → `p4 ready <pr>` → `p4 results <pr>` until passed → `p4 merge <pr>`.
+- Merge refusals: classifier noise ("Destructive or Unwanted Actions") → `git status` alone, then
+  `p4 merge` alone, never chained. Transient "Protected branch update failed (HTTP 405)" right
+  after the check goes green → re-check `results`, retry `merge` once. `p4 ready` on a FOREIGN or
+  already-merged PR can error with a GraphQL-403 message; use your own PR number.
+- CI: tool-tests runs ~2 min when tool/shims/starting_texts change; design/process/coordination/
+  measurement-only PRs pass at once. GitHub `tool-tests` is the authoritative full-suite check
+  (local `node --test` is slow). `cd tool && npm ci` pins TS 5.6.3.
+- Page work: load `ArtifactComments`; record only marked "Decision:"/"Instruction:" words
+  verbatim; a bare "Decision" on a thread settles that thread's restated subject; sync markers and
+  resolve threads after a decision lands. The owner works fast and redirects often.
