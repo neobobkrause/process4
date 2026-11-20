@@ -23,5 +23,5 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 5. By writing the roles record you become ROOT. From then on read `starting_texts/root.md`, part B, in full and follow it in full, in place of this text, starting only from the shared state and the repository.
 6. ARCH, the coordinator and PROCESS go on as they were. Start none of them at a takeover.
 7. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault you meet goes to ARCH, written once; do not fix it or work round it.
-8. At 40 percent of your context, or at a natural pause (between two pieces of work, nothing half done, everything saved): rewrite your handover record, then ask ROOT to replace you. You do not start your own replacement.
+8. At 50 percent of your context, or at a natural pause (between two pieces of work, nothing half done, everything saved): rewrite your handover record, then ask ROOT to replace you. You do not start your own replacement.
 9. Never, before a takeover: decide anything about the product; build anything; merge or deploy; start a session; write the roles record; write, edit or relay the owner's approvals; add a test, check, gate, review or stop; change the process.

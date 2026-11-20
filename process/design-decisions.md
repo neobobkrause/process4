@@ -228,6 +228,52 @@ finding it answers is in the verification sweep, `process/research/verification-
 
 **The owner's words.** "Decision: change the way the limit is measured as you've recommended." — 20 November 2026.
 
+### Subject: The four reading values
+
+**The rule as it now stands.** The four reading figures (design part 5, section 2) are set
+on the reading-fidelity measurement of 20 November 2026, run on Claude Code (model
+`claude-opus-5-5`, effort `medium`, a 1,000,000-token window; `measurement/results/`, report
+`report.md` and `role-text-upward.md`). They are no longer provisional on Claude Code. A
+Codex re-measurement is owed before they govern there (part 8).
+
+- **The largest single text read in full: 60,000 bytes on Claude Code,** and 24,000 bytes on
+  Codex until Codex is measured. On Claude Code governing prose read whole up to the
+  harness's mechanical read-cut (about 25,000 tokens, about 76,000 bytes); 60,000 is 20
+  percent below the largest clean read. This sets the single-text maximum per harness,
+  relaxing the earlier rule that the Codex maximums govern both harnesses (part 5, section 1)
+  for this one value (part 7, section 2).
+- **The largest set of texts read together: 175,000 bytes,** now measured (the word
+  "provisional" is dropped): read whole at every size up to 220,000 bytes, with a 25 percent
+  margin kept.
+- **A role's starting text: 8,192 bytes, and at most ten rules.** A role text was read and
+  its rules applied with no error far beyond this (45 rules at 32.9 KB); 8,192 is a modest
+  raise from 4,096 for breathing room. The rule count stays ten, and the conciseness rule
+  keeps the texts short (part 5, section 3).
+- **The fill level for a refresh: 50 percent** (raised from 40). Reading stayed clean at
+  every fill up to 80 percent. The owner set 50 percent — above the measurement's
+  conservative 40 — so that session refreshes, which are expensive and slow, are minimised
+  while leaving room to work on. On Codex, where no fill level can be read, the refresh comes
+  only at a natural pause (part 8).
+
+"As recommended" is PROCESS's proposal on the owner's standing page ("Process4 Waiting for
+Bob", thread 70f2987e) drawn from `measurement/results/report.md`: single text 60,000 on
+Claude Code (24,000 for Codex), set of texts 175,000 now measured, a modest raise of the role
+text to 8,192 keeping ten rules, and the fill level kept at 40 — the last of which his
+exception changes to 50. This settled design part 10, section 1, item 1 (the four values were
+the one open point there). It changed design part 5, sections 1 and 2; part 7, section 2 (the
+Claude Code reading measurement); part 10, section 1 (item 1 settled) and section 2 (items 5
+and 10); the starting-texts index; and the refresh level (40 → 50 percent) in every role's
+starting text. It adds no test, gate, review or stop: the tool refuses nothing for size (part
+6, section 5), so no tool change was needed. Two measurement findings are put to the owner
+separately: a cut read returns a partial file with no notice (part 7, section 2), and a
+headless session cannot read its own fill (part 7, section 1), which bears on honouring the 50
+percent refresh unattended.
+
+**The owner's words.** "decision: as recommended, except that session refreshes a expensive
+and slow, and thus should be minimized. So the fill level should be set to 50% - which still
+leaves a lot of room to continue work up to the 74% when compaction can occur." — 20 November
+2026.
+
 ### Subject: How a tranche ends, and what shows its journeys complete
 
 **The rule as it now stands.** No change. A tranche ends when its rounds' partial walks

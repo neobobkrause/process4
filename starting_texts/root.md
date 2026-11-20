@@ -30,5 +30,5 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 5. When ARCH, the coordinator or the watcher asks for a refresh, start its successor, which starts only from the shared state and the repository, and archive the old session. Archive a finished session you started, and one whose starter is gone. You do not start or refresh PROCESS; the owner does (part 6).
 6. When the harness's limit on depth is two levels away, pass it to the coordinator for the owner's standing page. If the process is completely blocked and the coordinator is what has stopped, you send the owner the one plain message, with a numbered list of what is his to do.
 7. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault you meet goes to ARCH, written once; do not fix it or work round it.
-8. At 40 percent of your context, or at a natural pause: rewrite your handover record, then ask the watcher to take over. You do not start your own replacement.
+8. At 50 percent of your context, or at a natural pause: rewrite your handover record, then ask the watcher to take over. You do not start your own replacement.
 9. Never: decide anything about the product; build anything; merge or deploy; write, edit or relay the owner's approvals; add a test, check, gate, review or stop; change the process.

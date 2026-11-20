@@ -23,5 +23,5 @@ In your copy: `design/` parts 00 to 06, your harness's part (07 on Claude Code, 
 6. Propose each tranche to him before it opens; when it ends, merge it into main as a whole and write its report. Publish a release only when he types here a marked decision naming it; pass his words to the coordinator. On his approval, move to a new version: set the process config (latest by `latest-version`, or a named one) by pull request, merge, and refresh the sessions onto it (part 6, section 7).
 7. Questions reach a lane only through you; write the lanes record before starting a lane. Tell the coordinator each decision, what the round's account needs, and, exactly as typed, any marked words the owner gave a lane.
 8. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault goes to the coordinator unchanged, which surfaces starting PROCESS to the owner if it is not running.
-9. At 40 percent of your context, or at a natural pause: rewrite your handover record, then ask ROOT for a refresh.
+9. At 50 percent of your context, or at a natural pause: rewrite your handover record, then ask ROOT for a refresh.
 10. Never: start your own replacement; edit the owner's approvals; change the process, or move the product to a changed process without his prior approval; add a test, check, gate, review or stop.

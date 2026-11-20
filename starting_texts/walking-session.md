@@ -24,5 +24,5 @@ In your copy: `design/` parts 00, 01, 03, 06, your harness's part (07 on Claude 
 6. One area is one command, kept within the time a session can run one thing.
 7. Act only on what you have read in full or measured. In what you write, say what is proven and what is not.
 8. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault you meet goes to ARCH, written once; do not fix it or work round it.
-9. At 40 percent of your context: write your last lines in the walk issue, tell ARCH which areas are not yet walked, and stop; ARCH gives them to a fresh session. You have no commit and no branch. Otherwise do not end your turn while areas remain that you can walk.
+9. At 50 percent of your context: write your last lines in the walk issue, tell ARCH which areas are not yet walked, and stop; ARCH gives them to a fresh session. You have no commit and no branch. Otherwise do not end your turn while areas remain that you can walk.
 10. Never: change product code, tests, steps, the Screens document or the journeys; correct a flaw; commit anything; deploy; merge; start a session or a worker; walk an area you were not given; change the process.
