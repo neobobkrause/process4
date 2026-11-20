@@ -60,7 +60,7 @@ As measured on Claude Code:
 
 ## 4. The owner's acts to start a product
 
-**Unproven:** none of it has been carried out for Process4.
+Carried out once, for the trial repository (acts 1 to 10). **Unproven** for a real product.
 
 1. Have a second GitHub account for the sessions.
 2. Give that account write access to the product's repository and the process's, and accept as that account.
@@ -69,11 +69,11 @@ As measured on Claude Code:
 5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories.
 6. Make the deploy token and enter the secret values in the fields of Claude's cloud environment settings page. A session checks that environment carries the process's permissions-management settings; where they are missing, he approves with a click the change it proposes (section 5).
 7. Decide his approvals in PROCESS's session, drafted there on his request or typed by him, and land them, with the forbidden commands, on the process repository's main branch by clicking Merge on the pull requests PROCESS opens (part 6, section 2).
-8. Do the same for the product, in a plain session he starts on the product's repository for this one act, which also makes the tranche branch from main.
+8. Do the same for the product, in a plain session he starts on the product's repository for this one act. Before the product has a coordinator, that session drafts the product's approvals (part 6, section 2). It also writes the product's first Process4 files — `process.json`, the module list, the required-run workflow and the copy of the forbidden commands — by pull request into main, and then makes the tranche branch from main's newest commit, also where main already holds an earlier history.
 9. Start ROOT: the product's repository alone, the tranche branch, Auto mode, a plain prompt.
-10. Once the required test run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing.
+10. Once the required test run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing, replacing any check an earlier process required there.
 
-Not known: whether act 10 can be done before act 9.
+Act 10 was done before act 9 on the trial.
 
 ## 5. The permissions-management settings
 

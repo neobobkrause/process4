@@ -727,6 +727,24 @@ or stop. Researched in `process/research/tranche-unrelated-to-main-20nov.md`.
 already sent 2 hours on this silly problem.) Go!" — 20 November 2026. "Decision: fix the setup
 text" — 20 November 2026.
 
+### Subject: Setting up an existing product under Process4
+
+**The rule as it now stands.** At the owner's act 8 (design part 7, section 4), the plain session he
+starts on the product's repository drafts the product's approvals before the product has a
+coordinator (part 6, section 2), writes the product's first Process4 files — `process.json`, the
+module list, the required-run workflow and the copy of the forbidden commands — by pull request into
+main, and then makes the tranche branch from main's newest commit, also where main already holds an
+earlier history. At act 10 the branch rule's required check `module-tests` replaces any check an
+earlier process required. Part 7, section 4 records that the trial carried out acts 1 to 10, act 10
+before act 9; only a real product is unproven. Build text 2's requirements-file size follows the
+design's single-text maximum (60,000 bytes on Claude Code). Points 1, 2, 3, 5, 6 and 9 of the
+civicsmith lane's nine; no change for 4 (the owner seeds a product's ROOT once, build text 5,
+section 4), 7 (a check in civicsmith's conversion plan) and 8 (the account switch is done). It adds no
+test, gate, review or stop. Researched in `process/research/civicsmith-lane-points-20nov.md`.
+
+**The owner's words.** "Decision: B" — 20 November 2026 (a comment on his standing page, on the
+item "Waiting for you: fixes the civicsmith lane found in the setup steps").
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

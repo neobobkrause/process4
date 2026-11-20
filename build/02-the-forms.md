@@ -95,7 +95,7 @@ Next number: 4
 - **Who changes which part.** ARCH writes and rewords the text, adds and deletes lines, and keeps `Next number` and the length line. The job changes one thing only: `[not yet met]` to `[met]`, in its own pull request. Marking changes no line count, so the job never touches the length line.
 - ARCH writes `[not yet met]` on a new requirement, and puts it back on a met one in the same change that rewords it so as to change what the product does (part 2, section 2). So "the module has work" (part 2, section 3) reads from the file alone.
 - Requirement text names what it serves by ending with `(screen: <page> / <screen>)` or `(journey: <page> step <n>)`. `walk areas` reads these endings.
-- ARCH keeps the file under 24,000 bytes by splitting the module (part 2, section 2). Nothing refuses a longer one.
+- ARCH keeps the file under the single-text maximum (part 5, section 2: 60,000 bytes on Claude Code) by splitting the module (part 2, section 2). Nothing refuses a longer one.
 
 ## 7. The process config
 
