@@ -28,28 +28,16 @@ a{color:var(--accent)}
 <p class="updated">Updated 20 Nov 2026 by PROCESS. I keep this page now — there is no separate coordinating session unless you start one. This page holds what I bring you about the design and the process; the trial product's own page is separate (linked below); you work with me directly in your session titled "PROCESS". One matter at a time.</p>
 </header>
 
-<section class="wait">
-<h2>Waiting for you — two findings from the reading measurement</h2>
-<p>The four reading limits are settled and now in the design (thank you — your words are recorded). The same measurement turned up two things about how reading behaves on this harness. Neither blocks anything; each is yours to settle, and I have <b>not</b> added any check on my own. I recommend an option for each, and "no change" is always available. The two are related (both about reading reliability, both touch part 7), so I bring them together.</p>
-
-<p><b>Finding 1 — a cut read is silent.</b> When a single text is bigger than the harness's read limit (about 25,000 tokens, roughly 76,000 bytes of dense text), a plain read returns only <i>part</i> of the file, and in this version the result carries <b>no notice</b> that it was cut. A session that did not check would act on part of a text. Two things already guard against this: the single-text limit (60,000) sits below the cut, so no governing text reaches it; and every governing text states its own line count and last section at the top, so a session can tell whether it got the whole file. I have already recorded the fact in design part 7 §2.</p>
-<ul>
-<li><b>(a) No further change</b> (recommended). The design now records that a cut is silent, so no one relies on a notice; the 60,000 limit and the line-count header are the guard. Adds nothing.</li>
-<li><b>(b) Add a reading practice</b>: each role, after reading a governing text, checks the lines it got against the stated count and re-reads if short. Belt-and-braces; it adds a step to every read. It is self-protection against a harness defect, not a product test — but it is still a step I would not add without your word.</li>
-</ul>
-
-<p><b>Finding 2 — a headless session cannot see its own fill.</b> The refresh rule now fires at 50% full, which needs a session to read its own fill. In a bare <code>claude -p</code> reader, one session could not see its fill and guessed 70% when it was really 16% — it guessed early, the safe way. Your cloud sessions read their fill a different way (<code>get_session</code>, the route your own PROCESS prompt uses), which does work; the bare-headless case is what cannot. This touches design part 7 §1, which says flatly "the session can read how full its context is."</p>
-<ul>
-<li><b>(a) Record the nuance in part 7 §1</b> (recommended): a session reads its fill via <code>get_session</code> (what the role sessions use), not an in-context display; where a session cannot read its fill it refreshes only at a natural pause (already the rule where a harness shows no fill level). The <code>get_session</code> route is confirmed in the trial. Adds no check.</li>
-<li><b>(b) No change</b> — leave part 7 §1 as written. I would not recommend it: the line is now known to be imprecise.</li>
-</ul>
-
-<p>To settle: a marked line, e.g. <code>Decision: finding 1 (a), finding 2 (a)</code> — or correct any part. I record your words and update the design in the same step.</p>
+<section class="card">
+<h2>Nothing waiting for you right now</h2>
+<p>The four reading limits and the two measurement findings are all settled and in the design (thank you — your words are recorded). I have nothing that needs your decision at this moment. What is in motion is below; the trial will bring you its next step when each arrives. One matter at a time, as always.</p>
 </section>
 
 <section class="card">
-<h2>Settled — the four reading limits (20 Nov)</h2>
-<p>Now in the design, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b> (your exception, to minimise expensive refreshes). Nothing broke on fidelity across 103 trials; each figure keeps a margin below the largest clean read. No test or gate was added — the tool refuses nothing for size. Report: <code>measurement/results/report.md</code>.</p>
+<h2>Settled today (20 Nov)</h2>
+<p><b>The four reading limits</b>, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b> (your exception, to minimise expensive refreshes).</p>
+<p><b>The two measurement findings</b>, each as recommended: a <i>silent cut read</i> — no further change, since the 60,000 limit sits below the cut and every governing text states its own length; and <i>reading a session's own fill</i> — design part 7 §1 now records that sessions read their fill via <code>get_session</code>, and refresh at a natural pause where they cannot read it.</p>
+<p>Nothing broke on fidelity across 103 trials; no test or gate was added — the tool refuses nothing for size. Report: <code>measurement/results/report.md</code>.</p>
 </section>
 
 <section>
