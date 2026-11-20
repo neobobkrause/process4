@@ -676,7 +676,9 @@ section 3). In particular:
    chooses which of his own committed versions stands, and GitHub's own buttons carry it out (part
    6, section 2).
 2. **The forbidden commands** are a technical list, the same for every repository. PROCESS keeps it
-   among the process's files and changes it only as a process change on his marked decision. A
+   as `shims/claude-settings.json` in the process's repository, first made as a byte-for-byte copy of
+   the process repository's own `.claude/settings.json` as the owner committed it, and changes it only
+   as a process change on his marked decision. A
    session copies it, unchanged, into a repository by a pull request he lands with a click (part 6,
    section 2).
 3. **The environment's permissions-management settings.** A session reads the environment and
