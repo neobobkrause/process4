@@ -1,6 +1,6 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 74 lines. Last section: "8. Process4 develops itself".
+Length: 77 lines. Last section: "8. Process4 develops itself".
 
 ## 1. What holds a rule
 
@@ -10,19 +10,22 @@ Length: 74 lines. Last section: "8. Process4 develops itself".
 
 ## 2. The owner's standing approvals
 
-- They are a block of text in the owner's own words, saying what sessions may do without asking him and what they may never do. He commits it himself, on GitHub's website. No session writes, edits or relays it.
+- They are a block of text in the owner's own words, saying what sessions may do without asking him and what they may never do. He types its words in a session: the coordinator's for a product, PROCESS's for the process's repository. That session places his words, unchanged, in a pull request that changes only that file, and never merges it; he reads the changed file on the pull request's page and lands it by clicking Merge there, on GitHub's website. No session composes or alters his approvals, and no session merges a change to them.
 - A session loads the approvals only when it starts. An edit therefore goes with a restart of ROOT (part 4, section 7), and no session compares the approvals it loaded with the newest.
-- The approvals and the list of forbidden commands are protected by the permission checker alone.
+- The list of forbidden commands is a technical list, the same for every repository. PROCESS keeps it among the process's files and changes it only as a process change on the owner's marked decision. A session copies it, unchanged, into a repository by a pull request he lands with a click, as for his approvals.
+- The approvals and the list of forbidden commands are protected by the permission checker and by the owner's own click that lands a change to them.
 - In the process's repository the approvals say that a process change is merged only on the owner's word given at PROCESS. Nothing enforced by GitHub is added for this.
 - They live in the product's repository on the tranche branch, carried to the main branch by each tranche's merge, so that every session starts from a commit that holds them; and in the process's repository on its main branch.
-- His two files are first committed on the main branch, and the tranche branch is made from it. A later edit is a pull request on the tranche branch that he opens and merges himself, after telling the coordinator to stop (part 4, section 7).
+- His two files are first landed on the main branch this way, and the tranche branch is made from it. A later edit is a pull request on the tranche branch, opened the same way and landed by his click, after he tells the coordinator to stop (part 4, section 7).
+- Where one of the two files differs between two branches, he chooses which of his own committed versions stands, and GitHub's own buttons carry it out (for example, Revert on the pull request that brought the version he does not keep). No session resolves it.
+- **Unproven:** that the permission checker lets a session place the owner's typed words in his approvals file; and, in a repository whose approvals forbid a session to change that file, this route works only once his approvals allow it.
 - The ordered list of his acts to start a product is in part 7, section 4, for Claude Code. For Codex it is not known (part 8).
-- **Open (the owner):** the wording of his approvals and forbidden commands for Process4, which only he writes. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list in each repository (part 7, section 1); what is open is his word confirming that wording as settled, or his revision of it.
+- **Open (the owner):** the wording of his approvals for Process4, which only he writes, and his word on the forbidden commands as they stand. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list in each repository (part 7, section 1); what is open is his word confirming that wording as settled, or his revision of it.
 
 ## 3. Forbidden commands and GitHub's rules
 
 - The list of forbidden commands takes these away from every session outright: every direct push, every GitHub command, the ordinary merge commands, overwriting a branch's history, deleting branches, and writing files through GitHub's web interface. So the tool is each session's only door to GitHub. The one exception: a session's first command fetches its read-only copy of the process, the tool with it, and that fetch is not made by the tool.
-- Sessions act as a second GitHub account that can push and merge but cannot change settings. No branch can be deleted or overwritten. The tranche branch takes a session's change only by pull request with its required test run passing. The owner commits his approvals and forbidden commands himself.
+- Sessions act as a second GitHub account that can push and merge but cannot change settings. No branch can be deleted or overwritten. The tranche branch takes a session's change only by pull request with its required test run passing. Only the owner's click lands a change to his approvals or the forbidden commands (section 2).
 - GitHub's published limits are kept to: sessions stay within them with a margin and obey GitHub's own rate-limit responses.
 
 ## 4. Working rules that exist because of the permission checker

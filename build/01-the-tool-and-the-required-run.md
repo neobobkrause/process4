@@ -94,7 +94,7 @@ The order is build text 4's (`04-the-trial.md`, section 3), which rules. What ea
 5. The walk commands.
 6. Scope 5; `release prepare`, `release publish`.
 
-**Who builds it** (part 4, section 11): a building session that holds the process's repository alone. The owner merges each of its pull requests himself; after the first build only PROCESS changes the tool. Stage 1 needs the owner's acts 1 to 8 and a plain-started session.
+**Who builds it** (part 4, section 11): a building session that holds the process's repository alone. The tool is built; only PROCESS changes it, and the owner merges none of its pull requests (the design, part 4, section 11). Stage 1 needs the owner's acts 1 to 8 and a plain-started session.
 
 ## 8. Not settled here
 

@@ -78,8 +78,8 @@ part 7, section 5. The owner does these; no session can (the design, part 1, sec
 4. Make or carry the deploy token and enter the secret values in the new account's cloud
    environment (act 6; part 9), and, for a journey that uses AI, connect the AI account
    (part 1, section 3).
-5. **Confirm the new account's cloud environment carries the permissions-management
-   settings** (the design, part 7, section 5; the owner's instruction of 19 November
+5. **A session confirms the new account's cloud environment carries the permissions-management
+   settings,** and where they are missing proposes the change, which the owner approves with a click (the design, part 7, section 5; the owner's instruction of 19 November
    2026). This is the check the account switch adds. Without it the checker refuses the
    roles' cross-session and cross-repository acts (part 7, section 5), and the restart
    below cannot complete.
