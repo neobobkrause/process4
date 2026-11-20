@@ -354,6 +354,21 @@ owner. It adds no test, gate, review or stop.
 
 **The owner's words.** "Decision: as recommended" — 20 November 2026.
 
+### Subject: No owner approval of a tranche
+
+**The rule as it now stands.** A tranche opens because the product has work to do —
+requirements added or changed, issues raised by its lanes, flaws found by walks or by jobs,
+and notices between modules. There is no single purpose to state for a tranche and no owner
+review or approval before it opens: ARCH opens the tranche and decides its scope. The owner
+directs the product continuously — through the coordinator and the lanes, and by marked
+instructions (put a module first, change the slot number, stop, move versions) — and still
+approves every public release. This removed the owner's "approve or change ARCH's proposal for
+a tranche" act (design part 1, section 3), rewrote how a tranche opens (part 3, section 1), and
+changed ARCH's duty from "proposes each tranche" to opening it and deciding its scope (part 4,
+section 1). It removes a step; it adds no test, gate, review or stop.
+
+**The owner's words.** "Decision: Remove the owner's tranche-approval" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

@@ -4,7 +4,7 @@ Length: 74 lines. Last section: "8. Support beyond the process".
 
 ## 1. Opening a tranche
 
-- Before a tranche opens, ARCH proposes in a few plain lines what it is for and which journeys are expected to complete at its end, naming any journey left out and why. The owner approves or changes it.
+- A tranche opens because the product has work to do — requirements added or changed, issues raised by its lanes, flaws found by walks or by jobs, and notices between modules. There is no single purpose to state and no owner review before it opens: ARCH opens the tranche and decides its scope, and the owner directs the product continuously through the coordinator and the lanes and by marked instructions (the owner's decision, 20 November 2026).
 - The tranche is built on the tranche branch. The main branch never moves while a tranche runs. **Claude decided:** there is one lasting tranche branch. After a tranche merges into the main branch, the next tranche goes on from the same branch.
 - A product's tranche runs on one fixed version of the process from open to close (part 6). A product moves to a changed process version only on the owner's approval (part 6, section 7). **Claude decided:** a version move loses no work — where no job is open it is made at once; where jobs are open it is made at the next round boundary, or, on the owner's word to move now, open jobs stop and restart from their branches on the new version (as after an approvals edit, part 4, section 7).
 - While a tranche runs, ARCH prepares what the next round or tranche needs.
@@ -47,7 +47,7 @@ The coordinator gives the owner a short account: jobs done, flaws found, flaws c
 ## 5. How a tranche ends
 
 - **Reading:** a tranche ends when a round's partial walks, internal and external, both come clean; or, where the owner asked for a full external walk, when that walk is clean.
-- **Settled (the owner, 20 November 2026): no change.** What shows that the journeys named for the tranche complete at its end is the rounds' partial walks themselves, each scoped to the areas that round changed; the testing policy is unchanged, and no end-of-tranche sweep is added. A full external walk remains available only on the owner's request (section 3). His decision is in the record of decisions.
+- **Settled (the owner, 20 November 2026): no change.** What shows that the product's journeys complete at the tranche's end is the rounds' partial walks themselves, each scoped to the areas that round changed; the testing policy is unchanged, and no end-of-tranche sweep is added. A full external walk remains available only on the owner's request (section 3). His decision is in the record of decisions.
 - When the tranche ends, ARCH merges the tranche branch into the main branch as a whole, by pull request. None of the tests runs on that pull request.
 - A tranche that does not come clean goes on in rounds until the owner says. He then chooses between merging it with its flaws named, with no release from it, and dropping it.
 - **Reading:** a tranche merged with its flaws named has not ended in the sense of section 6. Its flaws become work in the next tranche, and a release can be made once a later tranche ends clean.
