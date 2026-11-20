@@ -4,7 +4,7 @@
 The process repo's shared-state issue EXISTS (#33); `handover-process` carries PROCESS liveness
 and the `products` registry. During first-build this file stays the detailed handover.
 
-Last written: 2026-11-20, by **PROCESS #1** `session_012hdw2Rehfe2YmS7NZKPmja`, written from
+Last written: 2026-11-20 (PROCESS #4 note below); main body by **PROCESS #1** `session_012hdw2Rehfe2YmS7NZKPmja`, written from
 `main` tip `2b1ed0c` as part of the Decision-B change (the PR this handover is in). Generation 1
 is now persisted in `handover-process` (the predecessor recorded none; the field was new), so you,
 the successor, are **PROCESS #2** — read 1 there, name yourself `PROCESS #2`, record generation 2.
@@ -44,6 +44,20 @@ and future PROCESS sessions on BioDefault (options A restart PROCESS there now /
 change). No trial session runs on this account yet; the `products` registry is still empty —
 ask the owner once for the trial's new ROOT.
 
+## PROCESS #3 and #4 (20 Nov 2026, new account) — interim note
+
+PROCESS #3 (`session_018Bhcefs3PhXN8GfuPda7Ts`) ran on BioDefault for ~2 minutes as a
+**two-repository** session (process3-probes + process4, so no deny list loaded), wrote
+`handover-process` generation 3, left the standing page stale and is archived. PROCESS #4
+(`session_018Bhced7M3Fhf7DEa5tX2Tb`) started on BioDefault with process4 alone, confirmed the
+`autoMode` block is loaded in `~/.claude/settings.json`, set its title `PROCESS #4`, wrote
+`handover-process` generation 4, refreshed `coordination/owner_page/desk.html` and republished it
+to the standing page **`SY4Ub7f1vwHN6fjvxz23iy`** (this account; version 2). PROCESS #2's A/B/C
+question is moot (PROCESS now runs on BioDefault). Still waiting on the owner: start the trial's
+ROOT on BioDefault (one repository), and name it so PROCESS seeds the `products` registry.
+Offered on the page (not decided): record in design part 7 §3 that a role session naming itself
+has now worked twice (PROCESS #1, #4).
+
 ## Read this first — merge behaviour
 
 **Showing the owner a record entry is transparency, not an approval gate** (design part 5 §2/§5;
@@ -73,7 +87,7 @@ merge the same way, under his standing direction.
 - **PROCESS keeps the owner's standing page** (his instruction; within approvals). He works fast,
   redirects often, and decides via page comments too (a comment webhook arrives as a queued
   notification — ReadNotifications).
-- **Standing page** "Process4 Waiting for Bob" — on the NEW account `SY4Ub7f1vwHN6fjvxz23iy`
+- **Standing page** "Process4 Waiting for Bob" — on the NEW account `SY4Ub7f1vwHN6fjvxz23iy` (republished by PROCESS #4, version 2)
   (published by PROCESS #2; the old-account copy `3eWSU2EvP27ttdJBZGjDJT` is unreachable), source
   `coordination/owner_page/desk.html`: carries the **account-switch checklist** (the owner's acts).
   Keep repo desk.html and the published page in sync (commit + publish via Artifact).

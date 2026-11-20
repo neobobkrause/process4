@@ -1,79 +1,73 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Process4 Waiting for Bob</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;600&display=swap">
 <style>
+/* One narrow column: what waits for the owner first, then what is settled, then where things stand. */
 :root{--bg:#f7f8f6;--fg:#1d2420;--muted:#5b6660;--line:#d9dfdb;--accent:#1f6f54;--wait:#a35a00;--card:#ffffff;
 --display:"Source Serif 4",Georgia,serif;--body:Inter,system-ui,sans-serif}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141816;--fg:#e6ebe8;--muted:#9aa6a0;--line:#2c3430;--accent:#5cc49c;--wait:#f0a64a;--card:#1b201d;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#141816;--fg:#e6ebe8;--muted:#9aa6a0;--line:#2c3430;--accent:#5cc49c;--wait:#f0a64a;--card:#1b201d;color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding:28px 16px 48px}
 main{max-width:44rem;margin:0 auto;display:grid;gap:28px}
-h1{font:600 1.9rem/1.2 var(--display);margin:0}
+h1{font:600 1.9rem/1.2 var(--display);margin:0;text-wrap:balance}
 h2{font:600 .78rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 .updated{color:var(--muted);font-size:.9rem;margin-top:6px}
 p{margin:0 0 8px}
 ul,ol{margin:0;padding-left:1.3rem;display:grid;gap:6px}
 .wait{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px;border-left:3px solid var(--wait)}
 .card{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
-table{border-collapse:collapse;width:100%;font-size:.92rem;margin:6px 0}
-th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
-th{color:var(--muted);font-weight:600}
-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;overflow-wrap:anywhere}
 a{color:var(--accent)}
-</style></head><body>
+</style>
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS #2, the first PROCESS on your new Claude account. This is the fresh copy of your standing page on this account; the earlier copy stays with the old account. You work with me directly in the session titled "PROCESS #2". One matter at a time.</p>
+<p class="updated">Updated 20 Nov 2026, 19:30 UTC, by PROCESS #4, on your new Claude account. You work with me directly in the session titled "PROCESS #4". One matter at a time.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you — finishing the account switch</h2>
-<p>What I confirmed on this account: <b>the shared state carried over untouched.</b> The tool read the process's records from GitHub, and I recorded myself in them as PROCESS #2.</p>
-<p>What I found: <b>this PROCESS session runs on the environment named "Default". That environment has no setup script, so the permissions settings (the <code>autoMode</code> block) are not loaded here.</b> On this account your "BioDefault" environment has the secrets and a setup script. I can't see that script's contents from here, so whether it holds the <code>autoMode</code> block is unknown. What this affects: my routine messages to the trial's ROOT and coordinator may be wrongly refused. Work inside this repository is not affected.</p>
+<h2>Waiting for you: finishing the account switch</h2>
+<p><b>What is now confirmed on this account.</b> The shared state carried over untouched. PROCESS runs on your <b>BioDefault</b> environment, and its setup script loads the permissions settings (the <code>autoMode</code> block). I checked that the block is loaded in this session. So the question PROCESS #2 put to you (restart PROCESS on BioDefault: A, B or C) is settled in practice: PROCESS now runs there. I recorded myself in the shared state as PROCESS #4.</p>
 <ol>
-<li><b>Start the trial's sessions on BioDefault.</b> When you start ROOT on <code>neobobkrause/process3-probes</code> (Auto mode, plain prompt), pick the BioDefault environment, after you confirm its setup script is the one you copied from the old account.</li>
-<li><b>Start my successors on BioDefault too</b> (choose one when you're ready):
-  <ul>
-  <li><b>A — Restart me now on BioDefault</b> (recommended before I message the trial). Start a new PROCESS session on <code>neobobkrause/process4</code>, main, Auto mode, in BioDefault, with the same prompt you gave me. I'll archive nothing. My handover is saved, and the new session will be PROCESS #3.</li>
-  <li><b>B — Keep me on Default for now.</b> I work only inside this repository. If a message to the trial is refused, I'll bring it to you.</li>
-  <li><b>C — No change.</b></li>
-  </ul></li>
-<li><b>Tell me the trial's new ROOT</b> once you've started it (its session title is enough). I record it once in my products list, and from then on I announce each new PROCESS to it myself.</li>
+<li><b>Start the trial's ROOT on BioDefault.</b> Use <code>neobobkrause/process3-probes</code> as the only repository, Auto mode, with a plain prompt. A session that holds more than one repository loads no deny list (PROCESS #3 was started with two repositories and is now archived). The same applies to future PROCESS sessions: <code>neobobkrause/process4</code> alone, main, BioDefault.</li>
+<li><b>Tell me the trial's new ROOT</b> once it is running. Its session title is enough. I record it once in my products list, and from then on I announce each new PROCESS to it myself. The list is empty now, so until you tell me, I cannot reach the trial.</li>
+<li><b>Then, when you choose:</b> tell the trial's coordinator "move to the latest Process4 version". The trial still pins process4 <code>7d8e529</code>, so it lacks every fix since then. Nothing forces this move.</li>
 </ol>
-<p>Still yours from the switch checklist: GitHub connected and the GitHub App installed on both repositories (the tool reached GitHub from here, so the process repository is done). And the trial's own page is on the old account, so the trial's coordinator will need to republish it here.</p>
+<p>Still yours from the switch checklist: the trial's own page is on the old account, so the trial's coordinator will republish it here once it runs.</p>
 </section>
 
 <section class="card">
-<h2>Settled today (20 Nov)</h2>
-<p><b>The four reading limits</b>, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b> (your exception, to minimise expensive refreshes).</p>
-<p><b>The two measurement findings</b>, each as recommended: a <i>silent cut read</i> — no further change, since the 60,000 limit sits below the cut and every governing text states its own length; and <i>reading a session's own fill</i> — design part 7 §1 now records that sessions read their fill via <code>get_session</code>, and refresh at a natural pause where they cannot read it.</p>
-<p><b>Standardized session names</b>, in your words (the job name and the whole change “as recommended”): every session now carries a standard name — <code>PROCESS #N</code>, or <code>product role #N</code> (e.g. <code>civicsmith ARCH #3</code>, a job <code>civicsmith orders #2</code>) — where N is the generation, one more at each refresh or replacement, kept in each long-lived role's handover record so it survives a full stop. No tool change was needed and no test or gate was added. This session is <code>PROCESS #1</code>, and setting that name through the harness worked — one of the things the design had left unproven.</p>
-<p><b>The first account switch</b>, in your words (<i>"Decision: B — Move PROCESS to the new account too (to simplify this first account switch)"</i>): the trial and PROCESS move to a new Claude account <b>together</b>, staying on one account, because their coordination is session messaging and the harness keeps that within an account. Your steps are in the box at the top of this page. Recorded in the design decisions record, with the single-account reason noted in the account-switch procedure; no test, gate or stop was added.</p>
-<p>Nothing broke on fidelity across 103 trials; no test or gate was added — the tool refuses nothing for size. Report: <code>measurement/results/report.md</code>.</p>
+<h2>Settled on 20 Nov</h2>
+<p><b>The four reading limits</b>, in your words: single text <b>60,000 B on Claude Code</b> (24,000 on Codex until it is measured); set of texts <b>175,000 B</b> (measured); a role's text <b>8,192 B, ten rules</b>; fill level <b>50%</b>, your exception, to minimise expensive refreshes.</p>
+<p><b>The two measurement findings</b>, each as recommended. A <i>silent cut read</i> needs no further change, because the 60,000 limit sits below the cut and every governing text states its own length. On <i>reading a session's own fill</i>, design part 7 §1 now records that sessions read their fill through <code>get_session</code> and refresh at a natural pause when they cannot read it.</p>
+<p><b>Standardized session names</b>: <code>PROCESS #N</code>, or <code>product role #N</code> (for example <code>civicsmith ARCH #3</code>; a job is <code>civicsmith orders #2</code>), where N is the generation, kept in each long-lived role's handover record so it survives a full stop.</p>
+<p><b>The first account switch</b>, in your words (<i>"Decision: B — Move PROCESS to the new account too (to simplify this first account switch)"</i>): the trial and PROCESS move to the new account together, because their coordination is session messaging and the harness keeps that within one account.</p>
+</section>
+
+<section>
+<h2>Later, when you like</h2>
+<ul>
+<li><b>Record that a role session can name itself.</b> The design still lists this as unproven (part 7 §3). It has now worked twice in Auto mode: PROCESS #1 and PROCESS #4 each set their own title. Options: <b>A</b>, move it from "not proven" to "seen to work" in part 7 §3 (recommended, a record of a measured fact, adds nothing); <b>B</b>, no change.</li>
+</ul>
 </section>
 
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>All the open points are settled or closed</b>, the four figures included (settled 20 Nov, now in the design). Your approvals wording is committed and in force. The Open Points page (https://claude.ai/artifact/617wp1vSKDpubVbwiGDpUU) is on the old account; everything on it is settled and recorded in the decisions record.</li>
-<li><b>Civicsmith readiness:</b> I gave you an honest assessment in the session. The reading-limit risk I flagged is now largely answered — the limits have wide measured headroom. What stays unproven is scale (~200 modules), and walks/deployment/release by sessions on Cloudflare — the design's own position is that the first real tranche is the proof. I recommend phasing: run the figures into the design, do civicsmith's setup, then a small first tranche as the proof.</li>
+<li><b>All the open points are settled or closed</b>, and every decision is in the design decisions record. Your approvals wording is committed and in force. The Open Points page is on the old account.</li>
+<li><b>Civicsmith readiness.</b> The reading limits now have wide measured headroom. What stays unproven is scale (about 200 modules) and walks, deployment and release by sessions on Cloudflare. The design's position is that the first real tranche is the proof. My recommendation is unchanged: civicsmith's setup, then a small first tranche as the proof.</li>
 </ul>
 </section>
 
 <section>
 <h2>The trial</h2>
 <ul>
-<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>. Its own page (https://claude.ai/artifact/JEbwfU3pjZFzGgEcsyxzmb) is on the old account.</li>
-<li><b>The trial is on an old process version.</b> Its <code>process.json</code> pins process4 <code>7d8e529</code>; process4 has moved well past that (now carrying the round-done fix, the lane-routing fix and the settled reading limits, among others). To move it to the latest, tell the trial coordinator "move to the latest Process4 version" when you choose; nothing forces it.</li>
-<li><b>Still to try</b> (trial stages): a held merge and a stop reaching an open job; a job replaced at its third failed run; an approvals edit with a restart; stage 4 trials 2–3; stage 5 walks. Each comes to you with steps when its moment arrives.</li>
+<li><b>The stop is lifted</b> ("Decision: restart the build", 20 Nov). The trial runs in <code>neobobkrause/process3-probes</code>. It waits only for you to start its ROOT on this account.</li>
+<li><b>Still to try</b> (trial stages): a held merge and a stop reaching an open job; a job replaced at its third failed run; an approvals edit with a restart; stage 4 trials 2 and 3; stage 5 walks. Each comes to you with steps when its moment arrives.</li>
 </ul>
 </section>
 
 <section class="card">
 <h2>In motion</h2>
-<p>Nothing else is in motion. The trial is stopped until you start its ROOT on this account. Then, when you choose, tell its coordinator "move to the latest Process4 version" so it carries every fix since <code>7d8e529</code>. (Process3-conformance and Codex work stay dropped, per your word.)</p>
+<p>Nothing else is in motion. Process3-conformance and Codex work stay dropped, per your word.</p>
 </section>
 </main>
-</body></html>
