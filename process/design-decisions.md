@@ -252,6 +252,25 @@ test, gate, review or stop; it fixes terminology.
 
 **The owner's words.** "Instruction: The design document should refer to a module that provides a service to other modules through an interface as a \"provider\". A module that uses the service of another module through the provider's interface is referred to as a \"user.\"" — 20 November 2026.
 
+### Subject: Publishing a release — who publishes, and production keys and tokens
+
+**The rule as it now stands.** Process4 builds the product's installer and updater as product
+code (jobs, with their own tests) and proves them on a development account for both a fresh
+install and an upgrade before any release is offered (part 3, section 6; part 2). On the
+owner's approval, ARCH carries out the publish: the release ceremony places the new installer
+where the product's "check for updates" and outside users expect to find it, using a **release
+token** that grants the privileges to publish; where producing the installer needs a product's
+**production secret**, that secret is used **through a secret-management facility**. **No
+session directly holds a production key.** Running an install or an update on a real site is
+always the user's or operator's act — never the developer's, never a session's. This settled
+the open question in part 3, section 6 and the open item in part 10, section 1, item 4, and
+refined the production-key rule (part 1, section 2; part 9, section 2). It adds no test, gate,
+review or stop; it is a requirement change made with the owner's explicit approval. The
+install/update success definition (finishes with no error and the site it produces starts) the
+owner has agreed; it awaits a marked line.
+
+**The owner's words.** "Decision: No session directly holds a production key. But a product's production secret key may be used their a secret management facility to produce the installer. Similarly, the release process may require the use of a release token that grants it the necessary privileges in order to publish a release." — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
