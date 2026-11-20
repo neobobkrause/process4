@@ -5,7 +5,7 @@ Length: 113 lines. Last section: "6. Open, and who settles it".
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
 It rests on the research in `research/` and changes no rule of Process4; where it and the design
-differ, the design rules. Steps that wait on the owner's facts or on PROCESS's points are marked so.
+differ, the design rules. Steps that wait on the owner's facts are marked so.
 "Inference" marks what no record shows.
 
 ## 1. What the plan aims at
