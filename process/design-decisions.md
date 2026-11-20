@@ -284,6 +284,19 @@ gate, review or stop.
 
 **The owner's words.** On the urgent-fix question, confirming the reading restated on the review page: "Decision" — 20 November 2026.
 
+### Subject: A told job's tests — the three readings
+
+**The rule as it now stands.** Three points on what a told job re-tests are confirmed as the
+design read them (part 2, section 7): (1) a told job's own edits count among "the changed
+parts", so what it touches is re-tested; (2) the related tests are chosen a whole test file at
+a time; (3) where the tool cannot follow a told module's code, that module's whole tests run,
+since the tool cannot say which relate. These define the scope of a told job, which runs fewer
+tests than an ordinary job; they add no test, gate, review or stop, and the mechanism that
+traces a use to its tests remains unproven until the trial (part 2, section 7, "Unproven").
+This settled the open item in part 10, section 1, item 6.
+
+**The owner's words.** "Decision: as recommended" — 20 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
