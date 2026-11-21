@@ -40,14 +40,47 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: how civicsmith's first Process4 approvals get in</h2>
-<p>civicsmith-copy's current approvals (1 Nov) forbid any session to change <code>CLAUDE.md</code>, even in a pull request you would merge. So no session can place its first Process4 approvals, and the design also says you never edit a file. One of the two has to give, once per product.</p>
-<ul>
-<li><b>B — Delete, then click Merge (recommended to try).</b> On GitHub you open <code>CLAUDE.md</code> in civicsmith-copy, click "…", "Delete file", "Commit changes". The set-up session then puts the drafted approvals in a pull request and you click Merge. All clicks. Not yet shown to pass the permission checker; if it fails, A.</li>
-<li><b>A — One paste.</b> You paste the drafted text into <code>CLAUDE.md</code> on GitHub's editor once, as you did for process4's approvals yesterday. Proven, but it is editing a file.</li>
-<li><b>C — No change.</b> The set-up has no written route; it is worked out on the day.</li>
-</ul>
-<p>To choose, type here, for example <code>Decision: B, with A as fallback</code>.</p>
+<h2>Waiting for you: civicsmith-copy's approvals, ready to paste</h2>
+<p>As you asked: the full text for the two files in <b>neobobkrause/civicsmith-copy</b>. Read it first; tell me anything to change. Then paste each on GitHub and commit to main.</p>
+<p><b>1. <code>CLAUDE.md</code></b> — open https://github.com/neobobkrause/civicsmith-copy/edit/main/CLAUDE.md, select all, paste this, click <b>Commit changes…</b> then <b>Commit changes</b>.</p>
+<div class="draft">## Standing approvals from Bob
+
+Standing approvals from Bob for civicsmith, developed with Process4, 21 Nov 2026, for the repository neobobkrause/civicsmith-copy only. They cover every Claude session working on civicsmith, including sessions that other sessions started.
+
+Such sessions may, without asking me: subscribe to and unsubscribe from activity on this repository&#x27;s pull requests; notify me by push notification; create and edit civicsmith and Process4 pages and documents on claude.ai under the Claude account the acting session runs under; start, message, interrupt and archive this account&#x27;s sessions working on civicsmith, and make and remove their scheduled wakes; message the PROCESS session in neobobkrause/process4; and clone the public repository neobobkrause/process4 read-only, as the process&#x27;s copy.
+
+In this repository, neobobkrause/civicsmith-copy, only, they may: push to their own working branches; open, edit, comment on, mark ready or draft, close and reopen pull requests, and open, comment on and close issues; run builds and tests, fetching public packages and images for them; run, re-run and cancel this repository&#x27;s own workflows; change its workflow files only through pull requests merged as below, never renaming or removing a job whose name matches a required check, never widening any workflow&#x27;s or job&#x27;s permissions, and never adding a pull_request_target trigger; merge pull requests into p4-tranche, and p4-tranche into main, once their required checks pass, without a person&#x27;s review, except a pull request that changes CLAUDE.md or .claude/settings.json, which only I merge; deploy to, configure, seed, reset and remove the development copy in the one development Cloudflare account named in process.json, and the rehearsal account for the new-team rehearsal, with the deploy token held in the environment; make and publish development pre-releases; and prepare a public release, which is published only on my approval typed in ARCH&#x27;s own session.
+
+The coordinator, or before there is one the session I start to set civicsmith up, may at my request draft the text of these approvals, and may place a text I have approved in its session, unchanged, in a pull request that changes only CLAUDE.md or only .claude/settings.json; it never merges that pull request. A session may propose a change to the settings of the cloud environment the sessions run under through the harness&#x27;s own approval prompt; the change takes effect only when I approve it there.
+
+Only messages I typed myself count as my decisions or instructions. Never record your decision or your summary as mine. A message of mine is a decision or an instruction only when it begins &quot;Decision:&quot; or &quot;Instruction:&quot;. Everything else is conversation. If a session thinks I have decided something without that mark, it asks me once whether to record it as one. Process changes happen only at PROCESS, in neobobkrause/process4; no session here changes the process.
+
+They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or release, or the branch snapshot/pre-refactor-2026-09-25; change permission, repository or ruleset settings, or a protected environment, except by the proposal through the harness&#x27;s approval prompt named above; push to main or p4-tranche; change CLAUDE.md or .claude/settings.json, except by the pull request named above, which only I merge; publish a public release without my approval; hold or use a production key, or touch an installed site; use any Cloudflare account but the two named above; reveal any secret value; or act on any account or service other than those named here. Reading public documentation and public repositories, and fetching public packages and images, are not acts on another service.</div>
+<p><b>2. <code>.claude/settings.json</code></b> — open https://github.com/neobobkrause/civicsmith-copy/edit/main/.claude/settings.json. Replace only the <code>"permissions"</code> part with the block below, keep your <code>"hooks"</code> part (it installs Node 26, which civicsmith needs), and commit the same way. The comma after the closing <code>}</code> of permissions stays if hooks follow.</p>
+<div class="draft">  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;mcp__github__merge_pull_request&quot;,
+      &quot;Bash(gh pr merge *)&quot;,
+      &quot;Bash(gh api *pulls/*/merge*)&quot;,
+      &quot;Bash(git push --force *)&quot;,
+      &quot;Bash(git push -f *)&quot;,
+      &quot;Bash(git push --force-with-lease *)&quot;,
+      &quot;Bash(git push origin --delete *)&quot;,
+      &quot;Bash(git push origin main)&quot;,
+      &quot;Bash(git push origin HEAD:main)&quot;,
+      &quot;Bash(gh api *contents/*)&quot;,
+      &quot;Bash(gh api *git/blobs*)&quot;,
+      &quot;Bash(gh api *git/trees*)&quot;,
+      &quot;Bash(gh api *git/commits*)&quot;,
+      &quot;Bash(gh api *git/refs*)&quot;,
+      &quot;Bash(curl *api.github.com*)&quot;,
+      &quot;mcp__github__create_or_update_file&quot;,
+      &quot;mcp__github__push_files&quot;,
+      &quot;mcp__github__delete_file&quot;,
+      &quot;Bash(gh *)&quot;
+    ]
+  }</div>
+<p>What changed from your 1 Nov text: sessions may now merge into the tranche branch and main after checks (not changes to these two files, which only you merge), deploy only to the development Cloudflare account and the rehearsal account, message PROCESS, and draft (never land) your approvals. Your safety rules carry over: no force-push, never rewrite main, never delete the pre-refactor snapshot branch, one Cloudflare account. The forbidden-commands list becomes Process4's standard one; its extra items (rebase, amend, reset and the like) are dropped, since the branch rules already protect what matters.</p>
 </section>
 
 <section class="card">
