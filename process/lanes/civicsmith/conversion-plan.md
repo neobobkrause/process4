@@ -1,11 +1,11 @@
 # Civicsmith's conversion plan: outline
 
-Length: 129 lines. Last section: "6. Open, and who settles it".
+Length: 166 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
 It rests on the research in `research/` and changes no rule of Process4; where it and the design
-differ, the design rules. Steps that wait on the owner's facts are marked so.
+differ, the design rules. Steps that wait on the owner are named in section 6.
 "Inference" marks what no record shows.
 
 ## 1. What the plan aims at
@@ -17,19 +17,21 @@ differ, the design rules. Steps that wait on the owner's facts are marked so.
   and one journey walked there (PROCESS's standing recommendation; design part 10 §3).
 - No product behaviour changes in the conversion itself. Behaviour changes come as tranche work.
 
-## 2. Before anything: what the owner has told the lane, and what is still to learn
+## 2. What the owner has told the lane, and what the reading found
 
-Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `believeinoakland/civicsmith2`, then
-corrected on 21 Nov 2026 to `neobobkrause/civicsmith-copy` (civicsmith2 is an unmodified copy of it); its
-founding documents are in it; no work is in flight; its languages can be seen in it; and "there are
-several problems that need to be resolved before process4 development can begin".
+- The repository is `neobobkrause/civicsmith-copy` (the owner, 21 Nov 2026; `believeinoakland/civicsmith2`
+  is an unmodified copy of it). No work is in flight. The founding documents are in it. The problems to
+  resolve first are, in his words, "related to cyclic references within modules and other source code
+  issues that have made it difficult to close a round without addressing".
+- The read-only session's report (`research/civicsmith-copy-reading.md`, 21 Nov 2026) found:
+  - no cycles between modules; `build/modules.json` already keeps Process4's order rule, 178 modules;
+  - four file cycles, each inside one module;
+  - the problems that held rounds were size, files many jobs touch, and slow, flaky or hanging test runs;
+  - no Process3 traces; the previous process, neoProcess, was removed on 1 Nov 2026;
+  - the copy holds `main` only. The paused tranche T53 (2,030 commits on `tranche/T53`) and the `coord`
+    branch are not in it (section 6).
 
-Still to learn, from a session started in civicsmith-copy under its own approvals (the lane's approvals cover
-process4 only; `reading-brief.md`) or from the owner: the founding documents' paths and
-content, the languages and tools, the module count, Process3's traces, and the several problems. The
-problems are resolved before act 1 of section 3, or placed in the plan where each belongs.
-
-## 3. The owner's acts, for an existing Process3 repository
+## 3. The owner's acts, for an existing repository
 
 Design part 7 §4's ten acts as corrected on the owner's "Decision: B" of 20 Nov 2026 (process4
 PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's points to PROCESS
@@ -37,11 +39,13 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
 
 1. **Sessions' GitHub account (acts 1, 2, 5).** Give the sessions' account write access to civicsmith's
    repository, and install Claude's GitHub App on it. The process repository is done already.
-2. **Settle Process3's leftovers (act 3) [2].** Before any Process4 file lands, Process3's workflows
-   (`process-gate.yml`, `process-record.yml`) and any repository secrets are removed (act 3: no
-   repository secrets), and Process3's rulesets give way to act 4's rule. Its required check `gate` is
-   replaced by `module-tests` at act 10. The trial measured what one leftover does: its main still
-   required `gate`, and the merge into main was blocked until the owner changed it.
+2. **The earlier process's leftovers (act 3) [2].** neoProcess's workflows went on 1 Nov; its records
+   stay in `build/` as the product's history. The product's own four workflows (`regression`,
+   `deploy-test`, `release-sign`, `container-images`) stay; none runs on a pull request. The
+   `deploy-test` workflow uses a Cloudflare token; if it is a repository secret, act 3 ("no repository
+   secrets") takes it out, and the deploy token goes in the cloud environment instead (act 6). No
+   required check is named for this copy (`build/GRANTS.md` records rulesets only on the original
+   `civicsmith` organisation), so act 10 adds `module-tests` with nothing to replace.
 3. **Branch rule (act 4).** No deleting and no overwriting on every branch, no one excepted.
 4. **Environment check (act 6) [7].** A session reads the cloud environment the sessions will run under
    and confirms its permissions-management settings name civicsmith's repository. PROCESS
@@ -56,10 +60,12 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
    - writes civicsmith's first Process4 files by pull request into main: `process.json` naming the
      Process4 version, the module list (section 4), the required-run workflow, the forbidden-commands
      copy;
-   - then makes the tranche branch from main's newest commit; main already holds Process3's history,
+   - then makes the tranche branch from main's newest commit; main already holds the earlier processes' history,
      which act 8 now covers (the trial's fault was a branch with history of its own).
-   Civicsmith's present Process3 approvals may forbid a session to place the new text; that stays
-   unproven (part 6 §2), and if it is refused the matter goes back to PROCESS, not round it.
+   **Blocked as things stand.** civicsmith-copy's present approvals (1 Nov 2026) count changing
+   `CLAUDE.md` or `.claude/settings.json` as changing permission settings, which they forbid, and the
+   removal commit says "Bob commits the new one himself". So the set-up session may not place the new
+   text, even in a pull request. Sent to PROCESS (`process-points.md`, point 10); the owner chooses there.
 6. **Registry.** The owner tells PROCESS civicsmith's ROOT once it starts, so PROCESS can reach it
    (build text 5 §4).
 7. **Start ROOT (act 9),** on civicsmith's repository alone, the tranche branch, Auto mode, a plain
@@ -70,60 +76,91 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
 
 ## 4. The conversion work, before the first tranche's jobs
 
-What the texts leave unassigned (research/process4-for-a-product.md §3). This lane's design for it:
+Done by act 8's set-up session where part 7 §4 names it (`process.json`, the module list, the workflow,
+the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The sources are in
+`research/civicsmith-copy-reading.md`.
 
-- **The module list from the real import graph.** Act 8's set-up session now writes the first module
-  list; for civicsmith it derives it, with workers, from what the code actually imports, and ARCH keeps
-  it after. It does not start from Process3's list, and it records every cycle or backward use it finds as an
-  architecture bug placed against a named module. Nothing refuses a breach (design part 2 §1), so the
-  list is what holds it. Good practice records the existing breaches as a baseline and shrinks it to
-  none (research/conversion-best-practice.md §1).
-- **Cycles: one module for each cycle, then split by jobs.** The owner, 20 Nov 2026: civicsmith2 has
-  cyclic references within modules and other source-code issues that made it hard to close a round.
-  Process4's order allows a module to use only modules before it (design part 2 §1), so a cycle has no
-  valid order. The lane's design: the set-up session puts each strongly connected group of modules
-  (each set that reach each other) into one module, so the first list is valid as written and no
-  product code changes before Process4 runs. Breaking each merged module apart, behind interfaces, is
-  then tranche work done by jobs under Process4, an architecture matter ARCH places (part 1 §6). The
-  first tranche is chosen from modules outside the largest group where it can be. The groups come from
-  the reading report (`reading-brief.md` item 7). Rejected: breaking the cycles by hand
-  before the move, which would be product work under no process; and leaving the cycles in the list,
-  which a list with backward uses cannot hold.
-- **Every file owned.** Each file belongs to exactly one module; unowned files are assigned in the same
-  pull request as the list.
-- **Requirements files from what exists.** Each module's requirements come from Process3's requirement
-  texts where they exist, marked `[met]` only where a test shows it; the rest `[not yet met]`.
-- **The ranking page from the founding documents** (design part 5 §6), once the owner has said where
-  they are.
-- **Process3's own files leave the tree** (the `.process` pin, the ledger, its shims) in one pull
-  request; they stay in history.
-- **The walks' documents.** The UX lane turns civicsmith's existing UX files into the Screens document
-  and the journeys, one page each, with an index (build text 3 §2 calls this conversion work).
-  Inference: the 133 files in `docs/development/ux-substrate/` named in build text 3 §1 are civicsmith's.
-- **Language reader.** Only TypeScript 5.6.3 reading plain JavaScript (`.mjs`) has been tried. If
-  civicsmith is TypeScript or uses `.js`/`.ts`, the `source` globs are set and the first tranche shows
-  whether the reader follows it. The workflow installs by `npm ci` only.
+- **The module list: converted, not redrawn.** `build/modules.json` already keeps Process4's rule. Its
+  178 entries become `process/modules/order.txt` in the same order, and one entry file each (build text
+  2 §3): `paths` → `files`, `tests` → `tests`, `uses` → `uses`. The interface files go in `public`.
+  Three undeclared uses, all from test files, are declared: `pdf-worker` → `pdf-pixels`, `pdf-worker` →
+  `image-codecs`, `installer` → `runtime-limits`. Layers become positions in the order; nothing else
+  changes. Every one of the 17,914 tracked files gets exactly one owner, including `build/`, `docs/` and
+  `release/`.
+- **No cycle work before the move.** There are no cycles between modules. The four file cycles sit
+  inside single modules, and Process4 orders modules, not files. They stay as they are. The lane's
+  earlier design, one module for each strongly connected group, is withdrawn.
+- **Generated and shared files have one owner each.** `bio-plane/src/setup-words/rows.mjs` (generated,
+  26,994 lines), the bundles in `release/`, `bio-plane/package.json` and the `wrangler.jsonc` files each
+  belong to one module. Only that module's job regenerates or edits them. Under neoProcess these caused
+  merge conflicts (K5304, T42). Under Process4 a module has at most one open job ("a module is ready when
+  it has work and no open job", build text 1b, `next-job`). Inference: owning each such file in one module
+  turns those conflicts into that module's queue.
+- **The process config.** `node` "26.10.0". `lock_files`: the nine package locks. `test_command`: one
+  command that tells packages apart. civicsmith already has one, `node .github/scripts/module-tests.mjs`,
+  which needs a form that takes a list of test files (build text 2 §7: "a product whose modules need
+  different commands must give one command that tells them apart"). bio-plane's preload of
+  `test/platform-sqlite.mjs` goes inside that command. `walks_folder`, `walk` and `deploy` come from the
+  product's existing commands (section 2 of the report). `hosting.development_account` is the
+  development Cloudflare account, never the token.
+- **Requirements files from `build/requirements/`.** 179 files are converted into the form of build text
+  2 §4, one for each module. A requirement is `[met]` only where a test shows it and `[not yet met]`
+  otherwise. Each file stays under 60,000 bytes; ARCH splits a module whose file would not.
+- **The ranking page** (design part 5 §6) from `requirements/README.md`, which already ranks civicsmith's
+  canon:
+  - mission: the Roadmap §§1–12;
+  - principles: the core values, the operational principles, the UX principles in `UI-KICKOFF.md`, and
+    the three rules that are law;
+  - standards: the construct and detail documents, and `CORPUS-STANDARD.md`;
+  - requirements: `BIO_Design_Requirements_v2.md` and the module requirements files;
+  - design decisions: `docs/development/DECISIONS.md` and `build/rulings-active.md`.
+- **The owner's decision record.** The coordinator starts `process/decisions-owner.md`. The DEC and K
+  records stay where they are as history, and the ranking page names `rulings-active.md`.
+- **The walks' documents.** The UX lane turns `docs/development/ux-substrate/` into the Screens document
+  and the journeys, one page each, with an index (build text 3 §2): 91 screens, 23 wizard scripts and 32
+  journeys. The `journey-check` module and `screens/check_walk.mjs` stay product code. How each journey's
+  steps become walk steps is the UX lane's and ARCH's work.
+- **Language reader.** `.mjs` throughout, the one form tried (TypeScript 5.6.3 reading plain
+  JavaScript). Its scale is not proven: about 1,000 source files and 3,700 test files.
 
 ## 5. The first tranche: the proof
 
-- **Scope.** A thin slice: a few modules early in the order, and one journey that runs through them
-  end to end. ARCH chooses them; the lane's advice is a journey that touches no AI account, so the
-  first external walk needs no connected AI account.
-- **What it must show.** Jobs merge through the tool under the checker; a notice reaches a real user
-  module; one partial internal walk; one development deployment; that journey walked on it.
-- **What is expected and is not a failure.** Broad notices at first: legacy code without structured
-  comments is mostly "not followed fully" (build text 5 §6), and each module's first job adds its
-  comments. Under Process3 all 12 development deployments failed and walks never passed (build text 3
-  §1; inference that this was civicsmith), so the deployment step is the likeliest first stop.
-- **Then.** Later tranches widen in module order at the pace the slots and the walks bear.
+- **Why Process4 fits these problems.** The owner's words at K4164 and K4272 name what Process4's notice
+  and related-test scope are for. A module is told only when an interface it uses changes. A job's
+  required run covers only the tests related to what it changed. Neither has run on real code (build text
+  5 §§6–7). The first tranche is where that is shown.
+- **Scope.** A thin slice: a few modules early in the order, and one journey through them. Where it can,
+  it avoids the modules with known flaky or hanging tests and suites over ten minutes. The journey is one
+  that needs no AI account.
+- **Known risks, placed as work, not as new checks.**
+  - **Flaky tests.** Process4 counts every failed run. At the third, ARCH replaces the job; at the fifth,
+    the module is blocked (part 4 §10). A flaky test spends those runs without a fault in the job. The
+    known flakes go to waiting work against their modules as the first tranche opens: admission,
+    attestation R9, calculations R19, control-plane e2e, capture-sources `browserrender`, and
+    agent-worker `requirements.test.mjs`. Those modules stay out of the first slice.
+  - **Hanging tests.** `newgroup-bundle-fresh` never exits, and bundler `ascii.test.mjs` orphans
+    workerd. Under the required run's 45-minute limit either fails the run. Both go to waiting work the
+    same way.
+  - **Long suites.** Big suites take 11–13 minutes, affordances 9.6. A scoped run fits the 45 minutes. A
+    mechanical edit across many modules runs whole suites and may not fit (build text 1 §5); its time is
+    unmeasured.
+  - **Size limits.** The plane bundle is 27.3 of its 32 MiB limit, and a large PDF hits the 128 MB
+    Durable Object limit. These are product requirements for ARCH to place. A deployment in the first
+    tranche may meet them.
+- **What it must show.** Jobs merge through the tool under the checker. A notice reaches a real user
+  module. A scoped run stays well under the whole suite. One partial internal walk is made, one
+  development deployment, and the journey walked on it.
+- **Then.** Later tranches widen in module order. The size problems (modules past 4,000 lines,
+  `rows.mjs`, duplicated code, tests that check English text) are product work ARCH places, tranche by
+  tranche.
 
 ## 6. Open, and who settles it
 
 | Matter | Who settles |
 |---|---|
-| The founding documents, languages, module count and the several problems | A session in civicsmith-copy, or the owner |
-| Points 1, 2, 3, 5, 6, 9 to Process4's texts | Settled: the owner's "Decision: B", 20 Nov 2026 |
-| Whether Process3's approvals let a session place the new ones | Shown at act 8; unproven |
-| Where the "about 200 modules" figure comes from | The owner, or ARCH's import graph |
-| Whether the reader follows civicsmith's language | Shown in the first tranche |
+| civicsmith-copy's approvals forbid a session to place new ones (point 10) | The owner, at PROCESS |
+| The paused T53 work (2,030 commits on `tranche/T53`) and the `coord` branch, which are not on this copy's main | The owner |
+| Whether civicsmith-copy, not the original `civicsmith/civicsmith`, is where development continues | The owner (he named civicsmith-copy) |
+| The test command's form for a list of files | The set-up session and ARCH |
+| Whether the reader and notice follow 178 modules and 4,700 files | Shown in the first tranche |
 | Walks, deployment and release by sessions on Cloudflare | Shown in the first tranche (design part 10 §3) |

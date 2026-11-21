@@ -1,6 +1,6 @@
 # Points sent to PROCESS by the civicsmith lane
 
-Length: 42 lines. Last section: "PROCESS's judgement, 20 Nov 2026".
+Length: 53 lines. Last section: "Sent 21 Nov 2026".
 
 Each point is a place where a Process4 text is silent or out of date for moving an existing product.
 The lane changes no Process4 text; PROCESS decides. None adds a test, check, gate, review or stop.
@@ -40,3 +40,14 @@ PROCESS #5 judged the nine (`process/research/civicsmith-lane-points-20nov.md`) 
 owner as one group: correct 1, 2, 3, 5, 6, 9 (its recommended option B); no change for 4 (the owner
 seeds a product's ROOT into PROCESS's registry once, build text 5 §4), 7 (carried as a check in the
 conversion plan) and 8 (the account switch is done). Nothing for the lane to do until he chooses.
+
+## Sent 21 Nov 2026
+
+10. **A product whose approvals forbid placing new ones.** civicsmith-copy's approvals (1 Nov 2026)
+    count changing `CLAUDE.md` or `.claude/settings.json` as changing permission settings, which they
+    forbid; the commit that removed the earlier process says "Bob commits the new one himself"
+    (research/civicsmith-copy-reading.md §4). Part 7 §4 act 8 has the set-up session place the
+    approved text in a pull request the owner lands by his click; part 6 §2 marks that placing
+    unproven. Here it is not unproven but forbidden by the product's own text. Part 1 §3 says no act
+    asks the owner to edit a file. No route in the texts reaches civicsmith's first Process4 approvals.
+    Measured from the product's text, not from a refusal.
