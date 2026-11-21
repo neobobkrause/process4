@@ -17,7 +17,7 @@ Process4 it finds needed goes to PROCESS by message, with its grounds recorded h
 4. `research/conversion-best-practice.md` — good practice for moving a large running product.
 5. `process-points.md` — the points sent to PROCESS, with grounds and their state.
 6. `conversion-plan.md` — the lane's design: civicsmith's conversion plan (outline).
-7. `civicsmith2-reading-brief.md` — the prompt for a read-only session in civicsmith2.
+7. `reading-brief.md` — the prompt for a read-only session in civicsmith-copy.
 
 Research is the lane's first-run record (lane rule 2). Every later session reads it first and adds to it.
 

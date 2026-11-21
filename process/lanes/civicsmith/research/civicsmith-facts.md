@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 108 lines. Last section: "10. Measured by PROCESS #5, 20 Nov 2026 (by message)".
+Length: 117 lines. Last section: "11. From the owner, 21 Nov 2026 (conversation, not a marked decision)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -106,3 +106,12 @@ Inference until the environment is read.
   `believeinoakland/civicsmith2` is not named; the part 7 §5 check at setup finds it missing and a session
   proposes the change for the owner's click.
 - Which of the three repositories moves is put to the owner on the page.
+
+## 11. From the owner, 21 Nov 2026 (conversation, not a marked decision)
+
+His words, as typed: "believeinoakland/civicsmith2 is an unmodified copy of neobobkrause/civicsmith-copy
+Sorry, I said civicsmith2, but neobobkrause/civicsmith-copy is the one to convert."
+
+- The repository that moves is `neobobkrause/civicsmith-copy`. It is under `neobobkrause`, which the
+  environment's `autoMode` block trusts (§10), so point 7 needs no change for it.
+- The reading brief is now `reading-brief.md`, for a session on civicsmith-copy.
