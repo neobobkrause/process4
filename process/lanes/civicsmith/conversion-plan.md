@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 166 lines. Last section: "6. Open, and who settles it".
+Length: 170 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -60,12 +60,16 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
    - writes civicsmith's first Process4 files by pull request into main: `process.json` naming the
      Process4 version, the module list (section 4), the required-run workflow, the forbidden-commands
      copy;
-   - then makes the tranche branch from main's newest commit; main already holds the earlier processes' history,
+   - then makes the tranche branch, named `p4-tranche` (as in PROCESS's approvals draft; it stays clear
+     of the earlier `tranche/T*` branches), from main's newest commit; main already holds the earlier processes' history,
      which act 8 now covers (the trial's fault was a branch with history of its own).
    **Blocked as things stand.** civicsmith-copy's present approvals (1 Nov 2026) count changing
    `CLAUDE.md` or `.claude/settings.json` as changing permission settings, which they forbid, and the
    removal commit says "Bob commits the new one himself". So the set-up session may not place the new
-   text, even in a pull request. Sent to PROCESS (`process-points.md`, point 10); the owner chooses there.
+   text, even in a pull request. Sent to PROCESS (`process-points.md`, point 10). At the owner's request
+   PROCESS drafted civicsmith-copy's `CLAUDE.md` and `.claude/settings.json` (Process4's deny list, the
+   Node 26 start-up hook kept beside it) for him to paste and merge himself
+   (process/research/approvals-draft-civicsmith-copy-21nov.md).
 6. **Registry.** The owner tells PROCESS civicsmith's ROOT once it starts, so PROCESS can reach it
    (build text 5 §4).
 7. **Start ROOT (act 9),** on civicsmith's repository alone, the tranche branch, Auto mode, a plain
@@ -96,7 +100,7 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
   merge conflicts (K5304, T42). Under Process4 a module has at most one open job ("a module is ready when
   it has work and no open job", build text 1b, `next-job`). Inference: owning each such file in one module
   turns those conflicts into that module's queue.
-- **The process config.** `node` "26.10.0". `lock_files`: the nine package locks. `test_command`: one
+- **The process config.** `tranche_branch` "p4-tranche". `node` "26.10.0". `lock_files`: the nine package locks. `test_command`: one
   command that tells packages apart. civicsmith already has one, `node .github/scripts/module-tests.mjs`,
   which needs a form that takes a list of test files (build text 2 §7: "a product whose modules need
   different commands must give one command that tells them apart"). bio-plane's preload of
