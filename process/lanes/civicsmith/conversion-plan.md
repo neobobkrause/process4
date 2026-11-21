@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 128 lines. Last section: "6. Open, and who settles it".
+Length: 129 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -19,12 +19,13 @@ differ, the design rules. Steps that wait on the owner's facts are marked so.
 
 ## 2. Before anything: what the owner has told the lane, and what is still to learn
 
-Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `believeinoakland/civicsmith2`; its
+Told, 20 Nov 2026 (research/civicsmith-facts.md §7): the repository is `believeinoakland/civicsmith2`, then
+corrected on 21 Nov 2026 to `neobobkrause/civicsmith-copy` (civicsmith2 is an unmodified copy of it); its
 founding documents are in it; no work is in flight; its languages can be seen in it; and "there are
 several problems that need to be resolved before process4 development can begin".
 
-Still to learn, from a session started in civicsmith2 under its own approvals (the lane's approvals cover
-process4 only; `civicsmith2-reading-brief.md`) or from the owner: the founding documents' paths and
+Still to learn, from a session started in civicsmith-copy under its own approvals (the lane's approvals cover
+process4 only; `reading-brief.md`) or from the owner: the founding documents' paths and
 content, the languages and tools, the module count, Process3's traces, and the several problems. The
 problems are resolved before act 1 of section 3, or placed in the plan where each belongs.
 
@@ -44,9 +45,9 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
 3. **Branch rule (act 4).** No deleting and no overwriting on every branch, no one excepted.
 4. **Environment check (act 6) [7].** A session reads the cloud environment the sessions will run under
    and confirms its permissions-management settings name civicsmith's repository. PROCESS
-   measured (20 Nov 2026) that they trust only `neobobkrause/*`; civicsmith2 is under
-   `believeinoakland`, so the check finds it missing and the session proposes adding it, for the
-   owner's click on that change (part 7 §5). The deploy token for the development Cloudflare account
+   measured (20 Nov 2026) that they trust `neobobkrause/*`, which covers
+   `neobobkrause/civicsmith-copy`; the check is still made at setup (part 7 §5), and a change, if one
+   is needed, waits for the owner's click. The deploy token for the development Cloudflare account
    is entered then.
 5. **The set-up session (act 8) [1, 3].** One plain session the owner starts on civicsmith's repository
    for this act alone, in this order (part 7 §4 act 8; part 6 §2):
@@ -85,7 +86,7 @@ What the texts leave unassigned (research/process4-for-a-product.md §3). This l
   product code changes before Process4 runs. Breaking each merged module apart, behind interfaces, is
   then tranche work done by jobs under Process4, an architecture matter ARCH places (part 1 §6). The
   first tranche is chosen from modules outside the largest group where it can be. The groups come from
-  the reading report (`civicsmith2-reading-brief.md` item 7). Rejected: breaking the cycles by hand
+  the reading report (`reading-brief.md` item 7). Rejected: breaking the cycles by hand
   before the move, which would be product work under no process; and leaving the cycles in the list,
   which a list with backward uses cannot hold.
 - **Every file owned.** Each file belongs to exactly one module; unowned files are assigned in the same
@@ -120,7 +121,7 @@ What the texts leave unassigned (research/process4-for-a-product.md §3). This l
 
 | Matter | Who settles |
 |---|---|
-| The founding documents, languages, module count and the several problems | A session in civicsmith2, or the owner |
+| The founding documents, languages, module count and the several problems | A session in civicsmith-copy, or the owner |
 | Points 1, 2, 3, 5, 6, 9 to Process4's texts | Settled: the owner's "Decision: B", 20 Nov 2026 |
 | Whether Process3's approvals let a session place the new ones | Shown at act 8; unproven |
 | Where the "about 200 modules" figure comes from | The owner, or ARCH's import graph |
