@@ -54,7 +54,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
 - **The owner's approvals placed by a session:** whether the permission checker lets a session place his approved text in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
 - **The owner's acts to start a product** (part 7, section 4), an onboarding lane carried through to a product's ROOT starting (part 6, section 8), and that nothing physical stops a product's session from changing the process (part 6, section 7).
-- **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process has been seen.
+- **Everything listed as not proven on Claude Code** in part 7. A session fetching its copy of the process has been seen.
 - **Everything on Codex not marked measured in part 8.**
 
 ## 4. The trial

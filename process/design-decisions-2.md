@@ -304,3 +304,24 @@ started process, a file read) is not seen by it. Researched in
 
 **The owner's words.** "decision: option B, as recommended" — 22 November 2026.
 
+
+### Subject: Each session's copy of the process
+
+**The rule as it now stands.** Each session fetches its own copy of the process at the commit the product's
+process config names, into a folder outside the product's working files, and installs the tool's one
+dependency there. No session edits its copy; that is held by text, as most rules are (design part 6, sections
+1 and 5). The fetch line no longer ends with a step that removes write permission from the copy: cloud
+sessions run with full rights, so that step stopped nothing. Measured by civicsmith ROOT #1 (22 Nov 2026,
+reported through civicsmith's coordinator as a process fault) and again in PROCESS #7's session. No session
+is known to have edited its copy, and nothing in the copy is ever committed.
+
+It changed the tool's fetch line (`tool/lib/config.mjs`, with its test), the owner's plain ROOT prompt
+(`starting_texts/root.md` part A), build text 1 section 2, build text 2 section 7, build text 4, design part
+4 section 11, part 6 sections 3 and 5, part 7 sections 1 and 3, part 10 section 3, and the starting-texts
+index. It removes a step; it adds no test, gate, review or stop. Option 1B of three put to the owner (1A no
+change; 1B drop the step and say what holds the rule; 1C a stronger system lock in every session's first
+command). Researched in `process/research/fault-fetch-copy-not-read-only-22nov.md`. A product receives it
+only when it moves to a version that holds it (design part 6, section 7).
+
+**The owner's words.** "Decision: 1B, as recommended" — 22 November 2026 (a comment on his standing page,
+on option 1B).

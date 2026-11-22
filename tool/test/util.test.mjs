@@ -46,10 +46,11 @@ test('the module list, ownership by the longest path, and requirements not yet m
   assert.deepEqual(notYetMet(productFiles()['process/modules/orders.md']), ['R2']);
 });
 
-test('the fetch line names the commit once and makes the copy read-only', () => {
+test('the fetch line names the commit once and ends with the install', () => {
   const line = fetchLine(config());
   assert.equal(line.split('a'.repeat(40)).length, 2);
-  assert.match(line, /chmod -R a-w \$D$/);
+  assert.match(line, /npm ci -s\)$/);
+  assert.doesNotMatch(line, /chmod/);
   assert.match(line, /npm ci/);
   assert.ok(Buffer.byteLength(line) < 200);
   assert.throws(() => fetchLine(config({ process: { repository: 'r', commit: 'abc' } })), /40-character/);

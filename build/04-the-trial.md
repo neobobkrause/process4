@@ -36,7 +36,7 @@ Nothing below can start until these are done. They are his alone.
 Built: nothing of the tool. One plain session, started on the trial repository under his approvals, writes one throwaway script of a few lines. It is run with `node`, as the tool will be, and starts `gh` and `git` as the tool will. It is kept in no repository.
 
 Tried:
-1. The fetch line: the process's repository cloned at one commit into a folder outside the working files, made read-only. Is the session's list of forbidden commands still loaded afterwards?
+1. The fetch line: the process's repository cloned at one commit into a folder outside the working files. Is the session's list of forbidden commands still loaded afterwards?
 2. One read of GitHub by the script: the open pull requests of the trial repository.
 3. One write of GitHub by the script: it makes a test issue, writes a comment on it, then rewrites the same comment in place.
 4. A push to a working branch by the script.

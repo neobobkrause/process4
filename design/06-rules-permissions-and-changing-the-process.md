@@ -24,7 +24,7 @@ Length: 82 lines. Last section: "8. Process4 develops itself".
 
 ## 3. Forbidden commands and GitHub's rules
 
-- The list of forbidden commands takes these away from every session outright: every direct push, every GitHub command, the ordinary merge commands, overwriting a branch's history, deleting branches, and writing files through GitHub's web interface. So the tool is each session's only door to GitHub. The one exception: a session's first command fetches its read-only copy of the process, the tool with it, and that fetch is not made by the tool.
+- The list of forbidden commands takes these away from every session outright: every direct push, every GitHub command, the ordinary merge commands, overwriting a branch's history, deleting branches, and writing files through GitHub's web interface. So the tool is each session's only door to GitHub. The one exception: a session's first command fetches its copy of the process, the tool with it, and that fetch is not made by the tool.
 - Sessions act as a second GitHub account that can push and merge but cannot change settings. No branch can be deleted or overwritten. The tranche branch takes a session's change only by pull request with its required test run passing. Only the owner's click lands a change to his approvals or the forbidden commands (section 2).
 - GitHub's published limits are kept to: sessions stay within them with a margin and obey GitHub's own rate-limit responses.
 
@@ -41,7 +41,7 @@ Length: 82 lines. Last section: "8. Process4 develops itself".
 - It refuses nothing for size, and holds none of the checks that could stop work.
 - The tool has tests of its own. They test no product and never run on a product's work. They run only where the tool is changed: before pushing, PROCESS runs only the tests of the tool it changed; and the required run in the process's repository runs them only on a pull request that changes the tool, and passes at once on any other. The changes recorded when the notice's method was proven become tests of the tool.
 - The AI builds the tool, before anything is in force.
-- A product names one fixed version of the process in its process config, and a tranche runs on that one version from open to close. Each session fetches a read-only copy of it.
+- A product names one fixed version of the process in its process config, and a tranche runs on that one version from open to close. Each session fetches its own copy of it, kept outside the product's working files. No session edits its copy; this is held by text (section 1).
 - PROCESS answers a finding against the tool that needs a deliberate attack with "no change" unless the owner says otherwise.
 - **Unproven:** the tool is built but has not run in a process in force. Whether merges made by it pass the permission checker at a real rate is unmeasured.
 
