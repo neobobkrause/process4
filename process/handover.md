@@ -41,8 +41,8 @@ yet: the trial's ROOT #7 has not confirmed recording PROCESS #8 (civicsmith's di
    account's session list; ROOTs refresh, so confirm the live one there):
    - `process3-probes` (the trial): ROOT #7 `session_018Bhceg1d5SVx54aCGkzRe3`; coordinator #3
      `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
-   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `641fec3`):
-     **civicsmith ROOT #2** `session_018BhcedH2Cu33ATGjYeJE8v` (from 23:04Z); coordinator #2
+   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `4614f8f`):
+     **civicsmith ROOT #3** `session_018Bhcedt8Khih1wkySqBtUq` (from ~23:33Z); coordinator #2
      `session_018BhceejEKQ1qWjGNt2T2xr`; ARCH #6 `session_018BhcecPFUPKp25SZCCoVXF`; its shared-state issue is 1122.
 4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
    last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
