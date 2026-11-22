@@ -19,7 +19,7 @@ Everything in this part is specific to Cloudflare, the first hosting provider. S
 
 - The development site's names are kept apart from any installed site's.
 - The deploy token is for the development account only. Only ARCH's instructions name deploying. Nothing physical keeps the token's value from another session in the same environment.
-- No session directly holds a production key; a product's production secret may be used through a secret-management facility to produce the installer, and a release token with publish privileges may be used to publish a release.
+- A product's production signing keys, needed to produce the installer in the release ceremony, are kept among the harness's secret values in the environment its sessions run under (part 1, section 2), and a release token with publish privileges may be used to publish a release. Nothing physical keeps a key's value from another session in the same environment.
 
 ## 3. Not known
 

@@ -123,3 +123,22 @@ in PROCESS #6's session as well, and PROCESS #6 built on them.
   He can overrule that reading; the entry says so.
 - What becomes of the two seed values in BioDefault is put to him as one question on his page.
 - Both are recorded in `process/design-decisions.md`.
+
+## 7. Later the same day: the signing keys stay, and what the owner asked of the lane
+
+- His words: "I have no recollection of saying that no session should hold production keys. As the
+  design clearly says, production keys are needed in order for an installer be created as part of the
+  release ceremony. Decision: BIO_RELEASE_SEED and BIO_RATIFY_SEED production signing keys, and they
+  stay." Built: design part 1 section 2, part 3 sections 6 and 8, part 7 section 1, part 9 section 2;
+  the entry "Publishing a release" rewritten in place. Section 6's reading of answer 4 is overtaken.
+- Conversation, not marked (PROCESS asked once whether to record it): "The product onboarding lane
+  should communicate directly with PROCESS. The 'waiting for Bob' specific to that product should be
+  populated with status info and include actions that it needs from Bob (being sure that those actions
+  are properly described and properly detailed to walk me through the steps that are needed)." and "The
+  product-specific lane should start by walking me through the steps needed to create the github token
+  that will be needed for all process4 actions on the repo from onboarding through to product release.
+  It should also provide step by step instructions for properly configuring the github repo." The
+  civicsmith lane was told to work to both. Its earlier finding was that GitHub needs no new token,
+  because sessions act through Claude's GitHub connection; it was told to give the token steps he
+  asked for and state that finding beside them.
+

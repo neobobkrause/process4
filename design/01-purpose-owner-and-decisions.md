@@ -12,7 +12,7 @@ Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 ## 2. Where the process stops
 
 - The process owns what can be proven in the repository and on the machines that run the tests.
-- Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. No session directly holds a production key; a product's production secret may be used through a secret-management facility to produce the installer, and the release process may use a release token with the privileges to publish, but no session holds such a key directly in its environment.
+- Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. A product's production signing keys are needed to produce the installer as part of the release ceremony (part 3, section 6). They are kept among the secret values of the environment the product's sessions run under, and they stay there. The release process may also use a release token with the privileges to publish.
 - For those three the process provides written procedures (part 3, section 8). The owner, or whoever runs the product, carries them out.
 
 ## 3. The owner's acts

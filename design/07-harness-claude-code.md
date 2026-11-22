@@ -15,7 +15,7 @@ Everything in this part is specific to Claude Code.
 | One session starting another | A separate session on the account, started by a session |
 | A message; interrupting | A message sent to a session wakes it. A session can be interrupted |
 | Scheduled wake | A scheduled task on the account |
-| Secret values, the deploy token among them | Settings of Claude's cloud environment, entered by the owner. The only route measured to work |
+| Secret values, the deploy token and a product's production signing keys among them | Settings of Claude's cloud environment, entered by the owner. The only route measured to work |
 | Instruction files loaded at start | `CLAUDE.md` and `settings.json`. The product's `CLAUDE.md` stays under thirty lines |
 | Worker | A helper the session starts inside itself. A worker cannot start workers |
 | Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |

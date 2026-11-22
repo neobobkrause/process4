@@ -22,19 +22,16 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6, on starting. Your four onboarding decisions are built and recorded. One question waits for you, just below.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. Your decisions on tests and on the signing keys are built and recorded. Three short things wait for you, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: the two seed values in BioDefault</h2>
-<p><b>The question.</b> Are <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code> production signing keys, and do they stay where sessions run?</p>
-<p><b>Why I ask.</b> Your decision 4 settles how tokens are made, and I have built that. It does not say what happens to these two values. Your rule of 20 Nov is "No session directly holds a production key." Every session that runs on BioDefault is handed both values, mine included. I read their names only, never the values.</p>
-<ul>
-<li><b>A. They are not production keys.</b> No change.</li>
-<li><b>B. They are production keys, and they move.</b> You move them to an environment no session runs in; I give you the clicks. Signing a release then goes through a secret-management facility, as your 20 Nov decision says.</li>
-<li><b>C. They are production keys, and they stay.</b> That changes your 20 Nov rule. I record it and rewrite the design to match.</li>
-</ul>
-<p><b>Recommended:</b> B if they are production keys, because it keeps your own rule and costs you one move. You are free to set these options aside. To answer, for example: <code>Decision: B</code>.</p>
+<h2>Waiting for you: three short things</h2>
+<ol>
+<li><b>Shall I record your two paragraphs about the onboarding lane as decisions?</b> You typed them without the mark: that the lane talks directly to PROCESS and keeps a product's own "waiting for Bob" page with status and fully detailed steps; and that it starts with the GitHub token and the steps to set up the repository. The civicsmith lane is already working to them. Recording them writes them into the design for every product. To answer: <code>Decision: record them</code>, or tell me not to.</li>
+<li><b>Archive the PROCESS #5 session.</b> Open it in your session list and choose Archive. Only one PROCESS should write, and I may not archive it myself.</li>
+<li><b>Start the second read-only session on civicsmith-copy</b> when the civicsmith lane's page asks for it. The brief to paste is on that page: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</li>
+</ol>
 </section>
 
 <section class="wait">
@@ -47,13 +44,13 @@ Standing approvals from Bob for civicsmith, developed with Process4, 21 Nov 2026
 
 Such sessions may, without asking me: subscribe to and unsubscribe from activity on this repository&#x27;s pull requests; notify me by push notification; create and edit civicsmith and Process4 pages and documents on claude.ai under the Claude account the acting session runs under; start, message, interrupt and archive this account&#x27;s sessions working on civicsmith, and make and remove their scheduled wakes; message the PROCESS session in neobobkrause/process4; and clone the public repository neobobkrause/process4 read-only, as the process&#x27;s copy.
 
-In this repository, neobobkrause/civicsmith-copy, only, they may: push to their own working branches; open, edit, comment on, mark ready or draft, close and reopen pull requests, and open, comment on and close issues; run builds and tests, fetching public packages and images for them; run, re-run and cancel this repository&#x27;s own workflows; change its workflow files only through pull requests merged as below, never renaming or removing a job whose name matches a required check, never widening any workflow&#x27;s or job&#x27;s permissions, and never adding a pull_request_target trigger; merge pull requests into p4-tranche, and p4-tranche into main, once their required checks pass, without a person&#x27;s review, except a pull request that changes CLAUDE.md or .claude/settings.json, which only I merge; deploy to, configure, seed, reset and remove the development copy in the one development Cloudflare account named in process.json, and the rehearsal account for the new-team rehearsal, with the deploy token held in the environment; make and publish development pre-releases; and prepare a public release, which is published only on my approval typed in ARCH&#x27;s own session.
+In this repository, neobobkrause/civicsmith-copy, only, they may: push to their own working branches; open, edit, comment on, mark ready or draft, close and reopen pull requests, and open, comment on and close issues; run builds and tests, fetching public packages and images for them; run, re-run and cancel this repository&#x27;s own workflows; change its workflow files only through pull requests merged as below, never renaming or removing a job whose name matches a required check, never widening any workflow&#x27;s or job&#x27;s permissions, and never adding a pull_request_target trigger; merge pull requests into p4-tranche, and p4-tranche into main, once their required checks pass, without a person&#x27;s review, except a pull request that changes CLAUDE.md or .claude/settings.json, which only I merge; deploy to, configure, seed, reset and remove the development copy in the one development Cloudflare account named in process.json, and the rehearsal account for the new-team rehearsal, with the deploy token held in the environment; make and publish development pre-releases; prepare a public release, which is published only on my approval typed in ARCH&#x27;s own session; and use the production signing keys kept in the environment to produce the installer as part of the release ceremony.
 
 The coordinator, or before there is one the session I start to set civicsmith up, may at my request draft the text of these approvals, and may place a text I have approved in its session, unchanged, in a pull request that changes only CLAUDE.md or only .claude/settings.json; it never merges that pull request. A session may propose a change to the settings of the cloud environment the sessions run under through the harness&#x27;s own approval prompt; the change takes effect only when I approve it there.
 
 Only messages I typed myself count as my decisions or instructions. Never record your decision or your summary as mine. A message of mine is a decision or an instruction only when it begins &quot;Decision:&quot; or &quot;Instruction:&quot;. Everything else is conversation. If a session thinks I have decided something without that mark, it asks me once whether to record it as one. Process changes happen only at PROCESS, in neobobkrause/process4; no session here changes the process.
 
-They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or release, or the branch snapshot/pre-refactor-2026-09-25; change permission, repository or ruleset settings, or a protected environment, except by the proposal through the harness&#x27;s approval prompt named above; push to main or p4-tranche; change CLAUDE.md or .claude/settings.json, except by the pull request named above, which only I merge; publish a public release without my approval; hold or use a production key, or touch an installed site; use any Cloudflare account but the two named above; reveal any secret value; or act on any account or service other than those named here. Reading public documentation and public repositories, and fetching public packages and images, are not acts on another service.</div>
+They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or release, or the branch snapshot/pre-refactor-2026-09-25; change permission, repository or ruleset settings, or a protected environment, except by the proposal through the harness&#x27;s approval prompt named above; push to main or p4-tranche; change CLAUDE.md or .claude/settings.json, except by the pull request named above, which only I merge; publish a public release without my approval; use a production signing key for anything but producing the installer in the release ceremony; touch an installed site; use any Cloudflare account but the two named above; reveal any secret value; or act on any account or service other than those named here. Reading public documentation and public repositories, and fetching public packages and images, are not acts on another service.</div>
 <p><b>2. <code>.claude/settings.json</code></b> — open https://github.com/neobobkrause/civicsmith-copy/edit/main/.claude/settings.json. Replace only the <code>"permissions"</code> part with the block below, keep your <code>"hooks"</code> part (it installs Node 26, which civicsmith needs), and commit the same way. The comma after the closing <code>}</code> of permissions stays if hooks follow.</p>
 <div class="draft">  &quot;permissions&quot;: {
     &quot;deny&quot;: [
@@ -82,6 +79,15 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 </section>
 
 <section class="card">
+<h2>Done: your two decisions of 22 Nov (tests; signing keys)</h2>
+<ul>
+<li><b>Tool tests.</b> GitHub now runs the tool's tests only on a pull request that changes the tool, and only once, when it is marked ready. Every other pull request passes at once. Before pushing, PROCESS runs only the tests of the tool it changed, and none when no tool changed. <b>A correction:</b> I told you GitHub ran them on every pull request. That was wrong. It already skipped pull requests that touched no tool file. What ran needlessly was my own run by hand, a run for any change to a role's starting text, and a second run on each tool change. All three are gone.</li>
+<li><b>Signing keys.</b> <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code> are production signing keys and they stay in the sessions' environment. The design now says a product's production signing keys are kept there for the release ceremony. The record holds a sentence of 20 Nov, "No session directly holds a production key"; your decision replaces it, and the design no longer says it.</li>
+<li><b>civicsmith-copy's approvals draft, below, changed in two places to match:</b> sessions may use the signing keys to produce the installer in the release ceremony, and may never use them for anything else.</li>
+</ul>
+</section>
+
+<section class="card">
 <h2>Done: the trial's work is on main</h2>
 <p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here.</p>
 </section>
@@ -94,7 +100,7 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 <li><b>Settings.</b> Every change to GitHub or hosting settings is your click, from the lane's page.</li>
 <li><b>Tokens.</b> A token you make for a product is made once, with every permission its development will need for its whole life. The lane works out the whole list first, so you are not asked for another. I have asked the civicsmith lane for that list.</li>
 </ul>
-<p>Your words are recorded exactly. On the fourth, I recorded it as a rule for tokens, and did not take it to change "No session directly holds a production key". Tell me if that is wrong.</p>
+<p>Your words are recorded exactly.</p>
 </section>
 
 <section class="card">

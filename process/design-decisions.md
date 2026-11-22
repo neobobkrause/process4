@@ -383,19 +383,32 @@ code (jobs, with their own tests) and proves them on a development account for b
 install and an upgrade before any release is offered (part 3, section 6; part 2). On the
 owner's approval, ARCH carries out the publish: the release ceremony places the new installer
 where the product's "check for updates" and outside users expect to find it, using a **release
-token** that grants the privileges to publish; where producing the installer needs a product's
-**production secret**, that secret is used **through a secret-management facility**. **No
-session directly holds a production key.** Running an install or an update on a real site is
-always the user's or operator's act — never the developer's, never a session's. This settled
-the open question in part 3, section 6 and the open item in part 10, section 1, item 4, and
-refined the production-key rule (part 1, section 2; part 9, section 2). It adds no test, gate,
-review or stop; it is a requirement change made with the owner's explicit approval. The
-install/update success definition is also settled: the install and the update run on a
-development account, "successful" means the installer or updater finishes without error and the
-site it produces starts, and on a failure no release is offered and the fault becomes
-next-tranche work (part 3, section 6).
+token** that grants the privileges to publish. **A product's production signing keys are needed
+to produce the installer as part of the release ceremony. They are kept among the secret values
+of the environment the product's sessions run under, and they stay there** (part 1, section 2;
+part 3, section 6; part 7, section 1; part 9, section 2). Running an install or an update on a
+real site is always the user's or operator's act — never the developer's, never a session's.
+The install/update success definition stands: the install and the update run on a development
+account, "successful" means the installer or updater finishes without error and the site it
+produces starts, and on a failure no release is offered and the fault becomes next-tranche work
+(part 3, section 6).
 
-**The owner's words.** "Decision: No session directly holds a production key. But a product's production secret key may be used their a secret management facility to produce the installer. Similarly, the release process may require the use of a release token that grants it the necessary privileges in order to publish a release." — 20 November 2026. On the install/update success definition, confirming the reading restated to him on the review page: "Decision" — 20 November 2026.
+On 22 November 2026 the owner decided that the two production signing keys in the sessions'
+environment stay there. That replaced the first sentence of his words of 20 November below ("No
+session directly holds a production key"), which the design had carried in parts 1, 3 and 9, and
+the route through a secret-management facility that went with it. It removes a rule; it adds no
+test, gate, review or stop. A known limit goes with it, stated in part 9: nothing physical keeps
+a key's value from another session in the same environment.
+
+**The owner's words.** "I have no recollection of saying that no session should hold production
+keys. As the design clearly says, production keys are needed in order for an installer be created
+as part of the release ceremony. Decision: BIO_RELEASE_SEED and BIO_RATIFY_SEED production signing
+keys, and they stay." — 22 November 2026. Earlier, and replaced by those words where they differ:
+"Decision: No session directly holds a production key. But a product's production secret key may
+be used their a secret management facility to produce the installer. Similarly, the release
+process may require the use of a release token that grants it the necessary privileges in order
+to publish a release." — 20 November 2026. On the install/update success definition, confirming
+the reading restated to him on the review page: "Decision" — 20 November 2026.
 
 ### Subject: An urgent fix while a tranche is open
 
