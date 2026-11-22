@@ -45,3 +45,7 @@ A measured fault: the process makes refreshes the owner said to minimise. Rule 6
   room. Pauses come after nearly every piece of work (the measurement above), so the overshoot is small.
 - **C. Let the parent decline a refresh it judges early.** ROOT may refuse a swap. Adds a judgment to every refresh
   and leaves the texts saying "at a natural pause". Not recommended.
+
+## The owner's choice (22 Nov 2026)
+
+"decision:B", then, asked which choice it answered, "Decision: all as you've recommended". Option B, built by PROCESS #8; entry in `design-decisions-2.md`. Text only; no tool change, so no tool tests run.

@@ -50,3 +50,7 @@ civicsmith next moves version), or the owner removes it now from his scheduled t
 
 Considered with the refresh-at-every-pause fault (`refresh-at-every-pause-22nov.md`): both change ROOT's and the
 watcher's texts; built together, civicsmith moves once. No interaction between them beyond that.
+
+## The owner's choice (22 Nov 2026)
+
+"decision:B", then, asked which choice it answered, "Decision: all as you've recommended". Option B, built by PROCESS #8; entry in `design-decisions-2.md`. Text only; no tool change, so no tool tests run.

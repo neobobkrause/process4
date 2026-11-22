@@ -53,3 +53,7 @@ measured broken; rule 6's default does not apply, and "no change" stays among th
 
 Note on scope: B changes the owner's prompt for PROCESS too (it names `process/research/` and the lane folders), which
 he writes on his page when he starts a PROCESS.
+
+## The owner's choice (22 Nov 2026)
+
+"decision:B", then, asked which choice it answered, "Decision: all as you've recommended". Option B, built by PROCESS #8; entry in `design-decisions-2.md`. Text only; no tool change, so no tool tests run.

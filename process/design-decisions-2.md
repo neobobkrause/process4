@@ -374,3 +374,47 @@ many of civicsmith's complaints remain, until one more read-only run there.
 **The owner's words.** "Decision: 3B, as recommended" — 22 November 2026 (a comment on his standing page, on
 option 3B; PROCESS read "as recommended" as including the two smaller repairs recommended beside it, and said
 so to him on the same thread).
+
+### Subject: When a long-lived role is refreshed
+
+**The rule as it now stands.** A long-lived role is refreshed at the first natural pause in its work after its fill
+reaches the stated fill level (50 percent). Where it cannot read its fill, it is refreshed at a natural pause, as before.
+A pause alone does not call for a refresh (design part 4, section 5; part 1, section 7; the refresh rule of the ROOT,
+watcher, coordinator, ARCH, lane and PROCESS starting texts). This corrected a measured fault: "at a natural pause or at
+the fill level, whichever comes first" made every pause a refresh, so civicsmith's ARCH was replaced four times in under
+an hour at 21 to 30 percent full, each successor reading everything again, against the owner's words that refreshes
+"are expensive and slow, and thus should be minimized" (the entry "The four reading values" in `design-decisions.md`).
+It removes refreshes; it adds no test, gate, review or stop. Option B of three (A no change; B the fill level decides,
+the pause times it; C ROOT may refuse an early refresh). Researched in `process/research/refresh-at-every-pause-22nov.md`.
+
+**The owner's words.** "decision:B" — 22 November 2026. "Decision: all as you've recommended" — 22 November 2026 (in
+PROCESS #8's session, after PROCESS asked which of the three open choices "decision:B" answered).
+
+### Subject: A replaced session's scheduled wake
+
+**The rule as it now stands.** Whoever archives a session also removes that session's scheduled wake, if it has one, so
+no wake fires into an archived session. At a takeover the watcher makes its own ROOT wake and removes the old ROOT's wake
+and its own watcher wake (design part 4, sections 5 and 6; ROOT's and the watcher's starting texts). This corrected a
+measured fault: civicsmith watcher #1's hourly wake stayed enabled after the session was archived, because no text named
+removing a wake. It adds no test, gate, review or stop. Option B of three (A no change; B the archiver removes the wake;
+C each session removes its own before asking to be replaced). Researched in
+`process/research/wake-left-after-archive-22nov.md`.
+
+**The owner's words.** "decision:B" — 22 November 2026. "Decision: all as you've recommended" — 22 November 2026.
+
+### Subject: Research is read through an index
+
+**The rule as it now stands.** A role's research is background, not governing text. A lane, and PROCESS, reads in full
+an index of its research, one line for each file saying what it holds, and reads a research file, or gives it to a
+worker, when a question needs it; it keeps the index current. So research can grow without the role's reading set
+passing the maximum (design part 4, section 3; part 5, section 3; part 6, section 7; the lane's and PROCESS's starting
+texts; the starting-texts index). This replaced "every later session of the lane reads it first" (part 4, section 3;
+the owner's confirmation of the lane rules in "The smaller readings", `design-decisions.md`). It corrected a measured
+fault: civicsmith's UX lane had to read about 300,000 bytes at its start, and PROCESS #8 about 700,000, past the
+175,000-byte set maximum and the 220,000 bytes measured to be read whole. It removes reading; it adds no test, gate,
+review or stop. Option B of four (A no change; B research through an index; C condense research; D measure larger
+sets). Researched in `process/research/lane-reading-set-over-maximum-22nov.md`. Left as it stands: PROCESS's own set,
+with the two decision-record files (about 71,000 bytes), is about 211,000 bytes, still past 175,000 though under the
+220,000 measured.
+
+**The owner's words.** "decision:B" — 22 November 2026. "Decision: all as you've recommended" — 22 November 2026.

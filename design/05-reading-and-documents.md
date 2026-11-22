@@ -1,6 +1,6 @@
 # Part 5. Reading in full, and the documents
 
-Length: 54 lines. Last section: "6. Each product's ranking page".
+Length: 55 lines. Last section: "6. Each product's ranking page".
 
 ## 1. Reading in full
 
@@ -28,6 +28,7 @@ A Codex re-measurement is owed before these figures govern there (part 8); the s
 ## 3. Keeping texts under the maximums
 
 - Each role's principles are concise, sufficient for the role to be performed correctly, and unambiguously clear. Whenever they are changed, every effort is made to keep them short enough to be read in full and not scanned. Where that cannot be done, the matter comes to the owner to find a solution. PROCESS brings it to him.
+- A role's research is background, not governing text. A lane, and PROCESS, reads in full an index of its research, one line for each file, and reads a research file, or gives it to a worker, when a question needs it (part 1, section 6). So research can grow without its role's reading set passing the maximum.
 - The size of a role's starting text is a rule, not a refusal among the tool's tests.
 - A module's requirements file is kept under the single-text maximum as a rule ARCH applies; ARCH splits the module when a file nears it (part 2).
 - Nothing refuses a job or a merge for size.
