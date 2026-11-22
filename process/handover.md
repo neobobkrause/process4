@@ -38,6 +38,12 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 - Production signing keys stay in the sessions' environment ("No session directly holds a production
   key" is gone from the design). The civicsmith approvals draft was changed to match.
 
+- **With the owner, on his page: should Process4 use a GitHub token at all** (A no token, recommended; B a
+  fine-grained token he makes; C a classic token made as the sessions' account). The lane's grounds:
+  `process/lanes/civicsmith/research/github-token-permissions.md` (a fine-grained token reaches only its
+  maker's repositories; the tool strips GitHub tokens, `tool/lib/util.mjs`; the Checks API is closed to
+  fine-grained tokens). The lane is checking C from GitHub's documentation. B or C needs a tool change
+  and, for B, a change to design part 6 section 3 (sessions act as a second account).
 - **Asked once, not yet answered:** whether to record as decisions his two unmarked paragraphs about the
   onboarding lane (it talks directly to PROCESS and keeps the product's own "waiting for Bob" with status
   and detailed steps; it starts with the GitHub token and the repository set-up steps). If he says yes:
