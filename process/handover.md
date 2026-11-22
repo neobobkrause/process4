@@ -12,7 +12,9 @@ own session id), and record generation 7 and your session there (the file must s
 
 1. Environment **BioDefault**, `neobobkrause/process4` only; `~/.claude/settings.json` has `autoMode`.
 2. `node tool/p4.mjs state read` reads issue #33.
-3. Products registry: `process3-probes`, ROOT `session_018Bhceg1d5SVx54aCGkzRe3` (ROOT #7). ROOTs refresh
+3. Products registry: `process3-probes`, ROOT `session_018Bhceg1d5SVx54aCGkzRe3` (ROOT #7); and
+   `civicsmith` (repository neobobkrause/civicsmith-copy, branch p4-tranche), ROOT
+   `session_018BhcegAmzjwNWYL3hiKonG` (civicsmith ROOT #1, started by the owner 22 Nov 19:00Z). ROOTs refresh
    often; confirm with `list_sessions` (titles `process3-probes ROOT #N`, tag `process4-product:process3-probes`)
    and message the live ROOT your session and generation.
 4. Your lane: **PROCESS civicsmith lane #2**, `session_018BhceeTQKM67dJhV5dBPyh` (model claude-opus-5-5), in the
@@ -104,11 +106,13 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   `session_018BhcecbrWWH3xBs3py4NQW`); its report comes to PROCESS by message. Then put options to him
   (that note's last sections). No job should open on civicsmith before that.
 - Also for later: who merges the set-up pull request into main (same note, last section).
-- Done on his word, 22 Nov: #1120 merged (the hook is on main); the measurement pasted into the set-up
-  session; the Cloudflare token created and entered in the environment. Next for him: Action 9 (branch
-  rule); Action 9a (carry main's `.claude/settings.json` onto p4-tranche by his clicks); Action 10
-  (ROOT), whose prompt carries PROCESS's session. When civicsmith's ROOT messages its
-  address, add it to `products` in `handover-process`; then archive the lane and write it not live.
+- **civicsmith's ROOT #1 started 22 Nov 19:00Z** and is in the registry; it was told (information, for its
+  coordinator and ARCH) that the check measurement is pending and that PROCESS recommends no job opens
+  before the owner has seen it, and was asked whether p4-tranche carries the hook. Not confirmed by the
+  owner: Action 9 (branch rule) and Action 9a (hook onto p4-tranche). The lane was told to close: when it
+  reports done, archive it and write it not live in `lanes`. Done on his word, 22 Nov: #1120 merged (the
+  hook on main); the measurement pasted into the set-up session; the Cloudflare token created and entered
+  in the environment.
 
 ## Environment / tool notes
 
