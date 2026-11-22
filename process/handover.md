@@ -42,6 +42,11 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   status and fully detailed steps, and starts with GitHub; no GitHub token is made where sessions act
   through Claude's GitHub connection (part 6 section 8; part 1 sections 3 and 5; part 7 section 4). So no
   token and no tool change. Untried through the connection: publishing a release.
+- **With the owner, on his page: tests that refer to a later module** (he raised it 22 Nov). Research:
+  `process/research/tests-referring-to-later-modules-22nov.md`. The hole: nothing in the tool compares a
+  module's `uses` with the order. Options A no change; B the declared-uses check also refuses a declared
+  use of a later module (recommended; tool change, design part 2 section 6, build text 2 section 3); C
+  the tool tells ARCH. The lane added an item to the second reading to find such references on main.
 - **The civicsmith lane is civicsmith's onboarding lane** and works to that decision: its page as
   civicsmith's "waiting for Bob"; the GitHub token steps first; then the repository set-up walk-through;
   then the Cloudflare token (draft up; a second read-only reading closes it). It tells PROCESS when ready.
