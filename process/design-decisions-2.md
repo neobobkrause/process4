@@ -346,3 +346,31 @@ Researched in `process/research/fault-lanes-record-before-start-22nov.md`.
 
 **The owner's words.** "Decision: 2B, as recommended" — 22 November 2026 (a comment on his standing page,
 on option 2B).
+
+### Subject: The check refuses only what a structured comment states
+
+**The rule as it now stands.** Inside a module's own tests, `check` refuses a type disagreement only when what
+it contradicts is stated by a structured comment: one of this module's own marks (refusal (a)), or a
+provider's stated interface in its public files (refusal (b)). A disagreement on plain code that no
+structured comment states is "cannot tell" and never refused (design part 2, section 6; build text 1b, command
+18; build text 2b, section 5). The existing "cannot tell" rules, the error-assertion exemption and the
+declared-uses check are unchanged. With it, as recommended beside 3B on the owner's page: the process config's
+`language_reader.exclude` names files the reader leaves out (vendored copies, committed built bundles), which
+no module then owns, checks or lists (build text 2, section 7); and the tool's walks over a file no longer
+overflow the stack on a very long expression, a file the language's own reader still cannot walk becoming
+"cannot tell" for `check`.
+
+It corrected a measured fault that stopped work: on civicsmith, the first real code, `check` refused 176 of
+178 modules and passed none (74,271 complaints, most on plain uncommented code and in tests), timed out on one
+and crashed on another (22 Nov 2026). The tool had labelled every strict-reader complaint as one of the two
+approved refusals. One of the proof's 48 recorded refusing decisions changes: T14 (module meter), a refusal of
+`process.stdout.write(..., 'utf8')` against the tool's own Node description, which no comment states and whose
+recorded needs were already empty, so it was false; it is re-recorded in the proof's expected results with the
+reason. It narrows a refusal and mends the tool; it adds no test, gate, review or stop. Option 3B of three put
+to the owner (3A no change; 3B refuse only what a comment states; 3C refuse only changed lines). Researched in
+`process/research/check-on-real-code-22nov.md`; fault D's option D (19 Nov) is the same idea. Not known: how
+many of civicsmith's complaints remain, until one more read-only run there.
+
+**The owner's words.** "Decision: 3B, as recommended" — 22 November 2026 (a comment on his standing page, on
+option 3B; PROCESS read "as recommended" as including the two smaller repairs recommended beside it, and said
+so to him on the same thread).

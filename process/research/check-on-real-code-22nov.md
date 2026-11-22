@@ -133,3 +133,15 @@ session, notification of 19:25Z):
 B and C can be taken together (refuse only marked claims, and only on changed lines); D and E go with either.
 Moving civicsmith onto the result needs the owner's instruction in its coordinator's session, as for the two
 other faults; putting all three together lets civicsmith move once.
+
+## The owner's choice, and what was built (22 Nov 2026)
+
+"Decision: 3B, as recommended" (page comment, 20:54Z). Built by a worker of PROCESS #7, assembled and merged by
+PROCESS #7: `makeClaims` in `check.mjs` refuses only where a declaration on any side of the complaint carries a
+structured comment (this module's: (a); a provider's public file: (b); an import of a name another module's
+file does not export stays (b)); everything else is "cannot tell". D: `language_reader.exclude`. E: every
+whole-file walk in `tool/lib/notice` is non-recursive (`forEachNode` in `ts.mjs`); TypeScript's own recursion
+still overflows at about 4,000 terms inside one function, which `check` reports as "cannot tell" for that file
+(listing and notify are not guarded against that). Tool tests run: notify, notice-proof, related, scope, util,
+p4: 59 of 59 pass. One proof decision re-recorded (T14, a false refusal). On a synthetic plain-JS product the
+refusals went from 13 to 0. Next: one read-only run of `check` on civicsmith at the new version.

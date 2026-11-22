@@ -9,7 +9,7 @@
 // Also: the comments-only verification of a module's first step.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, tagText, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
 import { makeLister } from './listing.mjs';
 import { makeUsage } from './usage.mjs';
@@ -38,15 +38,15 @@ function where(d, root) {
   return `${path.relative(root, d.file.fileName)}:${line + 1}`;
 }
 
+/** The deepest node at a position. A loop, not recursion: a long expression nests deeper than the stack allows. */
 function nodeAt(sf, pos) {
   let found = sf;
-  const visit = (n) => {
-    if (n.getStart(sf) <= pos && pos < n.end) {
-      found = n;
-      ts.forEachChild(n, visit);
-    }
-  };
-  ts.forEachChild(sf, visit);
+  for (let n = sf; n;) {
+    let next = null;
+    ts.forEachChild(n, (c) => { if (c.getStart(sf) <= pos && pos < c.end) { next = c; return true; } });
+    if (next) found = next;
+    n = next;
+  }
   return found;
 }
 
@@ -62,7 +62,8 @@ const MEMBERSHIP = new Set(['includes', 'indexOf', 'lastIndexOf', 'has']);
 /** The assertions whose first argument deliberately exercises an error condition (design part 2, section 6). */
 const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 
-function walk(n, f) { f(n); ts.forEachChild(n, (c) => walk(c, f)); }
+/** Every node under n, n first (forEachNode: kept on a list, not by recursion). */
+function walk(n, f) { forEachNode(n, (m) => { f(m); }); }
 
 /**
  * The character spans of the first argument of each deliberate error assertion (assert.throws, assert.rejects and
@@ -81,7 +82,241 @@ function errorAssertionSpans(sf) {
   });
   return spans;
 }
+/** The reader ran out of stack (a RangeError of the JavaScript engine). */
+const outOfStack = (e) => e instanceof RangeError && /call stack/i.test(e.message);
 function within(node, outer) { return node.pos >= outer.pos && node.end <= outer.end; }
+
+/**
+ * Who states what a complaint of the reader contradicts (the owner's decision 3B of 22 Nov 2026). The reader complains
+ * about plain code too: a kind it worked out itself from the code (a field added later, null where it inferred a
+ * number). Neither of the two approved refusals is about that, so a complaint is refused only where a structured
+ * comment states the thing contradicted.
+ *
+ * Decided here, from TypeScript's checker: a complaint is about one place (the expression it points at), and the
+ * claims it rests on are the declarations its kinds come from. Those are looked up on every side the complaint has:
+ * the place itself and where its value comes from (a variable's declaration and what set it, a called function's
+ * stated answer, a field's declaration); what is expected there (the variable, field or parameter it is put into, the
+ * stated answer of the function it is returned from, the kind the reader expects there); the thing a missing field is
+ * asked of; the function a call names; and the places the complaint itself names as related ("the expected kind comes
+ * from ..."). A declaration states a claim when it is written inside a structured comment (a @typedef, @callback, a
+ * {...} kind in a @type or @param) or carries a structured comment's mark for it (build text 2b, section 5: @type,
+ * @param, @returns, @template, ...); for a called function's answer, only @returns or a @type on the function count.
+ * Kinds from the language's own library and the tool's description of Node are no comment of the product's, and a
+ * file the config leaves out (language_reader.exclude) belongs to no module. A complaint inside a structured comment
+ * is about that comment. One more, decided here: an import of a name that a file of another module does not export
+ * (or a name asked of such a file's module object) is answered by that file's exports, not by kinds the reader works
+ * out, so the reader can tell for certain: it is (b), whether or not the file is one of the module's interface files.
+ *
+ * The answer: `providers`, the other modules whose interface files (`public`) state a claim the complaint rests on
+ * (refusal b); `own`, whether this module's own comments state one (refusal a). Neither: the reader cannot tell.
+ */
+const STATING_TAGS = new Set(['type', 'param', 'arg', 'argument', 'returns', 'return', 'typedef', 'callback', 'property', 'prop',
+  'template', 'satisfies', 'enum', 'this', 'overload', 'import', 'implements', 'extends', 'augments']);
+/** The reader's complaints that a file does not export a name: answered by that file's exports, not by kinds. */
+const NO_SUCH_EXPORT = new Set([2305, 2724, 2614, 2694, 2459, 2460]);
+/** The reader's complaints about the number of arguments a call gives. */
+const ARITY = new Set([2554, 2555, 2556, 2557, 2575]);
+const isJSDocNode = (n) => n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode;
+
+function makeClaims(checker, tree, mod) {
+  const inComment = (n) => { for (let p = n; p; p = p.parent) if (isJSDocNode(p)) return true; return false; };
+  const hasMark = (n) => !!n && ts.getJSDocTags(n).some((t) => STATING_TAGS.has(t.tagName.text));
+  const isPublic = (m, file) => !!tree.byId.get(m)?.public.includes(file);
+
+  /** Notes a declaration that states a claim: whose module, and whether in its interface files. */
+  function note(said, decl) {
+    const sf = decl.getSourceFile?.();
+    if (!sf || sf.isDeclarationFile) return;
+    const m = tree.moduleOfFile(sf.fileName);
+    if (!m) return;
+    if (m === mod.id) said.own = true;
+    else if (isPublic(m, sf.fileName)) said.providers.add(m);
+  }
+  /** Does the declaration itself state its kind by a structured comment? */
+  function states(decl) {
+    if (!decl) return false;
+    if (inComment(decl) || hasMark(decl)) return true;
+    // a field set by assignment (this.x = ..., o.x = ...): the comment stands on the assignment's statement
+    const p = decl.parent;
+    if (p && ts.isBinaryExpression(p) && p.left === decl) return hasMark(p) || (ts.isExpressionStatement(p.parent) && hasMark(p.parent));
+    return false;
+  }
+  /** Does a function's comment state its answer (@returns, a @type on it, or a signature written in a comment)? */
+  function statesAnswer(fn) {
+    if (!fn) return false;
+    if (inComment(fn)) return true;
+    try { if (ts.getJSDocReturnType(fn) || ts.getJSDocType(fn)) return true; } catch { /* not a function */ }
+    const host = fn.parent && ts.isVariableDeclaration(fn.parent) ? fn.parent : fn.parent && ts.isPropertyAssignment(fn.parent) ? fn.parent : null;
+    return !!host && !!ts.getJSDocType(host);
+  }
+  function declsOf(sym) {
+    if (sym && sym.flags & ts.SymbolFlags.Alias) { try { sym = checker.getAliasedSymbol(sym); } catch { return []; } }
+    return sym?.declarations ?? [];
+  }
+  /** The declarations a kind comes from: its name and its own, and those of the kinds it is made of (a union, the
+   * items of a list, what a promise hands back), a few deep. */
+  function fromKind(said, t, depth = 0) {
+    if (!t || depth > 2) return;
+    for (const s of [t.aliasSymbol, t.symbol]) for (const d of declsOf(s)) if (states(d)) note(said, d);
+    if (t.flags & ts.TypeFlags.UnionOrIntersection) for (const u of t.types) fromKind(said, u, depth + 1);
+    if (t.flags & ts.TypeFlags.Object && t.objectFlags & ts.ObjectFlags.Reference) for (const a of checker.getTypeArguments(t) ?? []) fromKind(said, a, depth + 1);
+  }
+  function signatureOf(call) { try { return checker.getResolvedSignature(call); } catch { return undefined; } }
+  /** Where a value comes from: its declaration, what set it, the stated answer of the call that made it. */
+  function fromValue(said, e, depth = 0) {
+    if (!e || depth > 4) return;
+    if (ts.isParenthesizedExpression(e) && ts.getJSDocType(e)) { note(said, e); return; } // /** @type {K} */ (value)
+    while (ts.isParenthesizedExpression(e) || ts.isAwaitExpression(e) || ts.isNonNullExpression(e) || ts.isAsExpression?.(e) || ts.isSatisfiesExpression?.(e)) e = e.expression;
+    let sym = null;
+    if (ts.isIdentifier(e)) sym = ts.isShorthandPropertyAssignment(e.parent) && e.parent.name === e ? checker.getShorthandAssignmentValueSymbol(e.parent) : checker.getSymbolAtLocation(e);
+    else if (ts.isPropertyAccessExpression(e)) sym = checker.getSymbolAtLocation(e.name);
+    for (const d of declsOf(sym)) {
+      if (states(d)) note(said, d);
+      else if (ts.isVariableDeclaration(d) && d.initializer) fromValue(said, d.initializer, depth + 1);
+    }
+    if (ts.isCallExpression(e) || ts.isNewExpression(e)) {
+      const decl = signatureOf(e)?.declaration;
+      if (decl && statesAnswer(decl)) note(said, decl);
+    }
+    try { fromKind(said, checker.getTypeAtLocation(e)); } catch { /* no kind */ }
+  }
+  /** What is expected at a place: the variable, field or parameter it goes into, or the answer it is returned as. */
+  function fromExpected(said, e) {
+    const p = e.parent;
+    if (!p) return;
+    // the name of a declaration: what it declares
+    if ((ts.isVariableDeclaration(p) || ts.isParameter(p) || ts.isPropertyDeclaration(p) || ts.isBindingElement(p)) && p.name === e && states(p)) note(said, p);
+    // a field written in an object: the field of the kind expected for the object
+    if ((ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p) || ts.isMethodDeclaration(p)) && p.name === e && ts.isObjectLiteralExpression(p.parent)) {
+      const ct = checker.getContextualType(p.parent);
+      if (ct) {
+        fromKind(said, ct);
+        const ps = ct.getProperty?.(e.getText()) ?? checker.getPropertyOfType(ct, e.getText());
+        for (const d of declsOf(ps)) if (states(d)) note(said, d);
+      }
+    }
+    // the left of an assignment: the variable or field assigned to
+    if (ts.isBinaryExpression(p) && p.left === e && p.operatorToken.kind === ts.SyntaxKind.EqualsToken) fromValue(said, e);
+    // an argument: the parameter of the function called
+    if ((ts.isCallExpression(p) || ts.isNewExpression(p)) && p.arguments?.includes(e)) {
+      const sig = signatureOf(p);
+      const i = p.arguments.indexOf(e);
+      const params = sig?.declaration?.parameters ?? [];
+      const param = params[Math.min(i, params.length - 1)];
+      if (param && states(param)) note(said, param);
+      if (sig?.declaration && inComment(sig.declaration)) note(said, sig.declaration);
+    }
+    // a value handed back: the stated answer of its function
+    if (ts.isReturnStatement(p) || (ts.isArrowFunction(p) && p.body === e)) {
+      let fn = p;
+      while (fn && !ts.isFunctionLike(fn)) fn = fn.parent;
+      if (fn && statesAnswer(fn)) note(said, fn);
+    }
+    if (ts.isExpression(e)) { try { fromKind(said, checker.getContextualType(e)); } catch { /* no expected kind */ } }
+  }
+  /** The deepest node at a position, comment blocks included. */
+  function deepAt(sf, pos) {
+    let n = sf;
+    for (;;) {
+      let next = null;
+      for (const c of n.jsDoc ?? []) if (c.pos <= pos && pos < c.end) next = c;
+      // by the full range, leading comments included: a comment block stands before the node it belongs to
+      if (!next) ts.forEachChild(n, (c) => { if (c.pos <= pos && pos < c.end) { next = c; return true; } });
+      if (!next) return n;
+      n = next;
+    }
+  }
+  /** The declaration at a position the complaint names as related ("declared here"), comments included. */
+  function fromPlace(said, sf, pos) {
+    const n = deepAt(sf, pos);
+    if (inComment(n)) { note(said, n); return; }
+    // the declaration whose name stands there (the first node above it that declares something)
+    for (let p = n; p && !ts.isSourceFile(p); p = p.parent) if (p.symbol) { if (states(p)) note(said, p); return; }
+  }
+
+  /** The value a field is asked of: of o.f, o; of o[k], o and k; of const { f } = o, o; of a parameter { f }, it. */
+  function askedOf(node, e) {
+    const p = node.parent;
+    if (p && ts.isPropertyAccessExpression(p) && p.name === node) return [p.expression];
+    if (ts.isElementAccessExpression(e)) return [e.expression, e.argumentExpression];
+    if (e.parent && ts.isElementAccessExpression(e.parent) && e.parent.argumentExpression === e) return [e.parent.expression];
+    if (p && ts.isBindingElement(p) && ts.isObjectBindingPattern(p.parent)) {
+      const holder = p.parent.parent;
+      if (ts.isVariableDeclaration(holder)) return holder.initializer ? [holder.initializer] : [];
+      if (ts.isParameter(holder)) return [holder];
+    }
+    return [];
+  }
+  /** A place that holds a value: an object or list written in place, or one side of a ?:, is held where it stands. */
+  function holderOf(e) {
+    let x = e;
+    for (;;) {
+      const p = x.parent;
+      if (!p) return x;
+      if (ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p) || ts.isSpreadAssignment(p) || ts.isObjectLiteralExpression(p) ||
+        ts.isArrayLiteralExpression(p) || ts.isSpreadElement(p) || ts.isParenthesizedExpression(p) ||
+        (ts.isConditionalExpression(p) && p.condition !== x)) x = p;
+      else return x;
+    }
+  }
+
+  /** d: the complaint; sf: its file; node: the deepest node at its start. */
+  return function saidBy(d, sf, node) {
+    const said = { own: false, providers: new Set() };
+    // the whole expression the complaint points at (a complaint at `return` is about the value handed back)
+    let e = node;
+    const end = (d.start ?? 0) + (d.length ?? 0);
+    while (e.parent && !ts.isSourceFile(e.parent) && e.parent.getStart(sf) === e.getStart(sf) && e.parent.end <= end) e = e.parent;
+    if (ts.isReturnStatement(e) && e.expression) e = e.expression;
+    // A complaint inside a structured comment is about that comment.
+    const at = deepAt(sf, d.start ?? 0);
+    if (inComment(at)) note(said, at);
+    const asked = askedOf(node, e);
+    // A name a file of another module does not export: that module's exports say so, for certain.
+    if (NO_SUCH_EXPORT.has(d.code) || ((d.code === 2339 || d.code === 2551) && asked.some((x) => ts.isExpression(x) && isModuleNamespace(x)))) {
+      for (const m of exportingModules([node, at], asked)) if (m !== mod.id) said.providers.add(m);
+    }
+    fromValue(said, e);
+    fromExpected(said, e);
+    // where a value written in place is held (an argument, a variable, a returned value)
+    const holder = holderOf(e);
+    if (holder !== e) fromExpected(said, holder);
+    // a field asked of a value: the value's kind
+    for (const x of asked) {
+      if (ts.isParameter(x)) { if (states(x)) note(said, x); try { fromKind(said, checker.getTypeAtLocation(x)); } catch { /* no kind */ } }
+      else fromValue(said, x);
+    }
+    // a call: the function it names
+    let call = e;
+    while (call && !ts.isCallExpression(call) && !ts.isNewExpression(call) && !ts.isStatement(call)) call = call.parent;
+    // (for a complaint at an argument, only one about the number of arguments: the parameter answers the others)
+    if (call && (ts.isCallExpression(call) || ts.isNewExpression(call)) && (call === e || call.expression === e || within(e, call.expression) || (ARITY.has(d.code) && call.arguments?.includes(e)))) {
+      const decl = signatureOf(call)?.declaration;
+      if (decl && (inComment(decl) || hasMark(decl) || decl.parameters?.some(states) || statesAnswer(decl))) note(said, decl);
+      fromValue(said, call.expression);
+    }
+    for (const r of d.relatedInformation ?? []) if (r.file && r.start !== undefined) fromPlace(said, r.file, r.start);
+    return said;
+  };
+
+  function isModuleNamespace(e) {
+    const t = checker.getTypeAtLocation(e);
+    return declsOf(t.symbol).some((x) => ts.isSourceFile(x));
+  }
+  /** The modules of the product files a complaint about a missing export names: the file an import (or an
+   * @import, or import('...') in a comment) names, or the module namespace a name is asked of. */
+  function exportingModules(places, asked) {
+    const out = new Set();
+    const add = (sym) => { for (const x of declsOf(sym)) if (ts.isSourceFile(x)) { const m = tree.moduleOfFile(x.fileName); if (m) out.add(m); } };
+    for (let n of places) {
+      while (n && !ts.isImportDeclaration(n) && !ts.isExportDeclaration(n) && !ts.isImportTypeNode(n) && !ts.isJSDocImportTag?.(n) && !ts.isStatement(n) && !ts.isJSDoc(n)) n = n.parent;
+      const spec = n && (n.moduleSpecifier ?? (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument) ? n.argument.literal : null));
+      if (spec && ts.isStringLiteral(spec)) add(checker.getSymbolAtLocation(spec));
+    }
+    for (const a of asked) if (ts.isExpression(a)) add(checker.getTypeAtLocation(a).symbol);
+    return out;
+  }
+}
 
 /**
  * @param tree the product
@@ -93,8 +328,10 @@ export function check(tree, moduleId, opts = {}) {
   loadReader();
   const mod = tree.byId.get(moduleId);
   if (!mod) throw new Error(`no such module: ${moduleId}`);
-  const program = opts.analysis?.program ?? makeProgram([...mod.files, ...mod.uses.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
-  const checker = program.getTypeChecker();
+  const ownProgram = () => makeProgram([...mod.files, ...mod.uses.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
+  let program = opts.analysis?.program ?? ownProgram();
+  let checker = program.getTypeChecker();
+  let saidBy = makeClaims(checker, tree, mod);
   const refusals = [];
   const cannotTell = [];
   const moduleOfDecl = (decl) => tree.moduleOfFile(decl.getSourceFile().fileName);
@@ -134,10 +371,9 @@ export function check(tree, moduleId, opts = {}) {
     return false;
   };
 
-  for (const f of mod.files) {
-    if (only && !only.has(rel(f))) continue;
+  const checkFile = (f) => {
     const sf = program.getSourceFile(f);
-    if (!sf) continue;
+    if (!sf) return;
     const isTest = mod.tests.includes(f);
     // In a test file, the first argument of a deliberate error assertion may carry a wrong-typed value on purpose.
     const errorSpans = isTest ? errorAssertionSpans(sf) : null;
@@ -244,10 +480,29 @@ export function check(tree, moduleId, opts = {}) {
         cannotTell.push({ at, code: d.code, why: "a value of the module's own that may be missing, guarded where the reader cannot see", text });
         continue;
       }
+      // Refused only where a structured comment states what the complaint contradicts (makeClaims): a provider's
+      // stated interface (b), or this module's own comments (a). On plain code, the reader cannot tell.
+      const said = saidBy(d, sf, node);
+      if (!said.providers.size && !said.own) {
+        cannotTell.push({ at, code: d.code, why: 'plain code: no structured comment states what this contradicts', text });
+        continue;
+      }
       refusals.push({
         at, code: d.code, text,
-        kind: others.size ? `(b) code disagrees with the stated interface of ${[...others].join(', ')}` : `(a) a comment disagrees with ${isTest ? "this module's tests" : "this module's code"}`,
+        kind: said.providers.size ? `(b) code disagrees with the stated interface of ${[...said.providers].join(', ')}` : `(a) a comment disagrees with ${isTest ? "this module's tests" : "this module's code"}`,
       });
+    }
+  };
+
+  for (const f of mod.files) {
+    if (only && !only.has(rel(f))) continue;
+    try { checkFile(f); } catch (e) {
+      if (!outOfStack(e)) throw e;
+      // The reader itself (TypeScript) follows some expressions by recursion: one nested deeply enough (thousands of
+      // terms in one function) runs it out of stack. Not read: "cannot tell", never a refusal. Its state after that is
+      // not to be trusted, so the files after it are read afresh.
+      cannotTell.push({ at: rel(f), code: 'stack', why: 'the reader ran out of stack on this file (an expression nested too deeply to follow): not read', text: e.message });
+      program = ownProgram(); checker = program.getTypeChecker(); saidBy = makeClaims(checker, tree, mod);
     }
   }
 
@@ -268,10 +523,8 @@ function importsOf(sf, cannot) {
       const a0 = n.arguments[0];
       if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
     }
-    for (const d of n.jsDoc ?? []) visit(d);
-    ts.forEachChild(n, visit);
   };
-  visit(sf);
+  forEachNode(sf, visit, { jsDoc: true });
   return out;
 }
 
@@ -318,9 +571,15 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
   // Calls by name through a carrier make a use without an import: read them as the notice does.
   let u = opts.analysis?.uses?.get(mod.id);
   if (!u) {
-    const lister = makeLister(program, tree);
-    const listings = new Map(tree.modules.filter((m) => m.public.length && m.public.every((f) => program.getSourceFile(f))).map((m) => [m.id, lister.list(m)]));
-    u = makeUsage(program, tree, listings).usesOf(mod);
+    try {
+      const lister = makeLister(program, tree);
+      const listings = new Map(tree.modules.filter((m) => m.public.length && m.public.every((f) => program.getSourceFile(f))).map((m) => [m.id, lister.list(m)]));
+      u = makeUsage(program, tree, listings).usesOf(mod);
+    } catch (e) {
+      if (!outOfStack(e)) throw e;
+      for (const p of missing) cannotTell.push({ at: entryFile, code: 'uses', why: 'the reader ran out of stack following calls by name (an expression nested too deeply to follow)', text: `declares ${p}; no import of it` });
+      return;
+    }
   }
   for (const p of missing) {
     if (u.uses.has(p)) continue;
@@ -362,23 +621,27 @@ const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLi
 
 function shapeOfNode(root) {
   const out = [];
-  const visit = (n) => {
-    if (ts.isParenthesizedExpression(n)) return visit(n.expression);
-    if (n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode) return;
+  // A grouping parenthesis writes nothing of its own: only what it holds (its one child).
+  const enter = (n) => {
+    if (ts.isParenthesizedExpression(n)) return true;
+    if (n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode) return false;
     let leaf = '';
     if (ts.isIdentifier(n) || ts.isPrivateIdentifier(n)) leaf = n.text;
     else if (ts.isStringLiteral(n) || ts.isNumericLiteral(n) || ts.isBigIntLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n) || ts.isRegularExpressionLiteral(n)) leaf = n.text;
     else if (n.kind === ts.SyntaxKind.TemplateHead || n.kind === ts.SyntaxKind.TemplateMiddle || n.kind === ts.SyntaxKind.TemplateTail) leaf = n.text;
     const chain = n.flags & ts.NodeFlags.OptionalChain ? '?' : '';
     out.push(`(${n.kind}${chain}${leaf ? ':' + JSON.stringify(leaf) : ''}`);
-    ts.forEachChild(n, visit);
+    return true;
+  };
+  const leave = (n) => {
+    if (ts.isParenthesizedExpression(n)) return;
     // Tokens such as operators are not children in the tree: keep them.
     if (ts.isBinaryExpression(n)) out.push(`op${n.operatorToken.kind}`);
     if (ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) out.push(`op${n.operator}`);
     if (ts.isVariableDeclarationList(n)) out.push(`decl${n.flags & ts.NodeFlags.BlockScoped}`);
     out.push(')');
   };
-  visit(root);
+  forEachNode(root, enter, { leave });
   return out.join('');
 }
 

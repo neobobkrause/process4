@@ -6,7 +6,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
-import { notice } from '../lib/notice/notice.mjs';
+import { analyse, notice } from '../lib/notice/notice.mjs';
+import { check, commentsOnly } from '../lib/notice/check.mjs';
 import { parseBlock } from '../lib/github.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
@@ -299,4 +300,75 @@ export const later = (/** @type {string} */ name) => import(name);
   assert.equal(checkCmd(ctx, 'orders', { _: [] }), 0);
   assert.match(out.join('\n'), /Check of orders: no disagreement found/);
   assert.match(out.join('\n'), /cannot tell, not refused: src\/orders\/index\.mjs:12 an import of a name the tool cannot read/);
+});
+
+test('check refuses only what a structured comment states: on plain code the reader cannot tell', () => {
+  const files = productFiles();
+  // report: plain JavaScript with no comments, whose usual ways the reader complains about.
+  files['src/report/index.mjs'] = `import { formatDay } from '../dates/index.mjs';
+export function rec(name) { const r = { name, tags: [] }; r.when = Date.now(); return r; }
+export const settings = { mode: 'fast' };
+settings.mode = 7;
+export function pad(text, width = 10) { return String(text).padStart(width); }
+export const show = (n) => formatDay({ n });
+`;
+  files['test/report/index.test.mjs'] = `import { rec, settings, pad } from '../../src/report/index.mjs';
+rec('a').tags.push('x');
+settings.timeout = 1;
+pad('a', '3');
+`;
+  const root = makeRepo(files);
+  const { ctx, out } = ctxFor(root, untouchable);
+  assert.equal(checkCmd(ctx, 'report', { _: [] }), 0);
+  const plain = out.filter((l) => /plain code: no structured comment states what this contradicts/.test(l));
+  assert.deepEqual(plain.map((l) => l.match(/not refused: (\S+)/)[1]), ['src/report/index.mjs:2', 'src/report/index.mjs:4', 'test/report/index.test.mjs:2', 'test/report/index.test.mjs:3', 'test/report/index.test.mjs:4']);
+  // A comment of its own that its code contradicts is still refused (a); so is its code against a provider's stated
+  // interface (b), here the field n of dates' Day.
+  commit(root, { 'src/report/index.mjs': `${files['src/report/index.mjs']}/** @param {string} label */
+export function title(label) { return label; }
+export const t = title(3);
+export const bad = () => formatDay({ n: 'x' });
+` });
+  out.length = 0;
+  assert.throws(() => checkCmd(ctx, 'report', { _: [] }), /2 disagreement/);
+  assert.match(out.join('\n'), /src\/report\/index\.mjs:9 \(a\) a comment disagrees with this module's code: Argument of type 'number' is not assignable to parameter of type 'string'/);
+  assert.match(out.join('\n'), /src\/report\/index\.mjs:10 \(b\) code disagrees with the stated interface of dates: Type 'string' is not assignable to type 'number'/);
+});
+
+test('language_reader.exclude: a file it names is no module\'s and is never read; without the field nothing is left out', () => {
+  const files = productFiles();
+  // A vendored copy inside dates, whose own comment disagrees with its code.
+  files['src/dates/vendor/lib.mjs'] = '/** @type {number} */\nexport const v = "a";\n';
+  const root = makeRepo(files);
+  const { ctx, out } = ctxFor(root, untouchable);
+  assert.throws(() => checkCmd(ctx, 'dates', { _: [] }), /1 disagreement/);
+  assert.match(out.join('\n'), /src\/dates\/vendor\/lib\.mjs:2 \(a\) a comment disagrees with this module's code/);
+  const reader = (exclude) => commit(root, { 'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'], exclude } }) });
+  reader(['**/vendor/**', 'dist/*.mjs']);
+  const t = loadTree(root);
+  assert.deepEqual(t.byId.get('dates').files.map((f) => f.slice(root.length + 1)), ['src/dates/index.mjs']);
+  assert.equal(t.moduleOfFile(join(root, 'src/dates/vendor/lib.mjs')), null);
+  out.length = 0;
+  assert.equal(checkCmd(ctx, 'dates', { _: [] }), 0);
+  assert.doesNotMatch(out.join('\n'), /vendor/);
+  // An empty list leaves out nothing.
+  reader([]);
+  assert.equal(loadTree(root).byId.get('dates').files.length, 2);
+});
+
+test('a very long expression (20,000 terms) does not run the tool out of stack', () => {
+  const terms = Array.from({ length: 20000 }, (_, i) => `'s${i}'`).join(' +\n  ');
+  const files = productFiles();
+  files['src/report/index.mjs'] = `import { formatDay } from '../dates/index.mjs';\n/** @param {number} n @returns {string} */\nexport const show = (n) => formatDay({ n });\nexport const big = ${terms};\n`;
+  const root = makeRepo(files);
+  const tree = loadTree(root);
+  assert.equal(check(tree, 'report').refused, false);
+  assert.ok(analyse(tree).listings.get('report').entries.big);
+  assert.equal(commentsOnly(tree, tree, 'report').same, true);
+  // Inside one function, the reader itself (TypeScript) follows such an expression by recursion: where it runs out of
+  // stack, that file is "cannot tell", never a crash or a refusal.
+  commit(root, { 'src/report/index.mjs': `${files['src/report/index.mjs']}export function many() { return show(1) + ${terms}; }\n` });
+  const r = check(loadTree(root), 'report');
+  assert.equal(r.refused, false);
+  assert.match(r.cannotTell.find((c) => c.code === 'stack')?.why ?? '', /^the reader ran out of stack on this file/);
 });

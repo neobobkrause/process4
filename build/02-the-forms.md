@@ -115,7 +115,7 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
   "walk": { "build_and_serve": "npm run serve-local", "run_steps": "npm run walk --", "most_external_walkers": 1 },
   "deploy": { "deploy": "npm run dev-deploy --", "seed": "npm run dev-seed --", "remove": "npm run dev-remove --" },
   "process_folder": "process/",
-  "language_reader": { "name": "typescript", "version": "5.6.3", "source": ["**/*.mjs"] }
+  "language_reader": { "name": "typescript", "version": "5.6.3", "source": ["**/*.mjs"], "exclude": ["**/vendor/**"] }
 }
 ```
 
@@ -131,7 +131,7 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
 - `deploy`: the product's own commands that deploy, seed and remove a development copy, each run with a copy's name by ARCH's session (build text 3, section 5).
 - **Decided here:** one trial-only line, `"trial": { "mechanical_edit_tests": "none" }`, written only in the trial repository, asks the required run to run no test on a mechanical edit (build text 1, section 5, step 5). Gives: trial item 9's "none run" form can be tried. Costs: a line no product's config may hold.
 - `process_folder`: where the files of sections 3, 4 and 8 are kept.
-- `language_reader`: the reader's name, its exact version, and which files are the product's code. **Decided here:** the version is fixed in the config. Gives: every session and GitHub's machines make the same listing. Costs: a new version is a change to this file.
+- `language_reader`: the reader's name, its exact version, which files are the product's code (`source`), and, optionally, which of them it leaves out (`exclude`, patterns of the same form), such as vendored copies and committed built bundles. A file left out belongs to no module: the reader neither checks nor lists it, and an import of it is an import from outside the product. Without `exclude` nothing is left out. **Decided here:** the version is fixed in the config. Gives: every session and GitHub's machines make the same listing. Costs: a new version is a change to this file.
 
 ## 8. The ranking page, the two decision records, and a job's record
 

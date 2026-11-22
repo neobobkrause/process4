@@ -7,7 +7,7 @@ import path from 'node:path';
 import { loadConfig, loadModules } from '../config.mjs';
 import { fail, underPath } from '../util.mjs';
 
-/** A glob of the config's `language_reader.source` as a test of a path relative to the product's top. */
+/** A glob of the config's `language_reader.source` (or `exclude`) as a test of a path relative to the product's top. */
 export function globTest(patterns) {
   const res = [].concat(patterns).map((g) => {
     let re = '';
@@ -57,12 +57,15 @@ export function loadTree(root) {
   const entries = loadModules(root, cfg);
   if (!entries.length) fail(`${root} has no module order file under ${cfg.process_folder}`);
   const isCode = globTest(cfg.language_reader?.source ?? ['**/*.mjs']);
+  // Files the config leaves out of the reader (vendored copies, committed built bundles): no module's, never read as
+  // the product's code. Without the field, nothing is left out.
+  const isLeftOut = globTest(cfg.language_reader?.exclude ?? []);
   const modules = entries.map((e, index) => ({
     id: e.name, index, uses: e.uses ?? [], entry: e, public: [], src: [], tests: [], files: [],
   }));
   const byId = new Map(modules.map((m) => [m.id, m]));
   for (const rel of walk(root).sort((a, b) => (path.join(root, a) < path.join(root, b) ? -1 : 1))) {
-    if (!isCode(rel)) continue;
+    if (!isCode(rel) || isLeftOut(rel)) continue;
     const o = owner(entries, rel);
     if (!o) continue;
     const m = byId.get(o.name);
@@ -79,7 +82,8 @@ export function loadTree(root) {
   const moduleOfFile = (file) => {
     if (owners.has(file)) return owners.get(file);
     const rel = path.relative(root, file);
-    const m = rel.startsWith('..') || path.isAbsolute(rel) ? null : owner(entries, rel.split(path.sep).join('/'))?.name ?? null;
+    const r = rel.split(path.sep).join('/');
+    const m = rel.startsWith('..') || path.isAbsolute(rel) || isLeftOut(r) ? null : owner(entries, r)?.name ?? null;
     owners.set(file, m);
     return m;
   };

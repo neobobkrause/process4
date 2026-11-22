@@ -1,7 +1,7 @@
 // The listing: a module's interface written out from its code and its structured comments together.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, tagsOf, tagText, lineOf, docsOf, declarationsOf } from './ts.mjs';
+import { ts, tagsOf, tagText, lineOf, docsOf, declarationsOf, forEachNode } from './ts.mjs';
 import { makeCanon } from './canon.mjs';
 
 /** Does the module carry interface comments at all? (Mechanical: any JSDoc tag that states a kind.) */
@@ -248,8 +248,7 @@ export function makeLister(program, tree) {
             // Iteration 4 (rule 23): every listed entry called anywhere in the method's body passes its errors on.
             const fn = ts.isMethodDeclaration(prop) ? prop : ts.isPropertyAssignment(prop) && (ts.isArrowFunction(prop.initializer) || ts.isFunctionExpression(prop.initializer)) ? prop.initializer : null;
             const calls = [];
-            const findCalls = (m) => { if (ts.isCallExpression(m)) calls.push(m); ts.forEachChild(m, findCalls); };
-            if (fn?.body) findCalls(fn.body);
+            if (fn?.body) forEachNode(fn.body, (m) => { if (ts.isCallExpression(m)) calls.push(m); });
             for (const call of calls) {
               const callee = ts.isPropertyAccessExpression(call.expression) ? call.expression.name : call.expression;
               let sym = checker.getSymbolAtLocation(callee);
@@ -272,9 +271,9 @@ export function makeLister(program, tree) {
             }
           }
         }
-        ts.forEachChild(n, visit);
       };
-      visit(sf);
+      // Kept on a list, not by recursion: a long expression nests deeper than the stack allows (forEachNode).
+      forEachNode(sf, visit);
     }
     for (let round = 0; round < 3; round++) for (const [to, from, straight] of delegations) {
       const inherited = entries[from]?.throws ?? [];

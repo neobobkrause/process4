@@ -2118,10 +2118,11 @@
    "series": "round8-independent",
    "provider": "meter",
    "told": {},
-   "refuses": [
-    "meter"
-   ],
-   "needs": []
+   "refuses": [],
+   "needs": [],
+   "rerecorded": [
+    "meter's check refused before the owner's decision 3B (22 Nov 2026) and does not now: the complaint was process.stdout.write(..., 'utf8') against the tool's own Node description, which no structured comment states, so it is 'cannot tell'; the recorded needs were already empty, so the refusal was false"
+   ]
   },
   "T15-message-line-as-template": {
    "series": "round8-independent",
