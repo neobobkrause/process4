@@ -22,53 +22,14 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. The second reading found one file on civicsmith-copy that needs fixing; that comes first, just below.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. You fixed the forbidden-commands file on civicsmith-copy. Two actions wait for you on the lane's page.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you, first: fix one file on civicsmith-copy</h2>
-<p><b>What is wrong.</b> The forbidden-commands file you landed on civicsmith-copy, <code>.claude/settings.json</code>, is not a complete file, so the forbidden commands may not be in force there. This was my page's fault: it gave you only the inner part of the file and told you to fit it in by hand. The second reading found it.</p>
-<p><b>The fix: replace the whole file with the whole box below.</b></p>
-<ol>
-<li>Signed in to GitHub as <b>neobobkrause</b>, open https://github.com/neobobkrause/civicsmith-copy/edit/main/.claude/settings.json</li>
-<li>Click in the file's text, select everything in it, and delete it.</li>
-<li>Copy the whole box below, from the first <code>{</code> to the last <code>}</code>, and paste it.</li>
-<li>Click <b>Commit changes…</b>, then <b>Commit changes</b>.</li>
-</ol>
-<div class="draft">{
-  &quot;permissions&quot;: {
-    &quot;deny&quot;: [
-      &quot;mcp__github__merge_pull_request&quot;,
-      &quot;Bash(gh pr merge *)&quot;,
-      &quot;Bash(gh api *pulls/*/merge*)&quot;,
-      &quot;Bash(git push --force *)&quot;,
-      &quot;Bash(git push -f *)&quot;,
-      &quot;Bash(git push --force-with-lease *)&quot;,
-      &quot;Bash(git push origin --delete *)&quot;,
-      &quot;Bash(git push origin main)&quot;,
-      &quot;Bash(git push origin HEAD:main)&quot;,
-      &quot;Bash(gh api *contents/*)&quot;,
-      &quot;Bash(gh api *git/blobs*)&quot;,
-      &quot;Bash(gh api *git/trees*)&quot;,
-      &quot;Bash(gh api *git/commits*)&quot;,
-      &quot;Bash(gh api *git/refs*)&quot;,
-      &quot;Bash(curl *api.github.com*)&quot;,
-      &quot;mcp__github__create_or_update_file&quot;,
-      &quot;mcp__github__push_files&quot;,
-      &quot;mcp__github__delete_file&quot;,
-      &quot;Bash(gh *)&quot;
-    ]
-  }
-}</div>
-<p><b>What you should see afterwards:</b> the file's first line is <code>{</code>, its last line is <code>}</code>, and it has 25 lines.</p>
-<p><b>The Node 26 start-up step</b> that your old file also carried is not in this box, because no session has its text; it is in the file's history. You will not paste it. The next reading recovers its text, and the set-up session puts it back in a pull request that you land with one click on <b>Merge pull request</b>.</p>
-</section>
-
-<section class="wait">
-<h2>Waiting for you, next: two actions on the civicsmith lane's page</h2>
+<h2>Waiting for you: two actions on the civicsmith lane's page</h2>
 <p>Both are ready, with their steps, on https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
 <ol>
-<li><b>Action 6: one short third reading.</b> The second reading was started before the item about tests that reach a later module was added. This read-only session covers that item, and recovers the text of the Node 26 start-up step.</li>
+<li><b>Action 6: one short third reading.</b> The second reading was started before the item about tests that reach a later module was added. This read-only session covers that item, reads back the forbidden-commands file you just fixed, and recovers the text of the Node 26 start-up step from the file's history.</li>
 <li><b>Action 7: the Cloudflare token.</b> The list is final: one token, for the development account only. BioDefault already holds a Cloudflare token, so the first route is to add the missing permissions to that one. Cloudflare's pages say a token can be edited after it is made, but do not say in words that its value stays the same; the lane's steps cover the case where it changes.</li>
 </ol>
 <p><b>What comes after, so you can see the road:</b> one set-up session on civicsmith-copy with the lane's brief; then civicsmith's ROOT.</p>
@@ -86,7 +47,7 @@ a{color:var(--accent)}
 <li>The two approvals files, landed by you on civicsmith-copy's main.</li>
 <li>The paused tranche T53: your decision, "Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." The lane records it for civicsmith, and it goes into civicsmith's own record of your decisions when its coordinator starts.</li>
 </ul>
-<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. The forbidden-commands file needs the fix above. The GitHub settings cannot be read by a session, so they stand on your word.</p>
+<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. You fixed the forbidden-commands file on 22 Nov with the whole corrected file; the third reading reads it back. Its Node 26 start-up step comes back later, in a pull request from the set-up session that you land with one click. The GitHub settings cannot be read by a session, so they stand on your word.</p>
 </section>
 
 <section class="card">
