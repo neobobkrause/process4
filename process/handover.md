@@ -3,129 +3,102 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 22 Nov 2026, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), after the
-decisions on tests and signing keys, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
-**PROCESS #7**: read generation 6 there, name yourself `PROCESS #7` with set-session-title (pass your
-own session id), and record generation 7 and your session there (the file must start with the JSON block).
+Last written: 22 Nov 2026 ~19:10Z, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), at **70 percent
+fill**. It passed the 50 percent refresh level without reading its fill; that was its fault. Read your own
+fill (`get_session`, `context_usage`) after every owner turn. You, the successor, are **PROCESS #7**: read
+generation 6 in `handover-process`, name yourself `PROCESS #7` with set-session-title (pass your own
+session id), and record generation 7 and your session there (the file must start with the JSON block).
 
 ## Start checks
 
 1. Environment **BioDefault**, `neobobkrause/process4` only; `~/.claude/settings.json` has `autoMode`.
 2. `node tool/p4.mjs state read` reads issue #33.
-3. Products registry: `process3-probes`, ROOT `session_018Bhceg1d5SVx54aCGkzRe3` (ROOT #7); and
-   `civicsmith` (repository neobobkrause/civicsmith-copy, branch p4-tranche), ROOT
-   `session_018BhcegAmzjwNWYL3hiKonG` (civicsmith ROOT #1, started by the owner 22 Nov 19:00Z). ROOTs refresh
-   often; confirm with `list_sessions` (titles `process3-probes ROOT #N`, tag `process4-product:process3-probes`)
-   and message the live ROOT your session and generation.
-4. Your lane: **PROCESS civicsmith lane #2**, `session_018BhceeTQKM67dJhV5dBPyh` (model claude-opus-5-5), in the
-   `lanes` record; civicsmith's onboarding lane. Its page https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R
-   (a Claude Doc; read it with the Claude Docs connector); its folder `process/lanes/civicsmith/`. Message it
-   your session. Lane #1 (`session_018BhceckLEcDGQG4yqJtMVH`) asked for its refresh at 53 percent on 22 Nov
-   and was archived by PROCESS #6. To refresh a lane: write it not live in `lanes`, start the successor
-   with create_session (the prompt PROCESS #6 used is in lane #2's first message), write it live, archive
-   the old one. The trial's coordinator #3 is `session_018BhceeRZwDtL5rXcx3Mp5q`.
+3. Products registry, two products. Message each ROOT your session and generation (titles in the
+   account's session list; ROOTs refresh, so confirm the live one there):
+   - `process3-probes` (the trial): ROOT #7 `session_018Bhceg1d5SVx54aCGkzRe3`; coordinator #3
+     `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
+   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `eeb35f3`):
+     **civicsmith ROOT #1** `session_018BhcegAmzjwNWYL3hiKonG`, started by the owner 22 Nov 19:00Z; its
+     shared-state issue is 1122. It recorded PROCESS #6 in its roles record, so it must hear from you.
+4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
+   last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
+   `process/lanes/civicsmith/`, stays: conversion plan, the three readings, `later-module-tests.md`,
+   `setup-session-brief.md`, `tokens.md`, `process-points.md`. Its page (a Claude Doc, read with the
+   Claude Docs connector): https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R. To start a lane for another
+   product: write it in `lanes`, `create_session` (repository process4, main, the lane prompt PROCESS #6
+   used is the first message of lane #2's session), tag `process4-product:PROCESS`.
 5. Keep the owner's page **"Process4 Waiting for Bob"**: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy
-   (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
-   them with ArtifactComments, reply and resolve.
+   (source `coordination/owner_page/desk.html`; publish the file with the Artifact tool and keep both in
+   sync, each change to the source by its own small pull request). Comments on it wake PROCESS; read them
+   with ArtifactComments, reply and resolve.
 
-## Current work: product onboarding (decided 22 Nov)
+## Waiting to arrive (addressed to PROCESS #6's session; ask for them again under your address)
 
-Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
-`process/design-decisions-2.md`, and "Publishing a release" in `design-decisions.md`; research in
-`process/research/product-onboarding-22nov.md`, sections 5 to 7):
+- **The check measurement.** The owner pasted a read-only run of `check` over civicsmith's 178 modules
+  into the set-up session (`session_018BhcecbrWWH3xBs3py4NQW`, "Process4 civicsmith setup session") at
+  ~18:44Z. Its report was to come by message to PROCESS #6 and had not come by 19:10Z. PROCESS #6, if
+  still open, forwards it to you and does nothing else. If it does not come, ask the owner to type in
+  that session: send the report to PROCESS's new session. Research and the options to weigh:
+  `process/research/check-on-real-code-22nov.md` (first two modules failed: setup-words 551, 518 of them
+  in a vendored file; record-grammar 59; the tool cannot leave a file out of the reader). **This is the
+  main open risk.** Bring the owner the result with options; PROCESS #6 told him its recommendation that
+  no job opens on civicsmith before then, and told ROOT #1 the same as information.
+- **civicsmith ROOT #1's answers:** whether `p4-tranche` carries the hooks part of `.claude/settings.json`,
+  and the coordinator's and ARCH's session addresses.
 
-- The onboarding lane (design part 6 section 8); the read-only session he starts; settings by his clicks.
+## With the owner (nothing marked is unrecorded)
+
+- Not confirmed by him: **Action 9** (the branch rule on main and `p4-tranche`: pull request required,
+  `module-tests` required) and **Action 9a** (carrying main's `.claude/settings.json`, which has the
+  Node 26 start-up hook, onto `p4-tranche` by his own clicks). Both are on the lane's page. Ask once.
+- To put to him, one at a time, after the measurement (research recorded, no options put yet):
+  1. civicsmith's own workflows hold repository secrets (Docker Hub; a Cloudflare token for `deploy-test`)
+     that act 3 ("no repository secrets") removes; `release-sign` uses an environment secret behind a
+     required reviewer. Options: an environment with a required reviewer; the push moves into the
+     session-run release ceremony; an exception to act 3.
+  2. Who merges a product's set-up pull request into main (design part 7 section 4 act 8 does not say;
+     civicsmith's approvals did not allow the session, so he merged #1119). Lane point 11.
+  3. For his release page, no design change asked: civicsmith's installer takes no token, so the install
+     and update before a release are his own Cloudflare sign-in.
+- The trial's coordinator holds two optional matters for him (main's forbidden-commands file; whether to
+  try a told job that changes code, and the walks).
+
+## Decided and built by PROCESS #6 on 22 Nov (all merged; entries in `process/design-decisions-2.md`
+## unless said)
+
+- The onboarding lane: PROCESS starts one per joining product; it talks directly to PROCESS, keeps the
+  product's "waiting for Bob" page with status and fully detailed steps, starts with GitHub, and ends when
+  ROOT starts; the product is read by read-only sessions the owner starts; settings are his clicks; no
+  GitHub token where sessions act through Claude's GitHub connection (design part 6 section 8; part 1
+  sections 3 and 5; part 7 section 4).
 - A product's token is made once with every permission its development will need (part 1 section 3).
-- The tool's tests run only where the tool is changed: PROCESS runs before pushing only the tests of the
-  tool it changed; `tool-tests` passes at once on a draft and on a pull request that changes no file of
-  the tool (`tool/`, `shims/`, `starting_texts/job.md`, `starting_texts/walking-session.md`, the workflow).
-- Production signing keys stay in the sessions' environment ("No session directly holds a production
-  key" is gone from the design). The civicsmith approvals draft was changed to match.
-
-- **Decided 22 Nov:** the lane talks directly to PROCESS, keeps the product's "waiting for Bob" page with
-  status and fully detailed steps, and starts with GitHub; no GitHub token is made where sessions act
-  through Claude's GitHub connection (part 6 section 8; part 1 sections 3 and 5; part 7 section 4). So no
-  token and no tool change. Untried through the connection: publishing a release.
-- **Decided 22 Nov ("decision: option B, as recommended"):** the declared-uses check refuses a declared
-  use of a module that is not before this one (tool `check`, design part 2 sections 1 and 6, build texts
-  1b and 2). Research: `process/research/tests-referring-to-later-modules-22nov.md`. Known limit, not
-  changed: the check sees only imports by path, not references by package name. The lane's second
-  reading (item 12) looks for every kind of reference on civicsmith-copy's main.
-- **The civicsmith lane is civicsmith's onboarding lane** and works to that decision: its page as
-  civicsmith's "waiting for Bob"; the GitHub token steps first; then the repository set-up walk-through;
-  then the Cloudflare token (draft up; a second read-only reading closes it). It tells PROCESS when ready.
-- **PROCESS #5 is archived** (by the owner, 22 Nov; confirmed from the session list). It had acted once
-  after handing over (pull request 123). Only one PROCESS writes.
-- **The decisions record is two files**, both read, each under 60,000 bytes; new entries go in the second.
-
-## Done in PROCESS #5 (all merged, tool-tests green)
-
-- The trial's p4-tranche joined to main (option C; research `tranche-unrelated-to-main-20nov.md`); build
-  text 4 says a tranche branch starts from main.
-- Setting up an existing product: part 7 §4 act 8 and act 10, part 6 §2, build text 2 (civicsmith lane
-  points 1, 2, 3, 5, 6, 9; "Decision: B").
-- A session can set its own name, recorded as seen to work.
-- civicsmith lane started; civicsmith-copy approvals drafted for the owner to paste
-  (`process/research/approvals-draft-civicsmith-copy-21nov.md`); first-approvals gap researched
-  (`first-approvals-in-existing-product-21nov.md`).
-- Trial ROOT refresh cadence measured (`root-refresh-cadence-22nov.md`): quiet wakes ~10.5k (ROOT) and
-  ~5.7k (watcher); 21 Nov's ~43k/wake jump was a harness effect; no change recommended.
-
-## Waiting on the owner
-
-- civicsmith-copy (22 Nov): GitHub set-up done on his word (a session cannot read those settings);
-  `CLAUDE.md` landed by him and read back as drafted; T53 decided ("Start from main as it is. ..."; a
-  product decision, kept by the lane). `.claude/settings.json` on its main was not valid JSON (the page had
-  given him a fragment; PROCESS #6's fault to have kept that wording); he reported it fixed on 22 Nov with
-  the whole of `shims/claude-settings.json`, to be read back by the third reading. The Node 26 hook it lost is
-  recovered by the third reading and put back by the set-up session's pull request, which he merges.
-- The second and third readings are in `process/lanes/civicsmith/research/` (`-reading-2.md`,
-  `-reading-3.md`). Item 12 (tests reaching a later module) is sorted for ARCH in
-  `process/lanes/civicsmith/later-module-tests.md`: no static import reaches a later module; 62 test files
-  in 21 modules start the real plane; with tests counted, 151 to 170 modules form one connected set. The
-  tool cannot see such reach, so the order rule rests there on ARCH's module list; PROCESS recommended no
-  process change now (the research note's last section). The third reading's local main was stale, so
-  his fixed settings file is read back by the set-up session; the recovered hook is
-  `SessionStart -> bash "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"`.
-- Two matters the lane passed to PROCESS, not yet put to the owner (one at a time): (a) civicsmith's own
-  `container-images` workflow pushes to Docker Hub with repository secrets, which act 3 ("no repository
-  secrets") removes; `deploy-test` likewise holds a Cloudflare token as one; `release-sign` uses an
-  environment secret behind a required reviewer. Options to prepare: an environment with a required
-  reviewer for them; or the push moves into the session-run release ceremony with a token in the
-  sessions' environment; or an exception to act 3. (b) civicsmith's installer takes no token, only the
-  owner's own sign-in, so the install and update before a release (part 3 section 6) is his own act for
-  this product; no design change asked, it goes on his release page.
-- The set-up session ran on 22 Nov (`process/lanes/civicsmith/research/setup-session-report.md`):
-  civicsmith-copy PR #1119 (first Process4 files; merged by the owner's click, since its approvals let
-  sessions merge only into p4-tranche and p4-tranche into main); `p4-tranche` made from main; his fixed
-  settings file read back as `shims/claude-settings.json`; hook PR #1120 open for his click;
-  `process.commit` = process4 `eeb35f3`. The lane is not refreshed again: it ends when ROOT starts.
-- **Open research, the main risk now:** `check` fails on the code as it stands (setup-words 551, 518 in a
-  vendored file; record-grammar 59). `process/research/check-on-real-code-22nov.md`. A read-only
-  measurement over all 178 modules is asked of the owner (one paste into the set-up session,
-  `session_018BhcecbrWWH3xBs3py4NQW`); its report comes to PROCESS by message. Then put options to him
-  (that note's last sections). No job should open on civicsmith before that.
-- Also for later: who merges the set-up pull request into main (same note, last section).
-- **civicsmith's ROOT #1 started 22 Nov 19:00Z** and is in the registry; it was told (information, for its
-  coordinator and ARCH) that the check measurement is pending and that PROCESS recommends no job opens
-  before the owner has seen it, and was asked whether p4-tranche carries the hook. Not confirmed by the
-  owner: Action 9 (branch rule) and Action 9a (hook onto p4-tranche). The lane was told to close: when it
-  reports done, archive it and write it not live in `lanes`. Done on his word, 22 Nov: #1120 merged (the
-  hook on main); the measurement pasted into the set-up session; the Cloudflare token created and entered
-  in the environment.
+- Production signing keys stay in the sessions' environment (entry "Publishing a release" in
+  `process/design-decisions.md`, rewritten in place; parts 1, 3, 7, 9).
+- The tool's tests run only where the tool is changed; `tool-tests` passes at once on a draft and on a pull
+  request that changes no file of the tool (`tool/`, `shims/`, `starting_texts/job.md`,
+  `starting_texts/walking-session.md`, the workflow). **Run no tool tests by hand unless you changed a
+  tool, and then only the test files that cover it.**
+- The declared-uses check refuses a declared use of a module that is not before this one (tool
+  `check`; part 2 sections 1 and 6; build texts 1b and 2). Limit: it sees only imports by path.
+- Research with no change: tests on civicsmith reach later modules by means the tool cannot see
+  (`process/research/tests-referring-to-later-modules-22nov.md`); the order rule rests there on ARCH's
+  module list.
+- The decisions record is two files, both read, each under 60,000 bytes; new entries go in the second.
 
 ## Environment / tool notes
 
-- Run no tool tests by hand unless you changed a tool, and then only that tool's tests (his decision).
-- `node tool/p4.mjs <cmd>`; direct `gh` is denied by design. Flow: `git checkout -b work/<name> origin/main`
-  → edit → commit (author `Claude <noreply@anthropic.com>`, Co-Authored-By + Claude-Session trailers) →
-  `p4 push` → `p4 open --title` → `p4 ready <pr>` → `p4 results <pr>` until passed → `p4 merge <pr>`
-  (it waits ~40 s after the last merge into main; run it with a timeout of 100 s).
-- The `lanes` record refuses a second live session; write a lane as not live before rewriting it.
+- `node tool/p4.mjs <cmd>`; direct `gh` is denied by design. Flow: `git fetch origin main`, then
+  `git checkout -B work/<name> origin/main` → edit → commit (author `Claude <noreply@anthropic.com>`,
+  Co-Authored-By + Claude-Session trailers) → `p4 push` → `p4 open --title` → `p4 ready` → wait about
+  40 s → `p4 merge <number>` (it needs the number). GitHub refuses the merge while the ready run is still
+  queued or in progress ("Required status check ... is queued"); wait and merge again, that is not a
+  refusal to work round. `p4 push` takes only `work/` and `job/` branches.
 - design/, build/, starting_texts/ change only on the owner's marked decision ("Decision:" or
-  "Instruction:"); an unmarked request is refused by the checker — ask once. His decisions may arrive as
-  comments on his page.
-- Bookkeeping: each design part and build text states "Length: N lines"; `starting_texts/00-index.md`
-  carries byte figures and set sums — re-measure on any size change.
+  "Instruction:"); an unmarked request is asked about once. His decisions may arrive as page comments.
+- Bookkeeping on any size change: each design part and build text states "Length: N lines";
+  `starting_texts/00-index.md` carries byte figures and set sums.
 - How the owner wants to be spoken to: plain words, short, bottom line first; clicks with full addresses
-  and exact button labels; one matter at a time.
+  and exact button labels; one matter at a time. He does not open files or assemble a file from parts:
+  any text he pastes is given whole, in one block. Say what is proven and what is only reported.
+- A read-only session's local `main` can be stale: briefs begin with `git fetch origin` and name the
+  commit read.
