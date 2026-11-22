@@ -22,14 +22,53 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. Your decision on tests that reach a later module is built. One thing waits for you, just below.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. The second reading found one file on civicsmith-copy that needs fixing; that comes first, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: one thing</h2>
-<p><b>Start the second read-only session on civicsmith-copy.</b> The steps and the whole prompt to copy are under Action 5 on the civicsmith lane's page: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
-<p>It changes nothing. It settles the Cloudflare token list, and it reads back the GitHub settings and the two approvals files you landed, so we know they are as intended.</p>
-<p><b>What comes after it, so you can see the road:</b> you make the Cloudflare token once, from the lane's final list; you start one set-up session on civicsmith-copy with the lane's brief, which writes civicsmith's first Process4 files and makes its tranche branch; then you start civicsmith's ROOT.</p>
+<h2>Waiting for you, first: fix one file on civicsmith-copy</h2>
+<p><b>What is wrong.</b> The forbidden-commands file you landed on civicsmith-copy, <code>.claude/settings.json</code>, is not a complete file, so the forbidden commands may not be in force there. This was my page's fault: it gave you only the inner part of the file and told you to fit it in by hand. The second reading found it.</p>
+<p><b>The fix: replace the whole file with the whole box below.</b></p>
+<ol>
+<li>Signed in to GitHub as <b>neobobkrause</b>, open https://github.com/neobobkrause/civicsmith-copy/edit/main/.claude/settings.json</li>
+<li>Click in the file's text, select everything in it, and delete it.</li>
+<li>Copy the whole box below, from the first <code>{</code> to the last <code>}</code>, and paste it.</li>
+<li>Click <b>Commit changes…</b>, then <b>Commit changes</b>.</li>
+</ol>
+<div class="draft">{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;mcp__github__merge_pull_request&quot;,
+      &quot;Bash(gh pr merge *)&quot;,
+      &quot;Bash(gh api *pulls/*/merge*)&quot;,
+      &quot;Bash(git push --force *)&quot;,
+      &quot;Bash(git push -f *)&quot;,
+      &quot;Bash(git push --force-with-lease *)&quot;,
+      &quot;Bash(git push origin --delete *)&quot;,
+      &quot;Bash(git push origin main)&quot;,
+      &quot;Bash(git push origin HEAD:main)&quot;,
+      &quot;Bash(gh api *contents/*)&quot;,
+      &quot;Bash(gh api *git/blobs*)&quot;,
+      &quot;Bash(gh api *git/trees*)&quot;,
+      &quot;Bash(gh api *git/commits*)&quot;,
+      &quot;Bash(gh api *git/refs*)&quot;,
+      &quot;Bash(curl *api.github.com*)&quot;,
+      &quot;mcp__github__create_or_update_file&quot;,
+      &quot;mcp__github__push_files&quot;,
+      &quot;mcp__github__delete_file&quot;,
+      &quot;Bash(gh *)&quot;
+    ]
+  }
+}</div>
+<p><b>What you should see afterwards:</b> the file's first line is <code>{</code>, its last line is <code>}</code>, and it has 25 lines.</p>
+<p><b>The Node 26 start-up step</b> that your old file also carried is not in this box, because no session has its text; it is in the file's history. You will not paste it. The next reading recovers its text, and the set-up session puts it back in a pull request that you land with one click on <b>Merge pull request</b>.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you, second: one short third reading</h2>
+<p>The second reading has reported. It was started before the item about tests that reach a later module was added, so that one item still needs a short read-only session. The civicsmith lane is putting its steps and prompt on its page as Action 6: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
+<p><b>What the second reading settled:</b> the Cloudflare token can now be final, and it is smaller than the draft: one token, for the development account only. The lane is finishing that list; do not make the token until its page says final.</p>
+<p><b>What comes after, so you can see the road:</b> the Cloudflare token; one set-up session on civicsmith-copy with the lane's brief; then civicsmith's ROOT.</p>
 </section>
 
 <section class="card">
@@ -44,7 +83,7 @@ a{color:var(--accent)}
 <li>The two approvals files, landed by you on civicsmith-copy's main.</li>
 <li>The paused tranche T53: your decision, "Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." The lane records it for civicsmith, and it goes into civicsmith's own record of your decisions when its coordinator starts.</li>
 </ul>
-<p>None of these has been read back by a session yet; the second reading does that.</p>
+<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. The forbidden-commands file needs the fix above. The GitHub settings cannot be read by a session, so they stand on your word.</p>
 </section>
 
 <section class="card">

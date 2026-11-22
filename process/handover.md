@@ -15,11 +15,13 @@ own session id), and record generation 7 and your session there (the file must s
 3. Products registry: `process3-probes`, ROOT `session_018Bhceg1d5SVx54aCGkzRe3` (ROOT #7). ROOTs refresh
    often; confirm with `list_sessions` (titles `process3-probes ROOT #N`, tag `process4-product:process3-probes`)
    and message the live ROOT your session and generation.
-4. Your lane: **PROCESS civicsmith lane #1**, `session_018BhceckLEcDGQG4yqJtMVH`, in the `lanes` record;
-   its page https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R; its folder `process/lanes/civicsmith/`. Message
-   it your session. It may ask for a refresh at 50 percent; it was at ~22 percent on 20 Nov. PROCESS #6
-   told it and ROOT #7 its session on 22 Nov, and the trial's coordinator #3
-   (`session_018BhceeRZwDtL5rXcx3Mp5q`), which answered (see "Waiting on the owner").
+4. Your lane: **PROCESS civicsmith lane #2**, `session_018BhceeTQKM67dJhV5dBPyh` (model claude-opus-5-5), in the
+   `lanes` record; civicsmith's onboarding lane. Its page https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R
+   (a Claude Doc; read it with the Claude Docs connector); its folder `process/lanes/civicsmith/`. Message it
+   your session. Lane #1 (`session_018BhceckLEcDGQG4yqJtMVH`) asked for its refresh at 53 percent on 22 Nov
+   and was archived by PROCESS #6. To refresh a lane: write it not live in `lanes`, start the successor
+   with create_session (the prompt PROCESS #6 used is in lane #2's first message), write it live, archive
+   the old one. The trial's coordinator #3 is `session_018BhceeRZwDtL5rXcx3Mp5q`.
 5. Keep the owner's page **"Process4 Waiting for Bob"**: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
@@ -69,12 +71,24 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 ## Waiting on the owner
 
-- civicsmith-copy, all on his word and not yet read back by a session (22 Nov): the GitHub set-up done;
-  the two approvals files landed by him on main; and his decision about the product, "Start from main as
-  it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." (the
-  lane records it; it is a product decision, so it is not in the design-decisions record). Next for him:
-  the second read-only reading (Action 5 on the lane's page). Then: the Cloudflare token from the lane's
-  final list; the set-up session (act 8) with the lane's brief; the registry seed; ROOT (act 9).
+- civicsmith-copy (22 Nov): GitHub set-up done on his word (a session cannot read those settings);
+  `CLAUDE.md` landed by him and read back as drafted; T53 decided ("Start from main as it is. ..."; a
+  product decision, kept by the lane). **`.claude/settings.json` on its main is not valid JSON** (the page
+  had given him a fragment; PROCESS #6's fault to have kept that wording): the corrected whole file,
+  `shims/claude-settings.json`, is the first thing on his page to paste. The Node 26 hook it lost is
+  recovered by the third reading and put back by the set-up session's pull request, which he merges.
+- The second reading is in `process/lanes/civicsmith/research/civicsmith-copy-reading-2.md`. It lacked
+  item 12 (tests reaching a later module): a short third reading is Action 6 on the lane's page.
+- Two matters the lane passed to PROCESS, not yet put to the owner (one at a time): (a) civicsmith's own
+  `container-images` workflow pushes to Docker Hub with repository secrets, which act 3 ("no repository
+  secrets") removes; `deploy-test` likewise holds a Cloudflare token as one; `release-sign` uses an
+  environment secret behind a required reviewer. Options to prepare: an environment with a required
+  reviewer for them; or the push moves into the session-run release ceremony with a token in the
+  sessions' environment; or an exception to act 3. (b) civicsmith's installer takes no token, only the
+  owner's own sign-in, so the install and update before a release (part 3 section 6) is his own act for
+  this product; no design change asked, it goes on his release page.
+- Next for him after the fix and the third reading: the Cloudflare token (first route: edit the token
+  already in BioDefault to the lane's final list); the set-up session (act 8); the registry seed; ROOT.
 
 ## Environment / tool notes
 
