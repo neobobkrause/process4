@@ -1,6 +1,6 @@
 # The brief for civicsmith's set-up session (act 8)
 
-Length: 149 lines. Last section: "4. What it reports when it ends".
+Length: 152 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction; the process config's fields
 filled from the second reading (`research/civicsmith-copy-reading-2.md`) by lane #2, 22 Nov 2026, with the third reading's
@@ -131,8 +131,11 @@ record holds only decisions about the design. This session writes the first entr
      ]
    }
    ```
-7. **Make `p4-tranche`** from `main`'s newest commit, the merge of step 5, also where `main` holds the
-   earlier processes' history.
+7. **Make `p4-tranche`** only after the owner has merged step 6's pull request, from `main`'s newest
+   commit then, so that `main` and `p4-tranche` never hold different settings files. (On civicsmith,
+   22 Nov 2026, `p4-tranche` was made first, from `e123992b`; the owner then brought main's hook commit
+   across by his own click, page Action 9a; design part 6 §2.) If step 6 opened no pull request, make it
+   from the merge of step 5.
 8. **Stop.** Do not start ROOT; the owner does (act 9).
 
 ## 4. What it reports when it ends
