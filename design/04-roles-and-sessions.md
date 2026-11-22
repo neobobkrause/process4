@@ -44,14 +44,14 @@ The owner's rulings:
 - A lane has a folder of design knowledge in the product's repository, which it owns. It reads its area whole. It delivers designs, never product code.
 - The owner identifies the need for a lane, and ARCH opens it. The UX lane is always there. A product's other lanes are named in its process config.
 - A lane runs as one session at a time. Whether it is kept running or started when a question arrives is ARCH's call, judged by cost, and is measured at the end of the first tranche.
-- The first time a lane runs, it uses workers to research the product's founding documents, the existing code and the best practice of its area, and answers no question until that research is recorded in its folder. Every later session of the lane reads it first and adds to it.
+- The first time a lane runs, it uses workers to research the product's founding documents, the existing code and the best practice of its area, and answers no question until that research is recorded in its folder. The lane keeps an index of its research, one line for each file saying what it holds. Every later session of the lane reads that index first, reads a research file, or gives it to a worker, when a question needs it, and adds to it.
 - A lane decides design and wording in its area, within the product's principles.
 - The owner keeps the product's direction, audiences and principles. A lane decision that would change one comes to him with options and the lane's recommendation.
 - Questions from the work reach a lane only through ARCH, which passes each on with enough context to decide. A job never talks to a lane, and lanes never talk to each other.
 - The UX lane owns the Screens document and the journeys.
 - A lane ends when the owner or ARCH says its area needs no further design. Its folder and research stay.
 
-A lane session uses no job slot. A fresh lane session begins by reading the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, as a claim naming no session yet; once the start returns, the starter writes the same entry again with the session's address. The tool accepts that one fill-in and refuses to write a second session while the first is recorded as live.
+A lane session uses no job slot. A fresh lane session begins by reading the index of the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, as a claim naming no session yet; once the start returns, the starter writes the same entry again with the session's address. The tool accepts that one fill-in and refuses to write a second session while the first is recorded as live.
 
 The questions ARCH puts to a lane, and its answers, are not kept as a running record. What a lane decides is written into its folder as design.
 
@@ -84,14 +84,14 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 
 ## 5. Refresh and replacement
 
-- Each long-lived role is refreshed on purpose, at a natural pause in its work or at the stated fill level (part 5), whichever comes first. It asks its parent. Its successor starts only from the shared state and the repository.
+- Each long-lived role is refreshed on purpose, at the first natural pause in its work after its fill reaches the stated fill level (part 5). Where it cannot read its fill, it is refreshed at a natural pause. A pause alone does not call for a refresh. It asks its parent. Its successor starts only from the shared state and the repository.
 - ARCH is long-lived.
 - Before it asks, the role rewrites its handover record.
 - The parent of ARCH and the coordinator is ROOT; PROCESS is started and refreshed by the owner (part 6, section 7). The parent of a product's lane is ARCH. ROOT replaces the watcher, and ROOT itself is refreshed by the watcher (section 6).
 - ROOT records in the roles record the address of each standing session it starts or refreshes, so another session can resolve the role to it (section 4; section 11). PROCESS runs in a separate repository, and a product's sessions cannot read its state across repositories (part 7, section 3); so the live PROCESS is recorded in the product's own roles record, in its `process` field, by ROOT — from a message PROCESS sends ROOT on start — and the coordinator reads it there, with no cross-repository read (part 6, section 7).
 - PROCESS is started and refreshed by the owner, not by ROOT, because it is the one owner-facing role and every refresh happens with the owner present. At its refresh point PROCESS rewrites its handover record and asks the coordinator, which puts the start prompt on the owner's standing page and notifies him; the owner starts the successor, the one way he already starts PROCESS (section 1). The successor starts only from the shared state and the repository, as any refresh does; it records its own liveness and generation in its handover record for its own successors, and announces itself by message to each product's ROOT, which records it in that product's roles record where the coordinator reads it (part 6, section 7). The never-retry re-attempt, role-to-address resolution and successor registration apply to every other cross-repository act, cross-repository messaging among the roles among them (part 1, section 6; part 6, section 4).
 - A job that fills up or dies is replaced by ARCH with a new session that continues from the same branch and pull request.
-- A finished session is archived, not deleted. The session that started a session archives it; where the starter is gone, ROOT does.
+- A finished session is archived, not deleted. The session that started a session archives it; where the starter is gone, ROOT does. Whoever archives a session also removes that session's scheduled wake, if it has one, so that no wake fires into an archived session.
 - Sessions other than ROOT and the watcher are relatively short-lived. A role such as ARCH lasts, while its sessions are refreshed often.
 - **Unproven:** replacing ARCH while jobs are open.
 
@@ -101,7 +101,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 
 - ROOT starts the watcher as its first act after fetching. The watcher has no other duty.
 - The watcher has its own scheduled wake. At each wake it reads the time ROOT last woke.
-- The watcher wakes hourly, half an hour after ROOT. If ROOT has missed two wakes, the watcher takes over. It writes itself into the roles record as ROOT, takes over ROOT's scheduled wake, starts a new watcher, tells the coordinator, and archives the old ROOT session if it still exists.
+- The watcher wakes hourly, half an hour after ROOT. If ROOT has missed two wakes, the watcher takes over. It writes itself into the roles record as ROOT, makes its own ROOT wake and removes the old ROOT's wake and its own watcher wake, starts a new watcher, tells the coordinator, and archives the old ROOT session if it still exists.
 - ARCH, the coordinator and PROCESS go on as they were. They name ROOT by role.
 - A planned refresh of ROOT is the same takeover, asked for: ROOT rewrites its handover record and asks the watcher to take over.
 - Each takeover leaves the new ROOT one level deeper than the one before, because the watcher was started by the ROOT it replaces. When the harness's limit on depth is two levels away, ROOT puts it on the owner's standing page, and the owner starts a fresh ROOT at a pause.

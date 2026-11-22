@@ -442,7 +442,8 @@ a role's starting text and its starting instructions are one thing, and the defi
 architecture bug and an implementation error (part 0, section 6); how an architecture bug is
 corrected (part 1, section 6); a lane's folder needs no module tests (part 2, section 9);
 exercising a doubtful workflow in a walk adds no test (part 3, section 3); the lane rules stand
-as written, and questions to a lane and its answers are not kept as a running record (part 4,
+as written (except that, since 22 November 2026, a lane reads its research through an index: the entry "Research
+is read through an index" in `design-decisions-2.md`), and questions to a lane and its answers are not kept as a running record (part 4,
 section 3); a role lasts while its sessions are refreshed often (part 4, section 5); every stop
 nothing called for is reported to PROCESS during the trial (part 4, section 10); PROCESS brings
 the owner a role's principles that cannot be kept short (part 5, section 3); the ranking page

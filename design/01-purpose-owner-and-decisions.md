@@ -73,7 +73,7 @@ Process4 steps around the situations where a known weakness does harm, and does 
 
 | Weakness | The sign | What the session does |
 |---|---|---|
-| A full context loses what was read | The fill level nears the stated level, or a natural pause comes | Writes what its successor needs and asks for a refresh (part 4, section 5) |
+| A full context loses what was read | The fill level has reached the stated level (where it cannot be read, a natural pause comes) | At its next natural pause, writes what its successor needs and asks for a refresh (part 4, section 5) |
 | A long text is scanned or searched, not read | A text or set is over its maximum; a read comes back cut or refused | Does not act on the part it has. Reads the rest in order, or gives the reading to workers with narrow briefs. If the text is a governing text over its maximum, tells ARCH |
 | A claim is made that was not checked | It is about to tell the owner that something works or will work | Says what is proven, by what, and what is not (section 5) |
 | Conversation is taken as a decision | The owner says something that sounds decided, without the mark | Asks once whether to record it (section 4) |

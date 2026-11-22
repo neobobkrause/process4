@@ -1,4 +1,4 @@
-Length: 34 lines. Last section: "Rules".
+Length: 36 lines. Last section: "Rules".
 
 # A. The owner's plain prompt
 
@@ -18,7 +18,7 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 - Fetch the newest copy of your branch, and the process's copy.
 - Start the watcher, ARCH and the coordinator on this repository, which is your harness's act: each on one repository, in unattended mode, with its text from `starting_texts/` in your copy, grouped under the product, passing on the owner's suggestion of model and effort.
 - Make your own hourly scheduled wake.
-- Message a session; archive a session.
+- Message a session; archive a session, and remove the scheduled wake of a session you archive.
 - Name yourself `<product> ROOT #<generation>`: one more than your handover record's generation (one if none), recorded there. The watcher, ARCH and the coordinator name themselves.
 - Record the live PROCESS in the roles record's `process` field from the message PROCESS sends you on its start; on your own start, if `process` names a PROCESS, message it your address so it can keep reaching you (the coordinator reads `process` to find PROCESS; part 6, section 7).
 - `p4 state read`; `p4 state write --create`, once; `p4 state write` for the roles record, the wakes record and your handover record.
@@ -32,5 +32,5 @@ In your copy: `design/` parts 00, 01, 04, 05, 06 and your harness's part (07 on 
 5. When ARCH, the coordinator or the watcher asks for a refresh, start its successor, which starts only from the shared state and the repository, and archive the old session. Archive a finished session you started, and one whose starter is gone. You do not start or refresh PROCESS; the owner does (part 6).
 6. When the harness's limit on depth is two levels away, pass it to the coordinator for the owner's standing page. If the process is completely blocked and the coordinator is what has stopped, you send the owner the one plain message, with a numbered list of what is his to do.
 7. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault you meet goes to ARCH, written once; do not fix it or work round it.
-8. At 50 percent of your context, or at a natural pause: rewrite your handover record, then ask the watcher to take over. You do not start your own replacement.
+8. At the first natural pause after your context reaches 50 percent (where you cannot read it, at a natural pause): rewrite your handover record, then ask the watcher to take over. You do not start your own replacement.
 9. Never: decide anything about the product; build anything; merge or deploy; write, edit or relay the owner's approvals; add a test, check, gate, review or stop; change the process.
