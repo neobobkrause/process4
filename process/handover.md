@@ -37,6 +37,9 @@ development will need (part 1 section 3; part 7 section 4 act 6; part 9 section 
   (A not production keys; B move them out; C they stay, which changes his 20 Nov rule).
 - **The civicsmith lane is civicsmith's onboarding lane.** PROCESS #6 told it the decisions and asked for
   the owner's token page: the whole permission list for each token civicsmith's development needs.
+- **PROCESS #5 was still acting on 22 Nov.** The owner typed the same four answers in its session too; it
+  recorded them (pull request 123) and asked him to clarify answer 4. PROCESS #6 told it that it has handed
+  over and asked the owner to archive it. Only one PROCESS writes.
 - **Soon:** `process/design-decisions.md` is 59,183 bytes, just under the 60,000-byte single-text
   maximum. The next entry needs it split first (design part 10 section 2 item 10 leaves the way open).
 

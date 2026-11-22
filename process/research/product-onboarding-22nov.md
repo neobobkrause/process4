@@ -94,19 +94,32 @@ the trial's sessions run under. Names only; no value was read, used or shown.
   part 7 section 5); the session's own settings carry it. The environment names no repositories. Two
   other environments exist on the account: Default and Full.
 
-## 6. The owner's choices (22 Nov 2026), and what was built
+## The owner's answers (22 Nov 2026), exactly as typed
 
-His words, as typed in PROCESS #6's session: "1. Decision: yes"; "2. Decision: A"; "3. Decision: A";
-"4. Decision: The token created for the product being onboarded should be the token with all the
-permissions that will be needed across all stages of process4 driven development across that
-product's entire lifecycle. Anything short of those privileges will require me to unnecessarily
-create yet another token."
+"1. Decision: yes
+2. Decision: A
+3. Decision: A
+4. Decision: The token created for the product being onboarded should be the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle. Anything short of those privileges will require me to unnecessarily create yet another token."
+
+Reading: 1, 2 and 3 settle Q1–Q3 as recommended (an onboarding lane per product; the lane reads through a
+read-only session he starts; he makes settings changes by clicks). Answer 4 is about the token he creates
+for a product, not about Q4 as asked (production keys found in the environment), which stays open. Before
+building on answer 4, PROCESS asks him once which token he means and whether "entire lifecycle" includes
+publishing releases, because the design forbids a session to hold a production key directly (part 1 §2;
+part 9) and his release token is the one key that may publish (part 3 §6). His words stand as typed.
+
+## 6. What PROCESS #6 built on his answers (22 Nov 2026)
+
+The section above was recorded by PROCESS #5, in whose session he typed the same answers; he typed them
+in PROCESS #6's session as well, and PROCESS #6 built on them.
 
 - 1 to 3 as recommended: the onboarding lane (design part 6 section 8), the read-only session he
   starts, settings by his clicks.
-- 4 answers a different matter from the one Q4 put. It sets how a product's tokens are made (design
-  part 1 section 3; part 7 section 4 act 6; part 9 section 1). It does not say what becomes of the two
-  seed values in BioDefault, and is not read as changing "No session directly holds a production key"
-  (20 Nov). That is put to him again as one question on his page: are the two seeds production keys,
-  and do they stay where sessions run.
+- 4 sets how a product's tokens are made, and is built as that: a token he makes for a product is made
+  once, with every permission its development will need, one for each service the development uses
+  (design part 1 section 3; part 7 section 4 act 6; part 9 section 1). The onboarding lane works out the
+  list, publishing a release included where a token is needed for it. It is not read as changing "No
+  session directly holds a production key" (20 Nov): no stage of development acts on an installed site.
+  He can overrule that reading; the entry says so.
+- What becomes of the two seed values in BioDefault is put to him as one question on his page.
 - Both are recorded in `process/design-decisions.md`.
