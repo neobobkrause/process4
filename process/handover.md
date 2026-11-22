@@ -48,6 +48,11 @@ session id), and record generation 7 and your session there (the file must start
   `session_018BhcefXVtmctn1hrCaXdZU`. `p4-tranche` carries the hook: ROOT started from `d3cb895b` (the
   merge of civicsmith-copy pull request 1121, main into p4-tranche), so **Action 9a is done**. PROCESS
   #6's information about the check measurement was passed unchanged to ARCH and the coordinator.
+- **A second process fault arrived at 19:12Z**, recorded unchanged in
+  `process/research/fault-lanes-record-before-start-22nov.md`: the lanes record cannot be written before a
+  lane starts and then name its session, because the tool refuses the second write; civicsmith's record
+  holds a placeholder as the live ux lane, and ARCH keeps the real address in its handover. Not
+  researched. Two faults now wait for research and options, with the check measurement.
 - **A process fault arrived from civicsmith's coordinator at 19:08Z** and is recorded unchanged in
   `process/research/fault-fetch-copy-not-read-only-22nov.md`: the fetch line's `chmod -R a-w` does not make
   the process copy read-only, because cloud sessions run as root. Not researched; research it and put
