@@ -78,7 +78,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 ## 6. The tool's own tests
 
 - **What they cover:** each command against replaced GitHub calls (what it sends, prints, and does on each failure); the slot rule giving the same answer for the same inputs; finished and round-done; the scope rule, one case for each of the five steps and for losing the thread; state writes, the four tries, an ended note removed, the lane refusal; the listing and notice over the recorded changes from the notice's proof (150 changes on eleven made-up modules, in `notice-proof/` of the probes repository; **not read by me**), each with the answer recorded for it.
-- **When they run:** only on a pull request in the process's repository, by a workflow there named `tool-tests`, which is that repository's required run. PROCESS runs them in its session too.
+- **When they run:** only where the tool changed. The workflow named `tool-tests` in the process's repository is that repository's required run and reports on every pull request. It runs the tests only on a ready pull request that changes a file of the tool (`tool/`, `shims/`, the two starting texts the tool fills in, or the workflow itself); a draft, and a pull request that changes no such file, pass at once. Before pushing, PROCESS runs only the tests of the tool it changed, and none where no tool changed.
 - **Never on a product's work.** A product's workflow fetches `tool/` and runs commands from it; nothing in `shims/` or in any command starts `tool/test/`.
 - **Decided here:** the size of a role's text, a record or a requirements file is not among them (part 5, section 3).
 
