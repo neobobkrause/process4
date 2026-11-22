@@ -96,8 +96,8 @@ record holds only decisions about the design. This session writes the first entr
    it for the first time. For a pull request into `main` its scope is "nothing", so it passes at once
    (build text 1 §5). Then **merge it**.
 6. **Put the start-up hook back.** After the third reading, the lane gives this session the recovered
-   `hooks` part of `.claude/settings.json` (the third reading's item 2 prints the file as it stood before
-   it was replaced). Make a second working branch from `main`'s newest commit, place that `hooks` part
+   `hooks` part of `.claude/settings.json` (the third reading's item 2 prints the newest version of the
+   file that had one). Make a second working branch from `main`'s newest commit, place that `hooks` part
    back into `.claude/settings.json` unchanged beside the deny list, and open a pull request that changes
    only that file. civicsmith-copy's approvals allow a session to place it; **never merge it.** The owner
    reads the changed file on the pull request's page and lands it by clicking Merge there. Give him the
