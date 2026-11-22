@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 170 lines. Last section: "6. Open, and who settles it".
+Length: 179 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -91,9 +91,17 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
   `image-codecs`, `installer` → `runtime-limits`. Layers become positions in the order; nothing else
   changes. Every one of the 17,914 tracked files gets exactly one owner, including `build/`, `docs/` and
   `release/`.
-- **No cycle work before the move.** There are no cycles between modules. The four file cycles sit
-  inside single modules, and Process4 orders modules, not files. They stay as they are. The lane's
-  earlier design, one module for each strongly connected group, is withdrawn.
+- **Tests that reach a later module: found and settled before the first tranche.** The owner's words to PROCESS, 22 Nov 2026 (conversation, relayed by PROCESS #6): "Something to note in civicsmith-copy that needs to be fixed... There are 4 modules that T53 under process3 was stopped while working on. Beyond the problems that process3 had, one thing that was being struggled with is that the tests for some modules referred to other modules that were later in the order. So there are cyclic references among the 4. That needs to be identified and fixed, otherwise process4 runs the risk of similarly getting stuck."
+  The first reading found no module importing a later one, but it counted relative imports only, and
+  T53's branch is not in the copy. The second reading (item 12) lists every reference from a module's
+  tests to a module at the same or a later position, of every kind, and the cycles they make. The lane
+  sorts each finding into one of four kinds, with grounds, for civicsmith's ARCH to decide: a test that
+  exercises several modules and belongs in the latest of them; a shared test helper or fixture that
+  belongs in an earlier module and its public files; two modules whose boundary is wrong (design part
+  2 §8, an architecture bug: the module list or the interface is corrected); or an order that can
+  simply be changed. **The module list is converted so that no module's tests reach a later module**,
+  and the four T53 modules stay out of the first tranche's slice until that is so. The four file cycles
+  inside single modules stay as they are; Process4 orders modules, not files.
 - **Generated and shared files have one owner each.** `bio-plane/src/setup-words/rows.mjs` (generated,
   26,994 lines), the bundles in `release/`, `bio-plane/package.json` and the `wrangler.jsonc` files each
   belong to one module. Only that module's job regenerates or edits them. Under neoProcess these caused
@@ -134,7 +142,8 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
   required run covers only the tests related to what it changed. Neither has run on real code (build text
   5 §§6–7). The first tranche is where that is shown.
 - **Scope.** A thin slice: a few modules early in the order, and one journey through them. Where it can,
-  it avoids the modules with known flaky or hanging tests and suites over ten minutes. The journey is one
+  it avoids the modules with known flaky or hanging tests and suites over ten minutes, and the four
+  modules T53 was working on until no module's tests reach a later module. The journey is one
   that needs no AI account.
 - **Known risks, placed as work, not as new checks.**
   - **Flaky tests.** Process4 counts every failed run. At the third, ARCH replaces the job; at the fifth,

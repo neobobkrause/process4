@@ -1,6 +1,6 @@
 # A second reading brief for civicsmith-copy: what its development needs from each service
 
-Length: 59 lines. Last section: "What to send back".
+Length: 74 lines. Last section: "What to send back".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, for the owner's rule of 22 Nov 2026 that each token he
 makes for a product carries every permission its development under Process4 will ever need (design part 1
@@ -52,6 +52,21 @@ starts on `neobobkrause/civicsmith-copy`. It changes nothing and uses no token o
 >    the names of any repository secrets that remain (names only, never values). Change nothing.
 > 11. **The approvals files as they now stand.** Give the whole text, exactly, of `CLAUDE.md` and of
 >    `.claude/settings.json` on `main` (they hold no secret), from the repository's files.
+> 12. **Tests that refer to a later module.** Files only; change nothing.
+>    (a) From the repository's own records on main (build/plan, build/jobs, build/onboarding/merge-hold.md,
+>    build/rulings*.md and the like), name the modules T53 was working on when it stopped, and quote what
+>    the records say about tests referring to modules later in the order.
+>    (b) For every module in build/modules.json, list each reference from its test files to a module at
+>    the same or a later position in the order, or to a module it does not declare in uses. Count every
+>    kind of reference, not only relative imports: imports by package name across the npm packages,
+>    dynamic import(), require, a child process or worker started from another module's file, a wrangler
+>    or workerd config that names another module's entry, a fixture or data file read from another
+>    module's folder, and a URL or binding served by another module. For each: the test file and line,
+>    the module it reaches, both positions in the order, and the kind.
+>    (c) From those, list every cycle among modules when test references are counted, in order, with the
+>    lines that close it.
+>    (d) Say which of these the first reading's method (relative imports only) would have missed, and why.
+>    (e) Say plainly what could not be determined from main because T53's branch is not in this copy.
 
 ## What to send back
 

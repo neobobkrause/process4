@@ -1,6 +1,6 @@
 # Civicsmith: what our records say (research, 20 Nov 2026)
 
-Length: 117 lines. Last section: "11. From the owner, 21 Nov 2026 (conversation, not a marked decision)".
+Length: 126 lines. Last section: "12. From the owner to PROCESS, 22 Nov 2026 (conversation, relayed by PROCESS #6)".
 
 Written by a research worker for the civicsmith lane. Read-only work; nothing pushed. "Inference" marks every line that is not a recorded fact.
 
@@ -115,3 +115,12 @@ Sorry, I said civicsmith2, but neobobkrause/civicsmith-copy is the one to conver
 - The repository that moves is `neobobkrause/civicsmith-copy`. It is under `neobobkrause`, which the
   environment's `autoMode` block trusts (§10), so point 7 needs no change for it.
 - The reading brief is now `reading-brief.md`, for a session on civicsmith-copy.
+
+## 12. From the owner to PROCESS, 22 Nov 2026 (conversation, relayed by PROCESS #6)
+
+"Something to note in civicsmith-copy that needs to be fixed... There are 4 modules that T53 under process3
+was stopped while working on. Beyond the problems that process3 had, one thing that was being struggled with
+is that the tests for some modules referred to other modules that were later in the order. So there are
+cyclic references among the 4. That needs to be identified and fixed, otherwise process4 runs the risk of
+similarly getting stuck." The first reading counted relative imports only and could not see T53's branch;
+the second reading's item 12 looks for every kind of reference.
