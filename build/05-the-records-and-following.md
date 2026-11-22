@@ -39,7 +39,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 
 `process` is the live PROCESS session, written by ROOT from the message PROCESS sends it on start (section 4); it is `"none"` until a PROCESS has announced itself, or when the recorded one no longer answers. The coordinator reads it here, never across repositories.
 
-**Lanes.** `state write lanes` refuses a record that names a second live session for a lane the present record shows live (the design's own refusal).
+**Lanes.** `state write lanes` refuses a record that names a second live session for a lane the present record shows live (the design's own refusal). The starter writes the entry before the start as a claim, `"session": null` and `"live": true`, and after the start writes it again with the address; a live entry with no session yet may be given one, and that write is not refused.
 
 ```json
 { "lanes": [ { "name": "ux", "session": "session_01E", "live": true } ] }

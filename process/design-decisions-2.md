@@ -325,3 +325,24 @@ only when it moves to a version that holds it (design part 6, section 7).
 
 **The owner's words.** "Decision: 1B, as recommended" — 22 November 2026 (a comment on his standing page,
 on option 1B).
+
+### Subject: Writing a lane's entry before the lane starts
+
+**The rule as it now stands.** A lane's entry in the lanes record is written before its session is
+started, as a claim that names no session yet (`"session": null`, `"live": true`); once the start returns,
+the starter writes the same entry again with the session's address. The tool accepts that one fill-in and
+still refuses a second live session for a lane the record shows live (design part 4, section 3; build text
+5, section 2). This holds for a product's lanes (ARCH) and for PROCESS's own lanes. It corrected a measured
+fault: the address exists only after the start, and the tool refused to put it in place of what was written
+before, so civicsmith's record named a placeholder as its live UX lane (civicsmith ARCH #1, 22 Nov 2026;
+PROCESS #6 met the same with its own lane). civicsmith's ARCH can put its record right in two writes (the
+entry not live, then live with its address), and with this version in one.
+
+It changed the tool (`laneRefusal` in `tool/lib/state.mjs`, with its test), design part 4 section 3, build
+text 5 section 2, ARCH's and PROCESS's starting texts, and the starting-texts index. It adds no test, gate,
+review or stop; it keeps the existing refusal and lets the record hold what it was meant to hold. Option 2B
+of three put to the owner (2A no change; 2B claim first, address after; 2C record after the start).
+Researched in `process/research/fault-lanes-record-before-start-22nov.md`.
+
+**The owner's words.** "Decision: 2B, as recommended" — 22 November 2026 (a comment on his standing page,
+on option 2B).

@@ -51,7 +51,7 @@ The owner's rulings:
 - The UX lane owns the Screens document and the journeys.
 - A lane ends when the owner or ARCH says its area needs no further design. Its folder and research stay.
 
-A lane session uses no job slot. A fresh lane session begins by reading the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, and the tool refuses to write a second while the first is recorded as live.
+A lane session uses no job slot. A fresh lane session begins by reading the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, as a claim naming no session yet; once the start returns, the starter writes the same entry again with the session's address. The tool accepts that one fill-in and refuses to write a second session while the first is recorded as live.
 
 The questions ARCH puts to a lane, and its answers, are not kept as a running record. What a lane decides is written into its folder as design.
 

@@ -81,7 +81,9 @@ export function noteEnded(note, notes, { mergedJobs = [], round = {} } = {}) {
 
 export const liveNotes = (data, ctx) => (data?.notes || []).filter((n, _, all) => !noteEnded(n, all, ctx));
 
-// The design's own refusal: a second live session for a lane the present record shows live.
+// The design's own refusal: a second live session for a lane the present record shows live. A live entry written
+// before its lane starts names no session yet ("session": null); the starter fills in the address once, after the
+// start, and that one fill-in is not refused.
 export function laneRefusal(present, next) {
   const live = new Map();
   for (const l of present?.lanes || []) if (l.live) live.set(l.name, l.session);
@@ -90,7 +92,7 @@ export function laneRefusal(present, next) {
     if (!l.live) continue;
     if (seen.has(l.name) && seen.get(l.name) !== l.session) return `lane ${l.name} is named live twice`;
     seen.set(l.name, l.session);
-    if (live.has(l.name) && live.get(l.name) !== l.session) return `lane ${l.name} is live in ${live.get(l.name)}; a second live session is refused`;
+    if (live.has(l.name) && live.get(l.name) && live.get(l.name) !== l.session) return `lane ${l.name} is live in ${live.get(l.name)}; a second live session is refused`;
   }
   return null;
 }
