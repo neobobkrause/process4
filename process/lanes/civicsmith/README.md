@@ -1,6 +1,6 @@
 # The civicsmith lane of PROCESS
 
-Length: 35 lines. Last section: "Design pages".
+Length: 36 lines. Last section: "Design pages".
 
 A lane of PROCESS in neobobkrause/process4, started 20 Nov 2026 by PROCESS #5. Its subject, in the
 owner's words of 20 Nov 2026 as PROCESS relayed them: "I'm starting to think about the steps involved
@@ -25,6 +25,7 @@ Process4 it finds needed goes to PROCESS by message, with its grounds recorded h
 12. `reading-brief-3.md` — the third reading: tests that reach a later module, and the earlier settings file.
 13. `research/civicsmith-copy-reading-3.md` — the third reading's report, shortened; the recovered hooks part.
 14. `later-module-tests.md` — item 12 sorted into kinds for civicsmith's ARCH (the lane decides none).
+15. `research/setup-session-report.md` — the set-up session's report (act 8), shortened.
 
 Research is the lane's first-run record (lane rule 2). Every later session reads it first and adds to it.
 
