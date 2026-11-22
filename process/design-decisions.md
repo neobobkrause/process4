@@ -756,6 +756,57 @@ and adds no test, gate, review or stop. Option A of two (A: record it; B: no cha
 **The owner's words.** "Decision: as recommended" — 20 November 2026 (a comment on his standing
 page, on the item "Record that a role session can name itself").
 
+### Subject: Onboarding a product — the onboarding lane, how it reads the product, and who changes settings
+
+**The rule as it now stands.** For each product that joins Process4, PROCESS starts one onboarding
+lane in the process's repository. The lane plans the product's move: it writes the product's
+conversion plan, the owner's page of his acts to start the product (each as clicks with what he
+should see, and with the whole list of permissions for each token he makes), and the brief for the
+session that sets the product up. It ends when the product's ROOT has started; its folder and research
+stay. The lane does not read or act on the product's repository, accounts or services itself: the
+owner starts a read-only session on the product's repository with the lane's brief, and its report
+reaches the lane, by message where that repository's approvals allow it and through the owner
+otherwise. Every change that onboarding needs to a setting of GitHub or of the hosting account is the
+owner's own click, from the lane's page; no session is given the means to change those settings.
+
+The three questions as PROCESS put them on his standing page, each with "no change" open: (1) an
+onboarding lane for each product, recommended yes; (2) how it reads the product — (a) a read-only
+session he starts on the product's repository with the lane's brief, or (b) read-only GitHub and
+Cloudflare tokens so the lane reads directly — recommended (a); (3) who changes GitHub settings — (a)
+he does, by clicks from the lane's page, or (b) a session holding an admin token — recommended (a).
+It changed design part 0 (sections 1 and 6), part 1 section 3, part 4 section 2, part 6 section 8,
+part 7 section 4, part 10 sections 2 and 3, and the PROCESS starting text. It adds no test, gate,
+review or stop: it names a lane PROCESS could already start, and writes down routes already in use.
+Unproven: an onboarding lane carried through to a product's ROOT starting. Researched in
+`process/research/product-onboarding-22nov.md`.
+
+**The owner's words.** "1. Decision: yes" — 22 November 2026. "2. Decision: A" — 22 November 2026.
+"3. Decision: A" — 22 November 2026.
+
+### Subject: A product's token is made once, with every permission its development will need
+
+**The rule as it now stands.** A token the owner makes for a product is made once, when the product
+joins Process4, with every permission that will be needed across all stages of that product's
+development under Process4, for its whole life. The product's onboarding lane works out the whole
+list first and gives it on his page, so that no later stage asks him to make another token. Where the
+product's development uses more than one service, there is one such token for each. A token renewed
+before it expires carries the same permissions. It changed design part 0 section 6 (the deploy
+token), part 1 section 3, part 7 section 4 (act 6) and part 9 section 1. It adds no test, gate,
+review or stop.
+
+PROCESS's reading, which the owner can overrule. His words came as the answer to question 4 on his
+standing page, which asked about two seed values reported in the sessions' environment. They state a
+rule for tokens, and that rule is what is recorded and built. They are not taken to change his
+decision of 20 November 2026 that no session directly holds a production key (the entry "Publishing a
+release"): no stage of development under Process4 acts on an installed site, so the whole list of
+permissions does not reach one. What becomes of the two seed values is put to him as a question of
+its own.
+
+**The owner's words.** "4. Decision: The token created for the product being onboarded should be the
+token with all the permissions that will be needed across all stages of process4 driven development
+across that product's entire lifecycle. Anything short of those privileges will require me to
+unnecessarily create yet another token." — 22 November 2026.
+
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his

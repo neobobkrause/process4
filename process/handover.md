@@ -3,8 +3,8 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 2026-11-22 ~00:50Z, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), just after
-starting, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
+Last written: 22 Nov 2026, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), after the
+onboarding decisions, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
 **PROCESS #7**: read generation 6 there, name yourself `PROCESS #7` with set-session-title (pass your
 own session id), and record generation 7 and your session there (the file must start with the JSON block).
 
@@ -24,20 +24,24 @@ own session id), and record generation 7 and your session there (the file must s
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
 
-## Current work: product onboarding (the owner's request of 22 Nov)
+## Current work: product onboarding (decided 22 Nov; one question left)
 
-The owner asked to work through onboarding a product into Process4 and then change the design. Research
-and four questions are in `process/research/product-onboarding-22nov.md` (Q1 an onboarding lane per
-product; Q2 how it reads the product; Q3 who makes settings changes; Q4 production keys reported in the
-environment). **He has answered** (his exact words are at the end of that research note): 1 yes, 2 A, 3 A — make the
-design change for these (part 6 §8: PROCESS starts an onboarding lane for each joining product, its charter
-and its end when ROOT starts; part 7 §4: the lane reads through a read-only session he starts, and his
-settings acts are clicks from the lane's page; the PROCESS starting text's lane act), and record them in
-`process/design-decisions.md` with his words. His answer 4 is about the product's token, not Q4 as asked;
-PROCESS #5 asked him to clarify (which token; whether it covers publishing releases, given part 1 §2 and
-part 9). Q4 (production keys in BioDefault) is still open.
-PROCESS #6 read the environment by name on starting (section 5 of that note): two seed variables are
-there, and a GitHub token and Cloudflare tokens already sit in BioDefault. The page's Q4 says so.
+The owner chose on 22 Nov ("1. Decision: yes", "2. Decision: A", "3. Decision: A", and decision 4 on
+tokens). Built and recorded by PROCESS #6: the onboarding lane (design part 6 section 8), the read-only
+session he starts, settings by his clicks, and a product's token made once with every permission its
+development will need (part 1 section 3; part 7 section 4 act 6; part 9 section 1). Entries are in
+`process/design-decisions.md`; research in `process/research/product-onboarding-22nov.md` (sections 5, 6).
+
+- **Still with the owner:** what becomes of the two seed values in BioDefault (`BIO_RELEASE_SEED`,
+  `BIO_RATIFY_SEED`, read by name only). His decision 4 did not say. It is on his page as one question
+  (A not production keys; B move them out; C they stay, which changes his 20 Nov rule).
+- **The civicsmith lane is civicsmith's onboarding lane.** PROCESS #6 told it the decisions and asked for
+  the owner's token page: the whole permission list for each token civicsmith's development needs.
+- **PROCESS #5 was still acting on 22 Nov.** The owner typed the same four answers in its session too; it
+  recorded them (pull request 123) and asked him to clarify answer 4. PROCESS #6 told it that it has handed
+  over and asked the owner to archive it. Only one PROCESS writes.
+- **Soon:** `process/design-decisions.md` is 59,183 bytes, just under the 60,000-byte single-text
+  maximum. The next entry needs it split first (design part 10 section 2 item 10 leaves the way open).
 
 ## Done in PROCESS #5 (all merged, tool-tests green)
 
@@ -54,7 +58,7 @@ there, and a GitHub token and Cloudflare tokens already sit in BioDefault. The p
 
 ## Waiting on the owner
 
-- The onboarding questions Q1–Q4.
+- The seeds question (above).
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
 - Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not

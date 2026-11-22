@@ -22,19 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6, on starting. One matter waits for your decision: the four onboarding questions just below.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6, on starting. Your four onboarding decisions are built and recorded. One question waits for you, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: how a product is onboarded</h2>
-<p>You asked to work through onboarding a product and then fix the design. The research is in <code>process/research/product-onboarding-22nov.md</code>. Four questions:</p>
-<ol>
-<li><b>An onboarding lane for each product.</b> PROCESS starts one per joining product, like the civicsmith lane: it plans, reads, writes your step-by-step pages and briefs the set-up session, and ends when ROOT starts. Recommended: yes.</li>
-<li><b>How it reads the product.</b> (a) You start a read-only session on the product's repository with the lane's brief, as you did for civicsmith (works today). (b) You make read-only GitHub and Cloudflare tokens so the lane reads directly (unproven, and your approvals would need new wording). Recommended: (a) now.</li>
-<li><b>Who changes GitHub settings.</b> (a) You, by clicks from the lane's page. (b) A session holding an admin token, which could then loosen its own guard rules. Recommended: (a).</li>
-<li><b>Production keys in the environment.</b> Your civicsmith audit reported production signing seeds in BioDefault, where sessions run; the design says no session holds one. Checked on 22 Nov, by name only, never by value: BioDefault's settings list variables named <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code>. Whether those are the production ones is yours to say. Recommended: if they are, move them to an environment the sessions do not run in.</li>
-</ol>
-<p>To answer, for example: <code>Decision: 1 yes, 2a, 3a, 4 as recommended</code>.</p>
+<h2>Waiting for you: the two seed values in BioDefault</h2>
+<p><b>The question.</b> Are <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code> production signing keys, and do they stay where sessions run?</p>
+<p><b>Why I ask.</b> Your decision 4 settles how tokens are made, and I have built that. It does not say what happens to these two values. Your rule of 20 Nov is "No session directly holds a production key." Every session that runs on BioDefault is handed both values, mine included. I read their names only, never the values.</p>
+<ul>
+<li><b>A. They are not production keys.</b> No change.</li>
+<li><b>B. They are production keys, and they move.</b> You move them to an environment no session runs in; I give you the clicks. Signing a release then goes through a secret-management facility, as your 20 Nov decision says.</li>
+<li><b>C. They are production keys, and they stay.</b> That changes your 20 Nov rule. I record it and rewrite the design to match.</li>
+</ul>
+<p><b>Recommended:</b> B if they are production keys, because it keeps your own rule and costs you one move. You are free to set these options aside. To answer, for example: <code>Decision: B</code>.</p>
 </section>
 
 <section class="wait">
@@ -84,6 +84,17 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 <section class="card">
 <h2>Done: the trial's work is on main</h2>
 <p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here.</p>
+</section>
+
+<section class="card">
+<h2>Done: how a product is onboarded (your four decisions of 22 Nov)</h2>
+<ul>
+<li><b>An onboarding lane for each product.</b> PROCESS starts one for every product that joins. It writes the product's plan, your page of clicks, and the brief for the set-up session, and ends when the product's ROOT starts. For civicsmith, the civicsmith lane is that lane.</li>
+<li><b>Reading the product.</b> You start a read-only session on the product's repository with the lane's brief, as you did for civicsmith.</li>
+<li><b>Settings.</b> Every change to GitHub or hosting settings is your click, from the lane's page.</li>
+<li><b>Tokens.</b> A token you make for a product is made once, with every permission its development will need for its whole life. The lane works out the whole list first, so you are not asked for another. I have asked the civicsmith lane for that list.</li>
+</ul>
+<p>Your words are recorded exactly. On the fourth, I recorded it as a rule for tokens, and did not take it to change "No session directly holds a production key". Tell me if that is wrong.</p>
 </section>
 
 <section class="card">

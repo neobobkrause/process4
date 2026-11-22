@@ -107,3 +107,19 @@ for a product, not about Q4 as asked (production keys found in the environment),
 building on answer 4, PROCESS asks him once which token he means and whether "entire lifecycle" includes
 publishing releases, because the design forbids a session to hold a production key directly (part 1 §2;
 part 9) and his release token is the one key that may publish (part 3 §6). His words stand as typed.
+
+## 6. What PROCESS #6 built on his answers (22 Nov 2026)
+
+The section above was recorded by PROCESS #5, in whose session he typed the same answers; he typed them
+in PROCESS #6's session as well, and PROCESS #6 built on them.
+
+- 1 to 3 as recommended: the onboarding lane (design part 6 section 8), the read-only session he
+  starts, settings by his clicks.
+- 4 sets how a product's tokens are made, and is built as that: a token he makes for a product is made
+  once, with every permission its development will need, one for each service the development uses
+  (design part 1 section 3; part 7 section 4 act 6; part 9 section 1). The onboarding lane works out the
+  list, publishing a release included where a token is needed for it. It is not read as changing "No
+  session directly holds a production key" (20 Nov): no stage of development acts on an installed site.
+  He can overrule that reading; the entry says so.
+- What becomes of the two seed values in BioDefault is put to him as one question on his page.
+- Both are recorded in `process/design-decisions.md`.

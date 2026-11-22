@@ -8,7 +8,7 @@ Length: 91 lines. Last section: "6. Words used".
 
 - This is the design of Process4, in eleven parts. It is "the process4 requirements" and is what sessions follow.
 - It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from. The owner's decisions, in his exact dated words, are kept in the record of decisions (part 5). The reasons and the evidence are in the background document.
-- It names no product. A product's own facts and the steps to bring it under Process4 belong to that product's conversion plan.
+- It names no product. A product's own facts and the steps to bring it under Process4 belong to that product's conversion plan, which the product's onboarding lane writes (part 6, section 8).
 - Parts 1 to 6 name no hosting provider and use harness-neutral terms. A harness is named there only in part 5, where a figure comes from one. Part 7 says what carries each term on Claude Code, part 8 on Codex, part 9 on Cloudflare.
 - Each part is kept under the single-text maximum, and the eleven together under the set maximum (part 5).
 
@@ -85,7 +85,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Permission checker:** the harness's automatic judge of each risky act, which may refuse it.
 - **Unattended mode:** the harness's way of running a session with nobody answering it. **Scheduled wake:** a timer that rouses a session. **Compaction:** a harness shrinking a full context, which loses what was read.
 - **Standing page:** the one page that always shows everything waiting for the owner. **Full stop:** everything halted, with only the owner able to restart it.
-- **Deploy token:** the secret value that lets a session deploy to the development account. **Hosting provider:** where a product is hosted and released.
+- **Deploy token:** the secret value that lets a session deploy to the development account. It is made once for a product, with every permission its development will need (part 1, section 3). **Hosting provider:** where a product is hosted and released.
 - **Fill level:** how full a session's context window is. **Refresh:** the planned replacement of a role's session by a fresh one.
-- **Lane:** a standing design responsibility for one area of a product. **The UX lane** is the lane for the user's experience: the screens and the journeys. **Design pages:** the pages a lane keeps its designs on, where the owner works with it.
+- **Lane:** a standing design responsibility for one area of a product. **The UX lane** is the lane for the user's experience: the screens and the journeys. **Design pages:** the pages a lane keeps its designs on, where the owner works with it. **Onboarding lane:** the lane of PROCESS that plans one product's move onto Process4 (part 6, section 8).
 - **Process config:** the product's short file of process settings. What it holds (each field is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.

@@ -15,7 +15,7 @@ One item remains open with the owner, to be put to him in full before the design
 For a session to do, and to report.
 
 1. The written procedures for promoting, rolling back and support, for each product. The rule is in part 3, section 8; no procedure is written yet.
-2. Each product's conversion plan. It is not part of this document.
+2. Each product's conversion plan. It is not part of this document; the product's onboarding lane writes it (part 6, section 8).
 3. Where cost can be read on Claude Code (part 7).
 
 **What a session needs before it can build the tool, and this document does not yet say.** Each is design work, to be written as its own text beside this one and not into it:
@@ -53,7 +53,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **The notice as part of a running process,** unproven and not built or run on a real product. Picking a told job's related tests is not proven at all.
 - **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
 - **The owner's approvals placed by a session:** whether the permission checker lets a session place his approved text in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
-- **The owner's acts to start a product** (part 7, section 4), and that nothing physical stops a product's session from changing the process (part 6, section 7).
+- **The owner's acts to start a product** (part 7, section 4), an onboarding lane carried through to a product's ROOT starting (part 6, section 8), and that nothing physical stops a product's session from changing the process (part 6, section 7).
 - **Everything listed as not proven on Claude Code** in part 7. A session fetching a read-only copy of the process has been seen.
 - **Everything on Codex not marked measured in part 8.**
 
