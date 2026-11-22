@@ -1,6 +1,6 @@
 # The brief for civicsmith's set-up session (act 8)
 
-Length: 146 lines. Last section: "4. What it reports when it ends".
+Length: 149 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction; the process config's fields
 filled from the second reading (`research/civicsmith-copy-reading-2.md`) by lane #2, 22 Nov 2026, with the third reading's
@@ -104,7 +104,10 @@ record holds only decisions about the design. This session writes the first entr
      UX lane write them once ROOT has started (conversion plan §4).
 5. **Open the pull request, mark it ready, read its result.** The required run `module-tests` reports on
    it for the first time. For a pull request into `main` its scope is "nothing", so it passes at once
-   (build text 1 §5). Then **merge it**.
+   (build text 1 §5). **Do not merge it:** civicsmith-copy's approvals let a session merge into
+   `p4-tranche`, and `p4-tranche` into `main`, but not a working branch into `main`. The owner merges it
+   by his click on its page; give him its full address and wait for his word that it is merged. (So it
+   went on 22 Nov 2026: he merged #1119.)
 6. **Put the start-up hook back.** First print `.claude/settings.json` as it stands on `main` (the
    owner's fixed file) and report it. Check that `.claude/hooks/session-start.sh` is on `main`, and say
    what it starts. Then make a second working branch from `main`'s newest commit, add the `hooks` part
