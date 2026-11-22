@@ -250,6 +250,26 @@ export const word = () => 'a';
   assert.doesNotMatch(out.join('\n'), /src\/orders\/index\.mjs/);
 });
 
+test('check: a declared use of a later module disagrees, in source or in tests, and declaring it settles nothing', () => {
+  // orders (line 2) reaches report (line 3) from a test file, and declares it: the declaration is what disagrees.
+  const files = productFiles();
+  files['process/modules/orders.json'] = entry('orders', ['dates', 'report']);
+  files['test/orders/index.test.mjs'] = `import { orderDay } from '../../src/orders/index.mjs';\nimport { show } from '../../src/report/index.mjs';\norderDay('3');\nshow(1);\n`;
+  const root = makeRepo(files);
+  const { ctx, out } = ctxFor(root, untouchable);
+  assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /1 disagreement/);
+  assert.match(out.join('\n'), /process\/modules\/orders\.json a declared use of a module that is not before this one: declares report in uses, but report is later in the order \(line 3 of the order file; orders is line 2\): a module may use only modules before it/);
+  // Undeclared, the import itself disagrees, and the line says that declaring it would not settle it.
+  out.length = 0;
+  commit(root, { 'process/modules/orders.json': JSON.stringify(entry('orders', ['dates'])) });
+  assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /1 disagreement/);
+  assert.match(out.join('\n'), /test\/orders\/index\.test\.mjs:2 declared uses disagree with the imports: imports report, which process\/modules\/orders\.json does not declare in uses; report is later in the order, so declaring it would not settle this/);
+  // A declared use of an earlier module is untouched.
+  out.length = 0;
+  checkCmd(ctx, 'report', { _: [] });
+  assert.doesNotMatch(out.join('\n'), /not before this one/);
+});
+
 test('check: a declared use no code makes disagrees; what the reader cannot tell is said, never refused; rules of form are not taken', () => {
   const files = productFiles();
   files['process/modules/report.json'] = entry('report', ['dates', 'orders']);

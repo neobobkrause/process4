@@ -64,3 +64,16 @@ four modules stay out of the first tranche's slice until that is so. No product 
 - **C. The tool tells ARCH, and refuses nothing.** When a merge leaves a declared use of a later
   module, the tool says so to ARCH's session. Cost: the broken order is already on the tranche branch
   when ARCH hears of it.
+
+## The owner's choice, and what was built (22 Nov 2026)
+
+"decision: option B, as recommended". Built: `declaredUses` in `tool/lib/notice/check.mjs` refuses a
+declared use of a module whose place in the order is the same or later, and an undeclared import of a
+later module now says that declaring it would not settle it. One new test in
+`tool/test/notify.test.mjs`. The three test files that exercise the check were run and pass
+(`notify`, `notice-proof`, `scope`); the proof's recorded answers are unchanged. A limit found while
+reading the code, not changed: the check counts only imports by path inside the product
+(`spec.startsWith('.')`), so a reference by package name across a product's packages is "from outside
+the product" to it. For civicsmith's eleven packages that matters; the second reading's item 12 looks
+for exactly those.
+

@@ -106,7 +106,7 @@ export const HELP = {
   'state write': 'state write <record> --from <file> [--create [--process]]: rewrites one record in place; --create makes the issue and its empty records once.',
   listing: 'listing <module> [--at <commit>]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints the module\'s interface listing; writes nothing to GitHub.',
   notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into the waiting-work record.',
-  check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports, of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
+  check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports and with the order (a declared use of a module not before this one), of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
   related: 'related <pr>: lists a told job\'s related test files, each with the rule that put it there, and the files left out, from the merged result of the pull request into its base; runs nothing.',
   'walk open': 'walk open <internal|external>: opens the walk issue, titled with the tranche, round and kind, and writes its number into the round record.',
   'walk close': 'walk close <issue>: closes the walk issue once ARCH has placed every entry.',

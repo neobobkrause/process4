@@ -280,3 +280,27 @@ or stop.
 process4 repository. PROCESS  should never run tool tests before pushing except the tests for a tool
 that has been changed." — 22 November 2026.
 
+### Subject: A declared use of a later module is refused
+
+**The rule as it now stands.** The check of declared uses, which already runs inside a module's own
+tests and reads its tests as well as its source, also refuses a declared use of a module that is not
+before this one in the order. So a job whose code or tests reach a later module cannot make the check
+pass by declaring that module. The job cannot settle it in its own module's files: where the use is
+needed it reports to ARCH and is recorded blocked, other work goes on, and ARCH corrects the order, the
+module list or the boundary (design part 2, sections 1, 3, 6 and 8).
+
+Why. The owner reported that under the earlier process the tests of some modules referred to modules
+later in the order, and work got stuck. The design already forbade such a use, but nothing in the tool
+compared a module's declared uses with the order: build text 2 said a job adding a use of a later
+module "is caught only by ARCH's reading". The order rule is also the ground on which a chain of
+notices ends (part 4, section 10). Nothing was measured under Process4: no job had done it. Option B
+of three (A no change; B the existing check refuses it, recommended; C the tool tells ARCH and refuses
+nothing). It makes an existing check refuse one more thing, on his word; it adds no test run, gate,
+review or stop of its own. It changed the tool (`tool/lib/notice/check.mjs`, with a test), design
+part 2 sections 1 and 6, build text 1b command 18 and build text 2 section 3. A limit that stands: the
+check reads imports by path inside the product; a reference made another way (a package name, a
+started process, a file read) is not seen by it. Researched in
+`process/research/tests-referring-to-later-modules-22nov.md`.
+
+**The owner's words.** "decision: option B, as recommended" — 22 November 2026.
+

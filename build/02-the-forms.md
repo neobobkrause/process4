@@ -69,9 +69,9 @@ orders
 - The requirements file is not named: it is always the `.md` of the same name. The test command is not here either: it is one line of the process config (section 7).
 - A module is identified everywhere by its `name`: in the tool's commands, in a job's branch `job/<name>/<n>` (build text 1b, section 4), and in the records.
 
-**How "a module may use only modules before it" reads:** every name in `uses` stands on an earlier line of the order file than the module's own. `orders` is on line 3, `dates` and `pricing` on lines 1 and 2, so it holds. Had `pricing` listed `orders`, that would be a design error, which ARCH corrects by reshaping code (part 2, section 1). Nothing refuses it.
+**How "a module may use only modules before it" reads:** every name in `uses` stands on an earlier line of the order file than the module's own. `orders` is on line 3, `dates` and `pricing` on lines 1 and 2, so it holds. Had `pricing` listed `orders`, that would be a design error, which ARCH corrects by reshaping code (part 2, section 1). The tool's `check` refuses it in that module's own tests (build text 1b, command 18).
 
-**Decided here:** a job may change the `uses` of its own entry and nothing else in the list. Gives: the job can remove a declared use that no code makes, as part 2, section 7 says, and add one its new code needs. Costs: a job adding a use of a later module is caught only by ARCH's reading. This is a rule in the job's instructions, held by no check.
+**Decided here:** a job may change the `uses` of its own entry and nothing else in the list. Gives: the job can remove a declared use that no code makes, as part 2, section 7 says, and add one its new code needs. A job adding a use of a later module is refused by `check` in its own module's tests, and takes it to ARCH. Costs: that a job changes nothing else in the list is a rule in its instructions, held by no check.
 
 ## 4. A module's requirements file
 

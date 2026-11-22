@@ -1,6 +1,7 @@
 // The check, run inside one module's own tests and on that module only (design part 2, section 6; build text 1b,
 // command 18). Ported from the notice's proof (proof: tool/lib/check.mjs), keeping only three parts:
 //   declared uses: the module's declared uses against the imports of its source and its tests;
+//     and against the order: a declared use of a module that is not before this one disagrees;
 //   (a) a structured comment that disagrees with the module's own code;
 //   (b) the module's code that disagrees with a provider's stated interface.
 // The proof's 23 refusals of rules of form (rules 2, 3, 4, 5, 11, 14, 19, 20, 22, 28, 29, 30, 31, 34, 35, 36, 38, 40,
@@ -277,7 +278,7 @@ function importsOf(sf, cannot) {
 /**
  * Declared uses against imports (design part 2, section 6: "a check that the module's declared uses match its
  * imports", reading its tests as well as its source). An import of another module's file that the entry does not
- * declare disagrees. A declared use that neither an import nor a call by name through a carrier makes disagrees,
+ * declare disagrees. A declared use of a module that is not before this one in the order disagrees. A declared use that neither an import nor a call by name through a carrier makes disagrees,
  * unless the module calls by names, or names tables, the reader cannot read, or reads values of unknown kind: then the
  * reader cannot tell.
  */
@@ -295,11 +296,21 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
       imported.get(other).push({ at: at(node), file: rel(f) });
     }
   }
+  // A module may use only modules before it (design part 2, section 1). A declared use of a module at the same or a
+  // later place in the order disagrees (the owner's decision of 22 Nov 2026), so declaring a later module is no way
+  // to make an import of it pass. The job cannot settle that in its own files: it goes to ARCH (part 2, section 3).
+  const notBefore = (id) => { const o = tree.byId.get(id); return o && o.index >= mod.index ? o : null; };
+  for (const u of mod.uses) {
+    const o = notBefore(u);
+    if (!o) continue;
+    refusals.push({ at: entryFile, code: 'uses', text: `declares ${u} in uses, but ${u} is ${o.index === mod.index ? 'this module itself' : 'later in the order'} (line ${o.index + 1} of the order file; ${mod.id} is line ${mod.index + 1}): a module may use only modules before it; if the use is needed, it is ARCH's to settle`, kind: 'a declared use of a module that is not before this one' });
+  }
   for (const [other, places] of imported) {
     if (mod.uses.includes(other)) continue;
+    const later = notBefore(other) ? `; ${other} is later in the order, so declaring it would not settle this` : '';
     for (const p of places) {
       if (only && !only.has(p.file)) continue;
-      refusals.push({ at: p.at, code: 'uses', text: `imports ${other}, which ${entryFile} does not declare in uses`, kind: 'declared uses disagree with the imports' });
+      refusals.push({ at: p.at, code: 'uses', text: `imports ${other}, which ${entryFile} does not declare in uses${later}`, kind: 'declared uses disagree with the imports' });
     }
   }
   const missing = mod.uses.filter((u) => !imported.has(u));
