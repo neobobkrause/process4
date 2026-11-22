@@ -22,17 +22,26 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. You fixed the forbidden-commands file on civicsmith-copy. Two actions wait for you on the lane's page.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. The third reading is in. The next actions are on the civicsmith lane's page.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: two actions on the civicsmith lane's page</h2>
-<p>Both are ready, with their steps, on https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
+<h2>Waiting for you: the next actions on the civicsmith lane's page</h2>
+<p>All on https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
 <ol>
-<li><b>Action 6: one short third reading.</b> The second reading was started before the item about tests that reach a later module was added. This read-only session covers that item, reads back the forbidden-commands file you just fixed, and recovers the text of the Node 26 start-up step from the file's history.</li>
-<li><b>Action 7: the Cloudflare token.</b> The list is final: one token, for the development account only. BioDefault already holds a Cloudflare token, so the first route is to add the missing permissions to that one. Cloudflare's pages say a token can be edited after it is made, but do not say in words that its value stays the same; the lane's steps cover the case where it changes.</li>
+<li><b>Action 7: the Cloudflare token.</b> The list is final: one token, for the development account only. BioDefault already holds a Cloudflare token, so the first route is to add the missing permissions to that one.</li>
+<li><b>Action 8: the set-up session,</b> once the lane's page shows it with its prompt. It does not wait on Action 7. It writes civicsmith's first Process4 files, makes the tranche branch, and puts the Node 26 start-up step back in a pull request you land with one click. It also reads back the forbidden-commands file you fixed.</li>
+<li><b>Then</b> the branch rule for main and the tranche branch, and starting civicsmith's ROOT. The lane's page will carry both.</li>
 </ol>
-<p><b>What comes after, so you can see the road:</b> one set-up session on civicsmith-copy with the lane's brief; then civicsmith's ROOT.</p>
+</section>
+
+<section class="card">
+<h2>Found: civicsmith's tests that reach a later module (the third reading, 22 Nov)</h2>
+<p><b>The bottom line.</b> You were right, and it is wide. No code file imports a later module. But many tests reach later modules by other means, most of all by starting the whole running product: 62 test files in 21 modules do that. Counting those, nearly every module depends on nearly every other through its tests, so a change almost anywhere can fail a test somewhere else. The four modules T53 was working on are not on main, so they could not be named.</p>
+<ul>
+<li><b>How it gets fixed.</b> The lane has sorted every case into thirteen groups for civicsmith's ARCH, which decides each before any job opens on those modules. For most, the test simply belongs to a later module, and Process4 can give a test file to another module in the module list without moving the file. A few are real design questions about where one module ends and another begins.</li>
+<li><b>What Process4 cannot do.</b> The tool's check sees imports. It cannot see a test that starts the product, reads another module's files, or runs its program. So for these the order rule rests on ARCH's module list, not on the tool. I recommend no change to the process for this now: nothing has yet failed under Process4, and the first tranche, kept to modules that are clear of all this, is where it is shown.</li>
+</ul>
 </section>
 
 <section class="card">
@@ -47,7 +56,7 @@ a{color:var(--accent)}
 <li>The two approvals files, landed by you on civicsmith-copy's main.</li>
 <li>The paused tranche T53: your decision, "Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." The lane records it for civicsmith, and it goes into civicsmith's own record of your decisions when its coordinator starts.</li>
 </ul>
-<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. You fixed the forbidden-commands file on 22 Nov with the whole corrected file; the third reading reads it back. Its Node 26 start-up step comes back later, in a pull request from the set-up session that you land with one click. The GitHub settings cannot be read by a session, so they stand on your word.</p>
+<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. You fixed the forbidden-commands file on 22 Nov with the whole corrected file. The third reading could not read it back, because that session's copy of main was not the newest; the set-up session reads it back first. Its Node 26 start-up step comes back later, in a pull request from the set-up session that you land with one click. The GitHub settings cannot be read by a session, so they stand on your word.</p>
 </section>
 
 <section class="card">

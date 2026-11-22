@@ -77,3 +77,27 @@ reading the code, not changed: the check counts only imports by path inside the 
 the product" to it. For civicsmith's eleven packages that matters; the second reading's item 12 looks
 for exactly those.
 
+## What the third reading found on civicsmith-copy's main (22 Nov 2026)
+
+From the lane's record (`process/lanes/civicsmith/research/civicsmith-copy-reading-3.md`, sorted in
+`process/lanes/civicsmith/later-module-tests.md`). No static import, by path or by package name, reaches a
+module at the same or a later place. All the reach is by other means: 242 explicit references in 120
+files of 46 modules, and 19 walks of the whole tree; 62 test files in 21 modules start the real plane
+(module 173) under workerd. With test references counted, 151 to 170 of the 178 modules form one set in
+which each reaches each. T53's four modules are not on main.
+
+What this means for the process. The limit feared above (imports by package name) does not bite: there
+are none. What bites is reach the tool cannot follow at all: a started program, a file read, a config
+read, a child process. Decision B's refusal does not see these, and no check could see them reliably. So
+for them the order rule is held by ARCH's module list (a test file can be given to a later module by its
+path in that module's `tests`, with no file moved; build text 2 section 3) and by the design's own
+bounds: a job stopped by another module reports and is set aside, and twice is an architecture bug (part
+4 section 10). A known risk already written applies in full: "A module's tests run only on its own job.
+A failure caused by another module's merge can sit unseen until a walk meets it" (part 10 section 6).
+Nothing has failed under Process4. Recommendation: no change now (rule 6); the first tranche stays on
+modules clear of every listed reference, and what it shows decides whether a change is put to the owner.
+
+Measured again in passing: the read-only session's local `main` was not the repository's newest main, so
+it did not read back the owner's fixed settings file (compare design part 7 section 3, the hour-old copy).
+The lane's briefs now begin with a fetch and name the commit read.
+
