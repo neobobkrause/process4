@@ -1,6 +1,6 @@
 # A second reading brief for civicsmith-copy: what its development needs from each service
 
-Length: 49 lines. Last section: "What to send back".
+Length: 57 lines. Last section: "What to send back".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, for the owner's rule of 22 Nov 2026 that each token he
 makes for a product carries every permission its development under Process4 will ever need (design part 1
@@ -11,8 +11,9 @@ starts on `neobobkrause/civicsmith-copy`. It changes nothing and uses no token o
 ## The prompt (paste as is)
 
 > Read only. Change no file, branch, setting or session; push nothing; write nothing inside the repository
-> (any script you write lives outside it). Use no token, secret or environment variable to reach Cloudflare,
-> GitHub or any other service: read the repository's files only. Report, in plain words, for the Process4
+> (any script you write lives outside it). Use no token, secret or environment variable to reach Cloudflare
+> or any other service. Items 1 to 9: read the repository's files only. Item 10 alone may use this
+> session's own GitHub connection, for reads of this repository only. Report, in plain words, for the Process4
 > civicsmith onboarding lane, each fact with its file path, and "not found" where a fact is not in the files.
 >
 > 1. **Bindings.** For each of the ten `wrangler.jsonc` files (and any other wrangler or Cloudflare config):
@@ -42,6 +43,13 @@ starts on `neobobkrause/civicsmith-copy`. It changes nothing and uses no token o
 >    names they read.
 > 9. **GitHub.** Any GitHub token, App or secret the product's own workflows or scripts use, by name, and
 >    what each is used for.
+> 10. **The repository's settings, as this session can see them.** With this session's own GitHub
+>    connection, read only (GET), on this repository only, report what you find, and say plainly where a
+>    read is refused or shows nothing: the merge options (merge commits, squash, rebase, auto-merge,
+>    automatic deletion of head branches) and the default branch; every ruleset and its rules, targets,
+>    enforcement and bypass list, and any classic branch protection; the Actions workflow permissions
+>    (the default token's permission, and whether Actions may create and approve pull requests); and
+>    the names of any repository secrets that remain (names only, never values). Change nothing.
 
 ## What to send back
 
