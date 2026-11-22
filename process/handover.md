@@ -3,11 +3,14 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 22 Nov 2026 ~19:45Z, by **PROCESS #7** (`session_018BhceeMdoMMNuimU91cPnD`), running, not at
-a refresh point. Read your own fill (`get_session`, `context_usage`) after every owner turn; note that it can
-read 0 while a turn is open, so judge by what you have read as well. You, the successor, are **PROCESS #8**:
+Last written: 22 Nov 2026 ~21:30Z, by **PROCESS #7** (`session_018BhceeMdoMMNuimU91cPnD`), at its refresh point:
+48 percent fill, a natural pause, nothing half done, everything merged. You, the successor, are **PROCESS #8**:
 read generation 7 in `handover-process`, name yourself `PROCESS #8` with set-session-title (pass your own
-session id), and record generation 8 and your session there (the file must start with the JSON block).
+session id), record generation 8 and your session there (the file must start with the JSON block), and message
+both ROOTs your address. Read your own fill (`get_session`, `context_usage`) after every owner turn; it can read
+0 while a turn is open. **The civicsmith re-run's report is addressed to PROCESS #7**; PROCESS #7, if still open,
+forwards it to you unchanged and does nothing else. Never `git add -A` in the process repository: a worker's
+worktree under `.claude/worktrees/` was once added by mistake (PR 175 removed it); add paths by name.
 
 PROCESS #7 so far: named itself, wrote generation 7, messaged both ROOTs (19:40Z); researched both civicsmith
 faults (research files below, PR 167); put them to the owner as one group on his page (PR 168): **1A/1B/1C**
