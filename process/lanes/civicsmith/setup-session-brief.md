@@ -1,6 +1,6 @@
 # The brief for civicsmith's set-up session (act 8): draft
 
-Length: 86 lines. Last section: "4. What it reports when it ends".
+Length: 93 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction. **Draft:** the process
 config's last fields wait on the second reading (`reading-brief-2-tokens.md`). It is the brief design part 7
@@ -29,7 +29,10 @@ record holds only decisions about the design. This session writes the first entr
 ## 3. The steps, in order
 
 1. **Fetch** the read-only copy of Process4 at its newest `main` commit, into a folder outside the
-   working tree. Record that commit; it is `process.commit` below.
+   working tree, and confirm it with the tool's `latest-version`. Record that commit; it is
+   `process.commit` below. It must be at or after `f4e3596`, so civicsmith starts on a version whose
+   `check` refuses a declared use of a later module (the owner's decision of 22 Nov 2026, "decision:
+   option B, as recommended"; design part 2 §§1, 6).
 2. **Check the deny list.** Compare the `permissions.deny` list in `.claude/settings.json` on `main` with
    `shims/claude-settings.json` in that copy. Report "same" or each difference. Do not edit the file; its
    `hooks` part (Node 26 start-up) is the owner's and stays.
@@ -60,7 +63,11 @@ record holds only decisions about the design. This session writes the first entr
      the lane sorted it into (test belongs in the later module; shared helper belongs in an earlier
      module's public files; wrong boundary, part 2 §8; order can change). It names the same lines in its
      report. ARCH, once started, corrects the list or places the work before any job opens on those
-     modules. Known, not a fault: the required run passes this pull request whatever the references,
+     modules. Known, not a fault: when the list is converted as it stands, any entry whose `uses` names a
+     later module is refused by `check` at that module's first job; that is the intended signal to ARCH.
+     `check` sees only imports by file path inside the product; an import by package name across
+     civicsmith's npm packages, a started process or a file read is outside it, so item 12 of the
+     reading is the only finder of those. Also known: the required run passes this pull request whatever the references,
      because a pull request into `main` runs no module's tests (`tool/lib/scope.mjs:28`; build text 1 §5).
    - **The required-run workflow:** `.github/workflows/module-tests.yml`, copied from Process4's
      `shims/module-tests.yml` unchanged. Leave the product's four own workflows as they are.
