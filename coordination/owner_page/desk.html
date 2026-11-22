@@ -25,6 +25,28 @@ a{color:var(--accent)}
 <p class="updated">Updated 20 Nov 2026 by PROCESS #5, after your "Decision: option C".</p>
 </header>
 
+<section class="wait">
+<h2>Waiting for you: start PROCESS #6</h2>
+<p>PROCESS #5 is near its refresh point and has written its handover. Nothing is half done.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md; your folder process/ (including process/research/); and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
+<li>It should name itself <b>PROCESS #6</b>. Answer the onboarding questions below to it, or here as comments.</li>
+</ol>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: how a product is onboarded</h2>
+<p>You asked to work through onboarding a product and then fix the design. The research is in <code>process/research/product-onboarding-22nov.md</code>. Four questions:</p>
+<ol>
+<li><b>An onboarding lane for each product.</b> PROCESS starts one per joining product, like the civicsmith lane: it plans, reads, writes your step-by-step pages and briefs the set-up session, and ends when ROOT starts. Recommended: yes.</li>
+<li><b>How it reads the product.</b> (a) You start a read-only session on the product's repository with the lane's brief, as you did for civicsmith (works today). (b) You make read-only GitHub and Cloudflare tokens so the lane reads directly (unproven, and your approvals would need new wording). Recommended: (a) now.</li>
+<li><b>Who changes GitHub settings.</b> (a) You, by clicks from the lane's page. (b) A session holding an admin token, which could then loosen its own guard rules. Recommended: (a).</li>
+<li><b>Production keys in the environment.</b> Your civicsmith audit reported production signing seeds in BioDefault, where sessions run; the design says no session holds one. Recommended: verify, then move them out.</li>
+</ol>
+<p>To answer, for example: <code>Decision: 1 yes, 2a, 3a, 4 as recommended</code>.</p>
+</section>
+
 <section class="card">
 <h2>Done: the trial's work is on main</h2>
 <p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here. When you choose, tell the trial's coordinator to lift the stop.</p>
