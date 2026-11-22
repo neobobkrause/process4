@@ -1,4 +1,4 @@
-Length: 170 lines. Last section: "6. What the lane adds (22 Nov 2026)".
+Length: 249 lines. Last section: "7. Option C: a classic token made as the sessions' account (22 Nov 2026)".
 
 # GitHub fine-grained token: the permissions Process4 needs on a product repository
 
@@ -168,3 +168,82 @@ Pre-fill (V, parameter names from the docs table): `https://github.com/settings/
   settings." A token made by neobobkrause acts as the owner, limited only by the token's own permissions.
 - So, as built, the token is not used by Process4's tool, and making it would need a Process4 change to use
   it. That is PROCESS's to decide; the lane gives the owner the steps he asked for, with these facts beside them.
+
+## 7. Option C: a classic token made as the sessions' account (22 Nov 2026)
+
+Case: believeinoakland, a collaborator (Write) on neobobkrause/civicsmith-copy, a personal-account repository,
+makes a personal access token (classic) with scopes `repo` and `workflow`. Sources: docs.github.com only, read
+22 Nov 2026 through a page-summarising fetch, so quotes may be shortened. No token was made or tried.
+
+Ground rules the docs give:
+- "Scopes limit access for OAuth tokens. They do not grant any additional permission beyond that which the
+  user already has." (/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps). So the token can do at
+  most what the collaborator can do.
+- `repo`: "Grants full access to public and private repositories including read and write access to code…";
+  `workflow`: "Grants the ability to add and update GitHub Actions workflow files." (same page)
+- Fine-grained limits: "Using fine-grained personal access token to contribute to repositories where the user
+  is an outside or repository [collaborator]" is listed as unsupported, which is why a classic token is the
+  option here (/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+(a) Collaborator rights. Page "Permission levels for a personal account repository"
+(/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-user-account-settings/permission-levels-for-a-personal-account-repository):
+there is no "Write" role, only owner and collaborator; collaborators can "pull (read) ... and push (write)",
+and "Collaborators can't have read-only access". Listed for collaborators: "Create, merge, and close pull
+requests in the repository"; "Create, assign, close, and re-open issues"; "Create, edit, and delete comments
+on commits, pull requests, and issues"; "Manage labels for issues and pull requests"; "Create and edit
+releases for the repository"; "Enable and disable auto-merge for a pull request". Owner only, among others:
+"Merge a pull request on a protected branch, even if there are no approving reviews", "Manage webhooks",
+"Manage deploy keys", "Allow or disallow auto-merge for pull requests".
+
+Per act:
+1. git push over HTTPS: yes. "When Git prompts you for your password, enter your personal access token."
+   (/en/get-started/git-basics/about-remote-repositories). Workflow files: needs `workflow` (scope text above).
+2. Pull requests: create, update (title, body, state=closed/open), merge: yes, from the collaborator list
+   and REST pages (/en/rest/pulls/pulls). That page names no classic-token scope and no rule for merge (403
+   listed without cause). Mark ready: unstated. Update has no `draft` field; the page names no REST way to
+   mark a pull request ready (it is GraphQL, not on that page).
+3. Issues: yes. "Any user with pull access to a repository can create an issue"; "users with push access or
+   Triage role can edit an issue"; "Users with push access can lock an issue or pull request's conversation"
+   (/en/rest/issues/issues). Comments and labels: yes by the collaborator list; the label and comment REST
+   sections state no who-can or scope rule (/en/rest/issues/labels).
+4. Workflow files: yes, with `workflow`; unstated whether branch rules on .github/ apply differently.
+5. Releases: yes. "Users with push access to the repository can create a release." / "...can edit a
+   release." `draft`: "false publishes the release"; `prerelease` field exists; "personal access tokens
+   (classic) need the workflow scope" if the target commit changes workflow files (/en/rest/releases/releases).
+   Tag creation by release: implied only ("Unused if the Git tag already exists"). Tags by git push: yes as
+   a push. Assets: upload to uploads.github.com; no token rule stated (/en/rest/releases/assets).
+6. Check runs read: yes. "OAuth app tokens and personal access tokens (classic) need the repo scope to use
+   this endpoint on a private repository." and "OAuth apps and authenticated users can view check runs and
+   check suites, but they are not able to create them." "Write permission for the REST API to interact with
+   checks is only available to GitHub Apps." (/en/rest/checks/runs; /en/rest/guides/using-the-rest-api-to-interact-with-checks)
+7. Actions: yes. List runs: "...need the repo scope to use this endpoint with a private repository."
+   Re-run, re-run failed jobs: "...need the repo scope to use this endpoint." Cancel: "OAuth tokens and
+   personal access tokens (classic) need the repo scope to use this endpoint." (/en/rest/actions/workflow-runs).
+   Jobs: "Anyone with read access to the repository can use this endpoint." (/en/rest/actions/workflow-jobs).
+   Unstated: the repository role needed to re-run or cancel.
+
+(b) Owner control. Organizations can set "Restrict personal access tokens (classic) from accessing your
+organizations", and "Personal access tokens (classic) do not have an expiration requirement."
+(/en/organizations/managing-programmatic-access-to-your-organization/setting-a-personal-access-token-policy-for-your-organization).
+No equivalent for a personal account or its repositories was found; the owner's control is removing the
+collaborator. Unstated whether removal revokes or merely disables the token's reach.
+
+(c) Expiry and steps (managing-your-personal-access-tokens). Seen on the page: "Personal access tokens",
+"Tokens (classic)" ("In the left sidebar, under Personal access tokens, click Tokens (classic)"), "Generate
+new token", "Generate new token (classic)", "Note", "Expiration" ("choose a default option or click Custom to
+enter a date"), "Select the scopes you'd like to grant this token", `repo`, "Generate token", "Copy token".
+Not seen: the URL https://github.com/settings/tokens/new, "Select scopes" as an exact label, `workflow` as a
+step, and "No expiration". Docs: "we recommend that you set an expiration", and GitHub revokes a token "when
+the token hasn't been used in one year" (/en/authentication/keeping-your-account-and-data-secure/token-expiration-and-revocation).
+
+(d) Breadth warnings: "Personal access tokens (classic) are less secure." and "Your personal access token
+(classic) can access every repository that you can access." It reaches every repository of organizations
+the user belongs to, unless an organization restricts classic tokens (managing-your-personal-access-tokens).
+
+Not verified:
+- That "No expiration" is offered in the classic Expiration menu, and the URL /settings/tokens/new.
+- Marking a pull request ready with this token (GraphQL; not read).
+- Merge against branch protection or rulesets as a collaborator; the role needed to re-run or cancel runs.
+- Token scopes for label, comment, pull request and asset endpoints (pages state none).
+- Whether a release's `tag_name` creates a missing tag.
+- Anything by trial: no token was made and no call was made.
