@@ -77,8 +77,14 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   given him a fragment; PROCESS #6's fault to have kept that wording); he reported it fixed on 22 Nov with
   the whole of `shims/claude-settings.json`, to be read back by the third reading. The Node 26 hook it lost is
   recovered by the third reading and put back by the set-up session's pull request, which he merges.
-- The second reading is in `process/lanes/civicsmith/research/civicsmith-copy-reading-2.md`. It lacked
-  item 12 (tests reaching a later module): a short third reading is Action 6 on the lane's page.
+- The second and third readings are in `process/lanes/civicsmith/research/` (`-reading-2.md`,
+  `-reading-3.md`). Item 12 (tests reaching a later module) is sorted for ARCH in
+  `process/lanes/civicsmith/later-module-tests.md`: no static import reaches a later module; 62 test files
+  in 21 modules start the real plane; with tests counted, 151 to 170 modules form one connected set. The
+  tool cannot see such reach, so the order rule rests there on ARCH's module list; PROCESS recommended no
+  process change now (the research note's last section). The third reading's local main was stale, so
+  his fixed settings file is read back by the set-up session; the recovered hook is
+  `SessionStart -> bash "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"`.
 - Two matters the lane passed to PROCESS, not yet put to the owner (one at a time): (a) civicsmith's own
   `container-images` workflow pushes to Docker Hub with repository secrets, which act 3 ("no repository
   secrets") removes; `deploy-test` likewise holds a Cloudflare token as one; `release-sign` uses an
@@ -87,8 +93,10 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   sessions' environment; or an exception to act 3. (b) civicsmith's installer takes no token, only the
   owner's own sign-in, so the install and update before a release (part 3 section 6) is his own act for
   this product; no design change asked, it goes on his release page.
-- Next for him after the fix and the third reading: the Cloudflare token (first route: edit the token
-  already in BioDefault to the lane's final list); the set-up session (act 8); the registry seed; ROOT.
+- Next for him, on the lane's page: Action 7 the Cloudflare token (first route: edit the token already in
+  BioDefault); Action 8 the set-up session (act 8); Action 9 the branch rule (act 10); Action 10 ROOT
+  (act 9), whose prompt carries PROCESS's session so the registry is seeded without him carrying ids.
+  When civicsmith's ROOT messages its address, add it to `products` in `handover-process`.
 
 ## Environment / tool notes
 
