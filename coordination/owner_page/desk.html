@@ -27,13 +27,13 @@ a{color:var(--accent)}
 
 <section class="wait">
 <h2>Waiting for you: five things, in this order</h2>
-<p>The set-up session has done its work. civicsmith-copy now holds its first Process4 files and its tranche branch, and your fixed forbidden-commands file was read back as correct. The lane's page has the steps for each action: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
+<p>The set-up session has done its work. civicsmith-copy now holds its first Process4 files and its tranche branch, and your fixed forbidden-commands file was read back as correct. You have landed the Node 26 start-up step on main. The lane's page has the steps for each action: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
 <ol>
-<li><b>Land the Node 26 start-up step.</b> Open https://github.com/neobobkrause/civicsmith-copy/pull/1120, look at <b>Files changed</b> (one file, twelve added lines), then click <b>Merge pull request</b> and <b>Confirm merge</b>.</li>
 <li><b>Paste one measurement into the set-up session</b> (below). It only reads. It tells us how civicsmith's code stands against the tool's check before any job meets it.</li>
 <li><b>Action 7: the Cloudflare token.</b></li>
 <li><b>Action 9: the branch rule</b> for main and the tranche branch. It is possible now.</li>
-<li><b>Action 10: start civicsmith's ROOT.</b> After Action 9.</li>
+<li><b>Action 9a: carry the Node 26 start-up step onto the tranche branch.</b> You landed it on main, and the tranche branch was made just before that, so the two differ in that one file. Every civicsmith session starts from the tranche branch, so it needs the step too. It is a few clicks on GitHub, on the lane's page.</li>
+<li><b>Action 10: start civicsmith's ROOT.</b> After Action 9a.</li>
 </ol>
 <p><b>The measurement, and why.</b> The set-up session tried the tool's check on the first two modules as the code stands, and both failed: 551 complaints in one, 59 in the other, most of the first in a third-party file civicsmith carries. A job on either would fail its first run on code it did not write. I do not yet know how many of the 178 modules are like this, so I am not proposing a change yet. Paste this into the set-up session, the one titled "Process4 civicsmith setup session":</p>
 <div class="draft">Read-only measurement for PROCESS. Change nothing in the repository, commit nothing, push nothing.
