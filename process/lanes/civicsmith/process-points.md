@@ -1,6 +1,6 @@
 # Points sent to PROCESS by the civicsmith lane
 
-Length: 53 lines. Last section: "Sent 21 Nov 2026".
+Length: 63 lines. Last section: "Sent 22 Nov 2026".
 
 Each point is a place where a Process4 text is silent or out of date for moving an existing product.
 The lane changes no Process4 text; PROCESS decides. None adds a test, check, gate, review or stop.
@@ -51,3 +51,13 @@ conversion plan) and 8 (the account switch is done). Nothing for the lane to do 
     unproven. Here it is not unproven but forbidden by the product's own text. Part 1 §3 says no act
     asks the owner to edit a file. No route in the texts reaches civicsmith's first Process4 approvals.
     Measured from the product's text, not from a refusal.
+
+## Sent 22 Nov 2026
+
+11. **Who merges act 8's first-files pull request into main.** Design part 7 §4 act 8 has the set-up
+    session write the first Process4 files "by pull request into main", and says nothing of who merges
+    it. civicsmith-copy's approvals let sessions merge into the tranche branch, and the tranche branch
+    into main, but not a working branch into main, and its deny list blocks the other merge routes. So
+    the set-up session could not merge it; the owner merged civicsmith-copy #1119 by his click on
+    22 Nov 2026 (research/setup-session-report.md §1). Measured on civicsmith, not from a refusal.
+    PROCESS puts options to the owner after civicsmith starts.
