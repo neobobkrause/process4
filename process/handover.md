@@ -45,8 +45,8 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 - **The civicsmith lane is civicsmith's onboarding lane** and works to that decision: its page as
   civicsmith's "waiting for Bob"; the GitHub token steps first; then the repository set-up walk-through;
   then the Cloudflare token (draft up; a second read-only reading closes it). It tells PROCESS when ready.
-- **PROCESS #5 was still acting on 22 Nov** (pull request 123). PROCESS #6 told it that it has handed over
-  and asked the owner to archive it. Only one PROCESS writes.
+- **PROCESS #5 is archived** (by the owner, 22 Nov; confirmed from the session list). It had acted once
+  after handing over (pull request 123). Only one PROCESS writes.
 - **The decisions record is two files**, both read, each under 60,000 bytes; new entries go in the second.
 
 ## Done in PROCESS #5 (all merged, tool-tests green)
@@ -64,7 +64,7 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 ## Waiting on the owner
 
-- Archiving PROCESS #5 (above).
+- His GitHub set-up of civicsmith-copy from the lane's page (in progress 22 Nov), and the second reading.
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
 - Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not
