@@ -157,6 +157,27 @@ export function tagsOf(decl, name) {
   return out;
 }
 
+/**
+ * Visits root and every node under it, a node before its children and the children in order, as ts.forEachChild
+ * gives them, with jsDoc also a node's comment blocks before its children; leave(n), if given, after n's children.
+ * f(n) returning false skips n's children. Kept by hand on a list, never by recursion: a long chain such as
+ * a + b + c + ... nests one node per term, and a recursive walk of a few thousand terms runs out of stack.
+ */
+export function forEachNode(root, f, { jsDoc = false, leave = null } = {}) {
+  const LEAVE = Symbol('leave');
+  const stack = [root];
+  while (stack.length) {
+    const n = stack.pop();
+    if (n?.[LEAVE]) { leave(n[LEAVE]); continue; }
+    if (f(n) === false) continue;
+    const kids = [];
+    if (jsDoc) for (const d of n.jsDoc ?? []) kids.push(d);
+    ts.forEachChild(n, (c) => { kids.push(c); });
+    if (leave) stack.push({ [LEAVE]: n });
+    for (let i = kids.length - 1; i >= 0; i--) stack.push(kids[i]);
+  }
+}
+
 export function lineOf(node) {
   const sf = node.getSourceFile();
   return sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;

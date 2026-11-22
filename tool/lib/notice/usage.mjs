@@ -1,7 +1,7 @@
 // Which entries of which providers a user module uses, worked out from the user's own code and comments
 // (its source and its tests), never from a list kept by hand. Also: whether the tool can follow the user fully.
 import path from 'node:path';
-import { ts, lineOf, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, lineOf, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
 
 /**
@@ -202,12 +202,11 @@ export function makeUsage(program, tree, listings) {
           anything.push(`${path.relative(tree.root, node.getSourceFile().fileName)}:${lineOf(node)} ${target.getText().slice(0, 40)}`);
         }
       }
-      for (const d of node.jsDoc ?? []) ts.forEachChild(d, visit);
-      ts.forEachChild(node, visit);
     };
     for (const f of mod.files) {
       const sf = program.getSourceFile(f);
-      if (sf) visit(sf);
+      // A node's comment blocks too, before its children; kept on a list, not by recursion (forEachNode).
+      if (sf) forEachNode(sf, (n) => { visit(n); }, { jsDoc: true });
     }
     const undeclared = [...uses.keys()].filter((p) => !mod.uses.includes(p));
     return { uses, anything: [...new Set(anything)], unreadOps, unreadTables, undeclared };

@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadTree } from './model.mjs';
-import { ts, loadReader, makeProgram, options } from './ts.mjs';
+import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
 import { git } from '../util.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
@@ -103,9 +103,8 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     tops.set(f, top); pieces.push(top); byNode.set(sf, top);
     const visit = (n) => {
       if (isPiece(n)) { const p = { id: `${f}:${lineOf(sf, n.getStart(sf))}`, file: f, node: n, start: lineOf(sf, n.getStart(sf)), end: lineOf(sf, n.end) }; pieces.push(p); byNode.set(n, p); }
-      ts.forEachChild(n, visit);
     };
-    visit(sf);
+    forEachNode(sf, visit);
   }
   const pieceOfNode = (n) => { for (let p = n; p; p = p.parent) if (byNode.has(p)) return byNode.get(p); return null; };
   const pieceAt = (f, line) => {
@@ -172,9 +171,8 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
         if (s && s.flags & ts.SymbolFlags.Alias) { try { s = checker.getAliasedSymbol(s); } catch { s = undefined; } }
         for (const d of s?.declarations ?? []) noteValue(declPiece(d), `named at ${f}:${lineOf(sf, n.getStart(sf))}`);
       }
-      ts.forEachChild(n, visit);
     };
-    visit(sf);
+    forEachNode(sf, (n) => { visit(n); });
   }
 
   // Targets: pieces holding a place of uses (read in the base, carried to the merged result), and pieces holding a

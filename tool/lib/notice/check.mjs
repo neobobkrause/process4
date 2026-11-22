@@ -9,7 +9,7 @@
 // Also: the comments-only verification of a module's first step.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, tagText, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
 import { makeLister } from './listing.mjs';
 import { makeUsage } from './usage.mjs';
@@ -38,15 +38,15 @@ function where(d, root) {
   return `${path.relative(root, d.file.fileName)}:${line + 1}`;
 }
 
+/** The deepest node at a position. A loop, not recursion: a long expression nests deeper than the stack allows. */
 function nodeAt(sf, pos) {
   let found = sf;
-  const visit = (n) => {
-    if (n.getStart(sf) <= pos && pos < n.end) {
-      found = n;
-      ts.forEachChild(n, visit);
-    }
-  };
-  ts.forEachChild(sf, visit);
+  for (let n = sf; n;) {
+    let next = null;
+    ts.forEachChild(n, (c) => { if (c.getStart(sf) <= pos && pos < c.end) { next = c; return true; } });
+    if (next) found = next;
+    n = next;
+  }
   return found;
 }
 
@@ -62,7 +62,8 @@ const MEMBERSHIP = new Set(['includes', 'indexOf', 'lastIndexOf', 'has']);
 /** The assertions whose first argument deliberately exercises an error condition (design part 2, section 6). */
 const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 
-function walk(n, f) { f(n); ts.forEachChild(n, (c) => walk(c, f)); }
+/** Every node under n, n first (forEachNode: kept on a list, not by recursion). */
+function walk(n, f) { forEachNode(n, (m) => { f(m); }); }
 
 /**
  * The character spans of the first argument of each deliberate error assertion (assert.throws, assert.rejects and
@@ -81,6 +82,8 @@ function errorAssertionSpans(sf) {
   });
   return spans;
 }
+/** The reader ran out of stack (a RangeError of the JavaScript engine). */
+const outOfStack = (e) => e instanceof RangeError && /call stack/i.test(e.message);
 function within(node, outer) { return node.pos >= outer.pos && node.end <= outer.end; }
 
 /**
@@ -93,8 +96,9 @@ export function check(tree, moduleId, opts = {}) {
   loadReader();
   const mod = tree.byId.get(moduleId);
   if (!mod) throw new Error(`no such module: ${moduleId}`);
-  const program = opts.analysis?.program ?? makeProgram([...mod.files, ...mod.uses.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
-  const checker = program.getTypeChecker();
+  const ownProgram = () => makeProgram([...mod.files, ...mod.uses.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
+  let program = opts.analysis?.program ?? ownProgram();
+  let checker = program.getTypeChecker();
   const refusals = [];
   const cannotTell = [];
   const moduleOfDecl = (decl) => tree.moduleOfFile(decl.getSourceFile().fileName);
@@ -134,10 +138,9 @@ export function check(tree, moduleId, opts = {}) {
     return false;
   };
 
-  for (const f of mod.files) {
-    if (only && !only.has(rel(f))) continue;
+  const checkFile = (f) => {
     const sf = program.getSourceFile(f);
-    if (!sf) continue;
+    if (!sf) return;
     const isTest = mod.tests.includes(f);
     // In a test file, the first argument of a deliberate error assertion may carry a wrong-typed value on purpose.
     const errorSpans = isTest ? errorAssertionSpans(sf) : null;
@@ -249,6 +252,18 @@ export function check(tree, moduleId, opts = {}) {
         kind: others.size ? `(b) code disagrees with the stated interface of ${[...others].join(', ')}` : `(a) a comment disagrees with ${isTest ? "this module's tests" : "this module's code"}`,
       });
     }
+  };
+
+  for (const f of mod.files) {
+    if (only && !only.has(rel(f))) continue;
+    try { checkFile(f); } catch (e) {
+      if (!outOfStack(e)) throw e;
+      // The reader itself (TypeScript) follows some expressions by recursion: one nested deeply enough (thousands of
+      // terms in one function) runs it out of stack. Not read: "cannot tell", never a refusal. Its state after that is
+      // not to be trusted, so the files after it are read afresh.
+      cannotTell.push({ at: rel(f), code: 'stack', why: 'the reader ran out of stack on this file (an expression nested too deeply to follow): not read', text: e.message });
+      program = ownProgram(); checker = program.getTypeChecker();
+    }
   }
 
   declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel);
@@ -268,10 +283,8 @@ function importsOf(sf, cannot) {
       const a0 = n.arguments[0];
       if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
     }
-    for (const d of n.jsDoc ?? []) visit(d);
-    ts.forEachChild(n, visit);
   };
-  visit(sf);
+  forEachNode(sf, visit, { jsDoc: true });
   return out;
 }
 
@@ -318,9 +331,15 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
   // Calls by name through a carrier make a use without an import: read them as the notice does.
   let u = opts.analysis?.uses?.get(mod.id);
   if (!u) {
-    const lister = makeLister(program, tree);
-    const listings = new Map(tree.modules.filter((m) => m.public.length && m.public.every((f) => program.getSourceFile(f))).map((m) => [m.id, lister.list(m)]));
-    u = makeUsage(program, tree, listings).usesOf(mod);
+    try {
+      const lister = makeLister(program, tree);
+      const listings = new Map(tree.modules.filter((m) => m.public.length && m.public.every((f) => program.getSourceFile(f))).map((m) => [m.id, lister.list(m)]));
+      u = makeUsage(program, tree, listings).usesOf(mod);
+    } catch (e) {
+      if (!outOfStack(e)) throw e;
+      for (const p of missing) cannotTell.push({ at: entryFile, code: 'uses', why: 'the reader ran out of stack following calls by name (an expression nested too deeply to follow)', text: `declares ${p}; no import of it` });
+      return;
+    }
   }
   for (const p of missing) {
     if (u.uses.has(p)) continue;
@@ -362,23 +381,27 @@ const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLi
 
 function shapeOfNode(root) {
   const out = [];
-  const visit = (n) => {
-    if (ts.isParenthesizedExpression(n)) return visit(n.expression);
-    if (n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode) return;
+  // A grouping parenthesis writes nothing of its own: only what it holds (its one child).
+  const enter = (n) => {
+    if (ts.isParenthesizedExpression(n)) return true;
+    if (n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode) return false;
     let leaf = '';
     if (ts.isIdentifier(n) || ts.isPrivateIdentifier(n)) leaf = n.text;
     else if (ts.isStringLiteral(n) || ts.isNumericLiteral(n) || ts.isBigIntLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n) || ts.isRegularExpressionLiteral(n)) leaf = n.text;
     else if (n.kind === ts.SyntaxKind.TemplateHead || n.kind === ts.SyntaxKind.TemplateMiddle || n.kind === ts.SyntaxKind.TemplateTail) leaf = n.text;
     const chain = n.flags & ts.NodeFlags.OptionalChain ? '?' : '';
     out.push(`(${n.kind}${chain}${leaf ? ':' + JSON.stringify(leaf) : ''}`);
-    ts.forEachChild(n, visit);
+    return true;
+  };
+  const leave = (n) => {
+    if (ts.isParenthesizedExpression(n)) return;
     // Tokens such as operators are not children in the tree: keep them.
     if (ts.isBinaryExpression(n)) out.push(`op${n.operatorToken.kind}`);
     if (ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) out.push(`op${n.operator}`);
     if (ts.isVariableDeclarationList(n)) out.push(`decl${n.flags & ts.NodeFlags.BlockScoped}`);
     out.push(')');
   };
-  visit(root);
+  forEachNode(root, enter, { leave });
   return out.join('');
 }
 
