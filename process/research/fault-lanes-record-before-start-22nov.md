@@ -75,3 +75,9 @@ live). Whatever option is chosen, that is the repair.
 - **C. Write the record after the start.** The starter reads the record first and starts no lane shown live;
   it writes the entry once the address is known. Text only, no tool change. Cost: a starter that dies between
   start and write leaves a running lane its successor cannot see, so a second could be started.
+
+## The owner's choice, and what was built (22 Nov 2026)
+
+"Decision: 2B, as recommended" (a comment on his standing page, 20:52Z). Built by PROCESS #7: `laneRefusal`
+lets a live entry with no session be given one address; a second live session is still refused. The tool's
+state tests were run and pass.

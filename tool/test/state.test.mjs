@@ -59,6 +59,10 @@ test('a second live session for a lane is refused', () => {
   assert.equal(laneRefusal(live, { lanes: [{ name: 'ux', session: 's1', live: false }] }), null);
   assert.match(laneRefusal(live, { lanes: [{ name: 'ux', session: 's2', live: true }] }), /second live session/);
   assert.equal(laneRefusal({ lanes: [{ name: 'ux', session: 's1', live: false }] }, { lanes: [{ name: 'ux', session: 's2', live: true }] }), null);
+  // the claim written before the start names no session; the address is filled in once, then a second is refused
+  const claim = { lanes: [{ name: 'ux', session: null, live: true }] };
+  assert.equal(laneRefusal(claim, { lanes: [{ name: 'ux', session: 's2', live: true }] }), null);
+  assert.match(laneRefusal({ lanes: [{ name: 'ux', session: 's2', live: true }] }, { lanes: [{ name: 'ux', session: 's3', live: true }] }), /second live session/);
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();
   const { ctx } = ctxFor(root, gh);
