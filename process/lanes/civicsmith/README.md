@@ -20,7 +20,7 @@ Process4 it finds needed goes to PROCESS by message, with its grounds recorded h
 7. `reading-brief.md` — the prompt for a read-only session in civicsmith-copy.
 8. `settings-checklist.md` — civicsmith-copy's GitHub settings for Process4, for the owner to confirm.
 9. `reading-brief-2-tokens.md` — the second reading: what each service must allow.
-10. `tokens.md` — the whole list of permissions for each token (draft until the second reading).
+10. `tokens.md` — the whole list of permissions for each token (final, 22 Nov 2026).
 11. `setup-session-brief.md` — the brief for act 8's set-up session (draft).
 12. `reading-brief-3.md` — the third reading: tests that reach a later module, and the earlier settings file.
 
