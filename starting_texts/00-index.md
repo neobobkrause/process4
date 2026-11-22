@@ -12,7 +12,7 @@ How the rules stand against "at most ten". Each text has ten numbered lines or f
 
 | File | For | Bytes | Numbered lines | Single rules | Last section |
 |---|---|---|---|---|---|
-| `root.md` | ROOT: the owner's plain prompt (part A) and what ROOT reads first (part B) | 4,195 | 9 | 25 | Rules |
+| `root.md` | ROOT: the owner's plain prompt (part A) and what ROOT reads first (part B) | 4,181 | 9 | 25 | Rules |
 | `watcher.md` | The watcher | 2,956 | 9 | 22 | Rules |
 | `coordinator.md` | The coordinator | 4,575 | 10 | 33 | Rules |
 | `arch.md` | ARCH | 4,137 | 10 | 26 | Rules |
@@ -25,7 +25,7 @@ The commands named are those of build text 1b, section 4. Every text but PROCESS
 
 **As filled in, and the 20 Nov rule.** The limit is measured on the role's instructions as filled in, with the one mechanical fetch line (the clone command, run once) left out of the count (the owner's decision, 20 Nov 2026). A filled text holds names and addresses only: a product name of about 40 characters, the pinned commit id, and, for every text but PROCESS's and ROOT's, the roughly 198-byte fetch line, which the count excludes.
 
-The binding text is `process.md`: it carries no fetch line, so its counted size is its file size, 5,825 bytes, well under the 8,192-byte limit. Every other text but ROOT's carries the fetch line the count excludes, so each has about 198 bytes more real headroom than its file size suggests; with a 40-character product name and the commit id filled in, all stay well under 8,192 (`root.md` and `coordinator.md`, the next tightest, count at roughly 4,195 and 4,380). The role-text limit was raised from 4,096 to 8,192 bytes on the 20 November 2026 measurement (part 5, section 2); the four reading figures are now measured, not provisional.
+The binding text is `process.md`: it carries no fetch line, so its counted size is its file size, 5,825 bytes, well under the 8,192-byte limit. Every other text but ROOT's carries the fetch line the count excludes, so each has about 198 bytes more real headroom than its file size suggests; with a 40-character product name and the commit id filled in, all stay well under 8,192 (`root.md` and `coordinator.md`, the next tightest, count at roughly 4,181 and 4,380). The role-text limit was raised from 4,096 to 8,192 bytes on the 20 November 2026 measurement (part 5, section 2); the four reading figures are now measured, not provisional.
 
 ## 2. What each text tells its session to read in full
 

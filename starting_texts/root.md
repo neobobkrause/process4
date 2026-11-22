@@ -2,7 +2,7 @@ Length: 34 lines. Last section: "Rules".
 
 # A. The owner's plain prompt
 
-I am starting (or restarting) development of <product> in this repository, <owner/repository>. Use the Process4 process. You are ROOT. Fetch the newest copy of this branch. Then fetch the read-only copy of the process that `process.json` names (clone its repository into `$HOME/process4/<commit id>`, check out that commit, run `npm ci` in `tool/`, make the copy read-only), and read `starting_texts/root.md` there in full and follow it. <Optional: my suggestion of model and effort.> <Optional: this follows a switch from another account.>
+I am starting (or restarting) development of <product> in this repository, <owner/repository>. Use the Process4 process. You are ROOT. Fetch the newest copy of this branch. Then fetch the copy of the process that `process.json` names (clone its repository into `$HOME/process4/<commit id>`, check out that commit, run `npm ci` in `tool/`; never edit the copy), and read `starting_texts/root.md` there in full and follow it. <Optional: my suggestion of model and effort.> <Optional: this follows a switch from another account.>
 
 # B. What ROOT reads first
 

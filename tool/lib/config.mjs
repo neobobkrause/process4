@@ -70,5 +70,5 @@ export function notYetMet(text) {
 export function fetchLine(cfg) {
   const { repository, commit } = cfg.process || {};
   if (!repository || !/^[0-9a-f]{40}$/.test(commit || '')) fail(`${CONFIG_FILE} must name process.repository and a 40-character process.commit`);
-  return `C=${commit};D=$HOME/process4/$C;git clone -q ${repository} $D&&git -C $D checkout -q $C&&(cd $D/tool&&npm ci -s)&&chmod -R a-w $D`;
+  return `C=${commit};D=$HOME/process4/$C;git clone -q ${repository} $D&&git -C $D checkout -q $C&&(cd $D/tool&&npm ci -s)`;
 }

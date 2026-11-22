@@ -70,3 +70,9 @@ build text 2 line 122; build text 4 line 39.
 
 Rule 6 leans to B: the step guards against a mistake nobody has made, and B removes what does not work rather
 than strengthening a guard with nothing measured behind the need for it.
+
+## The owner's choice, and what was built (22 Nov 2026)
+
+"Decision: 1B, as recommended" (a comment on his standing page, 20:51Z). Built by PROCESS #7: the fetch line
+ends with the install; the texts say the copy is kept outside the working files and no session edits it. The
+tool tests that cover the fetch line were run (`util`, `commands`, `walk`) and pass.

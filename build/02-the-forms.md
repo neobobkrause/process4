@@ -119,7 +119,7 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
 }
 ```
 
-- `process`: the one fixed version of the process the tranche runs on: the process repository's address, the version's name, and its full commit id on that repository's main branch. Each session, and the required run, fetches a read-only copy of exactly that commit (build text 1, section 2).
+- `process`: the one fixed version of the process the tranche runs on: the process repository's address, the version's name, and its full commit id on that repository's main branch. Each session, and the required run, fetches a copy of exactly that commit (build text 1, section 2).
 - `tranche_branch`: the name of the one lasting tranche branch, which pull requests go into. The process's repository has no tranche branch: its own `process.json` names `main` here.
 - `node`, `lock_files`: the Node version, and the lock files the required run installs the product's dependencies from (build text 1, section 5).
 - `test_command`: the command the tool runs over a list of a module's test files. **Decided here:** one command for the product, kept here and not in each entry. Gives: an entry keeps five fields. Costs: a product whose modules need different commands must give one command that tells them apart.
