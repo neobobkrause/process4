@@ -64,3 +64,72 @@ sessions merge into the tranche branch and the tranche branch into main only, so
 his click (#1119). Options to put to him after civicsmith starts: the owner merges it (as happened, one
 click); or a product's approvals let the set-up session merge that one pull request once its check
 passes.
+
+## The measurement, as it arrived (22 Nov 2026, 19:24Z)
+
+From the civicsmith set-up session (session_018BhcecbrWWH3xBs3py4NQW), at the owner's request, addressed to
+PROCESS #6 and passed on unchanged to PROCESS #7. Read-only; nothing in civicsmith-copy changed. `check` from
+the tool at `eeb35f3` (the commit civicsmith's `process.json` names), on `p4-tranche` at `e123992b`, one
+module at a time, 300 s each, Node 22. The report in short (its full per-module table is in PROCESS #7's
+session, notification of 19:25Z):
+
+- **178 modules: 176 refused, 0 pass, 1 timed out (bundler, 300 s), 1 crashed (pdf-worker).**
+- The crash: "RangeError: Maximum call stack size exceeded" in `tool/lib/notice/listing.mjs:232` (`visit`,
+  through :275), recursing through TypeScript's walk of a long binary expression. Reproduces with
+  `p4 check pdf-worker`. A tool fault.
+- **74,271 disagreements**: declared uses 52 (journey-check 50, queue 2; one is queue's test importing the
+  later op-declarations, group 3 of `later-module-tests.md`); "(a) comment against code" 11,293; "(a)
+  comment against tests" 43,885; "(b) code against a provider's stated interface" 19,041. "Cannot tell":
+  143,634. 59,797 of the disagreements are in test files, 14,474 in source files.
+- Commonest codes: TS2339 "property does not exist" ×43,141; TS2322 ×13,179; TS2345 ×6,907; TS2353 ×4,199;
+  TS2531 ×1,166; then ×722 and fewer.
+- Vendored and committed built files: 2,754 (agent-worker's bundle 1,481, acorn 518, ocr-worker's bundle
+  444, and four more bundles). bio-plane/dist/ and release/ were not counted: they were given to bundler,
+  which timed out, likely on two 28 MB bundles (inference, the report's).
+- Total time about 34 minutes; most modules 2 to 40 s.
+
+## What it shows (PROCESS #7)
+
+- **The check cannot be passed by any civicsmith job as things stand.** The required run runs `check` before
+  a module's tests (build text 1 section 5). Every module is refused on code its job did not write, by the
+  hundred or thousand (capture: 1,972 against its tests). A job's failed runs are counted with no reset:
+  the third replaces its session, the fifth blocks the module (design part 4 section 10). So the first
+  tranche cannot merge a single job. This is a measured fault that stops work.
+- **The cause is in the tool, not in civicsmith's comments.** In `check.mjs` (lines 245-249) every
+  TypeScript diagnostic that survives the "cannot tell" list is labelled "(a) a comment disagrees with this
+  module's code" when it names no other module, whether or not a comment is involved. The reader runs
+  `checkJs` with `strict` and `noImplicitAny` (`tool/lib/notice/ts.mjs:19-29`). On plain JavaScript written
+  without type comments, that reports ordinary idioms (a property added to an object later, `null` where
+  `undefined` was inferred) by the ten thousand. The owner approved two refusals only: a structured comment
+  that disagrees with the code, and code that disagrees with a provider's stated interface (design part 2
+  section 6). Fault D's research (19 Nov) already found this gap, as its option D ("refuse only where a
+  marked claim is contradicted"); option B was chosen then because it was enough for the trial's
+  commented, made-up modules. civicsmith is the first real code.
+- The design's answer to a module with no comments (its job's first step adds them, part 2 section 7)
+  does not reach this: the job would have to make the whole module, tests included, clean under strict
+  type-checking first.
+- Two smaller faults ride with it: the crash on pdf-worker (a tool fault), and committed built files, which
+  the design says are never committed (part 2 section 6), are read and refused, and slow `check` past
+  usefulness. Placing those files is civicsmith's ARCH's work; the tool's part is whether it reads them.
+
+## Options (none adds a test, gate, review or stop; each narrows a refusal or mends the tool)
+
+- **A. No change.** civicsmith opens no job that can merge. Not workable.
+- **B. Make `check` refuse only what the owner approved (recommended).** A disagreement is refused only
+  where a structured comment states the thing contradicted (a `@type`, `@param`, `@returns`, `@typedef` and
+  the other marks of build text 2b section 5), or where a value crosses into a provider's stated interface;
+  a diagnostic on plain unmarked code is "cannot tell". This is fault D's option D: the tool brought to the
+  design's own words. Larger change; the proof's recorded decisions (the tool's notice-proof tests) must
+  still hold, and they were all written with comments, so most should. How many of the 74,271 remain is not
+  known until it is run on civicsmith again (one more read-only run, as before).
+- **C. Refuse only on the lines the job changed.** `check` still lists every disagreement but refuses only
+  those on lines the pull request changed. Smaller change. Old disagreements stay listed, not refused. Cost:
+  a job that edits a line of plain code meets the reader's strictness on that line and must type it.
+- **D. Also leave out files the process config names** (vendored and built files) by an excluding pattern.
+  Narrow; on its own it removes only about 2,754 plus bundler's timeout.
+- **E. Mend the crash** on pdf-worker: the walk at `listing.mjs:232` made so a deep expression does not
+  overflow, or the overflow reported as "cannot tell" for that file. A correction under any option.
+
+B and C can be taken together (refuse only marked claims, and only on changed lines); D and E go with either.
+Moving civicsmith onto the result needs the owner's instruction in its coordinator's session, as for the two
+other faults; putting all three together lets civicsmith move once.
