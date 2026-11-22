@@ -302,6 +302,39 @@ export const later = (/** @type {string} */ name) => import(name);
   assert.match(out.join('\n'), /cannot tell, not refused: src\/orders\/index\.mjs:12 an import of a name the tool cannot read/);
 });
 
+test('check refuses only what a structured comment states: on plain code the reader cannot tell', () => {
+  const files = productFiles();
+  // report: plain JavaScript with no comments, whose usual ways the reader complains about.
+  files['src/report/index.mjs'] = `import { formatDay } from '../dates/index.mjs';
+export function rec(name) { const r = { name, tags: [] }; r.when = Date.now(); return r; }
+export const settings = { mode: 'fast' };
+settings.mode = 7;
+export function pad(text, width = 10) { return String(text).padStart(width); }
+export const show = (n) => formatDay({ n });
+`;
+  files['test/report/index.test.mjs'] = `import { rec, settings, pad } from '../../src/report/index.mjs';
+rec('a').tags.push('x');
+settings.timeout = 1;
+pad('a', '3');
+`;
+  const root = makeRepo(files);
+  const { ctx, out } = ctxFor(root, untouchable);
+  assert.equal(checkCmd(ctx, 'report', { _: [] }), 0);
+  const plain = out.filter((l) => /plain code: no structured comment states what this contradicts/.test(l));
+  assert.deepEqual(plain.map((l) => l.match(/not refused: (\S+)/)[1]), ['src/report/index.mjs:2', 'src/report/index.mjs:4', 'test/report/index.test.mjs:2', 'test/report/index.test.mjs:3', 'test/report/index.test.mjs:4']);
+  // A comment of its own that its code contradicts is still refused (a); so is its code against a provider's stated
+  // interface (b), here the field n of dates' Day.
+  commit(root, { 'src/report/index.mjs': `${files['src/report/index.mjs']}/** @param {string} label */
+export function title(label) { return label; }
+export const t = title(3);
+export const bad = () => formatDay({ n: 'x' });
+` });
+  out.length = 0;
+  assert.throws(() => checkCmd(ctx, 'report', { _: [] }), /2 disagreement/);
+  assert.match(out.join('\n'), /src\/report\/index\.mjs:9 \(a\) a comment disagrees with this module's code: Argument of type 'number' is not assignable to parameter of type 'string'/);
+  assert.match(out.join('\n'), /src\/report\/index\.mjs:10 \(b\) code disagrees with the stated interface of dates: Type 'string' is not assignable to type 'number'/);
+});
+
 test('language_reader.exclude: a file it names is no module\'s and is never read; without the field nothing is left out', () => {
   const files = productFiles();
   // A vendored copy inside dates, whose own comment disagrees with its code.
