@@ -34,3 +34,29 @@ product was quiet, not stopped.
 Working as designed; no fault in the refresh rule itself. The cost is the size of each quiet wake.
 Whether to change anything is the owner's; a finding is "no change" by default until the per-wake
 cost is measured (rule 6).
+
+## Measured: what a quiet wake reads (22 Nov 2026, ~00:40Z)
+
+A read-only worker measured the live sessions' own transcripts (`list_events`, the context size logged
+on each model call).
+
+- **ROOT #7:** about 10,500 tokens per quiet wake (326,840 at 19:47Z to 367,682 at 23:47Z, five wakes).
+  Steps: the wake turn (~1,700); the wake prompt read through ReadNotifications (~2,550); `p4` writes
+  `wakes` and reads `stop` and `roles` (~770); `get_session` on the watcher, ARCH and the coordinator
+  (~4,700, the wake prompt's step 3); the reply (~150).
+- **Watcher #8:** about 5,700 per quiet wake (224,347 at 20:18Z to 247,160 at 00:18Z). Steps: the wake
+  turn (~1,500); the wake prompt (~3,500); reading `wakes`, `roles`, `stop` (~700); the reply.
+- Neither does a full state read, a session listing, a re-read of texts, or a git fetch.
+- **ROOT #6 on 21 Nov:** about 43,000 per wake (07:48–09:48Z), of which ~34,500 per wake appeared on the
+  model call after ReadNotifications, though that result was 4,875 characters. Each wake resumed the
+  session on a fresh worker (worker epoch 6 → 7 → 8, remote tools still "pending" at start). The likely
+  cause is text the harness re-sends when a session resumes on a new worker; its content could not be
+  seen. ROOT #7 also resumes every wake (epoch 22) and shows no such jump. Unconfirmed.
+
+## Conclusion
+
+Quiet wakes now cost about 10,500 (ROOT) and 5,700 (watcher). At those rates a ROOT lasts about two days
+of quiet wakes before 50 percent. The near-hourly refreshes of 21 Nov came from the ~43,000-per-wake jump
+on that day, a harness effect not caused by anything the process reads, and not seen today. The largest
+cost the process controls is the three `get_session` calls (~4,700, about 45 percent of a ROOT wake).
+Recommendation: no change now (rule 6: what is measured today is small); watch whether the jump returns.
