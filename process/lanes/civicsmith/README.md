@@ -1,6 +1,6 @@
 # The civicsmith lane of PROCESS
 
-Length: 32 lines. Last section: "Design pages".
+Length: 33 lines. Last section: "Design pages".
 
 A lane of PROCESS in neobobkrause/process4, started 20 Nov 2026 by PROCESS #5. Its subject, in the
 owner's words of 20 Nov 2026 as PROCESS relayed them: "I'm starting to think about the steps involved
@@ -22,6 +22,7 @@ Process4 it finds needed goes to PROCESS by message, with its grounds recorded h
 9. `reading-brief-2-tokens.md` — the second reading: what each service must allow.
 10. `tokens.md` — the whole list of permissions for each token (draft until the second reading).
 11. `setup-session-brief.md` — the brief for act 8's set-up session (draft).
+12. `reading-brief-3.md` — the third reading: tests that reach a later module, and the earlier settings file.
 
 Research is the lane's first-run record (lane rule 2). Every later session reads it first and adds to it.
 
