@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #7. Two choices about process faults civicsmith found, one line to type, and one thing to confirm.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #7. Three choices about faults civicsmith found (the check result is the most important), and one thing to confirm.</p>
 </header>
 
 <section class="wait">
@@ -45,19 +45,21 @@ a{color:var(--accent)}
 <li><b>2C. Record after the start.</b> No tool change. But if ARCH stops between starting the lane and recording it, its successor cannot see the running lane and could start a second.</li>
 </ul>
 
-<p><b>How civicsmith gets the change.</b> Only on your word. Once it is built and merged, you type in civicsmith's coordinator's session: <b>Instruction: move civicsmith to the latest Process4 version.</b> No job is open on civicsmith, so the move happens at once and loses nothing. If the check measurement (below) brings a third change soon, I will put it beside these so civicsmith moves once.</p>
+<p><b>How civicsmith gets the change.</b> Only on your word. Once it is built and merged, you type in civicsmith's coordinator's session: <b>Instruction: move civicsmith to the latest Process4 version.</b> No job is open on civicsmith, so the move happens at once and loses nothing. The check result below brings a third change; all three can be built together so civicsmith moves once.</p>
 <p><b>To answer:</b> type in my session, PROCESS #7, or comment here, for example <b>Decision: 1B, 2B</b>. You may also set all the options aside.</p>
 </section>
 
 <section class="wait">
-<h2>Waiting for you: one line to type, then archive PROCESS #6</h2>
-<p>The measurement of the tool's check over all 178 of civicsmith's modules was started at 18:44 in the session <b>Process4 civicsmith setup session</b>, and was to report to PROCESS #6. It has not reported, and that session has been idle since 18:48. I cannot message it.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and open the session named <b>Process4 civicsmith setup session</b>.</li>
-<li>Type: <div class="draft">Send the check measurement's report, or how far it has got if it is not finished, to PROCESS #7, session session_018BhceeMdoMMNuimU91cPnD, by message.</div></li>
-<li>Then open the session named <b>PROCESS #6</b> and archive it. PROCESS #7 has taken over; nothing is left in PROCESS #6.</li>
-</ol>
-<p>Until the report comes, my recommendation stands that no job opens on civicsmith. civicsmith's ROOT has it as information.</p>
+<h2>Waiting for you, most important: the check fails every civicsmith module</h2>
+<p><b>The bottom line.</b> The measurement came in at 19:24. The tool's check, which runs before each job's tests, refuses all 176 civicsmith modules it could finish, and passes none. It timed out on one and crashed on another. As things stand, no civicsmith job could ever merge. Please keep jobs from opening until this is fixed.</p>
+<p><b>Why.</b> You approved two things the check may refuse: a code comment that states something the code does not do, and code that misuses another module's stated interface. The tool goes further. It treats every complaint of its strict type reader as one of those two, even where there is no comment at all. On civicsmith's plain, mostly uncommented code that gives 74,271 complaints, most of them about ordinary habits of plain JavaScript, 60 percent in tests. The trial never showed this because its small modules were written with full comments. I found the same gap on 19 Nov, when you chose the narrower fix that was enough for the trial.</p>
+<ul>
+<li><b>3A. No change.</b> No civicsmith job can merge.</li>
+<li><b>3B. Make the check refuse only what you approved (recommended).</b> A complaint is refused only where a comment states the thing the code contradicts, or where code crosses into another module's stated interface. Everything else is "cannot tell", as the design already says for such cases. It is the larger change. How many complaints remain is unknown until one more read-only run on civicsmith.</li>
+<li><b>3C. Refuse only on the lines a job changed.</b> Smaller. Old complaints stay listed, not refused. A job that edits a plain line still has to satisfy the strict reader on that line.</li>
+</ul>
+<p>Two smaller repairs go with whichever you choose, and I recommend both: the tool skips files the product names as copied or built (the vendored and bundled files, about 2,750 complaints and the timeout), and the crash on pdf-worker is mended. 3B and 3C can also be taken together.</p>
+<p><b>To answer:</b> for example <b>Decision: 3B</b>, alone or with 1 and 2 above. All three changes would then make one new version, and civicsmith moves once, on your instruction in its coordinator's session. Archive the PROCESS #6 session when you like: it has passed the report on and holds nothing.</p>
 </section>
 
 <section class="wait">
@@ -138,7 +140,7 @@ a{color:var(--accent)}
 <ul>
 <li><b>The trial</b> is running and quiet. Its coordinator confirmed on 22 Nov: it has not been stopped since you restarted it on 20 Nov, every requirement is met, no job is open, and no process fault is open. Two optional things wait for you in the coordinator's session, neither blocking: your go on bringing main's forbidden-commands file in line with the tranche branch's, and whether to try the two paths the trial has not yet used (a told job that changes code; walks and a development deployment).</li>
 <li><b>civicsmith</b> is running under Process4: ROOT, the watcher, ARCH, the coordinator and the UX lane are up. Its onboarding lane has ended. civicsmith's coordinator keeps civicsmith's own page of what waits for you. No job has opened.</li>
-<li><b>Next for civicsmith:</b> the check measurement, then a small first tranche as the proof.</li>
+<li><b>Next for civicsmith:</b> the fix for the check, then a small first tranche as the proof.</li>
 </ul>
 </section>
 </main>
