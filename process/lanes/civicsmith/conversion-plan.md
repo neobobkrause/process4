@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 182 lines. Last section: "6. Open, and who settles it".
+Length: 194 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -148,6 +148,18 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
   it avoids the modules with known flaky or hanging tests and suites over ten minutes, and the four
   modules T53 was working on until no module's tests reach a later module. The journey is one
   that needs no AI account.
+- **A candidate slice, from the third reading (`later-module-tests.md`; the lane decides nothing, ARCH
+  chooses).** Only setup-words (1) is touched by no reference at all: test-support's text walk reads
+  every module from 2 on. Modules on no cycle even when every reference is counted: setup-words,
+  runtime-limits, court-citations, subresources, agent-model, op-capabilities, interface-assets, site.
+  Modules whose own tests reach no later module and that sit on no cycle through code that runs (outside
+  the report's 151-module set), early in the order: civil-time (4), calc-grammar (5), connection-grammar
+  (6), runtime-limits (8), court-citations (11), id-spaces (12), subresources (13), ooxml, csv-reader
+  (15), text-chain (20), site-profiles (21), docprofile (22), legistar-reader (24), court-doctypes,
+  image-codecs (28), image-cover (30), member-roster (36). These are the lane's candidate slice for ARCH.
+  Two cautions: a later module's walk or plane-booting test still runs their code, so a change to one of
+  them can fail a later module's test until groups 1 and 2 of the list are settled; and
+  connection-grammar is among the modules the draft T52/T53 requirements name.
 - **Known risks, placed as work, not as new checks.**
   - **Flaky tests.** Process4 counts every failed run. At the third, ARCH replaces the job; at the fifth,
     the module is blocked (part 4 §10). A flaky test spends those runs without a fault in the job. The
