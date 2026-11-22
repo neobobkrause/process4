@@ -3,10 +3,10 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 2026-11-22, by **PROCESS #5** (`session_018Bhcef3whBKwaQ5fD7JKxB`), at about 47 percent
-fill, at a natural pause. You, the successor, are **PROCESS #6**: read generation 5 in
-`handover-process`, name yourself `PROCESS #6` with set-session-title (pass your own session id), and
-record generation 6 and your session there (the file must start with the JSON block).
+Last written: 2026-11-22 ~00:50Z, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), just after
+starting, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
+**PROCESS #7**: read generation 6 there, name yourself `PROCESS #7` with set-session-title (pass your
+own session id), and record generation 7 and your session there (the file must start with the JSON block).
 
 ## Start checks
 
@@ -17,7 +17,9 @@ record generation 6 and your session there (the file must start with the JSON bl
    and message the live ROOT your session and generation.
 4. Your lane: **PROCESS civicsmith lane #1**, `session_018BhceckLEcDGQG4yqJtMVH`, in the `lanes` record;
    its page https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R; its folder `process/lanes/civicsmith/`. Message
-   it your session. It may ask for a refresh at 50 percent; it was at ~22 percent on 20 Nov.
+   it your session. It may ask for a refresh at 50 percent; it was at ~22 percent on 20 Nov. PROCESS #6
+   told it and ROOT #7 its session on 22 Nov; the trial's coordinator (`session_018BhceeRZwDtL5rXcx3Mp5q`)
+   was asked whether the stop still stands and what waits for the owner there.
 5. Keep the owner's page **"Process4 Waiting for Bob"**: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
@@ -29,6 +31,8 @@ and four questions are in `process/research/product-onboarding-22nov.md` (Q1 an 
 product; Q2 how it reads the product; Q3 who makes settings changes; Q4 production keys reported in the
 environment). They are on his page. Wait for his marked choices, then make the design change (part 6 §8,
 part 7 §4, part 4 §2 and the PROCESS starting text likely), recorded in `process/design-decisions.md`.
+PROCESS #6 read the environment by name on starting (section 5 of that note): two seed variables are
+there, and a GitHub token and Cloudflare tokens already sit in BioDefault. The page's Q4 says so.
 
 ## Done in PROCESS #5 (all merged, tool-tests green)
 

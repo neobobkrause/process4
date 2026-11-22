@@ -22,18 +22,8 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 20 Nov 2026 by PROCESS #5, after your "Decision: option C".</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6, on starting. One matter waits for your decision: the four onboarding questions just below.</p>
 </header>
-
-<section class="wait">
-<h2>Waiting for you: start PROCESS #6</h2>
-<p>PROCESS #5 is near its refresh point and has written its handover. Nothing is half done.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md; your folder process/ (including process/research/); and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>It should name itself <b>PROCESS #6</b>. Answer the onboarding questions below to it, or here as comments.</li>
-</ol>
-</section>
 
 <section class="wait">
 <h2>Waiting for you: how a product is onboarded</h2>
@@ -42,23 +32,9 @@ a{color:var(--accent)}
 <li><b>An onboarding lane for each product.</b> PROCESS starts one per joining product, like the civicsmith lane: it plans, reads, writes your step-by-step pages and briefs the set-up session, and ends when ROOT starts. Recommended: yes.</li>
 <li><b>How it reads the product.</b> (a) You start a read-only session on the product's repository with the lane's brief, as you did for civicsmith (works today). (b) You make read-only GitHub and Cloudflare tokens so the lane reads directly (unproven, and your approvals would need new wording). Recommended: (a) now.</li>
 <li><b>Who changes GitHub settings.</b> (a) You, by clicks from the lane's page. (b) A session holding an admin token, which could then loosen its own guard rules. Recommended: (a).</li>
-<li><b>Production keys in the environment.</b> Your civicsmith audit reported production signing seeds in BioDefault, where sessions run; the design says no session holds one. Recommended: verify, then move them out.</li>
+<li><b>Production keys in the environment.</b> Your civicsmith audit reported production signing seeds in BioDefault, where sessions run; the design says no session holds one. Checked on 22 Nov, by name only, never by value: BioDefault's settings list variables named <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code>. Whether those are the production ones is yours to say. Recommended: if they are, move them to an environment the sessions do not run in.</li>
 </ol>
 <p>To answer, for example: <code>Decision: 1 yes, 2a, 3a, 4 as recommended</code>.</p>
-</section>
-
-<section class="card">
-<h2>Done: the trial's work is on main</h2>
-<p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here. When you choose, tell the trial's coordinator to lift the stop.</p>
-</section>
-
-<section class="card">
-<h2>Done today</h2>
-<ul>
-<li><b>PROCESS #5 is running</b>, recorded in the shared state. I put the trial's ROOT (<i>process3-probes ROOT #4</i>) in my products list and told it I am the live PROCESS.</li>
-<li><b>Your new approvals for this repository</b> are in force. A change to them works like this from now on: I draft it, put it in a pull request, and you click Merge.</li>
-<li><b>You never edit a file or type a command.</b> The trial's Process4 version (<code>3940d13</code>) already carries this, and the drafting route for your approvals. None of the options above asks you to edit a file.</li>
-</ul>
 </section>
 
 <section class="wait">
@@ -106,6 +82,16 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 </section>
 
 <section class="card">
+<h2>Done: the trial's work is on main</h2>
+<p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here.</p>
+</section>
+
+<section class="card">
+<h2>Done: PROCESS #6 is running</h2>
+<p>You started it on 22 Nov. It has read the design, the record of your decisions and PROCESS #5's handover, is recorded as the live PROCESS, and has told the trial's ROOT and the civicsmith lane. Nothing was lost in the change. The environment check passed: BioDefault carries the permissions settings.</p>
+</section>
+
+<section class="card">
 <h2>Done: the setup-step fixes (your "Decision: B")</h2>
 <p>The steps for bringing an existing product under Process4 now say: the one session you start to set up a product drafts its approvals, writes its first Process4 files, and makes the tranche branch from main; your branch rule replaces any old required check with module-tests. The record now says the trial carried out every setup step. The stale size figure is fixed.</p>
 </section>
@@ -119,8 +105,9 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>The trial</b> is stopped (your account-switch instruction) and on Process4 <code>3940d13</code>, the latest. Tranche t1, round 6: jobs done, nothing waiting.</li>
-<li><b>Civicsmith readiness.</b> Unchanged: civicsmith's setup, then a small first tranche as the proof. This fault is one more reason its tranche branch must start from its main.</li>
+<li><b>The trial</b> is quiet, with all its requirements met and no job open. Its ROOT and watcher wake hourly. I have asked its coordinator whether the stop still stands and will put the answer here.</li>
+<li><b>The civicsmith lane</b> waits on you for three things on its own page: the settings checklist, the two approvals files above, and the question about the paused T53 work.</li>
+<li><b>Civicsmith readiness.</b> Unchanged: civicsmith's setup, then a small first tranche as the proof.</li>
 </ul>
 </section>
 </main>

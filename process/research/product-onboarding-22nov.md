@@ -72,3 +72,24 @@ module list, `module-tests` workflow, the tranche branch from main. Then start R
 - **Q4. Production keys in the environment** (the audit finding). Recommended: verify, then move them to a
   separate environment the sessions do not run in, by his clicks; a finding against part 1 §2 regardless
   of onboarding.
+
+## 5. Measured by PROCESS #6 on starting (22 Nov 2026)
+
+Read with the harness's own environment read on **BioDefault**, the environment PROCESS, its lane and
+the trial's sessions run under. Names only; no value was read, used or shown.
+
+- **Q4, confirmed as far as names go.** The environment's variables include two whose names are
+  `BIO_RELEASE_SEED` and `BIO_RATIFY_SEED`. That matches the audit session's report (constraint 6).
+  Whether they are production keys is the owner's to say.
+- **Tokens already there (bears on Q2 and Q3).** The same environment holds, by name, an admin token and
+  a member token for the product, a GitHub token, three Cloudflare tokens with their account ids, and
+  sign-in names and passwords for the walks. A network secret for `api.cloudflare.com` is also saved on
+  it. What each reaches was not read, and none was used: using one from a process4 session on a
+  product's repository or account is outside the approvals (constraint 3).
+- **What follows for the design question.** Every session on BioDefault receives all of these, PROCESS
+  and its lanes among them (design part 9 section 2: "Nothing physical keeps the token's value from
+  another session in the same environment"). So "getting Process4 the tokens" is less a matter of
+  making new ones than of deciding which environment holds which, and which sessions run in it.
+- Network access is unrestricted. The setup script writes the permissions-management block (design
+  part 7 section 5); the session's own settings carry it. The environment names no repositories. Two
+  other environments exist on the account: Default and Full.
