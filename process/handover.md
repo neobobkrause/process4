@@ -15,6 +15,8 @@ faults (research files below, PR 167); put them to the owner as one group on his
 by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
 the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
 only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
+**Decided and built: 1B** ("Decision: 1B, as recommended", page comment 20:51Z; PR 172; entry "Each session's copy of the process" in `design-decisions-2.md`). Still open with the owner: 2 and 3. civicsmith has not moved; suggest one move once 2 and 3 are built.
+
 **The check measurement arrived at 19:24Z** (PROCESS #6 forwarded it unchanged): `check` refuses 176 of 178
 civicsmith modules, passes none, times out on bundler, crashes on pdf-worker; 74,271 complaints. Researched in
 `process/research/check-on-real-code-22nov.md` (PR 170): the tool labels every strict-reader diagnostic as one of
