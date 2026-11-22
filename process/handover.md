@@ -43,14 +43,19 @@ session id), and record generation 7 and your session there (the file must start
   in a vendored file; record-grammar 59; the tool cannot leave a file out of the reader). **This is the
   main open risk.** Bring the owner the result with options; PROCESS #6 told him its recommendation that
   no job opens on civicsmith before then, and told ROOT #1 the same as information.
-- **civicsmith ROOT #1's answers:** whether `p4-tranche` carries the hooks part of `.claude/settings.json`,
-  and the coordinator's and ARCH's session addresses.
+- **civicsmith ROOT #1 answered (19:05Z), nothing more to wait for there.** Addresses, in civicsmith's roles
+  record: watcher `session_018Bhcegprx34rVCBgDhMe58`; ARCH `session_018BhcedYrhngyxRofUgU39S`; coordinator
+  `session_018BhcefXVtmctn1hrCaXdZU`. `p4-tranche` carries the hook: ROOT started from `d3cb895b` (the
+  merge of civicsmith-copy pull request 1121, main into p4-tranche), so **Action 9a is done**. PROCESS
+  #6's information about the check measurement was passed unchanged to ARCH and the coordinator.
+- **A process fault is on its way by the design's path** (ROOT → ARCH → coordinator → PROCESS): the fetch
+  line's `chmod -R a-w` does not make the process copy read-only, because cloud sessions run as root
+  (build text 1 section 2). Research it when it arrives; nothing is proposed yet.
 
 ## With the owner (nothing marked is unrecorded)
 
 - Not confirmed by him: **Action 9** (the branch rule on main and `p4-tranche`: pull request required,
-  `module-tests` required) and **Action 9a** (carrying main's `.claude/settings.json`, which has the
-  Node 26 start-up hook, onto `p4-tranche` by his own clicks). Both are on the lane's page. Ask once.
+  `module-tests` required), on the lane's page. Ask once. Action 9a is done (above).
 - To put to him, one at a time, after the measurement (research recorded, no options put yet):
   1. civicsmith's own workflows hold repository secrets (Docker Hub; a Cloudflare token for `deploy-test`)
      that act 3 ("no repository secrets") removes; `release-sign` uses an environment secret behind a
