@@ -73,9 +73,9 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 - civicsmith-copy (22 Nov): GitHub set-up done on his word (a session cannot read those settings);
   `CLAUDE.md` landed by him and read back as drafted; T53 decided ("Start from main as it is. ..."; a
-  product decision, kept by the lane). **`.claude/settings.json` on its main is not valid JSON** (the page
-  had given him a fragment; PROCESS #6's fault to have kept that wording): the corrected whole file,
-  `shims/claude-settings.json`, is the first thing on his page to paste. The Node 26 hook it lost is
+  product decision, kept by the lane). `.claude/settings.json` on its main was not valid JSON (the page had
+  given him a fragment; PROCESS #6's fault to have kept that wording); he reported it fixed on 22 Nov with
+  the whole of `shims/claude-settings.json`, to be read back by the third reading. The Node 26 hook it lost is
   recovered by the third reading and put back by the set-up session's pull request, which he merges.
 - The second reading is in `process/lanes/civicsmith/research/civicsmith-copy-reading-2.md`. It lacked
   item 12 (tests reaching a later module): a short third reading is Action 6 on the lane's page.
