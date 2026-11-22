@@ -42,7 +42,6 @@ A measured fault: the process makes refreshes the owner said to minimise. Rule 6
   part 4 section 5, part 1 section 7 (one row), and the refresh rule of the six role texts (ROOT, watcher,
   coordinator, ARCH, lane, PROCESS), reworded within their limits. No tool change. Removes refreshes. Cost: a session
   may run past 50 percent until its next pause; compaction begins near 74 percent (the owner's figure), so there is
-  room. A session that reaches, say, 65 percent with no pause in sight still has nothing that makes it stop; the text
-  can say "or at once if the fill passes 60 percent", which is not a new stop but the same refresh brought forward.
+  room. Pauses come after nearly every piece of work (the measurement above), so the overshoot is small.
 - **C. Let the parent decline a refresh it judges early.** ROOT may refuse a swap. Adds a judgment to every refresh
   and leaves the texts saying "at a natural pause". Not recommended.
