@@ -93,3 +93,20 @@ the trial's sessions run under. Names only; no value was read, used or shown.
 - Network access is unrestricted. The setup script writes the permissions-management block (design
   part 7 section 5); the session's own settings carry it. The environment names no repositories. Two
   other environments exist on the account: Default and Full.
+
+## 6. The owner's choices (22 Nov 2026), and what was built
+
+His words, as typed in PROCESS #6's session: "1. Decision: yes"; "2. Decision: A"; "3. Decision: A";
+"4. Decision: The token created for the product being onboarded should be the token with all the
+permissions that will be needed across all stages of process4 driven development across that
+product's entire lifecycle. Anything short of those privileges will require me to unnecessarily
+create yet another token."
+
+- 1 to 3 as recommended: the onboarding lane (design part 6 section 8), the read-only session he
+  starts, settings by his clicks.
+- 4 answers a different matter from the one Q4 put. It sets how a product's tokens are made (design
+  part 1 section 3; part 7 section 4 act 6; part 9 section 1). It does not say what becomes of the two
+  seed values in BioDefault, and is not read as changing "No session directly holds a production key"
+  (20 Nov). That is put to him again as one question on his page: are the two seeds production keys,
+  and do they stay where sessions run.
+- Both are recorded in `process/design-decisions.md`.

@@ -23,7 +23,7 @@ What the tool does and what ARCH keeps: whatever has one right answer is done by
 | The owner | ROOT, PROCESS |
 | ROOT | The watcher, ARCH, the coordinator |
 | ARCH | Jobs, walking sessions, the product's lanes |
-| PROCESS | Its own lanes (a reading; part 6, section 8) |
+| PROCESS | Its own lanes, each joining product's onboarding lane among them (part 6, section 8) |
 | A long-lived role or a job | Its own workers |
 
 - Under a ROOT the owner started, sessions sit at most three levels deep: ROOT; then ARCH, the coordinator and the watcher; then jobs, walking sessions and lanes. PROCESS is started by the owner in the process's repository (part 6), not under ROOT. A takeover by the watcher adds a level (section 6).

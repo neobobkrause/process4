@@ -1,6 +1,6 @@
 # Part 1. Purpose, the owner, his decisions, and working principles
 
-Length: 82 lines. Last section: "7. Known weaknesses of AI sessions".
+Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 
 ## 1. What Process4 is for
 
@@ -26,12 +26,14 @@ Length: 82 lines. Last section: "7. Known weaknesses of AI sessions".
 | At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
 | Decide the wording of his standing approvals, drafted for him on request or typed by him in a session, and land it, with the forbidden commands, by clicking Merge on the pull request that carries it, in the product's repository and in the process's (part 6, section 2) | At the start, then only when the wording must change |
 | Change a permission or rule setting in GitHub or in the hosting account | Very occasionally |
+| Start a read-only session on a joining product's repository, with the brief its onboarding lane wrote (part 6, section 8) | When a product joins Process4 |
 | Connect the harness to GitHub, and enter the deploy token and other secret values, from a page the process writes | At the start of a product, at an account switch, and before a token expires |
 | Approve with a click the change a session proposes when the sessions' environment lacks the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |
 | Connect an AI account to the development deployment | Before an external walk of journeys that use AI |
 
 - Every act of his is clicks on pages named by their full address, or words he types into a session or into a field of a form. No act asks him to edit a file or type a command. His standing page gives each act's steps that way: each page by its full address, each button by its exact label, and what he should see after each click.
 - Each act with a known date appears on his standing page before the date, with the steps.
+- A token he makes for a product is made once, when the product joins Process4. In his words, it is "the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle". The product's onboarding lane (part 6, section 8) works out the whole list first and gives it on his page, so that no later stage asks him to make another. Where the product's development uses more than one service, there is one such token for each. A token renewed before it expires carries the same permissions.
 - Every reasonable effort is made to renew a token before it expires, so that no full stop is needed. Once a new token is in place, fresh sessions start with it before the old one expires. A full stop happens only if the token is not replaced in time.
 - A harness runs AI sessions only on what the owner's subscription covers. Anything that would cost more comes to him first.
 

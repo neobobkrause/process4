@@ -1,6 +1,6 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 77 lines. Last section: "8. Process4 develops itself".
+Length: 81 lines. Last section: "8. Process4 develops itself".
 
 ## 1. What holds a rule
 
@@ -74,4 +74,8 @@ What follows from them:
 ## 8. Process4 develops itself
 
 - PROCESS may have lanes of its own for standing subjects, as needed. PROCESS starts its own lanes.
+- **The onboarding lane.** For each product that joins Process4, PROCESS starts one onboarding lane, in the process's repository. The lane plans the product's move. It writes the product's conversion plan. It writes the owner's page of his acts to start the product (the harness part lists them), each as clicks with what he should see, and with the whole list of permissions for each token he makes (part 1, section 3). It writes the brief for the session that sets the product up. It ends when the product's ROOT has started; its folder and research stay.
+- **How the lane reads the product.** The lane does not read or act on the product's repository, accounts or services itself. The owner starts a read-only session on the product's repository with the lane's brief. That session changes nothing, and its report reaches the lane: by message where that repository's approvals allow it, and through the owner otherwise.
+- **Settings.** Every change that onboarding needs to a setting of GitHub or of the hosting account is the owner's own click, from the lane's page. No session is given the means to change those settings (section 3).
+- **Unproven:** an onboarding lane carried through to a product's ROOT starting.
 - When a new model version arrives, PROCESS puts one question to the owner: which parts of the process, and which working rules that exist because of the permission checker, may no longer be needed. Nothing is removed or tried unless he says so.
