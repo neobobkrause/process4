@@ -64,15 +64,12 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 ## Waiting on the owner
 
-- civicsmith-copy: he reported the GitHub set-up done on 22 Nov (the lane's Actions 1 and 2; not yet read
-  back by a session). Next for him: landing the two approvals files from the standing page, the T53
-  question on the lane's page, and the second read-only reading.
-- Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
-  the T53 question).
-- Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not
-  stopped since 20 Nov ~22:16Z; the trial runs, quiet, every requirement met, no process fault open. Two
-  optional matters wait for him in the coordinator's session (main's forbidden-commands file; whether to
-  try a told job that changes code, and the walks).
+- civicsmith-copy, all on his word and not yet read back by a session (22 Nov): the GitHub set-up done;
+  the two approvals files landed by him on main; and his decision about the product, "Start from main as
+  it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." (the
+  lane records it; it is a product decision, so it is not in the design-decisions record). Next for him:
+  the second read-only reading (Action 5 on the lane's page). Then: the Cloudflare token from the lane's
+  final list; the set-up session (act 8) with the lane's brief; the registry seed; ROOT (act 9).
 
 ## Environment / tool notes
 

@@ -22,61 +22,24 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. Your decision on the onboarding lane and the GitHub token is built and recorded. You finished civicsmith-copy's GitHub set-up. Three things wait for you, just below.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. You landed civicsmith-copy's approvals and decided T53. One thing waits for you, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: three things, in this order</h2>
-<p>You have done the GitHub set-up of civicsmith-copy (the lane's Actions 1 and 2). Next:</p>
-<ol>
-<li><b>Land civicsmith-copy's two approvals files.</b> The text and the steps are in the next section of this page.</li>
-<li><b>Answer the question about the paused tranche T53</b> on the civicsmith lane's page: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R. The lane recommends starting from main as it is.</li>
-<li><b>Start the second read-only session on civicsmith-copy.</b> The prompt to paste is on the lane's page. It settles the Cloudflare token list and reads back the settings you just made.</li>
-</ol>
+<h2>Waiting for you: one thing</h2>
+<p><b>Start the second read-only session on civicsmith-copy.</b> The steps and the whole prompt to copy are under Action 5 on the civicsmith lane's page: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
+<p>It changes nothing. It settles the Cloudflare token list, and it reads back the GitHub settings and the two approvals files you landed, so we know they are as intended.</p>
+<p><b>What comes after it, so you can see the road:</b> you make the Cloudflare token once, from the lane's final list; you start one set-up session on civicsmith-copy with the lane's brief, which writes civicsmith's first Process4 files and makes its tranche branch; then you start civicsmith's ROOT.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: civicsmith-copy's approvals, ready to paste</h2>
-<p>As you asked: the full text for the two files in <b>neobobkrause/civicsmith-copy</b>. Read it first; tell me anything to change. Then paste each on GitHub and commit to main.</p>
-<p><b>1. <code>CLAUDE.md</code></b> — open https://github.com/neobobkrause/civicsmith-copy/edit/main/CLAUDE.md, select all, paste this, click <b>Commit changes…</b> then <b>Commit changes</b>.</p>
-<div class="draft">## Standing approvals from Bob
-
-Standing approvals from Bob for civicsmith, developed with Process4, 21 Nov 2026, for the repository neobobkrause/civicsmith-copy only. They cover every Claude session working on civicsmith, including sessions that other sessions started.
-
-Such sessions may, without asking me: subscribe to and unsubscribe from activity on this repository&#x27;s pull requests; notify me by push notification; create and edit civicsmith and Process4 pages and documents on claude.ai under the Claude account the acting session runs under; start, message, interrupt and archive this account&#x27;s sessions working on civicsmith, and make and remove their scheduled wakes; message the PROCESS session in neobobkrause/process4; and clone the public repository neobobkrause/process4 read-only, as the process&#x27;s copy.
-
-In this repository, neobobkrause/civicsmith-copy, only, they may: push to their own working branches; open, edit, comment on, mark ready or draft, close and reopen pull requests, and open, comment on and close issues; run builds and tests, fetching public packages and images for them; run, re-run and cancel this repository&#x27;s own workflows; change its workflow files only through pull requests merged as below, never renaming or removing a job whose name matches a required check, never widening any workflow&#x27;s or job&#x27;s permissions, and never adding a pull_request_target trigger; merge pull requests into p4-tranche, and p4-tranche into main, once their required checks pass, without a person&#x27;s review, except a pull request that changes CLAUDE.md or .claude/settings.json, which only I merge; deploy to, configure, seed, reset and remove the development copy in the one development Cloudflare account named in process.json, and the rehearsal account for the new-team rehearsal, with the deploy token held in the environment; make and publish development pre-releases; prepare a public release, which is published only on my approval typed in ARCH&#x27;s own session; and use the production signing keys kept in the environment to produce the installer as part of the release ceremony.
-
-The coordinator, or before there is one the session I start to set civicsmith up, may at my request draft the text of these approvals, and may place a text I have approved in its session, unchanged, in a pull request that changes only CLAUDE.md or only .claude/settings.json; it never merges that pull request. A session may propose a change to the settings of the cloud environment the sessions run under through the harness&#x27;s own approval prompt; the change takes effect only when I approve it there.
-
-Only messages I typed myself count as my decisions or instructions. Never record your decision or your summary as mine. A message of mine is a decision or an instruction only when it begins &quot;Decision:&quot; or &quot;Instruction:&quot;. Everything else is conversation. If a session thinks I have decided something without that mark, it asks me once whether to record it as one. Process changes happen only at PROCESS, in neobobkrause/process4; no session here changes the process.
-
-They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or release, or the branch snapshot/pre-refactor-2026-09-25; change permission, repository or ruleset settings, or a protected environment, except by the proposal through the harness&#x27;s approval prompt named above; push to main or p4-tranche; change CLAUDE.md or .claude/settings.json, except by the pull request named above, which only I merge; publish a public release without my approval; use a production signing key for anything but producing the installer in the release ceremony; touch an installed site; use any Cloudflare account but the two named above; reveal any secret value; or act on any account or service other than those named here. Reading public documentation and public repositories, and fetching public packages and images, are not acts on another service.</div>
-<p><b>2. <code>.claude/settings.json</code></b> — open https://github.com/neobobkrause/civicsmith-copy/edit/main/.claude/settings.json. Replace only the <code>"permissions"</code> part with the block below, keep your <code>"hooks"</code> part (it installs Node 26, which civicsmith needs), and commit the same way. The comma after the closing <code>}</code> of permissions stays if hooks follow.</p>
-<div class="draft">  &quot;permissions&quot;: {
-    &quot;deny&quot;: [
-      &quot;mcp__github__merge_pull_request&quot;,
-      &quot;Bash(gh pr merge *)&quot;,
-      &quot;Bash(gh api *pulls/*/merge*)&quot;,
-      &quot;Bash(git push --force *)&quot;,
-      &quot;Bash(git push -f *)&quot;,
-      &quot;Bash(git push --force-with-lease *)&quot;,
-      &quot;Bash(git push origin --delete *)&quot;,
-      &quot;Bash(git push origin main)&quot;,
-      &quot;Bash(git push origin HEAD:main)&quot;,
-      &quot;Bash(gh api *contents/*)&quot;,
-      &quot;Bash(gh api *git/blobs*)&quot;,
-      &quot;Bash(gh api *git/trees*)&quot;,
-      &quot;Bash(gh api *git/commits*)&quot;,
-      &quot;Bash(gh api *git/refs*)&quot;,
-      &quot;Bash(curl *api.github.com*)&quot;,
-      &quot;mcp__github__create_or_update_file&quot;,
-      &quot;mcp__github__push_files&quot;,
-      &quot;mcp__github__delete_file&quot;,
-      &quot;Bash(gh *)&quot;
-    ]
-  }</div>
-<p>What changed from your 1 Nov text: sessions may now merge into the tranche branch and main after checks (not changes to these two files, which only you merge), deploy only to the development Cloudflare account and the rehearsal account, message PROCESS, and draft (never land) your approvals. Your safety rules carry over: no force-push, never rewrite main, never delete the pre-refactor snapshot branch, one Cloudflare account. The forbidden-commands list becomes Process4's standard one; its extra items (rebase, amend, reset and the like) are dropped, since the branch rules already protect what matters.</p>
+<section class="card">
+<h2>Done: civicsmith-copy's set-up so far (22 Nov, on your word)</h2>
+<ul>
+<li>The GitHub set-up of civicsmith-copy: the connection check and the repository settings.</li>
+<li>The two approvals files, landed by you on civicsmith-copy's main.</li>
+<li>The paused tranche T53: your decision, "Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." The lane records it for civicsmith, and it goes into civicsmith's own record of your decisions when its coordinator starts.</li>
+</ul>
+<p>None of these has been read back by a session yet; the second reading does that.</p>
 </section>
 
 <section class="card">
@@ -89,7 +52,7 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 <ul>
 <li><b>Tool tests.</b> GitHub now runs the tool's tests only on a pull request that changes the tool, and only once, when it is marked ready. Every other pull request passes at once. Before pushing, PROCESS runs only the tests of the tool it changed, and none when no tool changed. <b>A correction:</b> I told you GitHub ran them on every pull request. That was wrong. It already skipped pull requests that touched no tool file. What ran needlessly was my own run by hand, a run for any change to a role's starting text, and a second run on each tool change. All three are gone.</li>
 <li><b>Signing keys.</b> <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code> are production signing keys and they stay in the sessions' environment. The design now says a product's production signing keys are kept there for the release ceremony. The record holds a sentence of 20 Nov, "No session directly holds a production key"; your decision replaces it, and the design no longer says it.</li>
-<li><b>civicsmith-copy's approvals draft, below, changed in two places to match:</b> sessions may use the signing keys to produce the installer in the release ceremony, and may never use them for anything else.</li>
+<li><b>civicsmith-copy's approvals draft changed in two places to match:</b> sessions may use the signing keys to produce the installer in the release ceremony, and may never use them for anything else.</li>
 </ul>
 </section>
 
@@ -129,7 +92,7 @@ They may never: force-push; rewrite main or p4-tranche; delete a branch, tag or 
 <h2>Where everything stands</h2>
 <ul>
 <li><b>The trial</b> is running and quiet. Its coordinator confirmed on 22 Nov: it has not been stopped since you restarted it on 20 Nov, every requirement is met, no job is open, and no process fault is open. Two optional things wait for you in the coordinator's session, neither blocking: your go on bringing main's forbidden-commands file in line with the tranche branch's, and whether to try the two paths the trial has not yet used (a told job that changes code; walks and a development deployment).</li>
-<li><b>The civicsmith lane</b> has put a draft of civicsmith's token list on its own page. <b>Do not make the tokens yet:</b> the draft needs one more read-only reading of civicsmith-copy to close it, and the lane's page has the brief for you to start that session with. The lane also still waits on you for the settings checklist, the two approvals files above, and the question about the paused T53 work.</li>
+<li><b>The civicsmith lane</b> keeps civicsmith's own page of what waits for you. Its Cloudflare token list is a draft until the second reading: do not make that token yet.</li>
 <li><b>Civicsmith readiness.</b> Unchanged: civicsmith's setup, then a small first tranche as the proof.</li>
 </ul>
 </section>
