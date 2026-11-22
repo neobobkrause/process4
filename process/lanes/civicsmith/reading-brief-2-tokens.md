@@ -1,6 +1,6 @@
 # A second reading brief for civicsmith-copy: what its development needs from each service
 
-Length: 57 lines. Last section: "What to send back".
+Length: 59 lines. Last section: "What to send back".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, for the owner's rule of 22 Nov 2026 that each token he
 makes for a product carries every permission its development under Process4 will ever need (design part 1
@@ -50,6 +50,8 @@ starts on `neobobkrause/civicsmith-copy`. It changes nothing and uses no token o
 >    enforcement and bypass list, and any classic branch protection; the Actions workflow permissions
 >    (the default token's permission, and whether Actions may create and approve pull requests); and
 >    the names of any repository secrets that remain (names only, never values). Change nothing.
+> 11. **The approvals files as they now stand.** Give the whole text, exactly, of `CLAUDE.md` and of
+>    `.claude/settings.json` on `main` (they hold no secret), from the repository's files.
 
 ## What to send back
 
