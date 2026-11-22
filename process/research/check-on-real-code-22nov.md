@@ -145,3 +145,32 @@ still overflows at about 4,000 terms inside one function, which `check` reports 
 (listing and notify are not guarded against that). Tool tests run: notify, notice-proof, related, scope, util,
 p4: 59 of 59 pass. One proof decision re-recorded (T14, a false refusal). On a synthetic plain-JS product the
 refusals went from 13 to 0. Next: one read-only run of `check` on civicsmith at the new version.
+
+## The re-run at the new version (22 Nov 2026, 22:53Z), and what it shows (PROCESS #8)
+
+From the civicsmith set-up session (session_018BhcecbrWWH3xBs3py4NQW), read-only, addressed to PROCESS #8 (its full
+per-module table is in PROCESS #8's session, message of 22:53Z). Tool `a20b33a`; civicsmith-copy `p4-tranche` at
+`bc2695d0`, whose module list now holds 204 modules (ARCH added 26 and moved `op-grades`). Node 22, 300 s a module.
+
+- **Run A, the config as it stands: 175 of 204 pass**, 27 refused, 2 timed out (`plane`, which owns `bio-plane/dist/`,
+  and `release`, which owns `release/`: 28 MB bundles), none crashed (`pdf-worker` completes).
+- **Run B, with `language_reader.exclude`** = `["**/vendor/**", "**/dist/**", "release/**", "newgroup/src/release.mjs",
+  "bio-plane/src/case-checker/program.mjs"]` (18 files: vendored acorn, committed bundles, two built embeds): **177 of
+  204 pass**, the same 27 refused, no timeouts (`plane` 43 s, `release` 6 s). Total time 34 minutes.
+- **217 disagreements, identical in both runs** (74,271 before): declared uses 0 (52 before); (a) comment against code
+  73, against tests 51; (b) code against a provider's stated interface 93. 128 in test files, 89 in source. 19 codes;
+  commonest 2345 ×51, 18046 ×39, 2339 ×35 (e.g. `Property 'elidedPaths' does not exist on type 'BundleInput'`).
+  None in vendored or built files. Cannot tell: 207,184 in run B.
+- The 27 refused: record-grammar, connection-grammar, subresources, text-chain, pdf-pixels, record-core, promotion,
+  provenance, capture, doorbell, reading-pipeline, connections, explore, inquiry-grammar, inquiry, strength,
+  case-grammar, case-catalogue, ratification, case-checker, case-authoring, review, consequences, actions, monitoring,
+  store-assembly, screens-investigate. Most hold 1 to 6; connection-grammar 56, explore 24, reading-pipeline 22,
+  store-assembly 18, record-grammar 12.
+
+**Judgement.** The measured fault (no civicsmith job could pass its required run) is gone: 177 of 204 modules pass as
+the code stands. Each remaining refusal rests on a structured comment, which is what the owner's two approved refusals
+are; a module's first job corrects its own comment or code, as the design already says (part 2 sections 3 and 6).
+Whether a few of the 217 are false (for instance a test passing `undefined` on purpose outside `assert.throws`) is not
+measured; nothing has failed a job yet. Rule 6: **no change to the process.** For civicsmith, ARCH's work, not
+PROCESS's: put the exclude list above into `process.json` (without it `plane` and `release` time out), and keep the 27
+modules out of the first slice or let each module's first job clear its own disagreements. civicsmith can move.
