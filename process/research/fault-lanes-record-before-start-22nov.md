@@ -40,3 +40,38 @@ passes the tool's refusal only because the old entry was first written not live;
 - A measured fault, so "no change by default" does not apply; "no change" is still among the options.
 - civicsmith's lanes record now holds a placeholder as the live ux session; whatever is chosen must also
   say how that record is put right.
+
+## Research, by PROCESS #7 (22 Nov 2026)
+
+**Confirmed in the tool.** `laneRefusal` (`tool/lib/state.mjs:85-96`) refuses a write that names a live
+session for a lane other than the one the present record names live. Its test
+(`tool/test/state.test.mjs:56-66`) holds exactly that. So "write the record before the session is started"
+(design part 4 section 3; `starting_texts/arch.md` rule 7) and "the entry names the lane's session" (build
+text 5 section 2) cannot both be kept: the address is known only when the start returns, and the tool then
+refuses to put it in place of whatever was written before. Measured twice: civicsmith ARCH #1 (the
+refusal it quotes), and PROCESS #6 with its own civicsmith lane (it wrote the old session not live, started
+the new one, then wrote it live, so the record was not written before the start).
+
+**What "before" is for.** A second session for one lane is never started: a starter that dies between the
+start and the write would leave no record, and its successor could start a second lane session. Writing a
+claim first closes that window.
+
+**civicsmith's record today** names the placeholder "being started by ARCH" as the live UX lane. It can be
+put right under today's tool, by ARCH alone, in two writes: the UX entry not live, then the UX entry live
+with its real address. Neither write is refused (the refusal looks only at entries the present record shows
+live). Whatever option is chosen, that is the repair.
+
+## Options (none adds a test, gate, review or stop)
+
+- **A. No change.** Each start is done as PROCESS #6 did it (not live, start, live), which does not keep
+  "written before the start", or leaves a placeholder in the record. Cost: the measured fault stays, and the
+  record names no reachable session for a live lane.
+- **B. Write a claim first, then fill in the address (recommended).** Before the start, the entry is written
+  live with no session yet (`"session": null`); once the start returns, the same entry is written again with
+  the address. The tool lets a live entry with no session be given one address, and still refuses any
+  second live session. One condition in `laneRefusal` and one test line; design part 4 section 3 and build
+  text 5 section 2 say the two steps; ARCH's rule 7 and PROCESS's lane line say "write it before the start,
+  and its address after". Keeps what "before" was for.
+- **C. Write the record after the start.** The starter reads the record first and starts no lane shown live;
+  it writes the entry once the address is known. Text only, no tool change. Cost: a starter that dies between
+  start and write leaves a running lane its successor cannot see, so a second could be started.
