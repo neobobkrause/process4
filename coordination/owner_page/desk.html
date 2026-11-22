@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #8. One choice waits for you: how often long-lived sessions such as ARCH are replaced.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #8. Two choices wait for you, both faults civicsmith found: how often sessions are replaced, and old wake timers left running.</p>
 </header>
 
 <section class="card">
@@ -40,6 +40,17 @@ a{color:var(--accent)}
 <li><b>C. Let ROOT refuse a replacement it judges too early.</b> Adds a judgment to every replacement. Not recommended.</li>
 </ul>
 <p>Reply to this item, or tell me in my session, with "Decision:" and a letter. civicsmith gets the change when you next move it to the latest version.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: a replaced session's wake timer is left running</h2>
+<p><b>The bottom line.</b> A second fault from civicsmith, and it is real. When the watcher was replaced at 23:01, its hourly wake timer was left switched on, still pointed at the old, archived session. I see it in your list of scheduled tasks: "civicsmith watcher hourly wake", next due 23:34. No text tells any session to switch off a replaced session's wake, so none does; each replacement leaves one more running.</p>
+<ul>
+<li><b>A. No change.</b> Old timers pile up, one per replacement.</li>
+<li><b>B. Whoever archives a session also switches off its wake timer (recommended).</b> Written into the design and into ROOT's and the watcher's texts. No tool change. civicsmith's own approvals already allow it.</li>
+<li><b>C. Each session switches off its own timer before asking to be replaced.</b> If the replacement then fails, nothing wakes. Not recommended.</li>
+</ul>
+<p>This and the item above both change ROOT's and the watcher's texts, so I would build them together and civicsmith would move once. The one old timer there now goes when civicsmith's ROOT has the new text, or sooner if you delete "civicsmith watcher hourly wake" from your scheduled tasks yourself.</p>
 </section>
 
 <section class="wait">
