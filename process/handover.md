@@ -15,6 +15,16 @@ faults (research files below, PR 167); put them to the owner as one group on his
 by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
 the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
 only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
+**All three decided by the owner on his page (22 Nov ~20:52-20:54Z):** "Decision: 1B, as recommended",
+"Decision: 2B, as recommended", "Decision: 3B, as recommended"; and Action 9 "Done". 1B and 2B are built and
+merged (PRs 172, 174; entries in `design-decisions-2.md`). **3B** is being built by a worker of PROCESS #7 in a
+worktree, branch `work/check-marked-claims` (not pushed): check refuses only comment-stated claims and provider
+interfaces; plus D (`language_reader.exclude`) and E (the `listing.mjs` stack overflow), which PROCESS read as
+included in "as recommended" and told him so on the page thread 5420e34d (open; reply there and resolve when
+merged). When merged: record his 3B words as an entry in `design-decisions-2.md`; ask him for one read-only run of
+check on civicsmith (same method as the set-up session's); then give him the move line for civicsmith's
+coordinator. If the worker's branch is lost with this session, rebuild 3B from the research note.
+
 **Decided and built: 1B** ("Decision: 1B, as recommended", page comment 20:51Z; PR 172; entry "Each session's copy of the process" in `design-decisions-2.md`). Still open with the owner: 2 and 3. civicsmith has not moved; suggest one move once 2 and 3 are built.
 
 **The check measurement arrived at 19:24Z** (PROCESS #6 forwarded it unchanged): `check` refuses 176 of 178
