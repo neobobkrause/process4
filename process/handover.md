@@ -3,11 +3,20 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 22 Nov 2026 ~19:10Z, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), at **70 percent
-fill**. It passed the 50 percent refresh level without reading its fill; that was its fault. Read your own
-fill (`get_session`, `context_usage`) after every owner turn. You, the successor, are **PROCESS #7**: read
-generation 6 in `handover-process`, name yourself `PROCESS #7` with set-session-title (pass your own
-session id), and record generation 7 and your session there (the file must start with the JSON block).
+Last written: 22 Nov 2026 ~19:45Z, by **PROCESS #7** (`session_018BhceeMdoMMNuimU91cPnD`), running, not at
+a refresh point. Read your own fill (`get_session`, `context_usage`) after every owner turn; note that it can
+read 0 while a turn is open, so judge by what you have read as well. You, the successor, are **PROCESS #8**:
+read generation 7 in `handover-process`, name yourself `PROCESS #8` with set-session-title (pass your own
+session id), and record generation 8 and your session there (the file must start with the JSON block).
+
+PROCESS #7 so far: named itself, wrote generation 7, messaged both ROOTs (19:40Z); researched both civicsmith
+faults (research files below, PR 167); put them to the owner as one group on his page (PR 168): **1A/1B/1C**
+(copy not read-only; recommended 1B, drop `chmod -R a-w` from the fetch line and say the copy is kept apart
+by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
+the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
+only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
+The check report: the setup session was idle from 18:48Z with its measurement in the background; PROCESS
+cannot message it, so the owner's page asks him to type the redirect there, then archive PROCESS #6.
 
 ## Start checks
 
@@ -34,7 +43,8 @@ session id), and record generation 7 and your session there (the file must start
 
 ## Waiting to arrive (addressed to PROCESS #6's session; ask for them again under your address)
 
-- **The check measurement.** The owner pasted a read-only run of `check` over civicsmith's 178 modules
+- **The check measurement** (still not arrived at 19:45Z; the owner is asked on his page to redirect it to
+  PROCESS #7). The owner pasted a read-only run of `check` over civicsmith's 178 modules
   into the set-up session (`session_018BhcecbrWWH3xBs3py4NQW`, "Process4 civicsmith setup session") at
   ~18:44Z. Its report was to come by message to PROCESS #6 and had not come by 19:10Z. PROCESS #6, if
   still open, forwards it to you and does nothing else. If it does not come, ask the owner to type in
@@ -48,6 +58,7 @@ session id), and record generation 7 and your session there (the file must start
   `session_018BhcefXVtmctn1hrCaXdZU`. `p4-tranche` carries the hook: ROOT started from `d3cb895b` (the
   merge of civicsmith-copy pull request 1121, main into p4-tranche), so **Action 9a is done**. PROCESS
   #6's information about the check measurement was passed unchanged to ARCH and the coordinator.
+- **Both faults below are now researched (PROCESS #7) and put to the owner as choices 1 and 2 on his page.**
 - **A second process fault arrived at 19:12Z**, recorded unchanged in
   `process/research/fault-lanes-record-before-start-22nov.md`: the lanes record cannot be written before a
   lane starts and then name its session, because the tool refuses the second write; civicsmith's record
