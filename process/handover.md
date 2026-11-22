@@ -104,8 +104,10 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   `session_018BhcecbrWWH3xBs3py4NQW`); its report comes to PROCESS by message. Then put options to him
   (that note's last sections). No job should open on civicsmith before that.
 - Also for later: who merges the set-up pull request into main (same note, last section).
-- Next for him: the click on #1120; the measurement paste; Action 7 (Cloudflare token); Action 9 (branch
-  rule); Action 10 (ROOT), whose prompt carries PROCESS's session. When civicsmith's ROOT messages its
+- Done on his word, 22 Nov: #1120 merged (the hook is on main); the measurement pasted into the set-up
+  session; the Cloudflare token created and entered in the environment. Next for him: Action 9 (branch
+  rule); Action 9a (carry main's `.claude/settings.json` onto p4-tranche by his clicks); Action 10
+  (ROOT), whose prompt carries PROCESS's session. When civicsmith's ROOT messages its
   address, add it to `products` in `handover-process`; then archive the lane and write it not live.
 
 ## Environment / tool notes
