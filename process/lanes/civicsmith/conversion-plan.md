@@ -1,6 +1,6 @@
 # Civicsmith's conversion plan: outline
 
-Length: 179 lines. Last section: "6. Open, and who settles it".
+Length: 182 lines. Last section: "6. Open, and who settles it".
 
 **Status: outline, by PROCESS civicsmith lane #1, 20 Nov 2026. Nothing here is decided by the owner,
 built or run.** It is the product's conversion plan that design part 0 §1 and part 10 §2 item 2 name.
@@ -99,8 +99,11 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
   exercises several modules and belongs in the latest of them; a shared test helper or fixture that
   belongs in an earlier module and its public files; two modules whose boundary is wrong (design part
   2 §8, an architecture bug: the module list or the interface is corrected); or an order that can
-  simply be changed. **The module list is converted so that no module's tests reach a later module**,
-  and the four T53 modules stay out of the first tranche's slice until that is so. The four file cycles
+  simply be changed. The set-up session converts the list as it stands on main, reshaping nothing,
+  and writes each such reference into `process/waiting-for-arch.md` (ARCH does not exist before ROOT
+  starts). **ARCH, once started, corrects the list or places the work before any job opens on those
+  modules, so that no module's tests reach a later module**; the four T53 modules stay out of the first
+  tranche's slice until that is so. The four file cycles
   inside single modules stay as they are; Process4 orders modules, not files.
 - **Generated and shared files have one owner each.** `bio-plane/src/setup-words/rows.mjs` (generated,
   26,994 lines), the bundles in `release/`, `bio-plane/package.json` and the `wrangler.jsonc` files each

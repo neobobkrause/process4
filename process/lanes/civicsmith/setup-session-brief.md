@@ -1,6 +1,6 @@
 # The brief for civicsmith's set-up session (act 8): draft
 
-Length: 82 lines. Last section: "4. What it reports when it ends".
+Length: 86 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction. **Draft:** the process
 config's last fields wait on the second reading (`reading-brief-2-tokens.md`). It is the brief design part 7
@@ -52,12 +52,16 @@ record holds only decisions about the design. This session writes the first entr
      including `build/`, `docs/`, `release/`, the generated `bio-plane/src/setup-words/rows.mjs`, the
      bundles, each `package.json` and each `wrangler.jsonc`. Check that every name in `uses` stands
      earlier in the order file; report any that does not, without reordering by judgment.
-     **No module's tests may reach a later module.** The second reading's item 12 lists every test
-     reference to a module at the same or a later position, of every kind, and the cycles they make; ARCH
-     decides each (the lane sorts them into four kinds: test belongs in a later module; shared helper
-     belongs in an earlier module's public files; wrong boundary; order can change). This session
-     converts the list as ARCH's decisions give it, and where a finding is not yet decided it reports it
-     and does not guess. **Wait on that** before writing the module list.
+     **Tests that reach a later module.** ARCH does not exist until ROOT starts, and ROOT needs this list
+     on the tranche branch (part 7 §4, acts 8 and 9). So this session converts the list as it stands on
+     main, in order, reshaping nothing and changing nothing in the product. For each test reference to a
+     later module the second reading found (its item 12), it writes one line into
+     `process/waiting-for-arch.md`: the module, the test file and line, the module reached, and the kind
+     the lane sorted it into (test belongs in the later module; shared helper belongs in an earlier
+     module's public files; wrong boundary, part 2 §8; order can change). It names the same lines in its
+     report. ARCH, once started, corrects the list or places the work before any job opens on those
+     modules. Known, not a fault: the required run passes this pull request whatever the references,
+     because a pull request into `main` runs no module's tests (`tool/lib/scope.mjs:28`; build text 1 §5).
    - **The required-run workflow:** `.github/workflows/module-tests.yml`, copied from Process4's
      `shims/module-tests.yml` unchanged. Leave the product's four own workflows as they are.
    - **The owner's decision record:** `process/decisions-owner.md` with the entry of section 2.
