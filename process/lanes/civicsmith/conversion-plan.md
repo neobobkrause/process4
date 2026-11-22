@@ -29,7 +29,7 @@ differ, the design rules. Steps that wait on the owner are named in section 6.
   - the problems that held rounds were size, files many jobs touch, and slow, flaky or hanging test runs;
   - no Process3 traces; the previous process, neoProcess, was removed on 1 Nov 2026;
   - the copy holds `main` only. The paused tranche T53 (2,030 commits on `tranche/T53`) and the `coord`
-    branch are not in it (section 6).
+    branch are not in it. Settled: The owner's decision of 22 Nov 2026, exactly as typed (relayed by PROCESS #6): "With regard to The paused tranche T53, decision: Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." Conversion starts from civicsmith-copy's main.
 
 ## 3. The owner's acts, for an existing repository
 
@@ -162,8 +162,8 @@ the forbidden-commands copy), and by ARCH after ROOT starts for the rest. The so
 
 | Matter | Who settles |
 |---|---|
-| civicsmith-copy's approvals forbid a session to place new ones (point 10) | The owner, at PROCESS |
-| The paused T53 work (2,030 commits on `tranche/T53`) and the `coord` branch, which are not on this copy's main | The owner |
+| civicsmith-copy's approvals forbid a session to place new ones (point 10) | Settled: PROCESS drafted them; the owner landed both files himself on 22 Nov 2026 (his word; read back by the second reading, item 11) |
+| The paused T53 work and the `coord` branch | Settled 22 Nov 2026, the owner's words: "With regard to The paused tranche T53, decision: Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." |
 | Whether civicsmith-copy, not the original `civicsmith/civicsmith`, is where development continues | The owner (he named civicsmith-copy) |
 | The test command's form for a list of files | The set-up session and ARCH |
 | Whether the reader and notice follow 178 modules and 4,700 files | Shown in the first tranche |
