@@ -1,6 +1,6 @@
 # The brief for civicsmith's set-up session (act 8): draft
 
-Length: 120 lines. Last section: "4. What it reports when it ends".
+Length: 137 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction; the process config's fields
 filled from the second reading (`research/civicsmith-copy-reading-2.md`) by lane #2, 22 Nov 2026. **Draft**
@@ -75,11 +75,12 @@ record holds only decisions about the design. This session writes the first entr
      earlier in the order file; report any that does not, without reordering by judgment.
      **Tests that reach a later module.** ARCH does not exist until ROOT starts, and ROOT needs this list
      on the tranche branch (part 7 §4, acts 8 and 9). So this session converts the list as it stands on
-     main, in order, reshaping nothing and changing nothing in the product. For each test reference to a
-     later module the second reading found (its item 12), it writes one line into
-     `process/waiting-for-arch.md`: the module, the test file and line, the module reached, and the kind
-     the lane sorted it into (test belongs in the later module; shared helper belongs in an earlier
-     module's public files; wrong boundary, part 2 §8; order can change). It names the same lines in its
+     main, in order, reshaping nothing and changing nothing in the product. For each group of test references to a
+     later module the third reading found (sorted in the lane's `later-module-tests.md`, given with this
+     brief), it writes one line into `process/waiting-for-arch.md`: the group, the test files and lines,
+     the modules reached, and the kind the lane proposed (test belongs in the later module; shared helper
+     belongs in an earlier module's public files; wrong boundary, part 2 §8; order can change; or an
+     earlier module used but not declared). It names the same lines in its
      report. ARCH, once started, corrects the list or places the work before any job opens on those
      modules. Known, not a fault: when the list is converted as it stands, any entry whose `uses` names a
      later module is refused by `check` at that module's first job; that is the intended signal to ARCH.
@@ -95,13 +96,29 @@ record holds only decisions about the design. This session writes the first entr
 5. **Open the pull request, mark it ready, read its result.** The required run `module-tests` reports on
    it for the first time. For a pull request into `main` its scope is "nothing", so it passes at once
    (build text 1 §5). Then **merge it**.
-6. **Put the start-up hook back.** After the third reading, the lane gives this session the recovered
-   `hooks` part of `.claude/settings.json` (the third reading's item 2 prints the newest version of the
-   file that had one). Make a second working branch from `main`'s newest commit, place that `hooks` part
-   back into `.claude/settings.json` unchanged beside the deny list, and open a pull request that changes
-   only that file. civicsmith-copy's approvals allow a session to place it; **never merge it.** The owner
-   reads the changed file on the pull request's page and lands it by clicking Merge there. Give him the
-   pull request's full address. If the lane has not yet sent the hooks part, skip this step and say so.
+6. **Put the start-up hook back.** First print `.claude/settings.json` as it stands on `main` (the
+   owner's fixed file) and report it. Check that `.claude/hooks/session-start.sh` is on `main`, and say
+   what it starts. Then make a second working branch from `main`'s newest commit, add the `hooks` part
+   below, recovered by the third reading from commit `4e428915` (`research/civicsmith-copy-reading-3.md`
+   §3), beside the deny list, changing nothing else, and open a pull request that changes only that file.
+   civicsmith-copy's approvals allow a session to place it; **never merge it.** The owner reads the
+   changed file on the pull request's page and lands it by clicking Merge there. Give him the pull
+   request's full address. If the script is not on `main`, do not open the pull request; report it.
+
+   ```json
+   "hooks": {
+     "SessionStart": [
+       {
+         "hooks": [
+           {
+             "type": "command",
+             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\""
+           }
+         ]
+       }
+     ]
+   }
+   ```
 7. **Make `p4-tranche`** from `main`'s newest commit, the merge of step 5, also where `main` holds the
    earlier processes' history.
 8. **Stop.** Do not start ROOT; the owner does (act 9).
