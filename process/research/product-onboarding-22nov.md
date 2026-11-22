@@ -93,3 +93,17 @@ the trial's sessions run under. Names only; no value was read, used or shown.
 - Network access is unrestricted. The setup script writes the permissions-management block (design
   part 7 section 5); the session's own settings carry it. The environment names no repositories. Two
   other environments exist on the account: Default and Full.
+
+## The owner's answers (22 Nov 2026), exactly as typed
+
+"1. Decision: yes
+2. Decision: A
+3. Decision: A
+4. Decision: The token created for the product being onboarded should be the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle. Anything short of those privileges will require me to unnecessarily create yet another token."
+
+Reading: 1, 2 and 3 settle Q1–Q3 as recommended (an onboarding lane per product; the lane reads through a
+read-only session he starts; he makes settings changes by clicks). Answer 4 is about the token he creates
+for a product, not about Q4 as asked (production keys found in the environment), which stays open. Before
+building on answer 4, PROCESS asks him once which token he means and whether "entire lifecycle" includes
+publishing releases, because the design forbids a session to hold a production key directly (part 1 §2;
+part 9) and his release token is the one key that may publish (part 3 §6). His words stand as typed.

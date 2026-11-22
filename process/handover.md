@@ -29,8 +29,13 @@ own session id), and record generation 7 and your session there (the file must s
 The owner asked to work through onboarding a product into Process4 and then change the design. Research
 and four questions are in `process/research/product-onboarding-22nov.md` (Q1 an onboarding lane per
 product; Q2 how it reads the product; Q3 who makes settings changes; Q4 production keys reported in the
-environment). They are on his page. Wait for his marked choices, then make the design change (part 6 §8,
-part 7 §4, part 4 §2 and the PROCESS starting text likely), recorded in `process/design-decisions.md`.
+environment). **He has answered** (his exact words are at the end of that research note): 1 yes, 2 A, 3 A — make the
+design change for these (part 6 §8: PROCESS starts an onboarding lane for each joining product, its charter
+and its end when ROOT starts; part 7 §4: the lane reads through a read-only session he starts, and his
+settings acts are clicks from the lane's page; the PROCESS starting text's lane act), and record them in
+`process/design-decisions.md` with his words. His answer 4 is about the product's token, not Q4 as asked;
+PROCESS #5 asked him to clarify (which token; whether it covers publishing releases, given part 1 §2 and
+part 9). Q4 (production keys in BioDefault) is still open.
 PROCESS #6 read the environment by name on starting (section 5 of that note): two seed variables are
 there, and a GitHub token and Cloudflare tokens already sit in BioDefault. The page's Q4 says so.
 
