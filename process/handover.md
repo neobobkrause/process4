@@ -48,9 +48,11 @@ session id), and record generation 7 and your session there (the file must start
   `session_018BhcefXVtmctn1hrCaXdZU`. `p4-tranche` carries the hook: ROOT started from `d3cb895b` (the
   merge of civicsmith-copy pull request 1121, main into p4-tranche), so **Action 9a is done**. PROCESS
   #6's information about the check measurement was passed unchanged to ARCH and the coordinator.
-- **A process fault is on its way by the design's path** (ROOT → ARCH → coordinator → PROCESS): the fetch
-  line's `chmod -R a-w` does not make the process copy read-only, because cloud sessions run as root
-  (build text 1 section 2). Research it when it arrives; nothing is proposed yet.
+- **A process fault arrived from civicsmith's coordinator at 19:08Z** and is recorded unchanged in
+  `process/research/fault-fetch-copy-not-read-only-22nov.md`: the fetch line's `chmod -R a-w` does not make
+  the process copy read-only, because cloud sessions run as root. Not researched; research it and put
+  options to the owner. The coordinator has put PROCESS's hold-jobs recommendation to the owner as a
+  question on civicsmith's standing page.
 
 ## With the owner (nothing marked is unrecorded)
 
