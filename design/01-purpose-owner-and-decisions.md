@@ -33,7 +33,7 @@ Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 
 - Every act of his is clicks on pages named by their full address, or words he types into a session or into a field of a form. No act asks him to edit a file or type a command. His standing page gives each act's steps that way: each page by its full address, each button by its exact label, and what he should see after each click.
 - Each act with a known date appears on his standing page before the date, with the steps.
-- A token he makes for a product is made once, when the product joins Process4. In his words, it is "the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle". The product's onboarding lane (part 6, section 8) works out the whole list first and gives it on his page, so that no later stage asks him to make another. Where the product's development uses more than one service, there is one such token for each. A token renewed before it expires carries the same permissions.
+- A token he makes for a product is made once, when the product joins Process4. In his words, it is "the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle". The product's onboarding lane (part 6, section 8) works out the whole list first and gives it on his page, so that no later stage asks him to make another. Where the product's development uses more than one service, there is one such token for each. No GitHub token need be made where sessions act on GitHub through the harness's own connection to it. A token renewed before it expires carries the same permissions.
 - Every reasonable effort is made to renew a token before it expires, so that no full stop is needed. Once a new token is in place, fresh sessions start with it before the old one expires. A full stop happens only if the token is not replaced in time.
 - A harness runs AI sessions only on what the owner's subscription covers. Anything that would cost more comes to him first.
 
@@ -52,7 +52,7 @@ Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 - A question is put to him inline, in one form: a title; the question; an explanation of the issue; options, each with its own identity; the recommendation and its reasons; and the freedom to set the options aside.
 - No technical question is brought to him. The AI decides it and reports it in one plain line.
 - No session assures him that something will work. Each claim put to him says what is proven and what is not, names its source, and calls anything unread or unmeasured unknown.
-- One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. The coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show.
+- One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. The coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show. While a product is being onboarded, its onboarding lane keeps that product's page (part 6, section 8).
 - He can see each open job's progress and status without speaking to it (part 4, section 9).
 - When the process is completely blocked he gets one plain message with a numbered list of what is his to do. In every other case the stop is recorded as a named blocker and other work goes on.
 

@@ -24,7 +24,7 @@ own session id), and record generation 7 and your session there (the file must s
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
 
-## Current work: product onboarding (decided 22 Nov); one question with the owner
+## Current work: product onboarding (decided 22 Nov)
 
 Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 `process/design-decisions-2.md`, and "Publishing a release" in `design-decisions.md`; research in
@@ -38,17 +38,11 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 - Production signing keys stay in the sessions' environment ("No session directly holds a production
   key" is gone from the design). The civicsmith approvals draft was changed to match.
 
-- **With the owner, on his page: should Process4 use a GitHub token at all** (A no token, recommended; B a
-  fine-grained token he makes; C a classic token made as the sessions' account). The lane's grounds:
-  `process/lanes/civicsmith/research/github-token-permissions.md` (a fine-grained token reaches only its
-  maker's repositories; the tool strips GitHub tokens, `tool/lib/util.mjs`; the Checks API is closed to
-  fine-grained tokens). The lane is checking C from GitHub's documentation. B or C needs a tool change
-  and, for B, a change to design part 6 section 3 (sessions act as a second account).
-- **Asked once, not yet answered:** whether to record as decisions his two unmarked paragraphs about the
-  onboarding lane (it talks directly to PROCESS and keeps the product's own "waiting for Bob" with status
-  and detailed steps; it starts with the GitHub token and the repository set-up steps). If he says yes:
-  part 6 section 8 gains those lines, with an entry in `design-decisions-2.md`.
-- **The civicsmith lane is civicsmith's onboarding lane** and is working to those paragraphs: its page as
+- **Decided 22 Nov:** the lane talks directly to PROCESS, keeps the product's "waiting for Bob" page with
+  status and fully detailed steps, and starts with GitHub; no GitHub token is made where sessions act
+  through Claude's GitHub connection (part 6 section 8; part 1 sections 3 and 5; part 7 section 4). So no
+  token and no tool change. Untried through the connection: publishing a release.
+- **The civicsmith lane is civicsmith's onboarding lane** and works to that decision: its page as
   civicsmith's "waiting for Bob"; the GitHub token steps first; then the repository set-up walk-through;
   then the Cloudflare token (draft up; a second read-only reading closes it). It tells PROCESS when ready.
 - **PROCESS #5 was still acting on 22 Nov** (pull request 123). PROCESS #6 told it that it has handed over
@@ -70,7 +64,7 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 ## Waiting on the owner
 
-- The record-them question, and archiving PROCESS #5 (above).
+- Archiving PROCESS #5 (above).
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
 - Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not

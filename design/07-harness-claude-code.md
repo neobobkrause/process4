@@ -61,13 +61,13 @@ As measured on Claude Code:
 
 Carried out once, for the trial repository (acts 1 to 10). **Unproven** for a real product.
 
-Before these acts PROCESS starts the product's onboarding lane (part 6, section 8). The owner starts a read-only session on the product's repository with the lane's brief, and its report reaches the lane. The lane then writes the page that gives each act below as clicks, and the brief for act 8's session. Each change to a setting among these acts is his own click from that page.
+Before these acts PROCESS starts the product's onboarding lane (part 6, section 8). The owner starts a read-only session on the product's repository with the lane's brief, and its report reaches the lane. The lane keeps the product's page of what is waiting for him, which gives each act below as fully detailed steps, starting with GitHub (acts 1 to 5), and writes the brief for act 8's session. Each change to a setting among these acts is his own click from that page.
 
 1. Have a second GitHub account for the sessions.
 2. Give that account write access to the product's repository and the process's, and accept as that account.
 3. Set each repository's settings: merges by merge commit, no automatic merging, no automatic deleting of branches, a read-only token for GitHub's machines, no repository secrets.
 4. Make the rule for every branch: no deleting and no overwriting, with no one excepted.
-5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories.
+5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories. Sessions act on GitHub through this connection, so no GitHub token is made (part 6, section 8).
 6. Make the product's tokens, once, each with every permission the product's development will need at every stage (part 1, section 3); the lane's page lists them. Enter the secret values in the fields of Claude's cloud environment settings page. A session checks that environment carries the process's permissions-management settings; where they are missing, he approves with a click the change it proposes (section 5).
 7. Decide his approvals in PROCESS's session, drafted there on his request or typed by him, and land them, with the forbidden commands, on the process repository's main branch by clicking Merge on the pull requests PROCESS opens (part 6, section 2).
 8. Do the same for the product, in a plain session he starts on the product's repository for this one act, with the lane's brief. Before the product has a coordinator, that session drafts the product's approvals (part 6, section 2). It also writes the product's first Process4 files — `process.json`, the module list, the required-run workflow and the copy of the forbidden commands — by pull request into main, and then makes the tranche branch from main's newest commit, also where main already holds an earlier history.

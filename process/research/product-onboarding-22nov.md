@@ -142,3 +142,13 @@ in PROCESS #6's session as well, and PROCESS #6 built on them.
   because sessions act through Claude's GitHub connection; it was told to give the token steps he
   asked for and state that finding beside them.
 
+## 8. The lane's page and the GitHub token, decided (22 Nov 2026)
+
+His words: "Decision: The product-specific lane talks directly to PROCESS and keeps the product's
+"waiting for Bob" page updated with status and fully detailed steps; and starts with the steps I need
+to create GitHub token and set up the product-specific repo. But a Github token needn't be created if
+sessions act through Claude's GitHub connection." Built: design part 6 section 8, part 1 sections 3
+and 5, part 7 section 4. Sessions do act through that connection (the trial's merges, pushes and pull
+requests, as the second account), so no GitHub token is made and the tool is unchanged. Not yet tried
+through the connection: publishing a release.
+

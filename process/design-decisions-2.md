@@ -194,29 +194,46 @@ page, on the item "Record that a role session can name itself").
 ### Subject: Onboarding a product — the onboarding lane, how it reads the product, and who changes settings
 
 **The rule as it now stands.** For each product that joins Process4, PROCESS starts one onboarding
-lane in the process's repository. The lane plans the product's move: it writes the product's
-conversion plan, the owner's page of his acts to start the product (each as clicks with what he
-should see, and with the whole list of permissions for each token he makes), and the brief for the
-session that sets the product up. It ends when the product's ROOT has started; its folder and research
-stay. The lane does not read or act on the product's repository, accounts or services itself: the
-owner starts a read-only session on the product's repository with the lane's brief, and its report
-reaches the lane, by message where that repository's approvals allow it and through the owner
-otherwise. Every change that onboarding needs to a setting of GitHub or of the hosting account is the
-owner's own click, from the lane's page; no session is given the means to change those settings.
+lane in the process's repository. The lane talks directly to PROCESS. It plans the product's move and
+writes the product's conversion plan. It keeps the product's own "waiting for Bob" page, updated with
+where the onboarding stands and with each act it needs from the owner, each fully detailed as steps
+(each page by its full address, each button by its exact label, what he should see after each click,
+and the whole list of permissions for each token he makes). It writes the brief for the session that
+sets the product up. It starts with GitHub: the steps he needs to make the GitHub token, and to set
+up the product's repository. No GitHub token need be made where sessions act through the harness's
+own connection to GitHub; on Claude Code they do, through Claude's GitHub connection as the sessions'
+second account, so none is made. The lane ends when the product's ROOT has started; its folder and
+research stay.
 
-The three questions as PROCESS put them on his standing page, each with "no change" open: (1) an
-onboarding lane for each product, recommended yes; (2) how it reads the product — (a) a read-only
+The lane does not read or act on the product's repository, accounts or services itself: the owner
+starts a read-only session on the product's repository with the lane's brief, and its report reaches
+the lane, by message where that repository's approvals allow it and through the owner otherwise.
+Every change that onboarding needs to a setting of GitHub or of the hosting account is the owner's
+own click, from the lane's page; no session is given the means to change those settings.
+
+The three questions as PROCESS first put them on his standing page, each with "no change" open: (1)
+an onboarding lane for each product, recommended yes; (2) how it reads the product — (a) a read-only
 session he starts on the product's repository with the lane's brief, or (b) read-only GitHub and
 Cloudflare tokens so the lane reads directly — recommended (a); (3) who changes GitHub settings — (a)
 he does, by clicks from the lane's page, or (b) a session holding an admin token — recommended (a).
-It changed design part 0 (sections 1 and 6), part 1 section 3, part 4 section 2, part 6 section 8,
-part 7 section 4, part 10 sections 2 and 3, and the PROCESS starting text. It adds no test, gate,
-review or stop: it names a lane PROCESS could already start, and writes down routes already in use.
-Unproven: an onboarding lane carried through to a product's ROOT starting. Researched in
-`process/research/product-onboarding-22nov.md`.
+On the GitHub token, PROCESS put three options (A no token, keep the connection, recommended; B a
+fine-grained token he makes, with the tool changed and acts showing as him; C a classic token made as
+the sessions' account, with the tool changed); his words below settle it as no token where the
+connection carries the acts. The lane's grounds are in
+`process/lanes/civicsmith/research/github-token-permissions.md`.
+
+It changed design part 0 (sections 1 and 6), part 1 sections 3 and 5, part 4 section 2, part 6
+section 8, part 7 section 4, part 10 sections 2 and 3, and the PROCESS starting text. It adds no test,
+gate, review or stop: it names a lane PROCESS could already start, and writes down routes already in
+use. Unproven: an onboarding lane carried through to a product's ROOT starting; publishing a release
+through the connection. Researched in `process/research/product-onboarding-22nov.md`.
 
 **The owner's words.** "1. Decision: yes" — 22 November 2026. "2. Decision: A" — 22 November 2026.
-"3. Decision: A" — 22 November 2026.
+"3. Decision: A" — 22 November 2026. "Decision: The product-specific lane talks directly to PROCESS
+and keeps the product's "waiting for Bob" page updated with status and fully detailed steps; and
+starts with the steps I need to create GitHub token and set up the product-specific repo. But a
+Github token needn't be created if sessions act through Claude's GitHub connection." — 22 November
+2026.
 
 ### Subject: A product's token is made once, with every permission its development will need
 
@@ -224,7 +241,8 @@ Unproven: an onboarding lane carried through to a product's ROOT starting. Resea
 joins Process4, with every permission that will be needed across all stages of that product's
 development under Process4, for its whole life. The product's onboarding lane works out the whole
 list first and gives it on his page, so that no later stage asks him to make another token. Where the
-product's development uses more than one service, there is one such token for each. A token renewed
+product's development uses more than one service, there is one such token for each. No GitHub token
+need be made where sessions act through the harness's connection to GitHub (the entry above). A token renewed
 before it expires carries the same permissions. It changed design part 0 section 6 (the deploy
 token), part 1 section 3, part 7 section 4 (act 6) and part 9 section 1. It adds no test, gate,
 review or stop.

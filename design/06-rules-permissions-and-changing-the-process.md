@@ -1,6 +1,6 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 81 lines. Last section: "8. Process4 develops itself".
+Length: 82 lines. Last section: "8. Process4 develops itself".
 
 ## 1. What holds a rule
 
@@ -74,7 +74,8 @@ What follows from them:
 ## 8. Process4 develops itself
 
 - PROCESS may have lanes of its own for standing subjects, as needed. PROCESS starts its own lanes.
-- **The onboarding lane.** For each product that joins Process4, PROCESS starts one onboarding lane, in the process's repository. The lane plans the product's move. It writes the product's conversion plan. It writes the owner's page of his acts to start the product (the harness part lists them), each as clicks with what he should see, and with the whole list of permissions for each token he makes (part 1, section 3). It writes the brief for the session that sets the product up. It ends when the product's ROOT has started; its folder and research stay.
+- **The onboarding lane.** For each product that joins Process4, PROCESS starts one onboarding lane, in the process's repository. The lane talks directly to PROCESS. It plans the product's move and writes the product's conversion plan. It keeps the product's own page of what is waiting for the owner, updated with where the onboarding stands and with each act it needs from him (the harness part lists them). Each act is fully detailed as steps: each page by its full address, each button by its exact label, what he should see after each click, and the whole list of permissions for each token he makes (part 1, section 3). It writes the brief for the session that sets the product up. It ends when the product's ROOT has started; its folder and research stay.
+- **Where the lane starts.** With GitHub: the steps the owner needs to make the GitHub token, and to set up the product's repository. No GitHub token need be made where sessions act on GitHub through the harness's own connection to it (the harness part says what carries that).
 - **How the lane reads the product.** The lane does not read or act on the product's repository, accounts or services itself. The owner starts a read-only session on the product's repository with the lane's brief. That session changes nothing, and its report reaches the lane: by message where that repository's approvals allow it, and through the owner otherwise.
 - **Settings.** Every change that onboarding needs to a setting of GitHub or of the hosting account is the owner's own click, from the lane's page. No session is given the means to change those settings (section 3).
 - **Unproven:** an onboarding lane carried through to a product's ROOT starting.
