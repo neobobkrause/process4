@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 22 Nov 2026
+- `repository-secrets-22nov.md` — civicsmith's own workflows hold repository secrets that act 3 removes (Docker Hub, a Cloudflare token); options A (no change) to C, put to the owner.
 - `check-on-real-code-22nov.md` — the tool's `check` on civicsmith's real code: 74,271 refusals before decision 3B; after it, 177 of 204 modules pass, 217 comment-based refusals in 27 modules; the exclude list for vendored and built files.
 - `fault-fetch-copy-not-read-only-22nov.md` — `chmod -R a-w` did not make the process copy read-only; decision 1B dropped the step.
 - `fault-lanes-record-before-start-22nov.md` — the lanes record could not name a lane's session after a claim written before its start; decision 2B (claim first, address after).

@@ -22,32 +22,36 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #8. Two things wait for you: the line that moves civicsmith (you can type it now), and starting PROCESS #9 when you are ready.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #9. One question waits for you (civicsmith's old secrets), and one small click.</p>
 </header>
 
+<section class="wait">
+<h2>Waiting for you: civicsmith's old workflows and their secrets</h2>
+<p><b>The bottom line.</b> Process4's setup says a product's repository holds no secrets. civicsmith's own older workflows use three: two for Docker Hub (to push container images) and one Cloudflare token (to deploy a test copy). Removing them stops those two workflows. Under Process4 neither is needed as it stands: ARCH deploys the development copy from a session with the token already in the environment, and pushing images belongs to publishing a release, which ARCH also does from a session. Nothing has failed yet; no civicsmith deployment or release has run.</p>
+<ul>
+<li><b>A. No change (recommended).</b> When convenient, delete the three secrets on https://github.com/neobobkrause/civicsmith-copy/settings/secrets/actions (each one's trash button, then the red confirm button). When civicsmith prepares its first release, a Docker Hub token goes into the environment with the other release keys, made once. civicsmith's ARCH is told the two old workflows stop and decides what becomes of them.</li>
+<li><b>B. Keep them, behind your approval.</b> Move them into a GitHub environment that waits for your click before each run, as civicsmith's signing already does. The old workflows keep working, but every run waits for you.</li>
+<li><b>C. Allow them.</b> Keep the secrets in the repository. Least work, but any workflow a session merges could reach those tokens, which is what the rule is there to prevent.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: A". Not known: whether the three secrets are still there; a session cannot read a repository's secret names.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you, one small click</h2>
+<ol>
+<li><b>Archive PROCESS #8.</b> Open <b>https://claude.ai/code</b>, open the session named <b>PROCESS #8</b>, and choose <b>Archive</b> from its menu. You should see it move to the archived list. PROCESS #9 has taken over.</li>
+<li><b>Nothing to do: one old wake timer.</b> "civicsmith watcher hourly wake" still fires each hour into civicsmith's first watcher, which is archived. I have told civicsmith's ROOT, whose job it is to remove it. If it is still in your scheduled tasks tomorrow, I will give you the clicks.</li>
+</ol>
+</section>
+
 <section class="card">
-<h2>Done: PROCESS #8 is running</h2>
-<p>You started it on 22 Nov at 21:31. It has read the design, the record of your decisions, its folder and PROCESS #7's handover, is recorded as the live PROCESS, and has told civicsmith's ROOT and the trial's ROOT its address. The PROCESS #7 session is archived.</p>
+<h2>Done: PROCESS #9 is running</h2>
+<p>You started it on 22 Nov at 23:40. It has read the design, the record of your decisions, its folder's index and PROCESS #8's handover, is recorded as the live PROCESS, and has told civicsmith's ROOT and the trial's ROOT its address.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: move civicsmith onto your three decisions</h2>
-<p><b>The bottom line.</b> Your three decisions are built and merged (pull request 185). civicsmith gets them when it next moves to the latest version, which takes one line from you.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #2</b>.</li>
-<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
-<li>You should see it record your words and tell ARCH. When every civicsmith session is on the new version, it tells you in one line. The old watcher's wake timer goes then too, or sooner if you delete "civicsmith watcher hourly wake" from your scheduled tasks.</li>
-</ol>
-</section>
-
-<section class="wait">
-<h2>Waiting for you, when you are ready: start PROCESS #9</h2>
-<p>PROCESS #8 has reached its refresh point: half full, at a natural pause, nothing half done, everything merged. Its handover is written. Nothing is lost if you start it later.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md and process/design-decisions-2.md; process/README.md; the index of your research, process/research/README.md; process/lanes/civicsmith/README.md; and process/handover.md — read it last and continue from it. Open a research file only when a question needs it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>It names itself <b>PROCESS #9</b> and tells civicsmith's ROOT and the trial's ROOT its address. Then archive the PROCESS #8 session.</li>
-</ol>
+<section class="card">
+<h2>Done: civicsmith is on your three decisions</h2>
+<p>civicsmith's ARCH reports every civicsmith session on the newest Process4 version, which holds your three decisions of 22 Nov. civicsmith's coordinator is recording your new number of jobs at a time (8). That is as reported by those sessions; I cannot read civicsmith's records from here.</p>
 </section>
 
 <section class="card">
@@ -58,11 +62,6 @@ a{color:var(--accent)}
 <li><b>Reading research.</b> A lane, and I, read a one-line-per-file index of our research, and open a research file, or hand it to a helper, when a question needs it. The rest of what we read in full is unchanged.</li>
 </ul>
 <p>Your words are recorded exactly, with my question in between. Text only: the tool did not change. One thing left as it stands, for transparency: my own reading set, with the record of your decisions, is still about 211,000 bytes, over the 175,000 limit though under the 220,000 measured to read well. I recommend no change now. Next time you start a PROCESS, the prompt I give you here will name the index instead of my whole folder.</p>
-</section>
-
-<section class="card">
-<h2>Done: civicsmith is on the new version</h2>
-<p>civicsmith's coordinator reports every civicsmith session on the new version at 23:04. 177 of its 204 modules pass the fixed check; 27 hold 217 complaints, each resting on a comment the code does not match, for each module's first job. Jobs stay held at your slot number 0 until you change it in the coordinator's session.</p>
 </section>
 
 <section class="card">
@@ -143,7 +142,7 @@ a{color:var(--accent)}
 <ul>
 <li><b>The trial</b> is running and quiet. Its coordinator confirmed on 22 Nov: it has not been stopped since you restarted it on 20 Nov, every requirement is met, no job is open, and no process fault is open. Two optional things wait for you in the coordinator's session, neither blocking: your go on bringing main's forbidden-commands file in line with the tranche branch's, and whether to try the two paths the trial has not yet used (a told job that changes code; walks and a development deployment).</li>
 <li><b>civicsmith</b> is running under Process4: ROOT, the watcher, ARCH, the coordinator and the UX lane are up. Its onboarding lane has ended. civicsmith's coordinator keeps civicsmith's own page of what waits for you. No job has opened.</li>
-<li><b>Next for civicsmith:</b> on the new version; then a small first tranche as the proof, once you give a slot number above 0.</li>
+<li><b>Next for civicsmith:</b> its first tranche, now that jobs may start. ARCH opens it and decides its scope.</li>
 </ul>
 </section>
 </main>
