@@ -229,13 +229,10 @@ before it expires carries the same permissions. It changed design part 0 section
 token), part 1 section 3, part 7 section 4 (act 6) and part 9 section 1. It adds no test, gate,
 review or stop.
 
-PROCESS's reading, which the owner can overrule. His words came as the answer to question 4 on his
-standing page, which asked about two seed values reported in the sessions' environment. They state a
-rule for tokens, and that rule is what is recorded and built. They are not taken to change his
-decision of 20 November 2026 that no session directly holds a production key (the entry "Publishing a
-release"): no stage of development under Process4 acts on an installed site, so the whole list of
-permissions does not reach one. What becomes of the two seed values is put to him as a question of
-its own.
+His words came as the answer to question 4 on his standing page, which asked about two seed
+values in the sessions' environment. They state a rule for tokens, and that rule is what is recorded
+here. What becomes of the two seed values he decided separately on the same day: they are production
+signing keys, and they stay (the entry "Publishing a release" in `design-decisions.md`).
 
 **The owner's words.** "4. Decision: The token created for the product being onboarded should be the
 token with all the permissions that will be needed across all stages of process4 driven development

@@ -4,7 +4,7 @@
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
 Last written: 22 Nov 2026, by **PROCESS #6** (`session_018BhcecxLoUeRRqQzG6YZNk`), after the
-onboarding decisions, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
+decisions on tests and signing keys, at a low fill. It is recorded as generation 6 in `handover-process`. A successor is
 **PROCESS #7**: read generation 6 there, name yourself `PROCESS #7` with set-session-title (pass your
 own session id), and record generation 7 and your session there (the file must start with the JSON block).
 
@@ -24,24 +24,30 @@ own session id), and record generation 7 and your session there (the file must s
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
 
-## Current work: product onboarding (decided 22 Nov; one question left)
+## Current work: product onboarding (decided 22 Nov); one question with the owner
 
-The owner chose on 22 Nov ("1. Decision: yes", "2. Decision: A", "3. Decision: A", and decision 4 on
-tokens). Built and recorded by PROCESS #6: the onboarding lane (design part 6 section 8), the read-only
-session he starts, settings by his clicks, and a product's token made once with every permission its
-development will need (part 1 section 3; part 7 section 4 act 6; part 9 section 1). Entries are in
-`process/design-decisions.md`; research in `process/research/product-onboarding-22nov.md` (sections 5, 6).
+Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
+`process/design-decisions-2.md`, and "Publishing a release" in `design-decisions.md`; research in
+`process/research/product-onboarding-22nov.md`, sections 5 to 7):
 
-- **Still with the owner:** what becomes of the two seed values in BioDefault (`BIO_RELEASE_SEED`,
-  `BIO_RATIFY_SEED`, read by name only). His decision 4 did not say. It is on his page as one question
-  (A not production keys; B move them out; C they stay, which changes his 20 Nov rule).
-- **The civicsmith lane is civicsmith's onboarding lane.** PROCESS #6 told it the decisions and asked for
-  the owner's token page: the whole permission list for each token civicsmith's development needs.
-- **PROCESS #5 was still acting on 22 Nov.** The owner typed the same four answers in its session too; it
-  recorded them (pull request 123) and asked him to clarify answer 4. PROCESS #6 told it that it has handed
-  over and asked the owner to archive it. Only one PROCESS writes.
-- **Soon:** `process/design-decisions.md` is 59,183 bytes, just under the 60,000-byte single-text
-  maximum. The next entry needs it split first (design part 10 section 2 item 10 leaves the way open).
+- The onboarding lane (design part 6 section 8); the read-only session he starts; settings by his clicks.
+- A product's token is made once with every permission its development will need (part 1 section 3).
+- The tool's tests run only where the tool is changed: PROCESS runs before pushing only the tests of the
+  tool it changed; `tool-tests` passes at once on a draft and on a pull request that changes no file of
+  the tool (`tool/`, `shims/`, `starting_texts/job.md`, `starting_texts/walking-session.md`, the workflow).
+- Production signing keys stay in the sessions' environment ("No session directly holds a production
+  key" is gone from the design). The civicsmith approvals draft was changed to match.
+
+- **Asked once, not yet answered:** whether to record as decisions his two unmarked paragraphs about the
+  onboarding lane (it talks directly to PROCESS and keeps the product's own "waiting for Bob" with status
+  and detailed steps; it starts with the GitHub token and the repository set-up steps). If he says yes:
+  part 6 section 8 gains those lines, with an entry in `design-decisions-2.md`.
+- **The civicsmith lane is civicsmith's onboarding lane** and is working to those paragraphs: its page as
+  civicsmith's "waiting for Bob"; the GitHub token steps first; then the repository set-up walk-through;
+  then the Cloudflare token (draft up; a second read-only reading closes it). It tells PROCESS when ready.
+- **PROCESS #5 was still acting on 22 Nov** (pull request 123). PROCESS #6 told it that it has handed over
+  and asked the owner to archive it. Only one PROCESS writes.
+- **The decisions record is two files**, both read, each under 60,000 bytes; new entries go in the second.
 
 ## Done in PROCESS #5 (all merged, tool-tests green)
 
@@ -58,7 +64,7 @@ development will need (part 1 section 3; part 7 section 4 act 6; part 9 section 
 
 ## Waiting on the owner
 
-- The seeds question (above).
+- The record-them question, and archiving PROCESS #5 (above).
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
 - Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not
@@ -68,6 +74,7 @@ development will need (part 1 section 3; part 7 section 4 act 6; part 9 section 
 
 ## Environment / tool notes
 
+- Run no tool tests by hand unless you changed a tool, and then only that tool's tests (his decision).
 - `node tool/p4.mjs <cmd>`; direct `gh` is denied by design. Flow: `git checkout -b work/<name> origin/main`
   → edit → commit (author `Claude <noreply@anthropic.com>`, Co-Authored-By + Claude-Session trailers) →
   `p4 push` → `p4 open --title` → `p4 ready <pr>` → `p4 results <pr>` until passed → `p4 merge <pr>`
