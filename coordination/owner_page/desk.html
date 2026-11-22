@@ -22,49 +22,18 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #7. Three choices about faults civicsmith found (the check result is the most important), and one thing to confirm.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #7. Your three decisions are recorded; two are built and the third is being built. Nothing waits for you until it is merged.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: fault 2 of two civicsmith found (fault 1 decided)</h2>
-<p>civicsmith's coordinator sent me two process faults within an hour of civicsmith starting. Both are real: I checked each. Neither has caused harm, and neither stops civicsmith's work. They are put together because both change the tool, so whatever you choose makes one new Process4 version.</p>
-
-<p><b>1. Each session's copy of the process can be changed. Decided: 1B, built and merged (pull request 172).</b> Your words are recorded exactly. civicsmith gets it when it moves to the new version.</p>
-<p>Every session starts by fetching a copy of Process4 into a folder of its own, and the last step is meant to make that copy unchangeable. On Claude's cloud machines the step does nothing, because sessions run with full rights there. I measured the same in my own session. No session is known to have changed its copy, and the copy sits outside the product's files, so nothing in it is ever committed.</p>
+<h2>Your three decisions of 22 Nov: two built, one being built</h2>
 <ul>
-<li><b>1A. No change.</b> The texts keep promising an unchangeable copy that is not.</li>
-<li><b>1B. Drop the step that does nothing (recommended).</b> The texts then say plainly that the copy is kept apart and no session edits it: a rule held by the sessions' instructions, like most rules. It removes a step and adds nothing.</li>
-<li><b>1C. Make the copy truly unchangeable</b> with a stronger system command. It works on this machine (measured), but it would be in every session's first command, judged by the permission checker every time. It has passed once. A refusal there would stop a session at its very start.</li>
+<li><b>1B, built and merged (pull request 172).</b> The step that was meant to lock each session's copy of the process, and did nothing, is gone; the texts say the copy is kept apart and no session edits it.</li>
+<li><b>2B, built and merged (pull request 174).</b> A lane's entry is written before the lane starts with its address blank, and the address is filled in once after; a second lane is still refused.</li>
+<li><b>3B, being built.</b> The check will refuse only where a comment states what the code contradicts, or where code crosses another module's stated interface. With it, as I read "as recommended": the tool skips files the product names as copied or built, and the crash on pdf-worker is mended. Tell me if you meant 3B alone.</li>
 </ul>
-
-<p><b>2. A lane's record cannot name the lane's session.</b></p>
-<p>Before ARCH starts a design lane, it records that the lane is running, so that a second copy of the lane is never started. That record should also hold the lane's session address, but the address exists only after the start, and the tool then refuses to change the record. So civicsmith's record says its UX lane is "being started by ARCH" instead of giving its address. Whatever you choose, ARCH can put civicsmith's record right today in two writes.</p>
-<ul>
-<li><b>2A. No change.</b> The record keeps a placeholder, or the lane is recorded only after it starts.</li>
-<li><b>2B. Claim first, address after (recommended).</b> ARCH writes the claim with the address left blank, starts the lane, then fills in the address. The tool accepts that one fill-in and still refuses a second lane. One small tool change.</li>
-<li><b>2C. Record after the start.</b> No tool change. But if ARCH stops between starting the lane and recording it, its successor cannot see the running lane and could start a second.</li>
-</ul>
-
-<p><b>How civicsmith gets the change.</b> Only on your word. Once it is built and merged, you type in civicsmith's coordinator's session: <b>Instruction: move civicsmith to the latest Process4 version.</b> No job is open on civicsmith, so the move happens at once and loses nothing. The check result below brings a third change; all three can be built together so civicsmith moves once.</p>
-<p><b>To answer 2:</b> type in my session, PROCESS #7, or comment here, for example <b>Decision: 2B</b>. You may also set all the options aside.</p>
-</section>
-
-<section class="wait">
-<h2>Waiting for you, most important: the check fails every civicsmith module</h2>
-<p><b>The bottom line.</b> The measurement came in at 19:24. The tool's check, which runs before each job's tests, refuses all 176 civicsmith modules it could finish, and passes none. It timed out on one and crashed on another. As things stand, no civicsmith job could ever merge. Please keep jobs from opening until this is fixed.</p>
-<p><b>Why.</b> You approved two things the check may refuse: a code comment that states something the code does not do, and code that misuses another module's stated interface. The tool goes further. It treats every complaint of its strict type reader as one of those two, even where there is no comment at all. On civicsmith's plain, mostly uncommented code that gives 74,271 complaints, most of them about ordinary habits of plain JavaScript, 60 percent in tests. The trial never showed this because its small modules were written with full comments. I found the same gap on 19 Nov, when you chose the narrower fix that was enough for the trial.</p>
-<ul>
-<li><b>3A. No change.</b> No civicsmith job can merge.</li>
-<li><b>3B. Make the check refuse only what you approved (recommended).</b> A complaint is refused only where a comment states the thing the code contradicts, or where code crosses into another module's stated interface. Everything else is "cannot tell", as the design already says for such cases. It is the larger change. How many complaints remain is unknown until one more read-only run on civicsmith.</li>
-<li><b>3C. Refuse only on the lines a job changed.</b> Smaller. Old complaints stay listed, not refused. A job that edits a plain line still has to satisfy the strict reader on that line.</li>
-</ul>
-<p>Two smaller repairs go with whichever you choose, and I recommend both: the tool skips files the product names as copied or built (the vendored and bundled files, about 2,750 complaints and the timeout), and the crash on pdf-worker is mended. 3B and 3C can also be taken together.</p>
-<p><b>To answer:</b> for example <b>Decision: 3B</b>, alone or with 1 and 2 above. All three changes would then make one new version, and civicsmith moves once, on your instruction in its coordinator's session. Archive the PROCESS #6 session when you like: it has passed the report on and holds nothing.</p>
-</section>
-
-<section class="wait">
-<h2>Waiting for you, if not already done: civicsmith's branch rule (Action 9)</h2>
-<p>The rule for civicsmith-copy's main and tranche branches: a pull request required, with <code>module-tests</code> passing. Its steps are on the lane's page, https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R, Action 9. Tell me once it is done, or that it was done already. Action 9a is done.</p>
+<p><b>Next for you, once 3B is merged:</b> one more read-only run of the check on civicsmith, to measure what is left, and then the one line that moves civicsmith to the new version. I will put both here, with their steps. Until then, no job should open on civicsmith.</p>
+<p>Your words are recorded exactly. Action 9, civicsmith's branch rule, is recorded as done on your word.</p>
 </section>
 
 <section class="card">
