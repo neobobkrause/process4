@@ -18,8 +18,8 @@ own session id), and record generation 7 and your session there (the file must s
 4. Your lane: **PROCESS civicsmith lane #1**, `session_018BhceckLEcDGQG4yqJtMVH`, in the `lanes` record;
    its page https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R; its folder `process/lanes/civicsmith/`. Message
    it your session. It may ask for a refresh at 50 percent; it was at ~22 percent on 20 Nov. PROCESS #6
-   told it and ROOT #7 its session on 22 Nov; the trial's coordinator (`session_018BhceeRZwDtL5rXcx3Mp5q`)
-   was asked whether the stop still stands and what waits for the owner there.
+   told it and ROOT #7 its session on 22 Nov, and the trial's coordinator #3
+   (`session_018BhceeRZwDtL5rXcx3Mp5q`), which answered (see "Waiting on the owner").
 5. Keep the owner's page **"Process4 Waiting for Bob"**: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy
    (source `coordination/owner_page/desk.html`; keep both in sync). Owner comments on it wake PROCESS; read
    them with ArtifactComments, reply and resolve.
@@ -52,7 +52,10 @@ there, and a GitHub token and Cloudflare tokens already sit in BioDefault. The p
 - The onboarding questions Q1–Q4.
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
-- When to lift the trial's stop (the stop record reads not stopped per ROOT #7; confirm with the coordinator).
+- Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not
+  stopped since 20 Nov ~22:16Z; the trial runs, quiet, every requirement met, no process fault open. Two
+  optional matters wait for him in the coordinator's session (main's forbidden-commands file; whether to
+  try a told job that changes code, and the walks).
 
 ## Environment / tool notes
 
