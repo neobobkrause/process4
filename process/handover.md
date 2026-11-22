@@ -93,10 +93,20 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
   sessions' environment; or an exception to act 3. (b) civicsmith's installer takes no token, only the
   owner's own sign-in, so the install and update before a release (part 3 section 6) is his own act for
   this product; no design change asked, it goes on his release page.
-- Next for him, on the lane's page: Action 7 the Cloudflare token (first route: edit the token already in
-  BioDefault); Action 8 the set-up session (act 8); Action 9 the branch rule (act 10); Action 10 ROOT
-  (act 9), whose prompt carries PROCESS's session so the registry is seeded without him carrying ids.
-  When civicsmith's ROOT messages its address, add it to `products` in `handover-process`.
+- The set-up session ran on 22 Nov (`process/lanes/civicsmith/research/setup-session-report.md`):
+  civicsmith-copy PR #1119 (first Process4 files; merged by the owner's click, since its approvals let
+  sessions merge only into p4-tranche and p4-tranche into main); `p4-tranche` made from main; his fixed
+  settings file read back as `shims/claude-settings.json`; hook PR #1120 open for his click;
+  `process.commit` = process4 `eeb35f3`. The lane is not refreshed again: it ends when ROOT starts.
+- **Open research, the main risk now:** `check` fails on the code as it stands (setup-words 551, 518 in a
+  vendored file; record-grammar 59). `process/research/check-on-real-code-22nov.md`. A read-only
+  measurement over all 178 modules is asked of the owner (one paste into the set-up session,
+  `session_018BhcecbrWWH3xBs3py4NQW`); its report comes to PROCESS by message. Then put options to him
+  (that note's last sections). No job should open on civicsmith before that.
+- Also for later: who merges the set-up pull request into main (same note, last section).
+- Next for him: the click on #1120; the measurement paste; Action 7 (Cloudflare token); Action 9 (branch
+  rule); Action 10 (ROOT), whose prompt carries PROCESS's session. When civicsmith's ROOT messages its
+  address, add it to `products` in `handover-process`; then archive the lane and write it not live.
 
 ## Environment / tool notes
 
