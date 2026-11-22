@@ -15,15 +15,17 @@ faults (research files below, PR 167); put them to the owner as one group on his
 by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
 the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
 only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
-**All three decided by the owner on his page (22 Nov ~20:52-20:54Z):** "Decision: 1B, as recommended",
-"Decision: 2B, as recommended", "Decision: 3B, as recommended"; and Action 9 "Done". 1B and 2B are built and
-merged (PRs 172, 174; entries in `design-decisions-2.md`). **3B** is being built by a worker of PROCESS #7 in a
-worktree, branch `work/check-marked-claims` (not pushed): check refuses only comment-stated claims and provider
-interfaces; plus D (`language_reader.exclude`) and E (the `listing.mjs` stack overflow), which PROCESS read as
-included in "as recommended" and told him so on the page thread 5420e34d (open; reply there and resolve when
-merged). When merged: record his 3B words as an entry in `design-decisions-2.md`; ask him for one read-only run of
-check on civicsmith (same method as the set-up session's); then give him the move line for civicsmith's
-coordinator. If the worker's branch is lost with this session, rebuild 3B from the research note.
+**All three decided by the owner on his page (22 Nov ~20:52-20:54Z), all built and merged:** 1B (PR 172), 2B (PR 174),
+3B with D (`language_reader.exclude`) and E (non-recursive walks) (PR 176, main `a20b33a`). Entries in
+`design-decisions-2.md`; proof decision T14 re-recorded in `tool/test/fixtures/notice-proof/expected.json`.
+Action 9 done on his word. **Waiting:** the owner types the re-run prompt (on his page) into "Process4 civicsmith
+setup session"; its report comes to PROCESS #7 by message. When it arrives: if the check now passes most modules,
+tell the owner civicsmith can move (his line in civicsmith's coordinator's session: "Instruction: move civicsmith
+to the latest Process4 version"), and tell ARCH (via the coordinator, as information) that `language_reader.exclude`
+exists for its vendored and built files and that its lanes-record placeholder can now be fixed in one write. If
+many still fail, research the remaining kinds before proposing anything (rule 6). Known residue: TypeScript's own
+recursion overflows at ~4,000 terms inside one function; `check` reports that file "cannot tell", listing and
+notify are not guarded.
 
 **Decided and built: 1B** ("Decision: 1B, as recommended", page comment 20:51Z; PR 172; entry "Each session's copy of the process" in `design-decisions-2.md`). Still open with the owner: 2 and 3. civicsmith has not moved; suggest one move once 2 and 3 are built.
 

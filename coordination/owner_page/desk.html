@@ -22,17 +22,26 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #7. Your three decisions are recorded; two are built and the third is being built. Nothing waits for you until it is merged.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #7. All three of your decisions are built and merged. One read-only run on civicsmith waits for you, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Your three decisions of 22 Nov: two built, one being built</h2>
+<h2>Waiting for you: one read-only run of the fixed check on civicsmith</h2>
+<p><b>The bottom line.</b> All three of your decisions are built and merged. Before civicsmith moves to the new version, one more read-only run shows how many of its modules the fixed check now passes. It changes nothing in civicsmith.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>Process4 civicsmith setup session</b>.</li>
+<li>Type: <div class="draft">Read only, as before: change nothing in the repository, push nothing. Repeat your check measurement with the new Process4 tool. Run git fetch origin and work in a detached checkout of origin/p4-tranche's newest commit (name it). Fetch a fresh copy of neobobkrause/process4 at commit a20b33a23b7d8d46b86940888b4f4457003fa30a into a new folder and run npm ci in its tool/ folder. Run the tool's check on every module in process/modules/order.txt, one at a time, 300 seconds each, with the same wrapper and the same report form as your first run. Then run it once more with the vendored and built files left out: pass the tool's own loader a copy of process.json, kept outside the repository, whose language_reader adds "exclude" with the vendored and built paths you find. Give both results. Send the report to PROCESS #7, session session_018BhceeMdoMMNuimU91cPnD, by message.</div></li>
+</ol>
+<p>It took about 34 minutes last time. When its report reaches me, I will tell you here whether civicsmith is ready to move, and give you the one line for its coordinator. Until then, no job should open on civicsmith.</p>
+</section>
+
+<section class="card">
+<h2>Done: your three decisions of 22 Nov</h2>
 <ul>
-<li><b>1B, built and merged (pull request 172).</b> The step that was meant to lock each session's copy of the process, and did nothing, is gone; the texts say the copy is kept apart and no session edits it.</li>
-<li><b>2B, built and merged (pull request 174).</b> A lane's entry is written before the lane starts with its address blank, and the address is filled in once after; a second lane is still refused.</li>
-<li><b>3B, being built.</b> The check will refuse only where a comment states what the code contradicts, or where code crosses another module's stated interface. With it, as I read "as recommended": the tool skips files the product names as copied or built, and the crash on pdf-worker is mended. Tell me if you meant 3B alone.</li>
+<li><b>1B (pull request 172).</b> The step that was meant to lock each session's copy of the process, and did nothing, is gone; the texts say the copy is kept apart and no session edits it.</li>
+<li><b>2B (pull request 174).</b> A lane's entry is written before the lane starts with its address blank, and the address is filled in once after; a second lane is still refused.</li>
+<li><b>3B (pull request 176).</b> The check refuses only where a comment states what the code contradicts, or where code crosses another module's stated interface; everything else is "cannot tell". With it: a product can name copied and built files for the tool to skip, and the crash on pdf-worker is mended. On a small made-up product of plain code, refusals went from 13 to none. One of the 48 refusals recorded when the method was first proven changes: a refusal that rested on no comment and was already marked as needing nothing, so it was a false one.</li>
 </ul>
-<p><b>Next for you, once 3B is merged:</b> one more read-only run of the check on civicsmith, to measure what is left, and then the one line that moves civicsmith to the new version. I will put both here, with their steps. Until then, no job should open on civicsmith.</p>
 <p>Your words are recorded exactly. Action 9, civicsmith's branch rule, is recorded as done on your word.</p>
 </section>
 
