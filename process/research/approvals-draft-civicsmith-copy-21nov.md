@@ -52,3 +52,15 @@ Note: the earlier list also denied `git reset --hard`, `clean -fd`, `stash drop`
 deleting, no overwriting) and the approvals above hold those that matter. Keeping them would add
 nothing Process4 relies on, and the list is meant to be the same in every repository (design part 6
 §2–3).
+
+## Correction, 22 Nov 2026 (PROCESS #6)
+
+The owner's standing page gave only the inner `"permissions": { ... }` part of `.claude/settings.json`
+and told him to fit it into his existing file. He pasted it as the whole file, so the file on
+civicsmith-copy's main (at `cc2c389f`) is not valid JSON and carries no hooks part; the second reading
+found it (`process/lanes/civicsmith/research/civicsmith-copy-reading-2.md`, item 11). The fault is the
+page's: no act should ask him to assemble a file. The corrected ask is one whole file to paste,
+`shims/claude-settings.json` unchanged. The Node 26 start-up hook is recovered from the file's history
+by the next read-only session and put back by the set-up session in a pull request that changes only
+that file, which he lands by his click (his civicsmith approvals allow that placing).
+
