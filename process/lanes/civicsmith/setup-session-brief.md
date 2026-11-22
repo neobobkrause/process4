@@ -1,10 +1,10 @@
-# The brief for civicsmith's set-up session (act 8): draft
+# The brief for civicsmith's set-up session (act 8)
 
-Length: 137 lines. Last section: "4. What it reports when it ends".
+Length: 146 lines. Last section: "4. What it reports when it ends".
 
 Written by PROCESS civicsmith lane #1, 22 Nov 2026, on PROCESS #6's instruction; the process config's fields
-filled from the second reading (`research/civicsmith-copy-reading-2.md`) by lane #2, 22 Nov 2026. **Draft**
-until the third reading's report (item 12, and the earlier settings file) is in. It is the brief design part 7
+filled from the second reading (`research/civicsmith-copy-reading-2.md`) by lane #2, 22 Nov 2026, with the third reading's
+results (`research/civicsmith-copy-reading-3.md`). It is the brief design part 7
 §4 act 8 names, for a plain session the owner starts on `neobobkrause/civicsmith-copy`, branch `main`.
 Grounds: `conversion-plan.md` §§3–4; build text 2 §§3, 4, 7; build text 1 §5; `research/civicsmith-copy-reading.md`.
 
@@ -29,16 +29,21 @@ record holds only decisions about the design. This session writes the first entr
 
 ## 3. The steps, in order
 
+0. **Start at the true tip.** Run `git fetch origin main`, and read and work at `origin/main`'s newest
+   commit; say which commit that is. (A cloud session's local `main` can be stale: the third reading's
+   was, and read the file from before the owner's fix.) Print `.claude/settings.json` as it stands there,
+   whole, and report it. Report plainly if it is not the 25-line file of `shims/claude-settings.json` in
+   the copy of step 1.
 1. **Fetch** the read-only copy of Process4 at its newest `main` commit, into a folder outside the
    working tree, and confirm it with the tool's `latest-version`. Record that commit; it is
    `process.commit` below. It must be at or after `f4e3596`, so civicsmith starts on a version whose
    `check` refuses a declared use of a later module (the owner's decision of 22 Nov 2026, "decision:
    option B, as recommended"; design part 2 §§1, 6).
-2. **Check the deny list.** Compare the `permissions.deny` list in `.claude/settings.json` on `main` with
+2. **Check the deny list.** Compare the `permissions.deny` list in `.claude/settings.json` at that tip with
    `shims/claude-settings.json` in that copy. Report "same" or each difference. Do not change the deny
    list. The file as the owner landed it has no `hooks` part: the Node 26 start-up hook was lost when the
    file was replaced (second reading, item 11). Step 6 puts it back.
-3. **Branch.** Make a working branch from `main`'s newest commit (e.g. `work/process4-first-files`).
+3. **Branch.** Make a working branch from `origin/main`'s newest commit (e.g. `work/process4-first-files`).
 4. **Write the first Process4 files** (build text 2), in one pull request into `main`:
    - **`process.json`** (build text 2 §7): `process` = { repository `neobobkrause/process4`, version, the
      40-character commit from step 1 }; `tranche_branch` "p4-tranche"; `node` "26.10.0"; `lock_files` the
@@ -75,12 +80,16 @@ record holds only decisions about the design. This session writes the first entr
      earlier in the order file; report any that does not, without reordering by judgment.
      **Tests that reach a later module.** ARCH does not exist until ROOT starts, and ROOT needs this list
      on the tranche branch (part 7 §4, acts 8 and 9). So this session converts the list as it stands on
-     main, in order, reshaping nothing and changing nothing in the product. For each group of test references to a
-     later module the third reading found (sorted in the lane's `later-module-tests.md`, given with this
-     brief), it writes one line into `process/waiting-for-arch.md`: the group, the test files and lines,
-     the modules reached, and the kind the lane proposed (test belongs in the later module; shared helper
-     belongs in an earlier module's public files; wrong boundary, part 2 §8; order can change; or an
-     earlier module used but not declared). It names the same lines in its
+     main, in order, reshaping nothing and changing nothing in the product. It re-homes no test and
+     changes no product file. It writes the lane's thirteen groups (`later-module-tests.md` §2, in the
+     process copy) into `process/waiting-for-arch.md`, shortened to one line each: the group, the modules
+     concerned, and the kind the lane proposed (test belongs in the later module; shared helper belongs in
+     an earlier module's public files; wrong boundary, part 2 §8; order can change; or an earlier module
+     used but not declared), with a pointer to the full list at
+     `https://github.com/neobobkrause/process4/blob/main/process/lanes/civicsmith/later-module-tests.md`.
+     It adds this note for ARCH, deciding nothing: "Under Process4 a file belongs to the module whose
+     entry lists the longest matching path (build text 2, section 3), so a test file can be given to a
+     later module by naming its path in that module's `tests`, with no file moved." It names the same lines in its
      report. ARCH, once started, corrects the list or places the work before any job opens on those
      modules. Known, not a fault: when the list is converted as it stands, any entry whose `uses` names a
      later module is refused by `check` at that module's first job; that is the intended signal to ARCH.
