@@ -22,27 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. One question waits for you (tests that refer to a later module), then the second reading.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. Your decision on tests that reach a later module is built. One thing waits for you, just below.</p>
 </header>
-
-<section class="wait">
-<h2>Waiting for you: tests that refer to a later module</h2>
-<p><b>The question.</b> Should the tool refuse a module that declares a use of a later module?</p>
-<p><b>Why I ask.</b> You reported that under the earlier process some modules' tests referred to modules later in the order, and work got stuck. Process4 already forbids a module using a later one, and its check reads tests as well as code. But I found a hole: when a test reaches a later module, the job can make the check pass simply by declaring that module as a use. Nothing in the tool compares declared uses with the order. Today only ARCH's reading would catch it, across 178 modules. No job has done this yet under Process4; nothing is measured.</p>
-<ul>
-<li><b>A. No change.</b> ARCH's reading is the catch.</li>
-<li><b>B. The existing check also refuses a declared use of a later module.</b> The job cannot fix that inside its own module, so it reports to ARCH and is set aside while other work goes on, which is what the design already does with a job blocked by another module. It makes an existing check refuse one more thing, so it needs your word.</li>
-<li><b>C. The tool tells ARCH and refuses nothing.</b> ARCH hears of it after the broken order is already merged.</li>
-</ul>
-<p><b>Recommended:</b> B, because the order rule is what stops modules telling each other of changes in a circle, and B stops a breach at the job that makes it. You are free to set these aside. To answer, for example: <code>Decision: B</code>.</p>
-<p>Separately, for civicsmith itself: the second reading now also looks for every such reference on main. Please wait for the lane's page to show that added item before you start the session.</p>
-</section>
 
 <section class="wait">
 <h2>Waiting for you: one thing</h2>
 <p><b>Start the second read-only session on civicsmith-copy.</b> The steps and the whole prompt to copy are under Action 5 on the civicsmith lane's page: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
 <p>It changes nothing. It settles the Cloudflare token list, and it reads back the GitHub settings and the two approvals files you landed, so we know they are as intended.</p>
 <p><b>What comes after it, so you can see the road:</b> you make the Cloudflare token once, from the lane's final list; you start one set-up session on civicsmith-copy with the lane's brief, which writes civicsmith's first Process4 files and makes its tranche branch; then you start civicsmith's ROOT.</p>
+</section>
+
+<section class="card">
+<h2>Done: a declared use of a later module is refused (your decision of 22 Nov)</h2>
+<p>The tool's existing check now refuses a module that declares a use of a later module, in its code or its tests. A job that needs such a use takes it to ARCH and is set aside while other work goes on. Your words are recorded exactly. One limit stands and is written down: the check sees one kind of reference, an import by file path. The second reading of civicsmith-copy looks for every other kind.</p>
 </section>
 
 <section class="card">

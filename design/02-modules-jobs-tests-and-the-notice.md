@@ -4,7 +4,7 @@ Length: 107 lines. Last section: "9. Changes that are not a job's".
 
 ## 1. Modules and their order
 
-- The product is one ordered list of modules. A module may use only modules before it. A use of a later module is a design error, corrected by reshaping the code without changing what it does.
+- The product is one ordered list of modules. A module may use only modules before it. A use of a later module is a design error, corrected by reshaping the code without changing what it does. The check of declared uses refuses one (section 6).
 - Every code file has exactly one owner module. ARCH edits the module list until this is so.
 - Every file in the product's repository belongs to exactly one of these: a module; a lane's folder; or the process's own named files (the standing approvals, the forbidden commands, the process config, the module list, the product's two decision records and its ranking page). A file that fits none is given to a module by ARCH before any job touches it.
 - A module that holds requirements and no code is a list error. ARCH decides which module's code meets each such requirement, and the move is made as a mechanical edit.
@@ -56,7 +56,7 @@ The tool decides both, because each has one right answer:
 - They give appropriate coverage of the code, demonstrate correct results, show that error conditions are properly identified and communicated, and check bounds. A test does not fail because it got a different but still valid response. They "must be complete yet fast and efficient". This is a duty of the job, held by its instructions; nothing measures it.
 - The structured comments and the tool can also inform module tests, so that boundaries are properly checked.
 - Every requirement is tested at the module's interface.
-- Module tests include, in the words of the record, "a check that the module's declared uses match its imports". The check reads the module's test files as well as its source: "I think it has to check tests too".
+- Module tests include, in the words of the record, "a check that the module's declared uses match its imports". The check reads the module's test files as well as its source: "I think it has to check tests too". It also refuses a declared use of a module that is not before this one in the order, so that declaring a later module is no way to make a use of it pass. A job cannot settle that in its own module's files; where the use is needed it reports to ARCH and is recorded blocked (section 3), and ARCH corrects the order, the module list or the boundary (section 8).
 - The owner approved two refusals, and no other is taken. Inside a module's own tests the tool may refuse a structured comment that disagrees with the module's code, and may refuse the module's code where it disagrees with a provider's stated interface. These are parts of module tests, not further tests. Only these two refusals stand; no other is built into module tests. A value a test passes on purpose inside an error assertion (`assert.throws` or `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither refusal: the tool reads it as "cannot tell" and never refuses it.
 - A module's tests and a walk's steps are product work. Each exists only to prove a product requirement, which it names. A test or step that serves the process is not allowed. This is a rule in text.
 - Module tests run in two parts, so that product code under test holds no access token.
