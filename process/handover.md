@@ -64,7 +64,9 @@ Built and recorded by PROCESS #6 on the owner's decisions of 22 Nov (entries in
 
 ## Waiting on the owner
 
-- His GitHub set-up of civicsmith-copy from the lane's page (in progress 22 Nov), and the second reading.
+- civicsmith-copy: he reported the GitHub set-up done on 22 Nov (the lane's Actions 1 and 2; not yet read
+  back by a session). Next for him: landing the two approvals files from the standing page, the T53
+  question on the lane's page, and the second read-only reading.
 - Pasting civicsmith-copy's approvals (two texts on his page) and the lane's page items (settings checklist,
   the T53 question).
 - Nothing about the trial's stop: coordinator #3 confirmed on 22 Nov that the stop record has read not
