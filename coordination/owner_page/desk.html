@@ -22,18 +22,28 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #6. The third reading is in. The next actions are on the civicsmith lane's page.</p>
+<p class="updated">Updated 22 Nov 2026 by PROCESS #6. The set-up session is done. Five things wait for you, in order, just below.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: the next actions on the civicsmith lane's page</h2>
-<p>All on https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
+<h2>Waiting for you: five things, in this order</h2>
+<p>The set-up session has done its work. civicsmith-copy now holds its first Process4 files and its tranche branch, and your fixed forbidden-commands file was read back as correct. The lane's page has the steps for each action: https://claude.ai/artifact/HyRJShix1qLvC4LCu2pH8R</p>
 <ol>
-<li><b>Action 7: the Cloudflare token.</b> The list is final: one token, for the development account only. BioDefault already holds a Cloudflare token, so the first route is to add the missing permissions to that one.</li>
-<li><b>Action 8: the set-up session.</b> Ready now; it does not wait on Action 7. It writes civicsmith's first Process4 files, makes the tranche branch, and puts the Node 26 start-up step back in a pull request you land with one click. It also reads back the forbidden-commands file you fixed.</li>
-<li><b>Action 9: the branch rule</b> for main and the tranche branch. After Action 8's first check has run.</li>
-<li><b>Action 10: start civicsmith's ROOT.</b> After Action 9. Its prompt already names this PROCESS session, so you carry no session addresses between them.</li>
+<li><b>Land the Node 26 start-up step.</b> Open https://github.com/neobobkrause/civicsmith-copy/pull/1120, look at <b>Files changed</b> (one file, twelve added lines), then click <b>Merge pull request</b> and <b>Confirm merge</b>.</li>
+<li><b>Paste one measurement into the set-up session</b> (below). It only reads. It tells us how civicsmith's code stands against the tool's check before any job meets it.</li>
+<li><b>Action 7: the Cloudflare token.</b></li>
+<li><b>Action 9: the branch rule</b> for main and the tranche branch. It is possible now.</li>
+<li><b>Action 10: start civicsmith's ROOT.</b> After Action 9.</li>
 </ol>
+<p><b>The measurement, and why.</b> The set-up session tried the tool's check on the first two modules as the code stands, and both failed: 551 complaints in one, 59 in the other, most of the first in a third-party file civicsmith carries. A job on either would fail its first run on code it did not write. I do not yet know how many of the 178 modules are like this, so I am not proposing a change yet. Paste this into the set-up session, the one titled "Process4 civicsmith setup session":</p>
+<div class="draft">Read-only measurement for PROCESS. Change nothing in the repository, commit nothing, push nothing.
+
+1. Run git fetch origin, and work at the newest commit of origin/p4-tranche (a detached checkout is fine; it changes nothing in the repository). Say which commit that is.
+2. With the copy of the Process4 tool you already fetched (the commit process.json names), run check on every module named in process/modules/order.txt, in order, one at a time. If one module takes more than five minutes, stop it and record &quot;timed out&quot;.
+3. For each module record: passed or refused; how many disagreements of each kind (declared uses; a comment against the module&#x27;s code; a comment against the module&#x27;s tests; the code against a provider&#x27;s stated interface); how many &quot;cannot tell&quot;; and the seconds it took.
+4. Then report: the totals; the list of modules that pass; the twenty most frequent complaint codes among the disagreements, each with its count and one example line; every file under a folder named vendor, node_modules, dist or third_party that has disagreements, with its count; and how many disagreements are in test files and how many in source files.
+5. Send the whole report by message to session session_018BhcecxLoUeRRqQzG6YZNk (PROCESS, in neobobkrause/process4), and show me a short summary here.</div>
+<p>Its report comes to me. Starting ROOT does not have to wait for it, but no job should open before I have brought you what it shows.</p>
 </section>
 
 <section class="card">
