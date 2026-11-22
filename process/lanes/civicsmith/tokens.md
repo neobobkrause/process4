@@ -16,7 +16,7 @@ token." (design part 1 §3; part 9 §1). **Status: draft.** It becomes final aft
 |---|---|---|
 | Cloudflare | **One API token**, naming the development account and the rehearsal account | Development deployments (deploy, configure, seed, reset, remove), the walks' development site, and the install and update run before a release (part 3 §6; part 9 §1) |
 | Cloudflare R2, S3-compatible access | **One R2 API token**, only if the second reading shows the product's scripts reach R2 by its S3 interface | Cloudflare issues R2 S3 credentials separately from API tokens (research §2) |
-| GitHub | **None new.** Sessions act as the sessions' GitHub account through Claude's GitHub App (part 7 §1, act 5); the tool publishes a release as that account | Publishing a GitHub release needs no further token. Where a release is placed somewhere else, the second reading says where (question 6) |
+| GitHub | **One fine-grained token for neobobkrause/civicsmith-copy**, at the owner's instruction of 22 Nov 2026 (relayed by PROCESS #6): Contents, Pull requests, Issues, Actions, Workflows, each Read and write; Metadata Read-only; no Administration | Grounds and the facts beside it (who makes it, as whom it acts, what the tool as built uses): `research/github-token-permissions.md` §§2-6 |
 | An AI provider | **Open.** If the product's AI features call a provider other than Workers AI, a development key may be needed for the walks of journeys that use AI (part 1 §3, "Connect an AI account to the development deployment") | Second reading, question 5 |
 
 The release signing keys: the owner's decision of 22 Nov 2026, as PROCESS #6 relayed it, "Decision:
