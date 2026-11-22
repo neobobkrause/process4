@@ -15,8 +15,17 @@ faults (research files below, PR 167); put them to the owner as one group on his
 by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
 the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
 only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
-The check report: the setup session was idle from 18:48Z with its measurement in the background; PROCESS
-cannot message it, so the owner's page asks him to type the redirect there, then archive PROCESS #6.
+**The check measurement arrived at 19:24Z** (PROCESS #6 forwarded it unchanged): `check` refuses 176 of 178
+civicsmith modules, passes none, times out on bundler, crashes on pdf-worker; 74,271 complaints. Researched in
+`process/research/check-on-real-code-22nov.md` (PR 170): the tool labels every strict-reader diagnostic as one of
+the two approved refusals. Put to the owner as **choice 3**: 3A no change; **3B recommended**, refuse only where a
+comment states what is contradicted or code crosses a provider's stated interface (fault D's old option D); 3C
+refuse only on changed lines; with D (skip vendored/built files the config names) and E (mend the
+`listing.mjs:232` stack overflow) under any option. civicsmith's coordinator was told (information). When the owner
+chooses 1, 2 and 3, build them as one tool change (run only the tool tests that cover it: state, util, notify,
+notice-proof), record his words in `design-decisions-2.md`, update the design and build texts in the same step,
+then tell him the one line for civicsmith's coordinator. 3B needs one more read-only run on civicsmith to measure
+what remains; ask the owner for it after it is built.
 
 ## Start checks
 
@@ -43,8 +52,7 @@ cannot message it, so the owner's page asks him to type the redirect there, then
 
 ## Waiting to arrive (addressed to PROCESS #6's session; ask for them again under your address)
 
-- **The check measurement** (still not arrived at 19:45Z; the owner is asked on his page to redirect it to
-  PROCESS #7). The owner pasted a read-only run of `check` over civicsmith's 178 modules
+- **The check measurement** (arrived 19:24Z; see the top). The owner pasted a read-only run of `check` over civicsmith's 178 modules
   into the set-up session (`session_018BhcecbrWWH3xBs3py4NQW`, "Process4 civicsmith setup session") at
   ~18:44Z. Its report was to come by message to PROCESS #6 and had not come by 19:10Z. PROCESS #6, if
   still open, forwards it to you and does nothing else. If it does not come, ask the owner to type in
