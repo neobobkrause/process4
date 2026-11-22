@@ -3,46 +3,35 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 22 Nov 2026 ~21:30Z, by **PROCESS #7** (`session_018BhceeMdoMMNuimU91cPnD`), at its refresh point:
-48 percent fill, a natural pause, nothing half done, everything merged. You, the successor, are **PROCESS #8**:
-read generation 7 in `handover-process`, name yourself `PROCESS #8` with set-session-title (pass your own
-session id), record generation 8 and your session there (the file must start with the JSON block), and message
-both ROOTs your address. Read your own fill (`get_session`, `context_usage`) after every owner turn; it can read
-0 while a turn is open. **The civicsmith re-run's report is addressed to PROCESS #7**; PROCESS #7, if still open,
-forwards it to you unchanged and does nothing else. Never `git add -A` in the process repository: a worker's
-worktree under `.claude/worktrees/` was once added by mistake (PR 175 removed it); add paths by name.
+Last written: 22 Nov 2026 ~23:25Z, by **PROCESS #8** (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), at its refresh point:
+about 50 percent fill, a natural pause, nothing half done, everything merged (main after pull request 186). You, the
+successor, are **PROCESS #9**: read generation 8 in `handover-process`, name yourself `PROCESS #9` with
+set-session-title (pass your own session id), record generation 9 and your session there (the file must start with the
+JSON block), and message both ROOTs your address. Read your own fill (`get_session`, `context_usage`) after every owner
+turn; it can read 0 while a turn is open. Refresh at the first natural pause after 50 percent (the owner's decision B of
+22 Nov). Never `git add -A`; add paths by name.
 
-PROCESS #7 so far: named itself, wrote generation 7, messaged both ROOTs (19:40Z); researched both civicsmith
-faults (research files below, PR 167); put them to the owner as one group on his page (PR 168): **1A/1B/1C**
-(copy not read-only; recommended 1B, drop `chmod -R a-w` from the fetch line and say the copy is kept apart
-by rule) and **2A/2B/2C** (lanes record; recommended 2B, write the claim with `"session": null`, then fill
-the address once; one condition in `laneRefusal`). Both change the tool, so one version; civicsmith moves
-only on his "move civicsmith to the latest Process4 version" in its coordinator's session. Nothing built yet.
-**All three decided by the owner on his page (22 Nov ~20:52-20:54Z), all built and merged:** 1B (PR 172), 2B (PR 174),
-3B with D (`language_reader.exclude`) and E (non-recursive walks) (PR 176, main `a20b33a`). Entries in
-`design-decisions-2.md`; proof decision T14 re-recorded in `tool/test/fixtures/notice-proof/expected.json`.
-Action 9 done on his word. **Waiting:** the owner types the re-run prompt (on his page) into "Process4 civicsmith
-setup session"; its report comes to PROCESS #7 by message. When it arrives: if the check now passes most modules,
-tell the owner civicsmith can move (his line in civicsmith's coordinator's session: "Instruction: move civicsmith
-to the latest Process4 version"), and tell ARCH (via the coordinator, as information) that `language_reader.exclude`
-exists for its vendored and built files and that its lanes-record placeholder can now be fixed in one write. If
-many still fail, research the remaining kinds before proposing anything (rule 6). Known residue: TypeScript's own
-recursion overflows at ~4,000 terms inside one function; `check` reports that file "cannot tell", listing and
-notify are not guarded.
+**Your reading, as decided 22 Nov (research through an index):** the design, build text 5, the two decision files, your
+folder's `README.md`, `process/research/README.md` (the index; one line per file) and `process/lanes/civicsmith/README.md`,
+and this handover. Open a research file, or give it to a worker, only when a question needs it. Keep the index current:
+one line for each new research file.
 
-**Decided and built: 1B** ("Decision: 1B, as recommended", page comment 20:51Z; PR 172; entry "Each session's copy of the process" in `design-decisions-2.md`). Still open with the owner: 2 and 3. civicsmith has not moved; suggest one move once 2 and 3 are built.
+**PROCESS #8 did, all merged:** took over from #7 (archived); the civicsmith check re-run arrived (177 of 204 modules pass;
+217 comment-based refusals in 27 modules; the exclude list for vendored and built files; research
+`check-on-real-code-22nov.md`); civicsmith moved to 641fec3 (all sessions on it, jobs held at slot number 0). Three faults
+from civicsmith researched and put to the owner; he chose B for all three ("decision:B", then "Decision: all as you've
+recommended"); built in pull request 185: refresh at the first pause after 50 percent; whoever archives a session removes
+its scheduled wake; research read through an index (entries in `design-decisions-2.md`; research files named in the
+index). civicsmith's coordinator was told all of it as information.
 
-**The check measurement arrived at 19:24Z** (PROCESS #6 forwarded it unchanged): `check` refuses 176 of 178
-civicsmith modules, passes none, times out on bundler, crashes on pdf-worker; 74,271 complaints. Researched in
-`process/research/check-on-real-code-22nov.md` (PR 170): the tool labels every strict-reader diagnostic as one of
-the two approved refusals. Put to the owner as **choice 3**: 3A no change; **3B recommended**, refuse only where a
-comment states what is contradicted or code crosses a provider's stated interface (fault D's old option D); 3C
-refuse only on changed lines; with D (skip vendored/built files the config names) and E (mend the
-`listing.mjs:232` stack overflow) under any option. civicsmith's coordinator was told (information). When the owner
-chooses 1, 2 and 3, build them as one tool change (run only the tool tests that cover it: state, util, notify,
-notice-proof), record his words in `design-decisions-2.md`, update the design and build texts in the same step,
-then tell him the one line for civicsmith's coordinator. 3B needs one more read-only run on civicsmith to measure
-what remains; ask the owner for it after it is built.
+**Waiting for the owner (on his page):** his line in civicsmith coordinator #2's session, "Instruction: move civicsmith to
+the latest Process4 version", so civicsmith gets the three decisions. The stale wake `trig_012wRs9PsVduMaQfyeTdsQpL`
+("civicsmith watcher hourly wake", bound to archived watcher #1) goes then, or by his own delete. Information given him,
+not his to decide here: two old Process3 scheduled tasks ("sweep" hourly, "watcher" daily) still run.
+
+**Open, not yet put to him:** PROCESS's own reading set with the decision record is about 211,000 bytes, over 175,000 but
+under the 220,000 measured (noted in the entry "Research is read through an index"); no change recommended. Not answered
+yet: the trial's ROOT #7 has not confirmed recording PROCESS #8 (civicsmith's did).
 
 ## Start checks
 
@@ -52,9 +41,9 @@ what remains; ask the owner for it after it is built.
    account's session list; ROOTs refresh, so confirm the live one there):
    - `process3-probes` (the trial): ROOT #7 `session_018Bhceg1d5SVx54aCGkzRe3`; coordinator #3
      `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
-   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `eeb35f3`):
-     **civicsmith ROOT #1** `session_018BhcegAmzjwNWYL3hiKonG`, started by the owner 22 Nov 19:00Z; its
-     shared-state issue is 1122. It recorded PROCESS #6 in its roles record, so it must hear from you.
+   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `641fec3`):
+     **civicsmith ROOT #2** `session_018BhcedH2Cu33ATGjYeJE8v` (from 23:04Z); coordinator #2
+     `session_018BhceejEKQ1qWjGNt2T2xr`; ARCH #6 `session_018BhcecPFUPKp25SZCCoVXF`; its shared-state issue is 1122.
 4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
    last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
    `process/lanes/civicsmith/`, stays: conversion plan, the three readings, `later-module-tests.md`,
@@ -67,39 +56,10 @@ what remains; ask the owner for it after it is built.
    sync, each change to the source by its own small pull request). Comments on it wake PROCESS; read them
    with ArtifactComments, reply and resolve.
 
-## Waiting to arrive (addressed to PROCESS #6's session; ask for them again under your address)
-
-- **The check measurement** (arrived 19:24Z; see the top). The owner pasted a read-only run of `check` over civicsmith's 178 modules
-  into the set-up session (`session_018BhcecbrWWH3xBs3py4NQW`, "Process4 civicsmith setup session") at
-  ~18:44Z. Its report was to come by message to PROCESS #6 and had not come by 19:10Z. PROCESS #6, if
-  still open, forwards it to you and does nothing else. If it does not come, ask the owner to type in
-  that session: send the report to PROCESS's new session. Research and the options to weigh:
-  `process/research/check-on-real-code-22nov.md` (first two modules failed: setup-words 551, 518 of them
-  in a vendored file; record-grammar 59; the tool cannot leave a file out of the reader). **This is the
-  main open risk.** Bring the owner the result with options; PROCESS #6 told him its recommendation that
-  no job opens on civicsmith before then, and told ROOT #1 the same as information.
-- **civicsmith ROOT #1 answered (19:05Z), nothing more to wait for there.** Addresses, in civicsmith's roles
-  record: watcher `session_018Bhcegprx34rVCBgDhMe58`; ARCH `session_018BhcedYrhngyxRofUgU39S`; coordinator
-  `session_018BhcefXVtmctn1hrCaXdZU`. `p4-tranche` carries the hook: ROOT started from `d3cb895b` (the
-  merge of civicsmith-copy pull request 1121, main into p4-tranche), so **Action 9a is done**. PROCESS
-  #6's information about the check measurement was passed unchanged to ARCH and the coordinator.
-- **Both faults below are now researched (PROCESS #7) and put to the owner as choices 1 and 2 on his page.**
-- **A second process fault arrived at 19:12Z**, recorded unchanged in
-  `process/research/fault-lanes-record-before-start-22nov.md`: the lanes record cannot be written before a
-  lane starts and then name its session, because the tool refuses the second write; civicsmith's record
-  holds a placeholder as the live ux lane, and ARCH keeps the real address in its handover. Not
-  researched. Two faults now wait for research and options, with the check measurement.
-- **A process fault arrived from civicsmith's coordinator at 19:08Z** and is recorded unchanged in
-  `process/research/fault-fetch-copy-not-read-only-22nov.md`: the fetch line's `chmod -R a-w` does not make
-  the process copy read-only, because cloud sessions run as root. Not researched; research it and put
-  options to the owner. The coordinator has put PROCESS's hold-jobs recommendation to the owner as a
-  question on civicsmith's standing page.
-
 ## With the owner (nothing marked is unrecorded)
 
-- Not confirmed by him: **Action 9** (the branch rule on main and `p4-tranche`: pull request required,
-  `module-tests` required), on the lane's page. Ask once. Action 9a is done (above).
-- To put to him, one at a time, after the measurement (research recorded, no options put yet):
+- Action 9 (civicsmith's branch rule) is done on his word (page comment, 22 Nov 20:54Z).
+- To put to him, one at a time, now that the measurement is in (research recorded, no options put yet):
   1. civicsmith's own workflows hold repository secrets (Docker Hub; a Cloudflare token for `deploy-test`)
      that act 3 ("no repository secrets") removes; `release-sign` uses an environment secret behind a
      required reviewer. Options: an environment with a required reviewer; the push moves into the
