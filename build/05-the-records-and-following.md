@@ -93,7 +93,7 @@ role's session count (design part 4, section 11): the successor reads it on star
 generation is one more (one if the field is absent), it names itself `<product> <role>
 #<generation>`, and it records that number here. It survives a cold restart, so the count
 never resets. A job and a walking session keep no handover; their number (the job number
-`<n>` of `job/<module>/<n>`, the walking-session number) is their generation, and ARCH names
+`<n>` of `job/<module>.<n>`, the walking-session number) is their generation, and ARCH names
 them when it starts them.
 
 ```json

@@ -16,7 +16,7 @@ holds a role, `<product> <role> #<generation>` (e.g. `civicsmith ARCH #3`, `civi
 at each refresh, replacement or takeover — and for a long-lived role it is kept in that role's
 handover record, so it continues across a full stop and never resets. A job, which holds no
 role, is named `<product> <module> #<n>` with `<n>` its job number (the `n` of its branch
-`job/<module>/<n>`), so each open job is still told apart by its module (design part 2, section
+`job/<module>.<n>`; earlier `job/<module>/<n>`), so each open job is still told apart by its module (design part 2, section
 3; part 4, section 9); a walking session, `<product> walk #<number>` with its walking-session
 number. A session that keeps a handover record names itself on start from the generation there;
 ARCH names a job and a walking session when it starts them; the owner-started ROOT and PROCESS
@@ -418,3 +418,22 @@ with the two decision-record files (about 71,000 bytes), is about 211,000 bytes,
 220,000 measured.
 
 **The owner's words.** "decision:B" — 22 November 2026. "Decision: all as you've recommended" — 22 November 2026.
+
+### Subject: The form of a job's branch
+
+**The rule as it now stands.** A job's branch is `job/<module>.<n>`, `<n>` its job number: one flat name under `job/`.
+The tool still reads the earlier form `job/<module>/<n>` as a job's branch, so earlier jobs and their numbers count, and
+the trial's history carries on. Because the name still begins `job/`, the required-run workflow each product has
+committed reads a job's block as before, and a product receives the change by moving to the latest version (design part
+6, section 7). The old branches stay as history.
+
+It corrected a measured fault that stopped every civicsmith job: civicsmith-copy kept 207 branches named `job/<module>`
+from its earlier process, and GitHub cannot hold `job/<module>/<n>` beside `job/<module>` ("directory file conflict"),
+so 137 of its 204 modules, the first in the order among them, could have no job branch (civicsmith ARCH #7, 23 Nov 2026,
+passed on by civicsmith coordinator #3). It changed the tool (`tool/lib/round.mjs`, `commands.mjs`, `notify.mjs`,
+`scope.mjs`, `p4.mjs` help, with a test of a job branch beside an old flat one) and build texts 1, 1b, 2 and 5; the design
+names no branch form and is unchanged. It adds no test, gate, review or stop. Option B of three (A no change, the owner
+deletes the old branches; B a branch form that cannot meet them; C skip such modules). Researched in
+`process/research/job-branch-name-collides-23nov.md`.
+
+**The owner's words.** "Decision: Change the job branch's form as recommended (B)" — 23 November 2026.

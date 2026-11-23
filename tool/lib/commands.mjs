@@ -12,14 +12,13 @@ import {
 import { fail, git } from './util.mjs';
 
 import {
-  JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
   nextJobName, pickNext, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
-const JOB = /^job\/([a-z0-9-]+)\/(\d+)$/;
-const BRANCH = /^(job\/[a-z0-9-]+\/\d+|work\/[A-Za-z0-9._/-]+)$/;
+const BRANCH = /^(job\/[a-z0-9-]+[./]\d+|work\/[A-Za-z0-9._/-]+)$/;
 const TEXTS = new URL('../../starting_texts/', import.meta.url);
 
 // The branch pull requests go into: the one named with --into, else the config's tranche branch,
@@ -51,7 +50,7 @@ export function blockers(v) {
 // 1. branch <name> [--into <branch>]: from the newest commit of the branch pull requests go into,
 // with one empty commit so that a pull request can open, made without moving the session's checkout.
 export function branch(ctx, name, into) {
-  if (!BRANCH.test(name || '')) fail('name the branch job/<module>/<n> or work/<what>');
+  if (!BRANCH.test(name || '')) fail('name the branch job/<module>.<n> or work/<what>');
   const had = git(['ls-remote', '--heads', 'origin', `refs/heads/${name}`], { cwd: ctx.root });
   if (had) { ctx.log(`${name} exists already at ${had.split(/\s/)[0]}`); return 0; }
   const base = intoBranch(ctx, loadConfig(ctx.root), into);
@@ -109,9 +108,10 @@ export function jobText(ctx, cfg, { module, branch: b, url }) {
 
 // The newest remote job branch of a module.
 function newestJobBranch(ctx, module) {
-  const refs = git(['ls-remote', '--heads', 'origin', `refs/heads/job/${module}/*`], { cwd: ctx.root });
-  const ns = refs.split('\n').map((l) => l.match(/refs\/heads\/job\/[a-z0-9-]+\/(\d+)$/)?.[1]).filter(Boolean).map(Number);
-  return ns.length ? `job/${module}/${Math.max(...ns)}` : fail(`no branch job/${module}/<n>; make it with branch first`);
+  const refs = git(['ls-remote', '--heads', 'origin', 'refs/heads/job/*'], { cwd: ctx.root });
+  const jobs = refs.split('\n').map((l) => l.split(/\s/)[1]?.replace('refs/heads/', '').match(JOB)).filter((m) => m && m[1] === module);
+  const top = jobs.sort((a, b) => Number(b[2]) - Number(a[2]))[0];
+  return top ? top[0] : fail(`no branch job/${module}.<n>; make it with branch first`);
 }
 
 function printJob(ctx, cfg, pr) {
@@ -341,7 +341,7 @@ export function failedRunsCmd(ctx, n) {
   const required = requiredCheck(ctx.root);
   const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr, required);
   ctx.log(`${failed.length} failed run(s) of ${required} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
-  const module = pr.head.ref.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1] || pr.head.ref;
+  const module = pr.head.ref.match(JOB)?.[1] || pr.head.ref;
   if (failed.length === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
   if (failed.length >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
   return 0;

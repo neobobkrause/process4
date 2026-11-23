@@ -4,6 +4,7 @@ import { appendFileSync } from 'node:fs';
 import { loadConfig, loadModules, ownerOf } from './config.mjs';
 import { relatedList } from './notice/related.mjs';
 import { NO_TOKENS, git, run, underPath } from './util.mjs';
+import { JOB } from './round.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
 const isTestFile = (f) => /\.test\.[^/]*$/.test(f) && !WALK.test(f);
@@ -36,7 +37,7 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
 
   const all = git(['ls-files', '-z'], { cwd: root }).split('\0').filter(Boolean);
   const whole = (ms) => ms.map((m) => ({ name: m.name, files: testFiles(all, modules, m) }));
-  const job = branch?.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1];
+  const job = branch?.match(JOB)?.[1];
   if (job) {
     const m = modules.find((x) => x.name === job);
     if (!m) return out('whole module', `job branch for ${job}, which the module list does not name: every module touched`, whole(touched));

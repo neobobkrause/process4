@@ -27,7 +27,7 @@ test('branch makes a job branch from the tranche with one empty commit, without 
   assert.equal(git(['branch', '--show-current'], { cwd: root }), 'main');
   branch(ctx, 'job/orders/1');
   assert.match(out.join('\n'), /exists already/);
-  assert.throws(() => branch(ctx, 'tranche'), /job\/<module>\/<n> or work\/<what>/);
+  assert.throws(() => branch(ctx, 'tranche'), /job\/<module>\.<n> or work\/<what>/);
 });
 
 test('without a process config, branch starts from the repository\'s default branch', () => {
@@ -229,6 +229,28 @@ test('push --blocked records two blocking modules, repeated or with a comma (fau
   assert.deepEqual(recs[0].data.blocked.by, ['dates', 'pricing']);
   assert.throws(() => push(ctx, { _: ['x'], blocked: ['dates', true] }), /--blocked <module>/);
   assert.throws(() => push(ctx, { _: ['x'], blocked: 'Dates!' }), /not a module's name/);
+});
+
+test('a job branch is made beside an old flat job/<module> branch, and open finds the newest of either form', () => {
+  // civicsmith (23 Nov 2026): a product kept job/<module> branches from an earlier process, and GitHub cannot hold
+  // job/<module>/<n> beside one ("directory file conflict"). job/<module>.<n> is a flat name beside it.
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  git(['push', '-q', 'origin', 'main:refs/heads/job/orders'], { cwd: root });
+  git(['push', '-q', 'origin', 'main:refs/heads/job/dates/3'], { cwd: root });
+  assert.equal(branch(ctx, 'job/orders.1'), 0);
+  assert.ok(remote(root, 'job/orders.1'));
+  assert.ok(remote(root, 'job/orders'));
+  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
+  assert.equal(gh.s.prs[0].head.ref, 'job/orders.1');
+  assert.equal(gh.s.prs[0].title, 'orders: job 1');
+  assert.equal(open(ctx, { _: [], module: 'dates' }), 0);
+  assert.equal(gh.s.prs[1].head.ref, 'job/dates/3');
+  assert.throws(() => open(ctx, { _: [], module: 'pricing' }), /no branch job\/pricing\.<n>/);
 });
 
 test('open works from a detached checkout (fault o)', () => {

@@ -67,7 +67,7 @@ orders
 - `public`: its interface files, read the same way: the files whose exports, with the further entries named there, make its listing (build text 2b, section 6). The proof's field of the same name (proof: `product/modules.json`). A helper for other modules' tests is one too, as the proof's `product/store/src/testing.mjs` was.
 - `uses`: its declared uses, by name.
 - The requirements file is not named: it is always the `.md` of the same name. The test command is not here either: it is one line of the process config (section 7).
-- A module is identified everywhere by its `name`: in the tool's commands, in a job's branch `job/<name>/<n>` (build text 1b, section 4), and in the records.
+- A module is identified everywhere by its `name`: in the tool's commands, in a job's branch `job/<name>.<n>` (build text 1b, command 1), and in the records.
 
 **How "a module may use only modules before it" reads:** every name in `uses` stands on an earlier line of the order file than the module's own. `orders` is on line 3, `dates` and `pricing` on lines 1 and 2, so it holds. Had `pricing` listed `orders`, that would be a design error, which ARCH corrects by reshaping code (part 2, section 1). The tool's `check` refuses it in that module's own tests (build text 1b, command 18).
 
