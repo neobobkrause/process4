@@ -4,6 +4,9 @@ PROCESS records its research here before it proposes a change (design part 6, se
 text). Research is background, not governing text (design part 5, section 3): PROCESS reads this index in full, and reads
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
+## 23 Nov 2026
+- `job-branch-name-collides-23nov.md` — `job/<module>/<n>` cannot be made beside an old flat `job/<module>` branch (137 of civicsmith's modules); options A to C.
+
 ## 22 Nov 2026
 - `repository-secrets-22nov.md` — civicsmith's own workflows hold repository secrets that act 3 removes (Docker Hub, a Cloudflare token); options A (no change) to C, put to the owner.
 - `check-on-real-code-22nov.md` — the tool's `check` on civicsmith's real code: 74,271 refusals before decision 3B; after it, 177 of 204 modules pass, 217 comment-based refusals in 27 modules; the exclude list for vendored and built files.
