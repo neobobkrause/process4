@@ -473,3 +473,21 @@ Option B of three (A no change; B both repairs; C the first only). Not known: wh
 fits a session machine's memory with the second repair. Researched in `process/research/notify-out-of-memory-23nov.md`.
 
 **The owner's words.** "Decision: B" — 23 November 2026 (a comment on his page, on option B).
+
+### Subject: A job whose block ARCH ended says it goes on
+
+**The rule as it now stands.** A job stopped by another module records that it is blocked and its slot is freed; when
+that module merges, the job is ready again. Where ARCH ends the block by its own decision instead (a change to the
+module list, the order or a boundary, design part 2, section 8) and tells the job to go on, the job pushes with
+`--unblocked "<why>"`, which rewrites its own record to say it goes on; the round then shows it open and its slot used.
+The job is still the record's one writer (design part 2, section 3; part 4, section 11; build text 1b, command 2; build
+text 5, section 5; the job's starting text).
+
+It corrected a measured fault: on civicsmith three blocks (setup-words, pdf-worker, ocr-worker) ended by ARCH's decision,
+not by the blocking module's merge; the tool kept reading them blocked, counted their slots as free, and ARCH filled
+slots by hand (civicsmith ARCH #8 and setup-words #1, 23 Nov 2026, passed on by civicsmith coordinator #4). It changed
+the tool (`push` in `tool/lib/commands.mjs`, `tool/p4.mjs` help, with a test) and the texts named above. It adds no
+test, gate, review or stop. Option B of two (A no change; B `push --unblocked`). Researched in
+`process/research/blocked-record-not-cleared-23nov.md`.
+
+**The owner's words.** "Decision: B" — 23 November 2026 (a comment on his page, on option B).

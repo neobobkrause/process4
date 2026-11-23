@@ -66,6 +66,23 @@ test('the owner\'s module first and slot number are obeyed', () => {
   assert.match(t.out[0], /no free slot: 1 in use of 1, from the owner's slot number/);
 });
 
+test('a job whose block ARCH ended by its own decision says so with push --unblocked, and holds its slot again', () => {
+  // civicsmith, 23 Nov 2026: three blocks ended by ARCH's module-list change or rewritten decision, not by a merge.
+  const t = product();
+  writeRec(t.ctx, t.root, 'standing-notes', { notes: [{ kind: 'slot-number', number: 1, written: '2026-11-20T09:00Z' }] });
+  startJob(t, 'dates');
+  git(['fetch', '-q', 'origin', 'job/dates.1'], { cwd: t.root });
+  git(['checkout', '-q', '-b', 'job/dates.1', 'FETCH_HEAD'], { cwd: t.root });
+  push(t.ctx, { _: ['pricing refuses a leap day'], blocked: 'pricing' });
+  assert.throws(() => push(t.ctx, { _: [], unblocked: true }), /say --unblocked "<why>"/);
+  push(t.ctx, { _: [], unblocked: 'ARCH gave the leap-day rule to dates' });
+  git(['checkout', '-q', 'main'], { cwd: t.root });
+  t.out.length = 0; nextJob(t.ctx);
+  assert.match(t.out[0], /no free slot: 1 in use of 1/);
+  assert.equal(record(t.gh, 'round').modules.find((m) => m.module === 'dates').state, 'open');
+  assert.equal(t.gh.s.comments.filter((c) => c.body.includes('process4-job-record')).length, 1);
+});
+
 test('a blocked job frees its slot, and is ready again once the blocking module merges after the block', () => {
   const t = product();
   writeRec(t.ctx, t.root, 'standing-notes', { notes: [{ kind: 'slot-number', number: 1, written: '2026-11-20T09:00Z' }] });
