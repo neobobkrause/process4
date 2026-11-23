@@ -42,6 +42,10 @@ changed member bound tells nobody, against design part 2 §7 decision 3 (civicsm
 coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173). Options and grounds:
 `process/research/class-member-bound-23nov.md` (B recommended). Tell civicsmith's coordinator it is received.
 
+**Also to put to the owner (on his page as of 08:30Z):** a notice's "not followed fully" reason lists every place
+without bound, so the waiting-work record could not be written and notify 1236's notice was lost (civicsmith ARCH #9,
+via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reason-size-23nov.md` (B recommended).
+
 **Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
 The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
 

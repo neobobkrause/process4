@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 23 Nov 2026
+- `notice-reason-size-23nov.md` — a "not followed fully" reason lists every place, so the waiting-work record grows past a comment's size and the notice is lost; options A and B (not yet put to the owner).
 - `class-member-bound-23nov.md` — a class member's own `@bound` is left out of its listing, so a changed bound tells nobody; options A and B (not yet put to the owner).
 - `held-requirements-23nov.md` — ARCH cannot hold a requirement out of a tranche; the tool counts every not-yet-met line as work, so the round cannot end; options A to C.
 - `blocked-record-not-cleared-23nov.md` — a job's blocked record stays after it goes on; measured three times ending by ARCH's decision, not a merge; decision B (`push --unblocked`).
