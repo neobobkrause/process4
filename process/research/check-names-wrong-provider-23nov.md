@@ -28,3 +28,35 @@ right and its name is right: the value contradicts control-plane's stated kind, 
 control-plane's comment was only picked up along the way (a contextual kind several steps from what the complaint is
 about), and the refusal rests on no comment that states what the call contradicts, which the 22 Nov decision 3B says is
 "cannot tell". Asked civicsmith coordinator #4 at ~17:30Z for the exact lines `p4 check plane` printed. Options wait on that.
+## The complaint, and what it shows (civicsmith plane #1, via ARCH #11 and coordinator #4, 17:23Z)
+
+plane #1 reproduced it with `p4 check plane` (process copy 0eec86fd) at job/plane.1's commit 2c0f85ea:
+
+    bio-plane/src/plane/store.mjs:41 (b) code disagrees with the stated interface of control-plane: Type '({ ctx, env,
+    storeName, answer, session }?: {...}) => Promise<{ ok: boolean; ... }>' is not assignable to type 'null | undefined'.
+    (the same at bio-plane/test/m/plane/fixture.mjs:24)
+
+The call: `assembleStore(ctx, env, { deliver: deliverOwedRender })`. At that commit store-assembly's `assembleStore`
+stated nothing (`{ deliver = null, releaseKeys = null } = {}`, no @param), so its `deliver` read as null only.
+`deliverOwedRender` is control-plane's, with a stated @param and @returns. So the type that cannot be assigned is the
+**value**, stated by control-plane; the type it cannot be assigned **to** is store-assembly's parameter, stated by
+nothing. The refusal stopped when store-assembly #3 merged with its options stated; plane's call is unchanged.
+
+**Finding.** Reading (2) above holds, and it is more than a wrong name: the refusal itself is false under decision 3B (22
+Nov), "refuses a type disagreement only when what it contradicts is stated by a structured comment". What the call
+contradicts is the parameter, which no comment states; the value's own comment is not contradicted. The tool counted it
+because `makeClaims` gathers comments from **both** sides of an assignment (`fromValue` on the value, `fromExpected` on the
+target) and refuses if either is stated. Measured: two false refusals in plane, which recorded plane blocked until
+store-assembly merged. Not stopping work now.
+
+## Options
+
+- **A. No change.** A value stated by one module, handed into a parameter or field another module states nothing about,
+  is refused and named after the value's module, until the receiving module states it.
+- **B. For a "cannot be assigned" complaint, only the receiving side's comment counts (recommended).** The complaint is
+  refused only where the parameter, field, variable or answer the value goes into is stated by a structured comment; the
+  refusal names the module of that comment (refusal (b)), or is (a) where it is this module's own. The value's own comment
+  is not what is contradicted. Other complaints (a missing field, a wrong number of arguments, a name not exported) keep
+  their present rules. Before merging: the proof's 48 recorded refusing decisions and 150 changes replayed; any decision
+  that changes written down with its reason. It narrows a refusal; it adds no test, gate, review or stop. civicsmith gets
+  it by its move to the latest version.

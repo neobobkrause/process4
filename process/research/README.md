@@ -5,9 +5,12 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 23 Nov 2026
+- `change-group-23nov.md` — the group put to the owner on 23 Nov evening: tests once in the job (one background command, up to 2 hours), notices to running jobs, merging after the modules a job uses, slots, the check's two faults, module tests through imports only; and what to do now.
+- `long-modules-23nov.md` — where tests run and how long each place allows: a session's background command up to 2 hours, GitHub 6 hours, the 45 minutes the process's own; tests already run in parallel; options (worker).
+- `module-uses-23nov.md` — what the check sees as a use (imports by path only; misses `require` and the product's own name; no path strings); why the third reading found more; options (worker).
 - `tests-once-and-merge-order-23nov.md` — the changes agreed in conversation on 23 Nov, for the owner's decision: tests once in the job, notices to running jobs, merging in provider order, slots.
 - `module-tests-timeout-23nov.md` — the required run's 45-minute limit cancels plane (44 minutes of tests) after they pass; it stops round 1; options A to C.
-- `check-names-wrong-provider-23nov.md` — refusal (b) named control-plane where store-assembly states the interface; not yet read in the tool.
+- `check-names-wrong-provider-23nov.md` — refusal (b) counted control-plane's comment on the value handed over, where the receiving parameter (store-assembly's) stated nothing: a false refusal under 3B; options A and B.
 - `draft-run-passes-ready-pr-23nov.md` — a run that saw the pull request as a draft passes it once ready, with no tests run (civicsmith PR 1228; process4 PR 205); options A to C (not yet put to the owner).
 - `notice-reason-size-23nov.md` — a "not followed fully" reason lists every place, so the waiting-work record grows past a comment's size and the notice is lost; options A and B (not yet put to the owner).
 - `class-member-bound-23nov.md` — a class member's own `@bound` is left out of its listing, so a changed bound tells nobody; options A and B (not yet put to the owner).
