@@ -30,3 +30,13 @@ required run exists for (design part 2, sections 3 and 6: a job's module tests r
   move must carry the workflow copy too; PROCESS #10 to check how a version move updates the product's copy.
 - **C. `p4 merge` will not merge on a passing run whose scope says the pull request was a draft,** and says to run
   `ready` again. Tool only, reaches a product by the move line; it guards the merge rather than curing the run.
+
+## A second part, 08:53Z
+
+From civicsmith screens-entry #1 and answer-envelope #1, via ARCH #9 and coordinator #4: "after the draft-seeing run,
+`p4 ready` on a PR that is already ready starts no run at all, though it prints "the required run has been asked for".
+ARCH's course: the job takes the moved tranche in, so a real push starts a run that reads the PR as ready." So once a
+draft-seeing run has passed a ready pull request, `ready` cannot repair it (GitHub sends no ready_for_review event for a
+pull request already ready), and `ready`'s message claims what did not happen. Option B (the run reads the live draft
+state) removes the cause; a fix to `ready`'s message (say no run was started where the pull request was already ready)
+belongs with whichever option is chosen.
