@@ -22,8 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built. Waiting for you: one line in civicsmith's coordinator session, three questions (requirements held for later; a limit on a class method; a notice too long to save), and starting PROCESS #10 when you are ready.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built. Waiting for you: one line in civicsmith's coordinator session, four questions (most important: a change passing with no tests run; then requirements held for later, a limit on a class method, a notice too long to save), and starting PROCESS #10 when you are ready.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you, most important: a change can pass its tests with no test run</h2>
+<p><b>The bottom line.</b> When a job sends its last change and marks itself ready within the same second, GitHub starts two test runs. The one that survives can be the one that still saw the job as unfinished, and such a run passes at once without running anything. GitHub then counts the tests as passed. civicsmith's ARCH caught it on one job and did not merge. The same thing let one of my own tool changes merge here before its tests had finished; they passed afterwards. Nothing broken is known to have merged.</p>
+<ul>
+<li><b>B. The test run checks, when it starts, whether the change is really marked ready (recommended),</b> instead of trusting what it was told when it was started. A run that starts after the ready mark then always runs the tests. Also, the tool's report of a run says when nothing ran. This changes the test setup each product keeps on GitHub, so civicsmith needs it brought in with the version move.</li>
+<li><b>C. The tool refuses to merge on a run that saw an unfinished change,</b> and asks for the run again. A guard on the merge rather than a cure; reaches civicsmith by the move line alone.</li>
+<li><b>A. No change.</b> Untested changes can merge when the timing is close.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B". PROCESS #10 builds it.</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you, first: one line that moves civicsmith onto today's fixes</h2>
