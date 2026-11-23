@@ -22,29 +22,23 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Most urgent: civicsmith's jobs are stopped by a fault in the process, and need your choice. Then one more question and one small click.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Most urgent: one line from you lets civicsmith's jobs start. Then one small click.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you, most urgent: no civicsmith job can start</h2>
-<p><b>The bottom line.</b> The process names each job's branch <code>job/&lt;module&gt;/&lt;number&gt;</code>, for example <code>job/setup-words/1</code>. civicsmith-copy still holds 207 branches from the earlier process named simply <code>job/&lt;module&gt;</code>, for example <code>job/setup-words</code>. GitHub cannot hold both names at once (one would have to be a file and a folder at the same time), so it refuses the new branch. 137 of civicsmith's 204 modules are caught, the very first among them, so no job can start. This was met by civicsmith's ARCH just after midnight and passed to me unchanged. The trial never had such old branches, which is why it never showed.</p>
-<ul>
-<li><b>B. Change the job branch's form (recommended).</b> New job branches become <code>job/setup-words.1</code>: still under <code>job/</code>, but one plain name that does not clash with the old ones. The tool still recognises the older form, so the trial's history carries on. Every product's test setup on GitHub already works with it, so civicsmith needs nothing beyond your usual one line moving it to the latest version once I have built it. The old branches stay as history, as you decided for T53.</li>
-<li><b>A. No change.</b> The old branches would have to go: you lift the rule that forbids deleting branches, delete 137 or more by hand on GitHub, and put the rule back. Many clicks, and the earlier history is lost.</li>
-<li><b>C. Skip modules whose branch cannot be made.</b> A workaround, not a fix: 137 modules would never get a job.</li>
-</ul>
-<p>Reply on this item with your choice, for example "Decision: B". If you choose B, I build it, run only the tests of the parts of the tool I change, merge it, and tell you here when to type the move line in civicsmith's coordinator session. Proven: the failure itself, as civicsmith's ARCH reported it. Not yet proven: the new form on a real product; it is untried until civicsmith's first job.</p>
+<h2>Waiting for you, most urgent: one line that lets civicsmith's jobs start</h2>
+<p><b>The bottom line.</b> Your decision B is built and merged (pull request 192): a job's branch is now named like <code>job/setup-words.1</code>, which the old branches no longer block. The tool's tests pass, here and on GitHub. civicsmith gets it when it moves to the latest version.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #3</b>.</li>
+<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
+<li>You should see it record your words and tell ARCH. When every civicsmith session is on the new version, it tells you in one line, and jobs can start.</li>
+</ol>
+<p>Proven: a branch of the new form is made beside an old one of the same module, in the tool's own test. Not yet proven: on civicsmith itself, until its first job.</p>
 </section>
 
 <section class="wait">
-<h2>Waiting for you: civicsmith's old workflows and their secrets</h2>
-<p><b>The bottom line.</b> Process4's setup says a product's repository holds no secrets. civicsmith's own older workflows use three: two for Docker Hub (to push container images) and one Cloudflare token (to deploy a test copy). Removing them stops those two workflows. Under Process4 neither is needed as it stands: ARCH deploys the development copy from a session with the token already in the environment, and pushing images belongs to publishing a release, which ARCH also does from a session. Nothing has failed yet; no civicsmith deployment or release has run.</p>
-<ul>
-<li><b>A. No change (recommended).</b> When convenient, delete the three secrets on https://github.com/neobobkrause/civicsmith-copy/settings/secrets/actions (each one's trash button, then the red confirm button). When civicsmith prepares its first release, a Docker Hub token goes into the environment with the other release keys, made once. civicsmith's ARCH is told the two old workflows stop and decides what becomes of them.</li>
-<li><b>B. Keep them, behind your approval.</b> Move them into a GitHub environment that waits for your click before each run, as civicsmith's signing already does. The old workflows keep working, but every run waits for you.</li>
-<li><b>C. Allow them.</b> Keep the secrets in the repository. Least work, but any workflow a session merges could reach those tokens, which is what the rule is there to prevent.</li>
-</ul>
-<p>Reply on this item with your choice, for example "Decision: A". Not known: whether the three secrets are still there; a session cannot read a repository's secret names.</p>
+<h2>Withdrawn: the question about civicsmith's secrets</h2>
+<p>You told me Process4 keeps acting on a false rule that a product's repository can hold no secrets. I have withdrawn the question I put here, which rested on that rule. A helper is finding every place in Process4's texts that says or leads to it; I will bring you what it finds and the options to correct it.</p>
 </section>
 
 <section class="wait">
