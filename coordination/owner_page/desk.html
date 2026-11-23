@@ -22,8 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 22 Nov 2026 by PROCESS #9. One question waits for you (civicsmith's old secrets), and one small click.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Most urgent: civicsmith's jobs are stopped by a fault in the process, and need your choice. Then one more question and one small click.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you, most urgent: no civicsmith job can start</h2>
+<p><b>The bottom line.</b> The process names each job's branch <code>job/&lt;module&gt;/&lt;number&gt;</code>, for example <code>job/setup-words/1</code>. civicsmith-copy still holds 207 branches from the earlier process named simply <code>job/&lt;module&gt;</code>, for example <code>job/setup-words</code>. GitHub cannot hold both names at once (one would have to be a file and a folder at the same time), so it refuses the new branch. 137 of civicsmith's 204 modules are caught, the very first among them, so no job can start. This was met by civicsmith's ARCH just after midnight and passed to me unchanged. The trial never had such old branches, which is why it never showed.</p>
+<ul>
+<li><b>B. Change the job branch's form (recommended).</b> New job branches become <code>job/setup-words.1</code>: still under <code>job/</code>, but one plain name that does not clash with the old ones. The tool still recognises the older form, so the trial's history carries on. Every product's test setup on GitHub already works with it, so civicsmith needs nothing beyond your usual one line moving it to the latest version once I have built it. The old branches stay as history, as you decided for T53.</li>
+<li><b>A. No change.</b> The old branches would have to go: you lift the rule that forbids deleting branches, delete 137 or more by hand on GitHub, and put the rule back. Many clicks, and the earlier history is lost.</li>
+<li><b>C. Skip modules whose branch cannot be made.</b> A workaround, not a fix: 137 modules would never get a job.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B". If you choose B, I build it, run only the tests of the parts of the tool I change, merge it, and tell you here when to type the move line in civicsmith's coordinator session. Proven: the failure itself, as civicsmith's ARCH reported it. Not yet proven: the new form on a real product; it is untried until civicsmith's first job.</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you: civicsmith's old workflows and their secrets</h2>
