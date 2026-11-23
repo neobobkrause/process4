@@ -40,3 +40,21 @@ draft-seeing run has passed a ready pull request, `ready` cannot repair it (GitH
 pull request already ready), and `ready`'s message claims what did not happen. Option B (the run reads the live draft
 state) removes the cause; a fix to `ready`'s message (say no run was started where the pull request was already ready)
 belongs with whichever option is chosen.
+
+## A third part, 13:51Z: long runs cancelled by unrelated events
+
+From civicsmith plane #1 (PR 1259), via ARCH #11 and coordinator #4, unchanged in its substance: "Two of PR 1259's
+whole-module runs were cancelled partway, about 30 to 40 minutes in: run 45172042267 on 8fb5e0ed and run 45179857787 on
+3fb0b7d3. The second time neither my branch nor p4-tranche had moved, and I made no act on the pull request while it ran.
+`.github/workflows/module-tests.yml` runs on `pull_request` types including `edited` and `converted_to_draft`, with
+`concurrency: module-tests-<PR number>, cancel-in-progress: true`, so any edit to the pull request's title or body, or a
+draft/ready toggle, by any session or the tool, starts a run that cancels the one in progress. `p4 results` then reported
+"no run that was not cancelled yet", so the newer run, if there was one, ended cancelled too. ... A whole-module run of
+plane takes about an hour." (Its blocked record by store-assembly: under the tool as built it ends when store-assembly
+merged after it; civicsmith has not yet moved to the version with `push --unblocked`.)
+
+The same workflow facts as above: the run is started by events that change nothing to test (`edited`, and draft toggles),
+and each new run cancels the one in progress. Not known: which event fired (the job cannot see the pull request's
+events). It bears on the owner's 23 Nov point that a test should run once: each cancelled hour-long run is paid for and
+thrown away. A fix belongs with option B: the run starts only on events that change what is tested (a push, the ready
+mark, a reopen), so an edit to a title or body starts nothing and cancels nothing.
