@@ -22,8 +22,29 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built, and civicsmith is told to move. One small click waits for you.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built. Waiting for you: one line in civicsmith's coordinator session, one question (requirements held for later), and one small click.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you, first: one line that moves civicsmith onto today's fixes</h2>
+<p>civicsmith's coordinator will not move on your instruction passed through me: the design says you type it in its own session. So:</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #4</b>.</li>
+<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
+<li>You should see it record your words and tell ARCH, then tell you in one line when every civicsmith session is on the new version.</li>
+</ol>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: ARCH cannot hold a requirement out of this tranche</h2>
+<p><b>The bottom line.</b> ARCH decides what each tranche covers, and it has held seven civicsmith requirements back for later. But the tool counts every requirement not yet met as work for now, so it keeps handing out jobs for them, and the round can never finish. Meanwhile ARCH is getting by with a stopgap: those jobs record themselves as held up by another module, which frees their slots but spends a job each time that module merges.</p>
+<ul>
+<li><b>C. A "held for later" list kept by ARCH for the tranche (recommended).</b> ARCH lists the requirements it holds back in the round's own record; the tool leaves them out until the tranche ends, when they come back as work unless ARCH holds them again. The report after each round names them. No file changes for each hold.</li>
+<li><b>B. A third mark on the requirement itself, "held".</b> ARCH writes it in the module's requirements file and changes it back when the requirement comes into scope. Visible in the file, but each hold or release is a change to merge.</li>
+<li><b>A. No change.</b> ARCH keeps the stopgap.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: C".</p>
+</section>
 
 <section class="card">
 <h2>Done: your decisions of 23 Nov are built, and civicsmith is told to move</h2>
@@ -32,7 +53,7 @@ a{color:var(--accent)}
 <li><b>A set-aside job going on (B, pull request 204).</b> When ARCH tells a set-aside job to go on, the job records it, and the tool counts its slot as used.</li>
 <li><b>The tool's memory (B, pull request 199; then D, pull request 205).</b> After a merge the tool now reads only what the merge can affect: the changed module's interface before and after, and only if that changed, the modules that can reach it, one at a time. On all 150 changes recorded when the method was first proven it gives the same answers; on a large test product of 312 modules it needs half to a quarter of the memory. If a reading still does not fit, it says so plainly and names the notice owed, instead of crashing.</li>
 </ul>
-<p>Your words are recorded exactly. On your instruction I have told civicsmith's coordinator to bring civicsmith up to the latest version. Not yet known: whether civicsmith's job merges now fit in a session machine's memory; that shows at its next merge.</p>
+<p>Your words are recorded exactly. On your instruction I told civicsmith's coordinator to bring civicsmith up to the latest version; it needs you to type the line in its own session (above). Not yet known: whether civicsmith's job merges now fit in a session machine's memory; that shows at its next merge.</p>
 </section>
 
 <section class="card">

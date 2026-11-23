@@ -30,6 +30,11 @@ worker, only when a question needs it.
   coordinator #4 (`session_018BhcedBfypmJzpjT9Drkdq`) was sent his exact words at ~06:30Z, main 4ef702c. Follow up: did
   civicsmith move, and does a job merge's `notify` now fit (ARCH owes notices for 1152-1154 and later)? If the
   coordinator says he must type the move line himself, put it on his page.
+  Result: coordinator #4 declined the relayed words (design part 6 §7; part 1 §4) and asked for the line on his page;
+  it is there ("civicsmith coordinator #4": "Instruction: move civicsmith to the latest Process4 version").
+- Open with the owner (on his page): requirements ARCH holds out of a tranche have no form, so the tool counts them as
+  work and the round cannot end (civicsmith ARCH #8, 06:28Z). Options A no change / B a `[held]` mark / C a held list in
+  the round record (recommended). Research `process/research/held-requirements-23nov.md`.
 
 **Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
 The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
