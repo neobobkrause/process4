@@ -37,3 +37,8 @@ users are every later module). So that case needs the memory too: not measured y
   first job merge.
 - Whether `check` inside a module's tests on GitHub's machines meets the same limit: it reads one module and its
   providers, not the whole product twice; no crash reported.
+
+## Outcome
+
+The owner chose B, 23 Nov 2026 ("Decision: B", a comment on his page). Built with a test of a merge that changes only a
+process file and a test of the memory flag. Entry "The tool's code reading on a large product" in `design-decisions-2.md`.

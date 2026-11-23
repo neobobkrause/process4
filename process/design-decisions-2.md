@@ -457,3 +457,19 @@ two (A no change; B remove the words). Researched in `process/research/no-reposi
 **The owner's words.** "Process4 keeps getting caught up with this false rule that it holds that a product's repository
 can hold no secrets. That is not the case." — 23 November 2026 (conversation). "Decision: B" — 23 November 2026 (a
 comment on his page, on option B).
+
+### Subject: The tool's code reading on a large product
+
+**The rule as it now stands.** `notify` works out which modules a merge changed from the two module lists and the changed
+file names alone, before reading any code; where none changed it says so and reads nothing. The commands that read a
+product's code (`listing`, `notify`, `check`) run with a memory allowance of three quarters of the machine's memory
+where node's default is less. It changes no answer the tool gives.
+
+It corrected a measured fault: on civicsmith (204 modules) `notify` crashed out of memory on a merge that changed only
+process files, because it read the whole product twice before asking whether any module changed; run again by hand with
+12 GB it finished (civicsmith ARCH #8, 23 Nov 2026, passed on by civicsmith coordinator #4). It changed the tool
+(`tool/lib/notify.mjs`, `tool/p4.mjs`, with tests) and build text 1b, command 11. It adds no test, gate, review or stop.
+Option B of three (A no change; B both repairs; C the first only). Not known: whether a job merge's notify on civicsmith
+fits a session machine's memory with the second repair. Researched in `process/research/notify-out-of-memory-23nov.md`.
+
+**The owner's words.** "Decision: B" — 23 November 2026 (a comment on his page, on option B).

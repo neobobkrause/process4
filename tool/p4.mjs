@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 // The Process4 tool: one program, a fresh process for each command, run from the read-only copy.
 // Usage: node <copy>/tool/p4.mjs <command> [arguments]
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { totalmem } from 'node:os';
+import { getHeapStatistics } from 'node:v8';
 import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { decideScope, runTests } from './lib/scope.mjs';
@@ -159,6 +162,22 @@ export function main(argv, overrides) {
   }
 }
 
+// The commands that read a product's code may read the whole product twice, which on a large product needs more
+// memory than node gives by default (civicsmith, 23 Nov 2026). They run with most of the machine's memory: the
+// node flag that allows it, or null where the default already allows that much or the run already carries it.
+const READS_CODE = new Set(['listing', 'notify', 'check']);
+export function heapFlag(name, { total = totalmem(), limit = getHeapStatistics().heap_size_limit, env = process.env } = {}) {
+  if (!READS_CODE.has(name) || env.P4_HEAP) return null;
+  const mb = Math.floor((total / 1048576) * 0.75);
+  return limit / 1048576 >= mb ? null : `--max-old-space-size=${mb}`;
+}
+
 if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
-  process.exitCode = main(process.argv.slice(2));
+  const flag = heapFlag(process.argv[2]);
+  if (flag) {
+    const r = spawnSync(process.execPath, [flag, process.argv[1], ...process.argv.slice(2)], { stdio: 'inherit', env: { ...process.env, P4_HEAP: '1' } });
+    process.exitCode = r.status ?? 1;
+  } else {
+    process.exitCode = main(process.argv.slice(2));
+  }
 }
