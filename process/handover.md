@@ -46,6 +46,11 @@ coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173
 without bound, so the waiting-work record could not be written and notify 1236's notice was lost (civicsmith ARCH #9,
 via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reason-size-23nov.md` (B recommended).
 
+**Stops work now (on his page as of 15:15Z):** the required run's 45-minute limit cancels plane's tests (44 minutes) just
+after they pass, so plane cannot merge and round 1 waits. `process/research/module-tests-timeout-23nov.md` (B: raise the
+limit; civicsmith's workflow copy needs the same line by pull request). Also under discussion with the owner, not decided:
+tests run once in the job, recorded by the tool, GitHub runs none; and merging a round's jobs in module order.
+
 **Most important for PROCESS #10 (on his page as of 08:55Z):** the required run can pass a ready pull request with no
 tests run, when a push and `ready` come close together (civicsmith PR 1228; process4 PR 205, the observation below).
 Grounds and options: `process/research/draft-run-passes-ready-pr-23nov.md` (B recommended).

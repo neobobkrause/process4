@@ -41,7 +41,7 @@ pull request already ready), and `ready`'s message claims what did not happen. O
 state) removes the cause; a fix to `ready`'s message (say no run was started where the pull request was already ready)
 belongs with whichever option is chosen.
 
-## A third part, 13:51Z: long runs cancelled by unrelated events
+## A third part, 13:51Z: long runs cancelled (cause corrected at 15:10Z: the job's 45-minute limit, `module-tests-timeout-23nov.md`, not edits)
 
 From civicsmith plane #1 (PR 1259), via ARCH #11 and coordinator #4, unchanged in its substance: "Two of PR 1259's
 whole-module runs were cancelled partway, about 30 to 40 minutes in: run 45172042267 on 8fb5e0ed and run 45179857787 on
