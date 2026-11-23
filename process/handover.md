@@ -50,6 +50,9 @@ via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reaso
 tests run, when a push and `ready` come close together (civicsmith PR 1228; process4 PR 205, the observation below).
 Grounds and options: `process/research/draft-run-passes-ready-pr-23nov.md` (B recommended).
 
+**Not yet investigated (not on his page):** `check` refusal (b) may name the wrong provider (civicsmith plane #1, via
+ARCH #10, 10:56Z): `process/research/check-names-wrong-provider-23nov.md`. Read the tool first, then put options.
+
 **Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
 The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
 
