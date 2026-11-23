@@ -80,13 +80,15 @@ function writeJobRecord(ctx, n, data) {
   if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, n, body);
 }
 
-// 2. push [--blocked <module> "<why>"]: the current branch to the same-named branch, never forced.
+// 2. push [--blocked <module> "<why>" | --unblocked "<why>"]: the current branch to the same-named branch, never forced.
+// --unblocked rewrites the job's record when a block ends by ARCH's decision rather than by the blocking module's merge.
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
   if (!BRANCH.test(name) || name === 'main' || name === cfg?.tranche_branch) fail(`${name} is not a working branch; push only job/ and work/ branches`);
   const by = a.blocked === undefined ? null : blockers(a.blocked);
   if (by && !a._[0]) fail('say --blocked <module> "<why>"');
+  if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
@@ -94,6 +96,11 @@ export function push(ctx, a) {
     const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record the block on`);
     writeJobRecord(ctx, pr.number, { blocked: { by: by.length === 1 ? by[0] : by, why: a._[0] } });
     ctx.log(`recorded on pull request ${pr.number}: blocked by ${by.join(' and ')}`);
+  }
+  if (a.unblocked !== undefined) {
+    const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record on`);
+    writeJobRecord(ctx, pr.number, { unblocked: a.unblocked });
+    ctx.log(`recorded on pull request ${pr.number}: going on (${a.unblocked})`);
   }
   return 0;
 }

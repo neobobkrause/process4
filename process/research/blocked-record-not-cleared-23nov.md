@@ -37,3 +37,8 @@ the slot number allows; ARCH worked round it by hand.
 - **B. `push --unblocked` (recommended).** When the job goes on, it pushes with `--unblocked`, and the tool rewrites the
   job's own record to say so (`{ "unblocked": "<why>" }`), so the round shows it open and its slot used. One writer
   still: the job. The job's starting text names the new flag beside `--blocked`. Adds no test, gate, review or stop.
+
+## Outcome
+
+The owner chose B, 23 Nov 2026 ("Decision: B", a comment on his page). Built with a test; entry "A job whose block ARCH
+ended says it goes on" in `design-decisions-2.md`.

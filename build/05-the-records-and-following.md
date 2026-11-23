@@ -1,4 +1,4 @@
-Length: 213 lines. Last section: "8. Unproven, and not settled here".
+Length: 214 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -143,14 +143,15 @@ The job block, `<!-- process4-job -->`, is written once by ARCH's session, by `o
 - A module the tool does not follow fully has, in place of that, the proof's reason `{ "module": "pricing", "notFollowed": ["<why>"], "through": null }`, with no lines (section 6).
 - **Decided here:** each reason also carries `before` and `after`, the parts of the entry that differ, taken from the same notice's own entry; and `lines` is the whole list. Gives: the job reads what changed, and section 7 has every place. Costs: the proof's notice kept only the first six lines for an entry, so the whole list in a notice is unproven. **Unproven:** the job block itself; nothing in the proof wrote or read one.
 
-The job's record, `<!-- process4-job-record -->`, is written only by the job's session and holds one of two things:
+The job's record, `<!-- process4-job-record -->`, is written only by the job's session and holds one of three things:
 
 ```json
 { "blocked": { "by": "pricing", "why": "<one plain sentence>" } }
+{ "unblocked": "<one plain sentence>" }
 { "nothing_to_change": "<one plain sentence>" }
 ```
 
-- `blocked` is written by `push --blocked <module> "<why>"`, `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`. A later record rewrites the comment in place.
+- `blocked` is written by `push --blocked <module> "<why>"`, `unblocked` by `push --unblocked "<why>"` (where ARCH ended the block by its own decision; the job is then open and holds its slot), `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`. A later record rewrites the comment in place.
 - The tool reads `blocked.by` to make the job ready again when that module merges, and reads `nothing_to_change` on a pull request closed unmerged to count the module finished (the design, part 2, section 4). No test runs for that record.
 - **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's. Costs: a notice that arrives while the job is open waits in waiting work for the module's next job.
 
