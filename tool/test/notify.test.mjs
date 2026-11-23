@@ -142,6 +142,19 @@ test('notify tells the users of a changed entry and writes their reasons into wa
   assert.equal(waitingWork(gh).work.length, 3);
 });
 
+test('notify on a merge that changes no module\'s files says so before reading any code', () => {
+  // civicsmith, 23 Nov 2026: such a merge read the whole product twice and ran out of memory.
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  mergedPR(root, gh, { 'process/notes.md': 'a note\n' });
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const text = out.join('\n');
+  assert.match(text, /The merge changed no module's files\.\nThe listing before and after is the same\. Nobody is told\./);
+  assert.doesNotMatch(text, /Notice for a change|TypeScript/);
+  assert.equal(gh.s.comments.length, 0);
+});
+
 test('notify on a merge that changes no listing tells nobody and writes nothing', () => {
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();

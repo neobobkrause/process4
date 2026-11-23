@@ -103,18 +103,21 @@ export function notifyCmd(ctx, n) {
   const base = tempBase();
   const told = [];
   try {
-    // Both products are written out first, then read by one tool and one reader.
+    // Both products are written out first. Which modules the merge changed is read from the module lists and the
+    // changed file names alone; only when one changed is the code read, by one tool and one reader (a whole product
+    // read twice needs much memory: civicsmith, 23 Nov 2026).
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
-    const B = analyse(dirB), A = analyse(dirA);
-    readerNote(ctx, A.tree);
+    const treeB = loadTree(dirB), treeA = loadTree(dirA);
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
-    const mods = changedModules(ctx.root, before, after, B, A);
+    const mods = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
     if (!mods.length) {
       ctx.log('The merge changed no module\'s files.');
       ctx.log('The listing before and after is the same. Nobody is told.');
       return 0;
     }
+    const B = analyse(treeB), A = analyse(treeA);
+    readerNote(ctx, A.tree);
     const confirm = makeConfirm(B, A);
     for (const m of mods) {
       if (!B.tree.byId.has(m)) { ctx.log(`${m} is a new module: it had no listing before, and nobody is told.`); continue; }

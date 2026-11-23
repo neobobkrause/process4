@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { HELP, main } from '../p4.mjs';
+import { HELP, heapFlag, main } from '../p4.mjs';
 import { requiredCheck } from '../lib/config.mjs';
 import { git } from '../lib/util.mjs';
 import { fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
@@ -86,4 +86,13 @@ test('close with neither a number nor --branch on a detached checkout fails and 
   const code = main(['close', '--nothing-to-change', 'x'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
   assert.equal(code, 1);
   assert.equal(gh.getPR('o/product', pr.number).state, 'open');
+});
+
+test('the commands that read code run with most of the machine\'s memory; others, and a run that has it, do not', () => {
+  const GB = 1024 ** 3;
+  assert.equal(heapFlag('notify', { total: 16 * GB, limit: 8 * GB, env: {} }), '--max-old-space-size=12288');
+  assert.equal(heapFlag('check', { total: 16 * GB, limit: 8 * GB, env: {} }), '--max-old-space-size=12288');
+  assert.equal(heapFlag('listing', { total: 16 * GB, limit: 13 * GB, env: {} }), null);
+  assert.equal(heapFlag('notify', { total: 16 * GB, limit: 8 * GB, env: { P4_HEAP: '1' } }), null);
+  assert.equal(heapFlag('merge', { total: 16 * GB, limit: 1 * GB, env: {} }), null);
 });
