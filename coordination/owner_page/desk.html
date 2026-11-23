@@ -22,18 +22,18 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. One line waits for you (bringing civicsmith the memory fix), and one small click.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. One question waits for you (civicsmith's job merges still run the tool out of memory), and one small click.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: one line that brings civicsmith the memory fix</h2>
-<p><b>The bottom line.</b> Your decision B is built and merged (pull request 199). After a merge that touches no module, the tool now says so without reading any code; when it must read everything, it gives itself three quarters of the machine's memory. The tool's tests pass, here and on GitHub. civicsmith gets it when it moves to the latest version.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and open civicsmith's coordinator session (the newest one named <b>civicsmith coordinator #</b>, now #4).</li>
-<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
-<li>You should see it record your words and tell ARCH, then tell you in one line when every civicsmith session is on the new version.</li>
-</ol>
-<p>Not yet known: whether a job's merge on civicsmith fits in a session machine's memory even now. That shows at its first job merge.</p>
+<h2>Waiting for you: the memory fix was not enough for civicsmith's job merges</h2>
+<p><b>The bottom line.</b> Your decision B (pull request 199) fixed merges that touch no module. But civicsmith's ARCH has now measured a job's merge: even with 12 GB, the tool still ran out of memory, so no notice can be sent after any civicsmith job merges. Jobs still merge; ARCH is recording each notice that is owed (three so far). The cause: the tool holds the whole product read twice at the same moment, before and after the merge, plus a third smaller reading. Only the results of each reading are needed, not the readings themselves.</p>
+<ul>
+<li><b>B. Read one side at a time (recommended).</b> The tool reads the product before the merge, keeps only what it found, lets that reading go, then reads the product after. Its peak memory is about half. The answers are the same. Not known until it runs on civicsmith: whether one reading fits in 12 GB. If it does, ARCH sends the three owed notices.</li>
+<li><b>C. B, and where it still does not fit, the tool says plainly it could not read the product, instead of crashing,</b> so ARCH records the notice as owed. Adds no stop; only a clear message.</li>
+<li><b>A. No change.</b> civicsmith sends no notices. The design accepts a missed notice: a module that should have been told is caught by its own tests at its next job, or by a walk.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: C". I recommend C: B is the real repair, and the clear message costs nothing if B is not enough. Once built, the move line in civicsmith's coordinator session brings it.</p>
 </section>
 
 <section class="card">
