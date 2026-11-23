@@ -42,8 +42,8 @@ PR 104, main 7b42e37), read for civicsmith. Bracketed numbers are the lane's poi
 2. **The earlier process's leftovers (act 3) [2].** neoProcess's workflows went on 1 Nov; its records
    stay in `build/` as the product's history. The product's own four workflows (`regression`,
    `deploy-test`, `release-sign`, `container-images`) stay; none runs on a pull request. The
-   `deploy-test` workflow uses a Cloudflare token; if it is a repository secret, act 3 ("no repository
-   secrets") takes it out, and the deploy token goes in the cloud environment instead (act 6). No
+   `deploy-test` workflow uses a Cloudflare token; the deploy token for Process4's own deployments goes in the cloud environment (act 6); the product may keep its own
+   secrets [Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.] No
    required check is named for this copy (`build/GRANTS.md` records rulesets only on the original
    `civicsmith` organisation), so act 10 adds `module-tests` with nothing to replace.
 3. **Branch rule (act 4).** No deleting and no overwriting on every branch, no one excepted.

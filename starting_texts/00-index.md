@@ -29,7 +29,7 @@ The binding text is `process.md`: it carries no fetch line, so its counted size 
 
 ## 2. What each text tells its session to read in full
 
-Sizes of the design's parts, in bytes (last measured 22 Nov 2026): 00 10,448; 01 11,967; 02 15,884; 03 9,639; 04 22,846; 05 5,720; 06 14,566; 07 13,019; 08 4,489; 09 2,628; 10 9,570. All eleven: 120,776. Build texts: 02 15,266; 02b 10,367; 03 20,922; 05 19,071. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (22,846) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
+Sizes of the design's parts, in bytes (last measured 23 Nov 2026): 00 10,448; 01 11,967; 02 15,884; 03 9,639; 04 22,846; 05 5,720; 06 14,566; 07 12,996; 08 4,489; 09 2,628; 10 9,570. All eleven: 120,753. Build texts: 02 15,266; 02b 10,367; 03 20,922; 05 19,071. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (22,846) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
 
 Each role reads one harness part, 07 or 08. The combined figure is given with 07, the larger; with 08 it is 8,530 less.
 

@@ -47,7 +47,7 @@ Read: the repository's rulesets, required checks, workflows, Actions settings, s
 process files and branches, open pull requests; the Cloudflare development account and anything a
 deployment needs. Change (owner's clicks): rulesets (all-branch no-delete/no-overwrite; main and tranche
 branch PR-only with `module-tests`, replacing old checks), Actions permissions (read-only token), old
-workflows disabled, repository secrets removed, production keys out of the environment, the
+workflows disabled, repository secrets removed ([Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.]), production keys out of the environment, the
 environment's permissions-management block naming the repository. Change (a session, by pull request):
 approvals (first time: owner's paste or delete-then-merge), the forbidden-commands copy, `process.json`,
 module list, `module-tests` workflow, the tranche branch from main. Then start ROOT.

@@ -42,3 +42,8 @@ owner's page item of 22 Nov (now withdrawn).
   second part still holds no token, and the process's own secrets stay in the cloud environment. The lane's checklist
   item, the earlier research's recommendations and the handover line are marked as resting on the removed words, in
   place. Removes a rule; adds no test, gate, review or stop. No product needs to move: no tool or starting text changes.
+
+## Outcome
+
+The owner chose B, 23 Nov 2026 ("Decision: B", a comment on his page). Act 3 lost the words; the session-written texts
+above carry a withdrawal note in place. Entry "A product's repository may hold secrets" in `design-decisions-2.md`.

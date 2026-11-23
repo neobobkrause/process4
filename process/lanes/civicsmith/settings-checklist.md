@@ -31,7 +31,8 @@ words one differently, the meaning given here is what counts.**
 
 ## Secrets — https://github.com/neobobkrause/civicsmith-copy/settings/secrets/actions (act 3)
 
-- [ ] No repository secrets. **Note:** the product's own `deploy-test` workflow uses a Cloudflare token.
+- [Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.]
+- ~~[ ] No repository secrets.~~ **Note (withdrawn):** the product's own `deploy-test` workflow uses a Cloudflare token.
       If that token is stored here, removing it stops `deploy-test` (a workflow run by hand or by a push
       to `deploy-test/*`). Under Process4 the deploy token lives only in the cloud environment's settings
       (act 6), and ARCH deploys from a session by the process config's `deploy` commands. Removing it is
