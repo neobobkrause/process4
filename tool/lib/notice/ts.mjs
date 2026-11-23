@@ -43,9 +43,9 @@ export const options = () => (loadReader(), {
 /** Reads the given files (and whatever they import) as one program. */
 export const NODE_DESCRIPTION = fileURLToPath(new URL('./node.d.ts', import.meta.url));
 
-export function makeProgram(files) {
+export function makeProgram(files, host = undefined) {
   const o = options();
-  return ts.createProgram([...files, NODE_DESCRIPTION], o);
+  return ts.createProgram([...files, NODE_DESCRIPTION], o, host);
 }
 
 /**

@@ -11,10 +11,11 @@
 // - each reason carries module, entry, changes, the whole list of lines, through, and before and after.
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, readerVersion, tagsOf, tagText } from './ts.mjs';
-import { makeLister } from './listing.mjs';
+import { makeLister, hasInterfaceComments } from './listing.mjs';
 import { makeUsage } from './usage.mjs';
 import { same, standsIn, render } from './canon.mjs';
 import { commentsOnly } from './check.mjs';
+import { stagedReader } from './staged.mjs';
 
 /** Reads a whole product once: every module's listing and every module's uses, from one program. */
 export function analyse(root) {
@@ -143,11 +144,13 @@ export function describe(e) {
  * Rule 52. One program reads the interface files of both products; for each entry the comparison found to accept
  * more, the type checker is asked: for a function, method, class or value, is the new one assignable to the old; for
  * what a user hands in (a kind on the accepting side, an operation's request, a table's rows), is the old one
- * assignable to the new. Made once for a notice, when first needed.
+ * assignable to the new. Made once for a notice, when first needed; read in stages (perModule), once for each module
+ * asked about, from that module's interface files alone.
  */
-export function makeConfirm(B, A) {
+export function makeConfirm(B, A, { perModule = false } = {}) {
   let program = null;
   let checker = null;
+  let forModule = null;
   const exportsOf = (tree, moduleId) => {
     const mod = tree.byId.get(moduleId);
     const out = new Map();
@@ -200,17 +203,23 @@ export function makeConfirm(B, A) {
     if (sym.flags & ts.SymbolFlags.TypeAlias) return { t: aliasType(sym), way: 'in' };
     return { t: checker.getTypeOfSymbol(sym), way: 'out' };
   }
-  return function confirm(moduleId, beforeName, afterName) {
-    if (!program) {
-      program = makeProgram([...B.tree.modules.flatMap((m) => m.public), ...A.tree.modules.flatMap((m) => m.public)]);
+  function confirm(moduleId, beforeName, afterName) {
+    if (perModule ? forModule !== moduleId : !program) {
+      // Read in stages, only the interface files of the module asked about, before and after.
+      const publicOf = (T) => (perModule ? T.tree.byId.get(moduleId)?.public ?? [] : T.tree.modules.flatMap((m) => m.public));
+      program = makeProgram([...publicOf(B), ...publicOf(A)]);
       checker = program.getTypeChecker();
+      forModule = moduleId;
     }
     const o = typeOf(B.tree, moduleId, beforeName);
     const n = typeOf(A.tree, moduleId, afterName);
     if (!o || !n || o.way !== n.way) return { confirmed: false, why: 'the entry cannot be found to ask the type checker' };
     const ok = o.way === 'out' ? checker.isTypeAssignableTo(n.t, o.t) : checker.isTypeAssignableTo(o.t, n.t);
     return ok ? { confirmed: true } : { confirmed: false, why: o.way === 'out' ? 'the type checker does not find the new entry assignable to the old' : 'the type checker does not find the old kind assignable to the new' };
-  };
+  }
+  /** Lets go of the program, once a module's entries are asked about (read in stages). */
+  confirm.release = () => { if (perModule) { program = null; checker = null; forModule = null; } };
+  return confirm;
 }
 
 /** The parts of an entry that differ, from the notice's own entry (build text 5, section 5). */
@@ -228,23 +237,56 @@ function partsThatDiffer(e) {
 
 /**
  * The notice for one change.
- * @param before the product before the change: a folder, or an analysis made by analyse()
- * @param after the product after it
+ * @param before the product before the change: a folder or a product (loadTree), read in stages (staged.mjs); or an
+ *   analysis made by analyse(), the whole product read at once
+ * @param after the product after it, of the same form
  * @param provider the module that changed
- * @param confirm rule 52's checker, shared between notices of the same two products
+ * @param confirm rule 52's checker; with analyses, shared between notices of the same two products
  */
 export function notice(before, after, provider, confirm) {
-  const B = typeof before === 'string' ? analyse(before) : before;
-  const A = typeof after === 'string' ? analyse(after) : after;
-  confirm ??= makeConfirm(B, A);
+  if (before?.listings && after?.listings) return noticeWith(wholeReading(before, after, confirm ?? makeConfirm(before, after)), provider);
+  const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
+  const tb = treeOf(before), ta = treeOf(after);
+  if (!ta.byId.has(provider)) throw new Error(`no such module: ${provider}`);
+  const R = stagedReader(tb, ta, provider, makeConfirm({ tree: tb }, { tree: ta }, { perModule: true }), (id, b, a) => diffListings(id, b, a).length > 0);
+  try {
+    return noticeWith(R, provider);
+  } finally {
+    R.release();
+    R.confirm.release();
+  }
+}
+
+/** The whole product read at once (analyse()): every module's listing and uses are at hand. */
+function wholeReading(B, A, confirm) {
+  const of = (s) => (s === 'B' ? B : A);
+  return {
+    B, A, staged: false, confirm,
+    listing: (s, id) => of(s).listings.get(id),
+    prepare() {},
+    mayChangeThrough: () => true,
+    isCandidate: () => true,
+    uses: (s, id) => of(s).uses.get(id),
+    opListings: (s) => of(s).listings,
+  };
+}
+
+/**
+ * The notice for one change, from a reading R: R.listing(side, module), R.uses(side, module), R.confirm; for a reading
+ * in stages, R.prepare() reads what may matter once the provider's listing has changed, R.mayChangeThrough(module) and
+ * R.isCandidate(module) say which later modules it read (a module it did not read cannot use the provider).
+ */
+function noticeWith(R, provider) {
+  const B = R.B, A = R.A;
   const order = A.tree.modules.map((m) => m.id);
   const pIndex = order.indexOf(provider);
   if (pIndex < 0) throw new Error(`no such module: ${provider}`);
-  const report = { provider, reader: `TypeScript ${readerVersion()}`, firstCommentsStep: false, changedModules: [], entries: [], told: [], notTold: [] };
+  // usersRead: the later modules whose uses were read (with the whole product read at once, every one).
+  const report = { provider, reader: `TypeScript ${readerVersion()}`, firstCommentsStep: false, changedModules: [], entries: [], told: [], notTold: [], usersRead: [] };
 
   // The first job on a module without interface comments: a comments-only step sends no notice.
-  const lb = B.listings.get(provider);
-  if (lb && !lb.hasInterfaceComments && B.tree.byId.has(provider)) {
+  const pb = B.tree.byId.get(provider);
+  if (pb && !hasInterfaceComments(pb)) {
     const co = commentsOnly(B.tree, A.tree, provider);
     if (co.same) {
       report.firstCommentsStep = true;
@@ -256,16 +298,15 @@ export function notice(before, after, provider, confirm) {
   // Every module from the provider on: its listing before and after. Those after the provider whose own files did
   // not change but whose listing did are changed "through" it: they pass on a kind of the provider.
   const changed = new Map(); // module -> diff
-  for (let i = pIndex; i < order.length; i++) {
-    const id = order[i];
-    const lbm = B.listings.get(id), lam = A.listings.get(id);
-    if (!lbm || !lam) continue;
+  const compare = (id) => {
+    const lbm = R.listing('B', id), lam = R.listing('A', id);
+    if (!lbm || !lam) return;
     const d = diffListings(id, lbm, lam);
     // Rule 52: "accepts more" only where the type checker confirms it.
     for (const e of d) {
       const k = e.changes.indexOf('accepts more');
       if (k < 0) continue;
-      const c = confirm(id, ...(e.names ?? [e.entry, e.entry]));
+      const c = R.confirm(id, ...(e.names ?? [e.entry, e.entry]));
       if (c.confirmed) continue;
       e.changes.splice(k, 1, ...(e.changes.includes('cannot stand in') ? [] : ['cannot stand in']));
       e.tells = 'users';
@@ -276,15 +317,27 @@ export function notice(before, after, provider, confirm) {
       report.changedModules.push({ module: id, through: id === provider ? null : provider });
       for (const e of d) report.entries.push({ module: id, ...e });
     }
+  };
+  compare(provider);
+  R.confirm.release?.();
+  // Read in stages, the same listing tells nobody, and no user is read.
+  if (R.staged && !changed.has(provider)) {
+    report.interfaceChanged = false;
+    report.summary = 'The listing before and after is the same. Nobody is told.';
+    return report;
   }
+  R.prepare();
+  report.usersRead = order.slice(pIndex + 1).filter((id) => R.isCandidate(id));
+  for (let i = pIndex + 1; i < order.length; i++) if (R.mayChangeThrough(order[i])) compare(order[i]);
   // Iteration 2: a new operation whose name another module already answers tells the users of that operation.
+  const answering = R.opListings('A');
   for (const [id, diff] of [...changed]) {
     for (const e of diff) {
       if (!e.entry.startsWith('op:') || !e.changes.includes('new entry')) continue;
-      for (const [other, l] of A.listings) {
+      for (const [other, l] of answering) {
         if (other === id || !l.entries[e.entry]) continue;
         if (!changed.has(other)) { changed.set(other, []); report.changedModules.push({ module: other, through: provider }); }
-        const x = { entry: e.entry, changes: [`${id} now answers the same name`], tells: 'users', before: describe(B.listings.get(other)?.entries[e.entry]), after: describe(l.entries[e.entry]) };
+        const x = { entry: e.entry, changes: [`${id} now answers the same name`], tells: 'users', before: describe(R.listing('B', other)?.entries[e.entry]), after: describe(l.entries[e.entry]) };
         changed.get(other).push(x);
         report.entries.push({ module: other, ...x });
       }
@@ -293,11 +346,13 @@ export function notice(before, after, provider, confirm) {
   for (const e of report.entries) { delete e.names; }
   report.interfaceChanged = changed.has(provider);
 
-  // Who is told: every later module, declared or not.
+  // Who is told: every later module, declared or not. A module the staged reading did not read cannot use any module
+  // that changed: it is neither told nor named.
   for (let i = pIndex + 1; i < order.length; i++) {
     const user = order[i];
+    if (!R.isCandidate(user)) continue;
     const mod = A.tree.byId.get(user);
-    const ub = B.uses.get(user), ua = A.uses.get(user);
+    const ub = R.uses('B', user), ua = R.uses('A', user);
     const reasons = [];
     for (const [m, diff] of changed) {
       if (A.tree.byId.get(m).index >= mod.index) continue;
@@ -319,8 +374,8 @@ export function notice(before, after, provider, confirm) {
         const why = [];
         if (!useB?.size && !useA?.size) why.push(`declares ${m} but no use of it is found in its code`);
         if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${ub.anything.join('; ')}`);
-        if (ub?.unreadOps.length && Object.keys(A.listings.get(m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${ub.unreadOps.join(', ')}`);
-        if (ub?.unreadTables.length && Object.keys(A.listings.get(m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${ub.unreadTables.join(', ')}`);
+        if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${ub.unreadOps.join(', ')}`);
+        if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${ub.unreadTables.join(', ')}`);
         if (why.length) reasons.push({ module: m, notFollowed: why, through });
       }
     }

@@ -1,12 +1,14 @@
 // The commands that read code (build text 1b, commands 10, 11 and 18): listing, notify, check. They load the
 // language reader (TypeScript, the tool's one dependency) when they run; no other command loads it.
+import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadTree } from './notice/model.mjs';
 import { loadReader, makeProgram, readerVersion } from './notice/ts.mjs';
 import { makeLister } from './notice/listing.mjs';
-import { analyse, describe, makeConfirm, notice, noticeText } from './notice/notice.mjs';
+import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { parseBlock } from './github.mjs';
@@ -90,6 +92,26 @@ function changedModules(root, before, after, B, A) {
   return A.tree.modules.map((m) => m.id).filter((id) => names.has(id));
 }
 
+/**
+ * The notices of a merge, read in a process of its own (notice/notices.mjs), one changed module after another, each in
+ * stages (notice/staged.mjs). Running out of memory there ends that process, not this one: notify then says so plainly.
+ * P4_READ_HEAP_MB, where set, is that process's heap in megabytes (for a test of running out).
+ */
+function readNotices(dirB, dirA, mods, n) {
+  const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
+  const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
+  if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods }), encoding: 'utf8', maxBuffer: 1 << 30 });
+  if (r.status === 0) return JSON.parse(r.stdout);
+  const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
+  if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
+    fail(`could not read the product within this machine's memory; nobody is told; the notice for pull request ${n} is owed`);
+  }
+  const f = /^p4-fail: (.*)$/m.exec(err);
+  if (f) fail(f[1]);
+  throw new Error(`reading the product failed:\n${err.trim().split('\n').slice(-12).join('\n')}`);
+}
+
 // 11. notify <pr>: for a merged pull request, the notice for each module whose files the merge changed, in module
 // order; each told user's reasons are written into the waiting-work record, for the module's next job.
 export function notifyCmd(ctx, n) {
@@ -104,8 +126,9 @@ export function notifyCmd(ctx, n) {
   const told = [];
   try {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
-    // changed file names alone; only when one changed is the code read, by one tool and one reader (a whole product
-    // read twice needs much memory: civicsmith, 23 Nov 2026).
+    // changed file names alone; only when one changed is the code read, by one tool and one reader, in stages: the
+    // changed module's listing before and after, and only where it changed, the later modules that can use it, one
+    // at a time (a whole product read twice needs much memory: civicsmith, 23 Nov 2026).
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
@@ -116,12 +139,12 @@ export function notifyCmd(ctx, n) {
       ctx.log('The listing before and after is the same. Nobody is told.');
       return 0;
     }
-    const B = analyse(treeB), A = analyse(treeA);
-    readerNote(ctx, A.tree);
-    const confirm = makeConfirm(B, A);
+    readerNote(ctx, treeA);
+    const read = mods.filter((m) => treeB.byId.has(m));
+    const reports = new Map(read.length ? readNotices(dirB, dirA, read, n).map((r) => [r.provider, r]) : []);
     for (const m of mods) {
-      if (!B.tree.byId.has(m)) { ctx.log(`${m} is a new module: it had no listing before, and nobody is told.`); continue; }
-      const r = notice(B, A, m, confirm);
+      if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: it had no listing before, and nobody is told.`); continue; }
+      const r = reports.get(m);
       ctx.log(noticeText(r));
       for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
     }

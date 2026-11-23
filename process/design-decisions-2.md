@@ -491,3 +491,30 @@ test, gate, review or stop. Option B of two (A no change; B `push --unblocked`).
 `process/research/blocked-record-not-cleared-23nov.md`.
 
 **The owner's words.** "Decision: B" — 23 November 2026 (a comment on his page, on option B).
+
+### Subject: The notice reads only what a merge can affect
+
+**The rule as it now stands.** `notify` reads in stages. For each module a merge changed, it reads that module's
+interface listing before and after, from that module's files and what they import. Where the listing is the same,
+nobody is told and no other module is read. Otherwise it reads, one at a time and as they stood before the merge, only
+the later modules that can use it: those whose imports, followed file to file, lead to it, those that declare it, those
+that reach a carrier where operations or tables are involved, and those with an import it cannot follow (counted in, as
+"cannot follow"). "Accepts more" is confirmed from that module's public files only. Where a reading still does not fit
+the machine's memory, `notify` says so plainly, tells nobody, and names the notice owed, instead of crashing. The rules
+of the notice (design part 2, section 7; build text 5, section 6) are unchanged; the replay of the proof's 150 recorded
+changes gives the same whole reports, with no recorded answer changed. It changed the tool (`tool/lib/notice/staged.mjs`
+and `notices.mjs`, new; `notice.mjs`, `ts.mjs`, `notify.mjs`; tests) and build text 1b, command 11. It adds no test,
+gate, review or stop.
+
+Why. Decision B of the same day was not enough: on civicsmith a job merge's `notify` ran out of memory even at 12 GB,
+because it read and type-checked the whole product twice, and a third time in part, for every merge. The owner asked
+whether the tool was properly designed for its purpose; it read far more than the notice needs. Measured on a built test
+product of 312 modules: the smallest memory that lets a notice finish fell from 256 MB to 128 MB where 166 later modules
+can use the change, and to 64 MB where 6 can; across the 150 proof changes, 76 kept their listing and read no other
+module. Not known: whether a civicsmith job merge now fits a session machine's memory. Option D of four (A no change; B
+read one side at a time; C B with a plain message; D read only what a merge can affect). Researched in
+`process/research/notify-out-of-memory-23nov.md`.
+
+**The owner's words.** "The huge need for memory by this tool leaves me wondering if the tool is properly designed for
+the purpose it serves. Is there a more efficient design for this tool that can meet all requirements?" — 23 November
+2026 (conversation). "Decision: D" — 23 November 2026 (a comment on his page, on option D).
