@@ -437,3 +437,23 @@ deletes the old branches; B a branch form that cannot meet them; C skip such mod
 `process/research/job-branch-name-collides-23nov.md`.
 
 **The owner's words.** "Decision: Change the job branch's form as recommended (B)" — 23 November 2026.
+
+### Subject: A product's repository may hold secrets
+
+**The rule as it now stands.** Process4 sets no rule on the secrets a product's repository keeps for its own
+workflows; that is the product's matter. The owner's act 3 (design part 7, section 4) sets a repository's merges, branch
+deletion and a read-only token for GitHub's machines, and no longer says "no repository secrets". What stands beside it:
+the required run's second part holds no access token (design part 2, section 6), and the secret values Process4 itself
+uses (the deploy token, a product's production signing keys, a release token) are kept in the sessions' cloud
+environment (parts 1, 3, 7 and 9).
+
+Why. The words had no reason or source in the design and no decision of the owner's behind them; sessions kept building
+on them (the civicsmith lane's settings checklist and token list, PROCESS's notes, a question put to him on 22 Nov), and
+PROCESS #9 wrongly gave part 2, section 6 as their reason. A read-only worker searched every text: act 3 was the only
+governing statement. It removes a rule; it adds no test, gate, review or stop. No tool or starting text changed, so no
+product needs to move. The session-written texts that rested on the words carry a withdrawal note in place. Option B of
+two (A no change; B remove the words). Researched in `process/research/no-repository-secrets-rule-23nov.md`.
+
+**The owner's words.** "Process4 keeps getting caught up with this false rule that it holds that a product's repository
+can hold no secrets. That is not the case." — 23 November 2026 (conversation). "Decision: B" — 23 November 2026 (a
+comment on his page, on option B).

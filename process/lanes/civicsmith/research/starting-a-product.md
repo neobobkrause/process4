@@ -68,7 +68,7 @@ For civicsmith:
 **b. Old process gates still in force on an existing main.**
 - Measured: main's ruleset still required Process3's `gate`, which nothing produces; the merge into main was blocked until the owner changed it to `module-tests` (tranche-unrelated §Outcome).
 - **Inference:** civicsmith, as a Process3 product, very likely has the same kind of ruleset, the old workflows and possibly repo secrets. Before act 10, list them and set act 3 and act 10 against them. Otherwise an old required check blocks every PR, and old workflows run on new PRs.
-- **Open:** act 3's "no repository secrets" may conflict with secrets civicsmith uses today.
+- ~~**Open:** act 3's "no repository secrets" may conflict with secrets civicsmith uses today.~~ [Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.]
 
 **c. Approvals landing.**
 - Measured: the owner edited approvals directly on main twice (PR 351, then the 20 Nov text). The tranche then held older approvals, which caused a `CLAUDE.md` conflict and then a two-file difference (owner-acts-without-files; tranche-unrelated).

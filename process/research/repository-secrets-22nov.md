@@ -1,5 +1,7 @@
 # A product's own workflows that need repository secrets (act 3)
 
+[Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.] This note's premise, and the reason it gave for act 3 (design part 2, section 6 is about the required run's token, not a repository's secrets), are wrong; see `no-repository-secrets-rule-23nov.md`.
+
 Written by PROCESS #9, 22 Nov 2026. Grounds for the question put to the owner; nothing decided here.
 
 ## What the design says

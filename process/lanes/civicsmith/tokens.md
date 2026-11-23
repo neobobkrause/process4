@@ -21,7 +21,7 @@ Action 7. Grounds: `research/cloudflare-token-permissions.md`, and section 5 bel
 
 The release signing keys stay in the sessions' environment (the owner's decision of 22 Nov 2026, as PROCESS #6
 relayed it) and are not part of this list. With PROCESS, not settled here: the Docker Hub credential the
-`container-images` workflow holds as repository secrets, against act 3's "no repository secrets"; and that the
+`container-images` workflow holds as repository secrets (no longer a question: [Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.]); and that the
 install and update run before a release is the owner's own sign-in, since the installer takes no API token
 (OAuth only, `newgroup/src/index.mjs`).
 

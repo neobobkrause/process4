@@ -60,10 +60,8 @@ yet: the trial's ROOT #7 has not confirmed recording PROCESS #8 (civicsmith's di
 
 - Action 9 (civicsmith's branch rule) is done on his word (page comment, 22 Nov 20:54Z).
 - To put to him, one at a time, now that the measurement is in (research recorded, no options put yet):
-  1. civicsmith's own workflows hold repository secrets (Docker Hub; a Cloudflare token for `deploy-test`)
-     that act 3 ("no repository secrets") removes; `release-sign` uses an environment secret behind a
-     required reviewer. Options: an environment with a required reviewer; the push moves into the
-     session-run release ceremony; an exception to act 3.
+  1. (Closed 23 Nov by PROCESS #9: act 3's "no repository secrets" was removed on the owner's decision B; a
+     product's own secrets are its own matter.)
   2. Who merges a product's set-up pull request into main (design part 7 section 4 act 8 does not say;
      civicsmith's approvals did not allow the session, so he merged #1119). Lane point 11.
   3. For his release page, no design change asked: civicsmith's installer takes no token, so the install

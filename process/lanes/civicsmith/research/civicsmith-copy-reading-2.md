@@ -65,7 +65,7 @@ of this repository only; nothing changed. Shortened here; file paths are the rep
 2. The Cloudflare token: one token, one account (the development account). Permissions: see `tokens.md`.
 3. No R2 S3 token. No GitHub token. No AI-provider environment token (keys live in the product's store).
 4. Docker Hub: a credential the product's own `container-images` workflow holds as a repository secret,
-   which act 3 ("no repository secrets") takes out. Put to PROCESS.
+   which act 3 ("no repository secrets") takes out. Put to PROCESS. [Withdrawn 23 Nov 2026: act 3 no longer says "no repository secrets"; the owner's decision B, entry "A product's repository may hold secrets" in process/design-decisions-2.md. A product's own secrets are its own matter.]
 5. The install-and-update run before a release cannot use a token: the installer is OAuth only. It is the
    owner's own sign-in on Cloudflare's consent screen. Put to PROCESS.
 6. Item 12 (tests reaching a later module) must still be read: a short third reading.

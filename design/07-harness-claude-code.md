@@ -65,7 +65,7 @@ Before these acts PROCESS starts the product's onboarding lane (part 6, section 
 
 1. Have a second GitHub account for the sessions.
 2. Give that account write access to the product's repository and the process's, and accept as that account.
-3. Set each repository's settings: merges by merge commit, no automatic merging, no automatic deleting of branches, a read-only token for GitHub's machines, no repository secrets.
+3. Set each repository's settings: merges by merge commit, no automatic merging, no automatic deleting of branches, a read-only token for GitHub's machines.
 4. Make the rule for every branch: no deleting and no overwriting, with no one excepted.
 5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories. Sessions act on GitHub through this connection, so no GitHub token is made (part 6, section 8).
 6. Make the product's tokens, once, each with every permission the product's development will need at every stage (part 1, section 3); the lane's page lists them. Enter the secret values in the fields of Claude's cloud environment settings page. A session checks that environment carries the process's permissions-management settings; where they are missing, he approves with a click the change it proposes (section 5).
