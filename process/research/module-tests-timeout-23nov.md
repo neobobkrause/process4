@@ -29,3 +29,14 @@ design sets it. It stops work: plane cannot merge, and round 1 waits on it.
 - **C. The owner's direction under discussion on 23 Nov:** the job's own run is the one run, recorded by the tool, and
   GitHub runs no tests. That removes this limit with the rest of GitHub's run, but is a larger build, and a session's
   30-minute limit on one command means the tool runs plane's tests in pieces. B can be done now and C later.
+
+## ARCH's product course, 15:11Z
+
+civicsmith ARCH #11, via coordinator #4, unchanged: "plane #1 confirms the cause. Its run passed once at about 45 minutes
+(run 45153717371) and has grown since. Its largest file, migrate-released.test.mjs, takes about 25 minutes. ARCH's
+decision, a product matter: plane's job makes its own tests faster without dropping anything they prove, starting with
+booting the captured stores in parallel inside migrate-released. The target is about 30 minutes for the whole module.
+This is the job's duty under design part 2, section 6 ("complete yet fast and efficient"). It changes no workflow. The
+fault itself stays with PROCESS: a module whose complete tests take longer than 45 minutes cannot pass the required run."
+
+So plane may get under the limit by its own work; the fault stands for any module whose complete tests take longer.
