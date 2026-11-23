@@ -26,6 +26,17 @@ a{color:var(--accent)}
 </header>
 
 <section class="wait">
+<h2>Waiting for you, urgent: civicsmith's round is stuck on a 45-minute limit</h2>
+<p><b>The bottom line.</b> The test run on GitHub is cut off after 45 minutes. civicsmith's plane module has tests that take 44 minutes; with the setup before them, the run passes 45 minutes and GitHub cancels it just after all its tests pass. It has happened three times. plane cannot merge, and round 1 waits on it. (This corrects what I told you earlier: it was not edits cancelling the run.) The 45 minutes is a number in the test setup file; nothing in the design asked for it.</p>
+<ul>
+<li><b>B. Raise the limit to GitHub's own ceiling, 6 hours (recommended now).</b> One line in the test setup file. civicsmith keeps its own copy of that file, so the same line goes into civicsmith's copy too, by a change in civicsmith's repository.</li>
+<li><b>C. The bigger change we are discussing:</b> the job's own test run is the only run, and GitHub runs no tests. That removes this limit with the rest, but takes longer to build. B can be done now and C later.</li>
+<li><b>A. No change.</b> plane can never merge.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B".</p>
+</section>
+
+<section class="wait">
 <h2>Waiting for you, most important: a change can pass its tests with no test run</h2>
 <p><b>The bottom line.</b> When a job sends its last change and marks itself ready within the same second, GitHub starts two test runs. The one that survives can be the one that still saw the job as unfinished, and such a run passes at once without running anything. GitHub then counts the tests as passed. civicsmith's ARCH caught it on one job and did not merge. The same thing let one of my own tool changes merge here before its tests had finished; they passed afterwards. Nothing broken is known to have merged.</p>
 <ul>
