@@ -108,3 +108,16 @@ lines, built and checked against the replay before anything merges.
 
 **Option D (recommended, replacing B and C):** the staged reading, with C's plain message kept for a reading that still
 cannot fit.
+
+## Outcome of D
+
+The owner chose D, 23 Nov 2026 ("Decision: D", a comment on his page). Built by a worker in PROCESS #9's session and
+re-run by PROCESS: the proof replay passes with `expected.json` untouched, and the whole reports of all 150 changes are
+the same staged as whole (76 read no other module; 379 of 973 later modules read in all). Smallest heap that lets a
+notice finish, on a built product of 312 modules: 256 MB to 128 MB (166 later modules read), 256 MB to 64 MB (6 read).
+Choices the build made, all erring toward reading more: a module that declares the changed one is read even with no
+import path (keeps the "declares but no use found" rule); where operations or tables are involved, every module reaching
+a carrier is read. Possible differences from a whole reading, none seen in the 150: kinds of the same name in two
+modules; globals from files nothing imports; imports TypeScript resolves differently from the text scan (counted as
+"cannot follow", so read). Slower where many modules can use the change (about 1.4 times on 166 modules). Not known:
+civicsmith.
