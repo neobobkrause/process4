@@ -67,3 +67,44 @@ uses `analyse` returns, not the programs (`B.program`/`A.program` are read only 
   `notify` on each.
 - **C. B, and where it still cannot fit, `notify` says plainly that it could not read the product and tells nobody**,
   so ARCH records the notice owed instead of meeting a crash. A failure message only; adds no stop.
+
+## The owner's question, 23 Nov: is the tool designed well for its purpose?
+
+His words (conversation): "The huge need for memory by this tool leaves me wondering if the tool is properly designed
+for the purpose it serves. Is there a more efficient design for this tool that can meet all requirements?"
+
+What the notice must do (design part 2, section 7; build text 5, section 6): for each module a merge changed, compare its
+interface listing before and after; if they differ, tell the later modules that use a changed entry, with the places;
+count a user the tool cannot follow as using everything; read uses from the users' code as it stood before the change;
+confirm "accepts more" with the type checker.
+
+What it does now: it type-checks the whole product twice (every module's listing and every module's uses, before and
+after), then a third program, whatever changed. Most of that is never used:
+
+- The "after" side needs only the changed module's listing, not every module's listing and uses.
+- Most job merges change a module's insides, not its listing; then nobody is told, and no user needs reading at all.
+- When a listing does change, only later modules that can reach the changed module need reading: those whose imports,
+  followed from file to file, lead to its files (directly or through another module), those that call by name where it
+  publishes operations or tables, and those with an import the tool cannot resolve (counted in, as "cannot follow").
+  An import graph is read from the files' text without the type checker, quickly and in little memory.
+
+A staged design, the same rules:
+
+1. Which modules changed: from the changed file names (built, decision B).
+2. For each, its listing before and after, each from a program of that module's files and what they import. Equal:
+   nobody is told, stop.
+3. Otherwise, the candidate users from the import graph (above, erring toward inclusion), and each candidate's uses read
+   from a program of that candidate's files and what they import, on the "before" side, one candidate at a time.
+
+Memory then grows with the largest module and what it imports, not with the product; time falls the same way. Same
+answers expected; the acceptance check exists: the tool's replay of the proof's 150 recorded changes
+(`tool/test/notice-proof.test.mjs`, `fixtures/notice-proof/expected.json`) must give the same answers. `check` already
+reads one module and its providers this way (`ownProgram` in `tool/lib/notice/check.mjs`).
+
+Not known: the memory of one module's reading on civicsmith (a late module imports much); whether every one of the 150
+answers holds without a deliberate change to `expected.json` (any change is written there with its reason, as before).
+Cost: a rewrite of the notice's reading (`notice.mjs`, `usage.mjs`, `listing.mjs` callers, `notify.mjs`), a few hundred
+lines, built and checked against the replay before anything merges.
+
+**Option D (recommended, replacing B and C):** the staged reading, with C's plain message kept for a reading that still
+cannot fit.
