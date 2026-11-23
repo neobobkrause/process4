@@ -58,3 +58,31 @@ job currently running."
 
 How often a real job changes its provider's interface; how much waiting in order costs against the told jobs it saves;
 how long plane's tests take in a session; whether civicsmith's approvals let a session change its workflow copy (1a).
+
+## Later in the same conversation (23 Nov, before PROCESS #9's refresh)
+
+The owner's comments on the summary, and where they leave each change (still not a decision):
+
+- **The interface check** (`p4 check`) runs no tests and no product code: it reads the module's code and tests and finds a
+  declared use that does not match the imports (and a declared later use), a structured comment that contradicts the
+  code, and code that contradicts a provider's stated interface. Under change 1 it runs once with the job's tests.
+- **Long modules: taken out of change 1 for now.** His words: "Let's not break long modules into pieces quite yet ...
+  we'll refresh and dive into the long modules problem." Until solved, a module whose tests run past a session's 30
+  minutes for one command cannot record a pass in the job; plane (about 44 minutes on GitHub; ARCH has its job aiming for
+  about 30) may need the 45-minute stopgap (`module-tests-timeout-23nov.md`, option B).
+- **"Marking ready runs nothing":** `ready` checks for the tool's recorded pass for the current commit; with one it marks
+  ready, without one it marks nothing and says to run the tests. No test runs from `ready`.
+- **Change 3 and what a job knows it uses.** The check is exact only for imports by path (the owner's decision of 22
+  Nov records the limit). civicsmith's tests also reach other modules by starting the whole product (62 test files in
+  21 modules), reading other modules' files, and running other modules' programs; none is an import. So "own providers"
+  is not yet reliable: PROCESS #9's suggestion for now is change 3 as "wait for every earlier open job", narrowed to
+  providers once uses are reliable. Not yet agreed by the owner.
+- **The owner's questions to research after the refresh** (his words: "Isn't it the case that references to provider
+  services has syntax like 'provider.function'? So can the tool just look for those references to identify all
+  references? If a module reads another module's files directly, that the first module is a user of the second, right?
+  So those are second level references that the module being read should already know about, right?"): PROCESS #9's
+  short answer: calls are by imported name, already followed; started programs and file reads carry only path strings,
+  which a cheap scan for paths into another module's folder might catch; a file read is a direct (first-level) use the
+  reader must declare; starting the whole product is the true second-level case. To research: making module tests reach
+  other modules only through imports (tests that start the whole product belong to the walks), or making the check see
+  paths; and long modules.

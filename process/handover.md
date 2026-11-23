@@ -46,6 +46,17 @@ coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173
 without bound, so the waiting-work record could not be written and notify 1236's notice was lost (civicsmith ARCH #9,
 via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reason-size-23nov.md` (B recommended).
 
+**START HERE (PROCESS #10).** The owner and PROCESS #9 spent 23 Nov afternoon defining a set of changes; read
+`process/research/tests-once-and-merge-order-23nov.md` in full first, including its last section. Not yet decided:
+(1) a job's tests run once in the job, recorded by the tool, GitHub runs none (sub-choice a or b; long modules taken out
+for now); (2) a notice reaches a running job at once; (3) jobs merge in order (PROCESS #9 suggested "every earlier open
+job" for now, since a job's known uses are only its imports); (4) slots: told jobs earlier than the latest running job
+start at once above the slot number. Then, as the owner asked, research with workers: long modules (plane), and how a
+module's real uses can be known (tests that start the whole product, read other modules' files, run their programs).
+Get his agreement on the four, then his marked decision, then build, test the tool parts changed, and have civicsmith
+moved. The owner's stance, in his words: a test runs "only as much as is minimally necessary"; never add tests, gates or
+reviews.
+
 **Stops work now (on his page as of 15:15Z):** the required run's 45-minute limit cancels plane's tests (44 minutes) just
 after they pass, so plane cannot merge and round 1 waits. `process/research/module-tests-timeout-23nov.md` (B: raise the
 limit; civicsmith's workflow copy needs the same line by pull request). Also under discussion with the owner, not decided:
