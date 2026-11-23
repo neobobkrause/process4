@@ -46,6 +46,10 @@ coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173
 without bound, so the waiting-work record could not be written and notify 1236's notice was lost (civicsmith ARCH #9,
 via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reason-size-23nov.md` (B recommended).
 
+**Most important for PROCESS #10 (on his page as of 08:55Z):** the required run can pass a ready pull request with no
+tests run, when a push and `ready` come close together (civicsmith PR 1228; process4 PR 205, the observation below).
+Grounds and options: `process/research/draft-run-passes-ready-pr-23nov.md` (B recommended).
+
 **Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
 The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
 
