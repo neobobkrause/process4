@@ -3,35 +3,40 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 22 Nov 2026 ~23:25Z, by **PROCESS #8** (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), at its refresh point:
-about 50 percent fill, a natural pause, nothing half done, everything merged (main after pull request 186). You, the
-successor, are **PROCESS #9**: read generation 8 in `handover-process`, name yourself `PROCESS #9` with
-set-session-title (pass your own session id), record generation 9 and your session there (the file must start with the
-JSON block), and message both ROOTs your address. Read your own fill (`get_session`, `context_usage`) after every owner
-turn; it can read 0 while a turn is open. Refresh at the first natural pause after 50 percent (the owner's decision B of
-22 Nov). Never `git add -A`; add paths by name.
+Last written: 23 Nov 2026 ~06:35Z, by **PROCESS #9** (`session_018Bhcedhv9kRXZcX6PWLMdJ`), mid-session (a checkpoint,
+not yet its refresh). The successor is **PROCESS #10**: read the generation in `handover-process` (9), name yourself
+`PROCESS #10` with set-session-title (your own session id), record generation 10 and your session there (the file must
+start with the JSON block), and message each ROOT in the registry your address. Read your own fill (`get_session`,
+`context_usage`) after every owner turn; it can read 0 while a turn is open. Refresh at the first natural pause after 50
+percent. Never `git add -A`; add paths by name.
 
-**Your reading, as decided 22 Nov (research through an index):** the design, build text 5, the two decision files, your
-folder's `README.md`, `process/research/README.md` (the index; one line per file) and `process/lanes/civicsmith/README.md`,
-and this handover. Open a research file, or give it to a worker, only when a question needs it. Keep the index current:
-one line for each new research file.
+**Your reading:** the design, build text 5, the two decision files, `process/README.md`, `process/research/README.md` (the
+index; one line per file), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a
+worker, only when a question needs it.
 
-**PROCESS #8 did, all merged:** took over from #7 (archived); the civicsmith check re-run arrived (177 of 204 modules pass;
-217 comment-based refusals in 27 modules; the exclude list for vendored and built files; research
-`check-on-real-code-22nov.md`); civicsmith moved to 641fec3 (all sessions on it, jobs held at slot number 0). Three faults
-from civicsmith researched and put to the owner; he chose B for all three ("decision:B", then "Decision: all as you've
-recommended"); built in pull request 185: refresh at the first pause after 50 percent; whoever archives a session removes
-its scheduled wake; research read through an index (entries in `design-decisions-2.md`; research files named in the
-index). civicsmith's coordinator was told all of it as information.
+**PROCESS #9 did, all merged (entries in `design-decisions-2.md`, research in the index):**
+- Job branches are `job/<module>.<n>` (decision B, PR 192): civicsmith-copy's 207 flat `job/<module>` branches blocked
+  `job/<module>/<n>`.
+- A product's repository may hold secrets: act 3 lost "no repository secrets" (decision B, PR 195); a worker found act 3
+  the only source; session-written texts carry withdrawal notes.
+- `notify`: no code read when no module changed, and code-reading commands get 3/4 of machine memory (decision B, PR 199);
+  then, after a job merge still ran out at 12 GB and the owner asked whether the tool was well designed, a staged reading
+  of only what a merge can affect, with a plain "could not read ... notice owed" message (decision D, PR 205; built by a
+  worker; the 150-change proof replay gives identical reports).
+- `push --unblocked "<why>"`: a job whose block ARCH ended by its own decision says it goes on (decision B, PR 204; one
+  line added to `starting_texts/job.md`).
+- The owner's instruction (typed in this session, 23 Nov ~06:00Z): "Instruction: When the fixes are in and the new version
+  of process4 is ready, tell the civicsmith coordinator to bring civicsmith up to the latest version". Done: civicsmith
+  coordinator #4 (`session_018BhcedBfypmJzpjT9Drkdq`) was sent his exact words at ~06:30Z, main 4ef702c. Follow up: did
+  civicsmith move, and does a job merge's `notify` now fit (ARCH owes notices for 1152-1154 and later)? If the
+  coordinator says he must type the move line himself, put it on his page.
 
-**Waiting for the owner (on his page):** his line in civicsmith coordinator #2's session, "Instruction: move civicsmith to
-the latest Process4 version", so civicsmith gets the three decisions. The stale wake `trig_012wRs9PsVduMaQfyeTdsQpL`
-("civicsmith watcher hourly wake", bound to archived watcher #1) goes then, or by his own delete. Information given him,
-not his to decide here: two old Process3 scheduled tasks ("sweep" hourly, "watcher" daily) still run.
+**Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
+The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
 
-**Open, not yet put to him:** PROCESS's own reading set with the decision record is about 211,000 bytes, over 175,000 but
-under the 220,000 measured (noted in the entry "Research is read through an index"); no change recommended. Not answered
-yet: the trial's ROOT #7 has not confirmed recording PROCESS #8 (civicsmith's did).
+**Observation, nothing measured failing (rule 6, no change):** PR 205 merged while its ready run of `tool-tests` still
+showed in progress; that run then passed. Earlier merges were refused while the run was in progress. Possibly the draft
+run's at-once pass satisfied the required check. Watch for it; a failing tool change could merge this way.
 
 ## Start checks
 
@@ -41,9 +46,9 @@ yet: the trial's ROOT #7 has not confirmed recording PROCESS #8 (civicsmith's di
    account's session list; ROOTs refresh, so confirm the live one there):
    - `process3-probes` (the trial): ROOT #7 `session_018Bhceg1d5SVx54aCGkzRe3`; coordinator #3
      `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
-   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`, process copy `4614f8f`):
-     **civicsmith ROOT #3** `session_018Bhcedt8Khih1wkySqBtUq` (from ~23:33Z); coordinator #2
-     `session_018BhceejEKQ1qWjGNt2T2xr`; ARCH #6 `session_018BhcecPFUPKp25SZCCoVXF`; its shared-state issue is 1122.
+   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`): **civicsmith ROOT #4**
+     `session_018BhceeqiFSaXdPrichfP66` (from 23 Nov ~05:15Z); coordinator #4 `session_018BhcedBfypmJzpjT9Drkdq`;
+     ARCH `session_018BhcedtuSwkeuCxhbrNGwr` (generation not read); its shared-state issue is 1122. Jobs are running.
 4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
    last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
    `process/lanes/civicsmith/`, stays: conversion plan, the three readings, `later-module-tests.md`,
