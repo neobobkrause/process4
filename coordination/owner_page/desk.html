@@ -22,8 +22,33 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #10. Waiting for you: one line in civicsmith's coordinator session, five questions (most urgent: the 45-minute limit stopping civicsmith's round; most important: a change passing with no tests run; then requirements held for later, a limit on a class method, a notice too long to save), and archiving PROCESS #8 and #9. Under way in PROCESS #10's session: the research you asked for on long modules and on how a module's uses are known, before the four changes we discussed come to you for a decision.</p>
+<p class="updated">Updated 23 Nov 2026, evening, by PROCESS #10. The research you asked for is done. Waiting for you: the group of changes we discussed, now with the research in it; the 45-minute limit (urgent); a change passing with no tests run; four smaller questions; one line in civicsmith's coordinator session; archiving PROCESS #8 and #9.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you, the main one: the group of changes we discussed, with the research done</h2>
+<p><b>The bottom line.</b> Long modules do not stand in the way: a session can run one command for up to 2 hours, not the 30 minutes the design says, so plane's 44 minutes runs in one go, no pieces needed. But merging a job "after its own providers" is not yet safe: the tool sees only one kind of use (bringing in another module's code by its file path). It does not see a module reading another's files, starting its program, or starting the whole product, and on civicsmith most of that reaches a later module (62 test files start plane). Your second-level point is right: once every direct use is declared, the rest follows from the module list.</p>
+<p><b>What I recommend, as one group:</b></p>
+<ol>
+<li><b>A job's tests run once, in the job.</b> The tool runs them as one long command in the job's own session (up to 2 hours) and records the pass on the pull request for that exact change. Marking ready runs nothing. GitHub runs no tests; its required check only reads that record in seconds, so GitHub still refuses a merge with no pass. This removes the 45-minute limit, the run that passes with no tests, and every second run. civicsmith's copy of the test setup changes by one pull request.</li>
+<li><b>A notice reaches a running job at once,</b> as we agreed.</li>
+<li><b>A ready job merges once no job is still open among the modules it uses,</b> directly or through others, as the module list declares them. Less waiting than "every earlier job". A use no one declared is missed, as today. This adds a wait, so it needs your word.</li>
+<li><b>Slots,</b> as we agreed: told jobs earlier than the latest running job start at once, above the slot number.</li>
+<li><b>The check mended in two places.</b> It also sees the two other ways of bringing in code it misses today; and it stops refusing an honest declared use it cannot see (today a job is told to remove it).</li>
+<li><b>Module tests reach other modules only by bringing in their code.</b> A test that starts the whole product or reads another module's files belongs to the latest module it reaches, or to the walks. civicsmith's ARCH moves them; the civicsmith lane already sorted them into 13 groups. This is what makes 3 safe.</li>
+</ol>
+<p>Options: <b>all six (recommended)</b>; <b>some of them</b> (say which); or <b>no change</b>. Not known: plane's time in a session; whether civicsmith's repository is private (GitHub then runs one test file at a time). Reply on this item, for example "Decision: all six".</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: a false refusal that named the wrong module</h2>
+<p><b>The bottom line.</b> plane hands one of control-plane's functions to a setting of store-assembly's. Control-plane's function was described in a comment; store-assembly's setting was not. The check refused the call and named control-plane, because it looked at comments on both sides. Your rule of 22 Nov is that the check refuses only what a comment says the code contradicts, and here what was contradicted, store-assembly's setting, had no comment. It held plane up until store-assembly described the setting. Nothing is stopped by it now.</p>
+<ul>
+<li><b>B. Only the receiving side's comment counts (recommended).</b> The tool must still give the same answers on the changes recorded when the method was first proven, or write down why one changes. civicsmith gets it by the move line.</li>
+<li><b>A. No change.</b></li>
+</ul>
+<p>Reply on this item, for example "Decision: B".</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you, urgent: civicsmith's round is stuck on a 45-minute limit</h2>
@@ -45,7 +70,7 @@ a{color:var(--accent)}
 <li><b>C. The tool refuses to merge on a run that saw an unfinished change,</b> and asks for the run again. A guard on the merge rather than a cure; reaches civicsmith by the move line alone.</li>
 <li><b>A. No change.</b> Untested changes can merge when the timing is close.</li>
 </ul>
-<p>Reply on this item with your choice, for example "Decision: B". PROCESS #10 builds it.</p>
+<p>If you choose the group of changes above, its first item removes this fault altogether, and C is then the better stopgap until it is built: it needs no change in civicsmith's repository. Reply on this item with your choice, for example "Decision: C".</p>
 </section>
 
 <section class="wait">
