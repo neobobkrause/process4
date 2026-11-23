@@ -1,5 +1,5 @@
-Written by a worker of PROCESS #10, 23 Nov 2026. Bottom line:
-1. The design's "about thirty minutes for one command" is a default, not a ceiling: a background command in a cloud session runs up to 2 hours when given that timeout, and longer if the environment sets a variable.
+Written by a worker of PROCESS #10, 23 Nov 2026.
+1. Bottom line. The design's "about thirty minutes for one command" is a default, not a ceiling: a background command in a cloud session runs up to 2 hours when given that timeout, and longer if the environment sets a variable.
 2. The 45 minutes on GitHub is the process's own number; GitHub allows 6 hours per job.
 3. Tests already run 3 files at a time where the machine has 4 CPUs (node's default); the floor for plane is its longest file, about 25 minutes.
 4. Pieces are not needed for any module whose tests finish inside 2 hours; plane (about 44 minutes on GitHub) fits one background command.
@@ -23,6 +23,7 @@ Written by a worker of PROCESS #10, 23 Nov 2026. Bottom line:
 | Session, foreground command | 2 min default, 10 min max; at its timeout it moves to the background and gets 30 more min | Claude Code docs, read 23 Nov |
 | Session, background command | 30 min default; up to 2 hours with `timeout`; more only by setting `BASH_DEFAULT_TIMEOUT_MS` / `BASH_MAX_TIMEOUT_MS` on the environment | Claude Code docs; this harness's own tool text says the same |
 | Session machine | about 4 CPUs, 16 GB, 30 GB disk ("may change") | docs; measured here 4 CPUs, 15 GB, 60 GB free |
+| Monitor tool (waiting on a condition) | one watch at most 30 min, then re-armed | this harness's tool text |
 | Idle session | the VM pauses "after a few minutes without activity", and a paused VM can be reclaimed | docs |
 
 So the design's thirty minutes (part 7, section 1) is the background default; a tool command can ask for 2 hours. Two rules from the docs matter: a background command started by a WORKER stops when the worker ends, so the job session itself must start it; and the session is re-invoked when its background command exits.
