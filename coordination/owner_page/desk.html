@@ -22,8 +22,18 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. One question waits for you (civicsmith's job merges still run the tool out of memory), and one small click.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Two questions wait for you (a set-aside job going on; civicsmith's job merges running the tool out of memory), and one small click.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you: a job set aside cannot say it is going on</h2>
+<p><b>The bottom line.</b> When a civicsmith job is held up by another module, it records "blocked", and the tool treats that as ending only when the other module's work merges. civicsmith showed three times today that a block can also end by ARCH's decision (it moved a file to a different module, or rewrote an interface), which the design allows. The jobs went on and merged, but meanwhile the tool still counted them as set aside, so it thought slots were free and ARCH had to manage the job count by hand. No job has a way to say "I am going on".</p>
+<ul>
+<li><b>B. Let the job say it (recommended).</b> When ARCH tells a set-aside job to go on, the job pushes with a new word that rewrites its own record to "going on". The tool then counts it as open and its slot as used. Only the job writes its record, as now. This changes the tool and one line of the job's starting text.</li>
+<li><b>A. No change.</b> Each such case leaves the slot count wrong until the job merges.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B". This one is independent of the memory question below.</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you: the memory fix was not enough for civicsmith's job merges</h2>
