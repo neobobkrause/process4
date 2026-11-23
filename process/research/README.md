@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 23 Nov 2026
+- `tests-once-and-merge-order-23nov.md` — the changes agreed in conversation on 23 Nov, for the owner's decision: tests once in the job, notices to running jobs, merging in provider order, slots.
 - `module-tests-timeout-23nov.md` — the required run's 45-minute limit cancels plane (44 minutes of tests) after they pass; it stops round 1; options A to C.
 - `check-names-wrong-provider-23nov.md` — refusal (b) named control-plane where store-assembly states the interface; not yet read in the tool.
 - `draft-run-passes-ready-pr-23nov.md` — a run that saw the pull request as a draft passes it once ready, with no tests run (civicsmith PR 1228; process4 PR 205); options A to C (not yet put to the owner).
