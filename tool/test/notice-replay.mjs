@@ -3,7 +3,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { analyse, makeConfirm, notice } from '../lib/notice/notice.mjs';
+import { analyse, notice } from '../lib/notice/notice.mjs';
+import { loadTree } from '../lib/notice/model.mjs';
 import { check } from '../lib/notice/check.mjs';
 import { makeProgram } from '../lib/notice/ts.mjs';
 
@@ -52,13 +53,14 @@ export function buildTrees(change, base = fs.mkdtempSync(path.join(os.tmpdir(), 
 export function answer(change) {
   const { base, before, after } = buildTrees(change);
   try {
-    const B = analyse(before), A = analyse(after);
-    const n = notice(B, A, change.provider, makeConfirm(B, A));
+    // The notice is read in stages, as notify reads it (lib/notice/staged.mjs); the check below reads the whole product.
+    const n = notice(loadTree(before), loadTree(after), change.provider);
     const told = {};
     for (const t of n.told) {
       told[t.user] = t.reasons.map((r) => (r.notFollowed ? `${r.module}: not followed fully` : `${r.module} ${r.entry}: ${r.changes.join(', ')}`));
       if (t.undeclared.length) told[t.user].push(`note: uses ${t.undeclared.join(', ')} without declaring it`);
     }
+    const A = analyse(after);
     const order = A.tree.modules.map((m) => m.id);
     // A fresh program for the check: the reader's complaints are read before anything is written out (a program that
     // has already written out declarations reports `@type {const}` as a missing name).

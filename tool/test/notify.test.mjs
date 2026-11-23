@@ -10,7 +10,7 @@ import { analyse, notice } from '../lib/notice/notice.mjs';
 import { check, commentsOnly } from '../lib/notice/check.mjs';
 import { parseBlock } from '../lib/github.mjs';
 import { create, mark } from '../lib/state.mjs';
-import { git } from '../lib/util.mjs';
+import { Fail, git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
 
 // GitHub that fails on any reach: listing and check read the checkout only.
@@ -165,6 +165,68 @@ test('notify on a merge that changes no listing tells nobody and writes nothing'
   assert.equal(gh.s.comments.length, 0);
   gh.s.prs.push({ number: 9, state: 'closed', merged_at: null, head: { ref: 'x' }, base: { ref: 'main' } });
   assert.throws(() => notifyCmd(ctx, 9), /pull request 9 is not merged/);
+});
+
+test('read in stages: a merge that changes a module\'s insides but not its listing reads no later module', () => {
+  const inside = { 'src/dates/index.mjs': DATES('1 to 31', " + ''") };
+  const before = mkdtempSync(join(tmpdir(), 'p4-stage-')), after = mkdtempSync(join(tmpdir(), 'p4-stage-'));
+  write(before, productFiles());
+  write(after, { ...productFiles(), ...inside });
+  const r = notice(before, after, 'dates');
+  assert.equal(r.summary, 'The listing before and after is the same. Nobody is told.');
+  assert.deepEqual([r.usersRead, r.told, r.notTold], [[], [], []]);
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  mergedPR(root, gh, inside);
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  assert.match(out.join('\n'), /Nobody is told\./);
+  assert.doesNotMatch(out.join('\n'), /TOLD|not told/);
+});
+
+test('read in stages: a later module with no import path to the changed module is neither read nor told; one that reaches it is read', () => {
+  const files = productFiles();
+  files['process/modules/order.txt'] = 'dates\norders\nreport\nchain\nloner\nloose\n';
+  files['process/modules/chain.json'] = entry('chain', ['orders']);
+  files['process/modules/loner.json'] = entry('loner');
+  files['process/modules/loose.json'] = entry('loose');
+  // chain reaches dates only through orders' file; loner has a kind of its own named Day, of the same shape, and no
+  // path to dates; loose imports a name the scan cannot follow.
+  files['src/chain/index.mjs'] = "import { orderDay } from '../orders/index.mjs';\n/** @returns {number} */\nexport const first = () => orderDay('1');\n";
+  files['src/loner/index.mjs'] = '/**\n * @typedef {Object} Day\n * @property {number} n\n */\n/** @param {Day} d @returns {number} */\nexport const n = (d) => d.n;\n';
+  files['src/loose/index.mjs'] = 'export const load = (/** @type {string} */ p) => import(p);\n';
+  const change = { 'src/dates/index.mjs': DATES('1 to 30') };
+  const before = mkdtempSync(join(tmpdir(), 'p4-stage-')), after = mkdtempSync(join(tmpdir(), 'p4-stage-'));
+  write(before, files);
+  write(after, { ...files, ...change });
+  const r = notice(before, after, 'dates');
+  assert.deepEqual(r.usersRead, ['orders', 'report', 'chain', 'loose']);
+  assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report']);
+  const root = makeRepo(files);
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  mergedPR(root, gh, change);
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const text = out.join('\n');
+  assert.match(text, /TOLD orders\n[\s\S]*TOLD report\n/);
+  assert.doesNotMatch(text, /chain|loner|loose/);
+  assert.deepEqual(waitingWork(gh).work.map((w) => w.module), ['orders', 'report']);
+});
+
+test('notify that runs out of memory reading the product says so plainly, tells nobody, and fails', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const { ctx } = ctxFor(root, gh);
+  process.env.P4_READ_HEAP_MB = '16';
+  try {
+    assert.throws(() => notifyCmd(ctx, 7), (e) => e instanceof Fail && e.message === 'could not read the product within this machine\'s memory; nobody is told; the notice for pull request 7 is owed');
+  } finally {
+    delete process.env.P4_READ_HEAP_MB;
+  }
+  assert.equal(waitingWork(gh).work, undefined);
 });
 
 test('notify runs once for each module the merge changed, in module order', () => {
