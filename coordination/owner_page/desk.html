@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built. Waiting for you: one line in civicsmith's coordinator session, one question (requirements held for later), and starting PROCESS #10 when you are ready.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. Your decisions of 23 Nov are built. Waiting for you: one line in civicsmith's coordinator session, two questions (requirements held for later; a limit on a class method), and starting PROCESS #10 when you are ready.</p>
 </header>
 
 <section class="wait">
@@ -61,6 +61,16 @@ a{color:var(--accent)}
 <p>The setup step no longer says a repository may hold no secrets; what secrets a product's own workflows keep is the product's matter. Your words are recorded exactly. Every note sessions had written on that rule now carries a line saying it is withdrawn, so no session acts on it again. No tool or role text changed, so no product needs to move. Merged (pull request 195).</p>
 </section>
 
+
+<section class="wait">
+<h2>Waiting for you: a limit written on a class method is not noticed when it changes</h2>
+<p><b>The bottom line.</b> Your design says a limit written in a comment (for example "text up to 1,572,864 bytes") is part of a module's interface, so changing it tells the modules that use it. The tool does this for functions and classes, but not for a class's own methods: it leaves their written limits out. civicsmith's publication job found it on four methods. No one has been wrongly left untold yet that we know of.</p>
+<ul>
+<li><b>B. Include a method's own written limits (recommended).</b> A small fix in the tool; it must still give the same answers on the 150 recorded changes, or write down why one changes. civicsmith gets it by the move line.</li>
+<li><b>A. No change.</b> A changed limit on a method tells no one; that module's users may catch it in their own tests.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B". PROCESS #10 will build it if I have handed over by then.</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you, when you are ready: start PROCESS #10, then archive PROCESS #8 and #9</h2>
