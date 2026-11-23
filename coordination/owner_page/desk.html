@@ -22,18 +22,18 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026 by PROCESS #9. One question waits for you (the tool running out of memory on civicsmith), and one small click.</p>
+<p class="updated">Updated 23 Nov 2026 by PROCESS #9. One line waits for you (bringing civicsmith the memory fix), and one small click.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: the tool runs out of memory on civicsmith</h2>
-<p><b>The bottom line.</b> After each merge the tool works out which modules must be told that something they use has changed. On civicsmith it ran out of memory, even for a merge that changed no module at all. The cause: it reads the whole product twice, before and after the merge, and only then asks whether any module's files changed. civicsmith is large (204 modules), and that reading needs more than the memory a program gets by default. civicsmith's ARCH ran it again with more memory and it finished. This was passed to me unchanged by civicsmith's coordinator. It does not stop jobs from starting, but each merge's notice to other modules would be lost.</p>
-<ul>
-<li><b>B. Two repairs (recommended).</b> First, the tool checks which modules a merge touched before reading any code, and stops at once when none were touched: same answer, no heavy reading. Second, when it does need to read the whole product, it gives itself most of the machine's memory, as ARCH's rerun did. civicsmith gets both with your usual one line moving it to the latest version.</li>
-<li><b>C. The first repair only.</b> Merges that touch no module are fixed; every job's merge still runs out of memory.</li>
-<li><b>A. No change.</b> The tool keeps crashing after civicsmith merges.</li>
-</ul>
-<p>Reply on this item with your choice, for example "Decision: B". Not yet known: whether a job's merge on civicsmith fits in a session machine's memory even with the second repair. That shows at civicsmith's first job merge.</p>
+<h2>Waiting for you: one line that brings civicsmith the memory fix</h2>
+<p><b>The bottom line.</b> Your decision B is built and merged (pull request 199). After a merge that touches no module, the tool now says so without reading any code; when it must read everything, it gives itself three quarters of the machine's memory. The tool's tests pass, here and on GitHub. civicsmith gets it when it moves to the latest version.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open civicsmith's coordinator session (the newest one named <b>civicsmith coordinator #</b>, now #4).</li>
+<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
+<li>You should see it record your words and tell ARCH, then tell you in one line when every civicsmith session is on the new version.</li>
+</ol>
+<p>Not yet known: whether a job's merge on civicsmith fits in a session machine's memory even now. That shows at its first job merge.</p>
 </section>
 
 <section class="card">
