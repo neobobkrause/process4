@@ -16,8 +16,24 @@ There is one case where the job's point stands: a job that finds it is no longer
 not merged (for example, it found another way). Then the tool reads it blocked until that module merges, and no command
 lets the job say otherwise. Not known which case this was; asked of civicsmith's coordinator.
 
+## Measured: the second case, three times
+
+civicsmith ARCH #8's answer, via coordinator #4, 05:53Z: "No: documents had no job merged after setup-words' block.
+setup-words went on because ARCH changed the module list (PR 1161, merged 05:19Z), giving words.json to setup-words,
+which removed the blocking module from the matter; ARCH then told the job to go on, and it merged as PR 1152. So this is
+the case with no command: a block cleared by a list change, not by the blocking module's merge. The same arose on
+pdf-worker (PR 1156) and ocr-worker (PR 1157), blocked by release and released by ARCH's rewritten decision (PR 1163);
+all three have now merged, so their records no longer hold anything open, and ARCH filled slots by hand meanwhile because
+next-job counted those open jobs as free."
+
+So a block can end by ARCH's decision (a list change, a rewritten interface decision), which the design already provides
+for (part 2, section 8: ARCH corrects the order, the module list or the boundary). The tool knows only the merge ending.
+While such a job works on, the round shows it blocked and `next-job` counts its slot as free, so more jobs start than
+the slot number allows; ARCH worked round it by hand.
+
 ## Options
 
-- **A. No change (recommended unless the second case is measured).** The record ends by the blocking module's merge, as
-  built; nothing has been seen to go wrong.
-- **B. `push --unblocked`** rewrites the job's record to say it goes on, for the second case.
+- **A. No change.** Each such case leaves the round wrong and the slot count high until the job merges.
+- **B. `push --unblocked` (recommended).** When the job goes on, it pushes with `--unblocked`, and the tool rewrites the
+  job's own record to say so (`{ "unblocked": "<why>" }`), so the round shows it open and its slot used. One writer
+  still: the job. The job's starting text names the new flag beside `--blocked`. Adds no test, gate, review or stop.
