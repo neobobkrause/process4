@@ -18,7 +18,7 @@ How the rules stand against "at most ten". Each text has ten numbered lines or f
 | `arch.md` | ARCH | 4,268 | 10 | 26 | Rules |
 | `process.md` | PROCESS | 6,179 | 10 | 32 | Rules |
 | `lane.md` | A lane (template: area, folder, design pages) | 3,722 | 8 | 26 | Rules |
-| `job.md` | A job (template the tool fills when ARCH's session opens the pull request: module, branch, pull request; the work, the kind and the uses stay in the job block there) | 3,579 | 10 | 29 | Rules |
+| `job.md` | A job (template the tool fills when ARCH's session opens the pull request: module, branch, pull request; the work, the kind and the uses stay in the job block there) | 3,688 | 10 | 29 | Rules |
 | `walking-session.md` | A walking session (template the tool fills with `walk text`: number, internal or external, tranche, round, the walk issue, the walks' folder, the copy's name and address; its areas stay in the round record and its two commands in the process config) | 3,622 | 10 | 27 | Rules |
 
 The commands named are those of build text 1b, section 4. Every text but PROCESS's and ROOT's carries the fetch line as a blank.
@@ -29,7 +29,7 @@ The binding text is `process.md`: it carries no fetch line, so its counted size 
 
 ## 2. What each text tells its session to read in full
 
-Sizes of the design's parts, in bytes (last measured 23 Nov 2026): 00 10,448; 01 11,967; 02 15,884; 03 9,639; 04 22,846; 05 5,720; 06 14,566; 07 12,996; 08 4,489; 09 2,628; 10 9,570. All eleven: 120,753. Build texts: 02 15,266; 02b 10,367; 03 20,922; 05 19,071. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (22,846) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
+Sizes of the design's parts, in bytes (last measured 23 Nov 2026): 00 10,448; 01 11,967; 02 16,045; 03 9,639; 04 22,856; 05 5,720; 06 14,566; 07 12,996; 08 4,489; 09 2,628; 10 9,570. All eleven: 120,924. Build texts: 02 15,266; 02b 10,367; 03 20,922; 05 19,246. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (22,856) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
 
 Each role reads one harness part, 07 or 08. The combined figure is given with 07, the larger; with 08 it is 8,530 less.
 
