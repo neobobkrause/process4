@@ -37,6 +37,11 @@ worker, only when a question needs it.
   work and the round cannot end (civicsmith ARCH #8, 06:28Z). Options A no change / B a `[held]` mark / C a held list in
   the round record (recommended). Research `process/research/held-requirements-23nov.md`.
 
+**To put to the owner first (not yet on his page):** a class member's own `@bound` is left out of its listing, so a
+changed member bound tells nobody, against design part 2 §7 decision 3 (civicsmith publication #1, via ARCH #8 and
+coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173). Options and grounds:
+`process/research/class-member-bound-23nov.md` (B recommended). Tell civicsmith's coordinator it is received.
+
 **Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
 The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
 
