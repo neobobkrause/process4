@@ -5,7 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 23 Nov 2026
-- `job-branch-name-collides-23nov.md` — `job/<module>/<n>` cannot be made beside an old flat `job/<module>` branch (137 of civicsmith's modules); options A to C.
+- `job-branch-name-collides-23nov.md` — `job/<module>/<n>` could not be made beside an old flat `job/<module>` branch (137 of civicsmith's modules); decision B (`job/<module>.<n>`).
 
 ## 22 Nov 2026
 - `repository-secrets-22nov.md` — civicsmith's own workflows hold repository secrets that act 3 removes (Docker Hub, a Cloudflare token); options A (no change) to C, put to the owner.

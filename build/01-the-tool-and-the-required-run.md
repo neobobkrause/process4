@@ -65,8 +65,8 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 
 1. The base is the main branch: **nothing**, passes at once (the tranche's own pull request).
 2. No changed file is under any module's code or test folders, by the module list of the merged result: **nothing**, passes at once.
-3. The head branch is `job/<module>/<n>` and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list passes at once and says so.
-4. The head branch is `job/<module>/<n>` otherwise: **whole module**, that module only.
+3. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list passes at once and says so.
+4. The head branch is a job's otherwise: **whole module**, that module only.
 5. Any other branch that changes module code (the mechanical edit): **Decided here:** whole module for each module touched. Gives: the earlier process's behaviour, known to run. Costs: one long run. Trial item 9 also tries it with none run; one trial-only line of the process config asks for that (build text 2, section 7).
 
 - No scope runs a module's `walk/internal/` or `walk/external/` folders, which lie under its `tests` paths (build text 3, section 3).

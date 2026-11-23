@@ -9,7 +9,10 @@ import { git } from './util.mjs';
 
 export const JOB_MARK = 'process4-job';
 export const RECORD_MARK = 'process4-job-record';
-export const JOB = /^job\/([a-z0-9-]+)\/(\d+)$/;
+// A job's branch is job/<module>.<n>: one flat name under job/, so it never meets a branch named job/<module>
+// that a product kept from an earlier process. The earlier form job/<module>/<n> is still read as a job's.
+export const JOB = /^job\/([a-z0-9-]+)[./](\d+)$/;
+export const jobBranch = (module, n) => `job/${module}.${n}`;
 export const REQUIRED = 'module-tests';
 
 const jobOf = (pr) => {
@@ -155,7 +158,7 @@ export function pickNext(view, states) {
 
 export function nextJobName(view, module) {
   const ns = jobsOf(view, module).map((p) => jobOf(p).n);
-  return `job/${module}/${Math.max(ns.length, ...ns, 0) + 1}`;
+  return jobBranch(module, Math.max(ns.length, ...ns, 0) + 1);
 }
 
 // 13. Whether the round's jobs are done (design part 2, section 4).

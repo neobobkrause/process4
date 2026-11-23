@@ -88,7 +88,7 @@ const commands = {
 
 // What each command does, printed by --help (or -h) and nothing else: a help flag never acts.
 export const HELP = {
-  branch: 'branch <name> [--into <branch>]: makes job/<module>/<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
+  branch: 'branch <name> [--into <branch>]: makes job/<module>.<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
   push: 'push [--blocked <module>[,<module>] "<why>"]: pushes the current working branch to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request.',
   open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request (from a detached checkout, name the branch with --branch); for a job writes the job block and prints its starting instructions. With one open already, prints it and its job block.',
   ready: 'ready [<pr>] [--branch <b>]: marks the pull request ready (named by number, by --branch, or the current branch\'s one open pull request), which asks for the required run.',

@@ -10,7 +10,7 @@ import { analyse, describe, makeConfirm, notice, noticeText } from './notice/not
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { parseBlock } from './github.mjs';
-import { JOB_MARK } from './round.mjs';
+import { JOB, JOB_MARK } from './round.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
 
@@ -157,7 +157,7 @@ export function checkCmd(ctx, moduleId, a) {
 // only lists; it runs nothing and writes nothing to GitHub.
 export function relatedCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
-  const module = pr.head.ref.match(/^job\/([a-z0-9-]+)\/\d+$/)?.[1] || fail(`pull request ${n} is not a job's (its branch is ${pr.head.ref})`);
+  const module = pr.head.ref.match(JOB)?.[1] || fail(`pull request ${n} is not a job's (its branch is ${pr.head.ref})`);
   const block = ctx.gh.comments(ctx.slug, n).map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || fail(`pull request ${n} has no job block`);
   if (block.kind !== 'told') { ctx.log(`pull request ${n} is an ${block.kind || 'ordinary'} job of ${module}: the required run runs its whole module; there is no related list`); return 0; }
   const tip = (ref) => { git(['fetch', '-q', 'origin', ref], { cwd: ctx.root }); return git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }); };

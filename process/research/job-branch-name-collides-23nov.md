@@ -48,3 +48,10 @@ deleting any branch, with no one excepted.
   one; ARCH and lanes name work branches flat.
 - After the move, civicsmith's round record still names setup-words open on `job/setup-words/1` with no pull
   request; its ARCH puts that right with the tool, as product work.
+
+## Outcome
+
+The owner chose B, 23 Nov 2026: "Decision: Change the job branch's form as recommended (B)". Built with a test that
+makes `job/orders.1` beside an old flat `job/orders` (where `job/orders/1` is refused by git: "'refs/heads/job/orders'
+exists; cannot create 'refs/heads/job/orders/1'"), and reads an old `job/dates/3` and an old merged `job/pricing/9` (the
+next job of pricing is `job/pricing.10`). Entry "The form of a job's branch" in `design-decisions-2.md`.
