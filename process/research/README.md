@@ -5,7 +5,8 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 23 Nov 2026
-- `notify-out-of-memory-23nov.md` — `p4 notify` reads the whole product twice before asking which modules changed, and runs out of memory on civicsmith; decision B (no reading when no module changed; most of the machine's memory).
+- `blocked-record-not-cleared-23nov.md` — a job's blocked record stays after it goes on; the tool ends it by the blocking module's merge; options A and B.
+- `notify-out-of-memory-23nov.md` — `p4 notify` reads the whole product twice before asking which modules changed, and runs out of memory on civicsmith; decision B (no reading when no module changed; most of the machine's memory); then a job merge did not fit in 12 GB: options for reading one side at a time.
 - `no-repository-secrets-rule-23nov.md` — where Process4 says a product's repository holds no secrets: only act 3 (design part 7 §4), with no source; what is built on it; options A and B.
 - `job-branch-name-collides-23nov.md` — `job/<module>/<n>` could not be made beside an old flat `job/<module>` branch (137 of civicsmith's modules); decision B (`job/<module>.<n>`).
 
