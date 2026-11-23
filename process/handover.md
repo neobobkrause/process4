@@ -3,8 +3,9 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 23 Nov 2026 ~06:35Z, by **PROCESS #9** (`session_018Bhcedhv9kRXZcX6PWLMdJ`), mid-session (a checkpoint,
-not yet its refresh). The successor is **PROCESS #10**: read the generation in `handover-process` (9), name yourself
+Last written: 23 Nov 2026 ~06:35Z, by **PROCESS #9** (`session_018Bhcedhv9kRXZcX6PWLMdJ`), at its refresh point: about
+50 percent full, a natural pause, nothing half done, everything merged (main after pull request 207); the start prompt
+for PROCESS #10 is on the owner's page. The successor is **PROCESS #10**: read the generation in `handover-process` (9), name yourself
 `PROCESS #10` with set-session-title (your own session id), record generation 10 and your session there (the file must
 start with the JSON block), and message each ROOT in the registry your address. Read your own fill (`get_session`,
 `context_usage`) after every owner turn; it can read 0 while a turn is open. Refresh at the first natural pause after 50
