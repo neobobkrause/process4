@@ -15,16 +15,22 @@ export function testFiles(all, modules, m) {
   return all.filter((f) => m.tests.some((p) => underPath(f, p)) && isTestFile(f) && ownerOf(modules, f) === m);
 }
 
+// A drop's branch: drop/<tranche>, made by `p4 drop`.
+export const DROP = /^drop\/([A-Za-z0-9._-]+)$/;
+
 // Decides the scope. `root` is GitHub's merge of the pull request into its base, checked out.
 // `jobBlock` is the job block of the pull request (its `<!-- process4-job -->` comment), or null.
+// `mainRef` is the main branch as the checkout holds it (fetch-depth 0 brings origin/main), read
+// only for a drop's pull request (branch drop/<tranche>).
 // Returns { scope, why, config_from, modules: [{ name, files, related?, left_out? }] }.
-export function decideScope(root, { base, baseRef, branch, draft, jobBlock = null }) {
+export function decideScope(root, { base, baseRef, branch, draft, jobBlock = null, mainRef = 'origin/main' }) {
   const parents = git(['rev-list', '--parents', '-n', '1', 'HEAD'], { cwd: root }).split(' ').slice(1);
   const mergedBase = parents.length === 2 ? parents[0] : base;
   let cfg = loadConfig(root, mergedBase);
   let from = 'the base';
   if (!cfg) { cfg = loadConfig(root, 'HEAD'); from = cfg ? "the head (the base has none)" : 'nowhere (none in base or head)'; }
-  const out = (scope, why, modules = []) => ({ scope, why, config_from: from, modules });
+  let note = '';
+  const out = (scope, why, modules = []) => ({ scope, why: note + why, config_from: from, modules });
 
   if (baseRef === 'main') return out('nothing', 'the pull request is into the main branch');
   if (draft) return out('nothing', 'the pull request is a draft');
@@ -32,6 +38,12 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
 
   const modules = loadModules(root, cfg, 'HEAD');
   const changed = git(['diff', '--name-only', '-z', mergedBase, 'HEAD'], { cwd: root }).split('\0').filter(Boolean);
+  const drop = branch?.match(DROP)?.[1];
+  if (drop) {
+    const d = dropCheck(root, mergedBase, mainRef);
+    if (d.ok) return out('nothing', `drop of tranche ${drop}: every one of the ${d.count} changed file(s) is main's; none of the tests runs, as on the tranche's pull request into main`);
+    note = `drop of tranche ${drop}, but ${d.why}, so it is judged as any other branch: `;
+  }
   const touched = [...new Set(changed.map((f) => ownerOf(modules, f)).filter(Boolean))];
   if (!touched.length) return out('nothing', "no changed file is under a module's code or tests");
 
@@ -63,6 +75,19 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
     return out('nothing', `mechanical edit on branch ${branch}, and the trial config asks for no test run`);
   }
   return out('whole module', `branch ${branch} is not a job's: each module touched`, whole(touched));
+}
+
+// A drop's pull request passes at once only when every file it changes is main's: the same blob,
+// or absent on both. Renames are not followed, so a file a rename removed is judged by its own
+// name. Where main cannot be read, never at once.
+function dropCheck(root, mergedBase, mainRef) {
+  const known = git(['rev-parse', '--verify', '-q', `${mainRef}^{commit}`], { cwd: root, allowFail: true });
+  if (known.code !== 0) return { ok: false, why: `main (${mainRef}) cannot be read` };
+  const names = (a, b) => git(['diff', '--no-renames', '--name-only', '-z', a, b], { cwd: root }).split('\0').filter(Boolean);
+  const changed = names(mergedBase, 'HEAD');
+  const notMain = new Set(names(mainRef, 'HEAD'));
+  const first = changed.find((f) => notMain.has(f));
+  return first ? { ok: false, why: `${first} is not main's` } : { ok: true, count: changed.length };
 }
 
 // Runs each module's test command over its files, with the token variables removed.

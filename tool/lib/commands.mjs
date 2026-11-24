@@ -1,15 +1,16 @@
 // The commands of stage 1 (build text 1, sections 4 and 7). Each takes a context
 // { root, slug, gh, log, wait, nowMs } so that tests replace GitHub, the clock and the output.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fetchLine, loadConfig, needConfig, readAt, requiredCheck, requirementsFile } from './config.mjs';
+import { CONFIG_FILE, fetchLine, loadConfig, loadModules, needConfig, ownerOf, readAt, requiredCheck, requirementsFile } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
 import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
 } from './state.mjs';
-import { fail, git } from './util.mjs';
+import { fail, git, underPath } from './util.mjs';
+import { DROP } from './scope.mjs';
 
 import {
   JOB, JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
@@ -85,7 +86,7 @@ function writeJobRecord(ctx, n, data) {
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
-  if (!BRANCH.test(name) || name === 'main' || name === cfg?.tranche_branch) fail(`${name} is not a working branch; push only job/ and work/ branches`);
+  if (!(BRANCH.test(name) || DROP.test(name)) || name === 'main' || name === cfg?.tranche_branch) fail(`${name} is not a working branch; push only job/, work/ and drop/ branches`);
   const by = a.blocked === undefined ? null : blockers(a.blocked);
   if (by && !a._[0]) fail('say --blocked <module> "<why>"');
   if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
@@ -102,6 +103,78 @@ export function push(ctx, a) {
     writeJobRecord(ctx, pr.number, { unblocked: a.unblocked });
     ctx.log(`recorded on pull request ${pr.number}: going on (${a.unblocked})`);
   }
+  return 0;
+}
+
+// drop --tranche <name>: the tranche's merge into main run the other way, on its own branch
+// drop/<name> from the tranche branch's tip. Each file that differs between main and the tranche
+// branch and that a module owns (its files or tests, by either branch's module list) goes back to
+// main's version, or is deleted where main has none. What stays as the tranche has it: process.json,
+// everything under the process folder (the module list, each module's requirements file, the
+// decision records) and each lane's folder, by either branch's config. Made without moving the
+// session's checkout; opens a draft pull request into the tranche branch, which ARCH marks ready
+// and merges with the existing commands.
+export function drop(ctx, a) {
+  const name = a.tranche;
+  if (typeof name !== 'string' || !DROP.test(`drop/${name}`)) fail('say --tranche <name>');
+  const head = `drop/${name}`;
+  const cfg = needConfig(ctx.root);
+  const tranche = cfg.tranche_branch;
+  if (!tranche || tranche === 'main') fail(`${CONFIG_FILE} names no tranche branch apart from main`);
+  if (git(['ls-remote', '--heads', 'origin', `refs/heads/${head}`], { cwd: ctx.root })) fail(`${head} exists already on origin; nothing made`);
+  if (!git(['ls-remote', '--heads', 'origin', `refs/heads/${tranche}`], { cwd: ctx.root })) fail(`the tranche branch ${tranche} that ${CONFIG_FILE} names is not on origin`);
+  const tipOf = (b) => { git(['fetch', '-q', 'origin', `refs/heads/${b}`], { cwd: ctx.root }); return git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }); };
+  const tip = tipOf(tranche);
+  const main = tipOf('main');
+
+  // Both branches' configs and module lists: a module either names owns its files.
+  const cfgs = [loadConfig(ctx.root, tip), loadConfig(ctx.root, main)].filter(Boolean);
+  const modules = cfgs.flatMap((c, i) => loadModules(ctx.root, c, i === 0 ? tip : main));
+  const kept = (f) => f === CONFIG_FILE || cfgs.some((c) => underPath(f, c.process_folder.replace(/\/?$/, '/'))
+    || (c.lanes || []).some((l) => typeof l?.folder === 'string' && l.folder && underPath(f, l.folder.replace(/\/?$/, '/')))
+    || modules.some((m) => f === requirementsFile(c, m.name)));
+
+  const differs = git(['diff', '--no-renames', '--name-only', '-z', main, tip], { cwd: ctx.root }).split('\0').filter(Boolean);
+  const files = differs.filter((f) => ownerOf(modules, f) && !kept(f));
+  if (!files.length) fail(`nothing to restore: no file a module owns differs between main and ${tranche}`);
+
+  // main's version of each, into a separate index made from the tranche's tip.
+  const wanted = new Set(files);
+  const onMain = new Map();
+  for (const l of git(['ls-tree', '-r', '-z', main], { cwd: ctx.root }).split('\0').filter(Boolean)) {
+    const tab = l.indexOf('\t');
+    const path = l.slice(tab + 1);
+    if (!wanted.has(path)) continue;
+    const [mode, , sha] = l.slice(0, tab).split(' ');
+    onMain.set(path, `${mode},${sha},${path}`);
+  }
+  const dir = mkdtempSync(join(tmpdir(), 'p4-drop-'));
+  const env = {
+    GIT_INDEX_FILE: join(dir, 'index'),
+    GIT_AUTHOR_NAME: 'Claude', GIT_AUTHOR_EMAIL: 'noreply@anthropic.com',
+    GIT_COMMITTER_NAME: 'Claude', GIT_COMMITTER_EMAIL: 'noreply@anthropic.com',
+  };
+  let c;
+  try {
+    git(['read-tree', tip], { cwd: ctx.root, env });
+    for (const f of files) {
+      if (onMain.has(f)) git(['update-index', '--add', '--cacheinfo', onMain.get(f)], { cwd: ctx.root, env });
+      else git(['update-index', '--force-remove', '--', f], { cwd: ctx.root, env });
+    }
+    const tree = git(['write-tree'], { cwd: ctx.root, env });
+    c = git(['commit-tree', tree, '-p', tip, '-m', `Drop tranche ${name}: module code and tests back to main's`], { cwd: ctx.root, env });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+  const restored = files.filter((f) => onMain.has(f)).length;
+  const deleted = files.length - restored;
+  pushPace(ctx);
+  git(['push', '-q', 'origin', `${c}:refs/heads/${head}`], { cwd: ctx.root });
+  ctx.log(`${head} made from ${tranche} at ${tip.slice(0, 10)}; its commit is ${c}`);
+  const pr = ctx.gh.createPR(ctx.slug, {
+    head, base: tranche, title: `Drop tranche ${name}`, draft: true,
+    body: `Drops tranche ${name}: each module's code and tests on ${tranche} go back to main's (${restored} file(s) restored, ${deleted} deleted). Requirements files, the module list, ${CONFIG_FILE}, the decision records and the lanes' folders stay as they are. Opened by the Process4 tool.`,
+  });
+  ctx.log(`pull request ${pr.number}: ${pr.html_url}`);
+  ctx.log(`${restored} file(s) restored to main's, ${deleted} deleted`);
   return 0;
 }
 
