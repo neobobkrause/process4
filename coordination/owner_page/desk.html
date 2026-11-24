@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update you approved is built and merged. Next, and waiting for you: two lines in the trial product's coordinator session start its trial run (below). Then civicsmith, on your move line. Still open: requirements held for later.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update ran cleanly on the trial product. Next, waiting for you: start one read-only session on civicsmith that counts what the mended check now refuses there (below), so you know before civicsmith moves. Still open: requirements held for later.</p>
 </header>
 
 <section class="card">
@@ -40,14 +40,41 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you, next: start the update's trial on the trial product</h2>
-<p>You agreed the update runs once on the trial product (process3-probes) before civicsmith gets it. Its coordinator has been told what changed. Two lines start it:</p>
+<h2>Waiting for you, next: one read-only count on civicsmith before it moves</h2>
+<p>The mended check now sees two more kinds of import, so on civicsmith it may refuse some things it did not before, and it no longer refuses a declared use it cannot see. How many is not known. One read-only session counts it, changing nothing, and its report comes to me; I then tell you the numbers before you move civicsmith.</p>
 <ol>
-<li>Open <b>https://claude.ai/code</b> and open the session named <b>process3-probes coordinator</b>.</li>
-<li>Type: <div class="draft">Instruction: move process3-probes to the latest Process4 version</div>You should see it record your words and tell ARCH, then tell you when every session is on the new version. Part of the move is replacing the product's copy of the test check with the new one; if its approvals do not let a session merge that, you will be given one pull request to land with a click.</li>
-<li>Then type: <div class="draft">Instruction: try the update once: one ordinary job; one job that a provider's merge tells of a change while it is still open; and one merge that has to wait for an open job of a module it uses. Use small made-up requirements.</div>You should see ARCH add the requirements and run the jobs, and the coordinator report how each went.</li>
+<li>Open <b>https://claude.ai/code</b> and start a new session with repository <b>neobobkrause/civicsmith-copy</b> only, branch <b>p4-tranche</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are a read-only reading session on neobobkrause/civicsmith-copy, for PROCESS of Process4. Change nothing: no commit, no
+push, no pull request, no comment, no record of the shared state; write files only under /tmp. Report at the end.
+
+1. git fetch origin p4-tranche, and work at the tip of origin/p4-tranche (detached). Note its commit id.
+2. Read process.json: note process.commit (the pinned version; call it OLD).
+3. Clone https://github.com/neobobkrause/process4 twice, outside the repository: /tmp/p4-old at OLD, and /tmp/p4-new at the
+   newest commit of its main (note that commit id; call it NEW). In each, cd tool and npm ci.
+4. For every module in the product&#x27;s module list (the names in process/modules/order.txt, or as process.json&#x27;s module list
+   says), run from the repository root, with a generous memory allowance where needed:
+     node /tmp/p4-old/tool/p4.mjs check &lt;module&gt;   &gt; /tmp/old-&lt;module&gt;.txt 2&gt;&amp;1
+     node /tmp/p4-new/tool/p4.mjs check &lt;module&gt;   &gt; /tmp/new-&lt;module&gt;.txt 2&gt;&amp;1
+   Each prints &quot;Check of &lt;module&gt;: N disagreement(s)&quot; or &quot;no disagreement found&quot;, one line per disagreement, and one line per
+   &quot;cannot tell&quot;. Run modules one at a time; a module that crashes or runs past 10 minutes is noted and skipped.
+5. Report, in plain words and short:
+   - the two commit ids and the tranche commit;
+   - modules passing under OLD and under NEW, out of how many;
+   - total disagreements under OLD and NEW, and the change;
+   - each module whose result changed: OLD count, NEW count, and the NEW disagreements grouped by kind with up to three
+     examples each (file:line and the line printed), especially refusals naming require(...) or an import by the
+     product&#x27;s own name;
+   - how many &quot;cannot tell&quot; lines say a declared use has no import seen;
+   - any crash, timeout or out-of-memory, with the module.
+Send the report by message to PROCESS (its session is named &quot;PROCESS #&lt;n&gt;&quot; in the account&#x27;s session list; the newest one)
+if your approvals allow; otherwise end your turn with it, and the owner passes it on.</div></li>
+<li>It works for a while (it runs the check on every module twice) and then sends me its report, or ends with it. If it ends with it, paste its report into my session.</li>
 </ol>
-<p>Any fault it meets comes to me. When it has run cleanly, civicsmith is next.</p>
+</section>
+
+<section class="card">
+<h2>Done: the update's trial on the trial product (24 Nov)</h2>
+<p>Every trial session moved to the new version. As ARCH reports it: two small jobs ran their own tests and merged; invoice's merge waited, as it should, while the tax job it depends on was still open; when tax merged, the tool told invoice's still-open job of the change, the job checked it, ran its tests again, and only then merged. No faults reported. I have asked the trial's coordinator one detail I cannot see from here: that GitHub's check on those two jobs was the new one, which only reads the job's recorded pass.</p>
 </section>
 
 <section class="card">
