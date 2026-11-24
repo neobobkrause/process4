@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update ran cleanly on the trial product. Next, waiting for you: start one read-only session on civicsmith that counts what the mended check now refuses there (below), so you know before civicsmith moves. Still open: requirements held for later.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. civicsmith is on the update. Its move met one small fault in how a move is written down: a choice for you below (it waits on nothing). The read-only count on civicsmith is now optional information. Still open: requirements held for later.</p>
 </header>
 
 <section class="card">
@@ -40,15 +40,31 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you, next: one read-only count on civicsmith before it moves</h2>
-<p>The mended check now sees two more kinds of import, so on civicsmith it may refuse some things it did not before, and it no longer refuses a declared use it cannot see. How many is not known. One read-only session counts it, changing nothing, and its report comes to me; I then tell you the numbers before you move civicsmith.</p>
+<h2>Waiting for you, when convenient: write down the order of a move that changes the test check</h2>
+<p><b>The bottom line.</b> civicsmith moved to the update, but its ARCH first tried it as one change and GitHub's test check failed it. The new check fetches the tool at the version civicsmith was on before the change, and that older tool cannot read the new test record. ARCH then did it as two changes in order, first the version, then the new check, and both passed. Nothing is stuck; it cost one failed run. The written steps for a move say "one change to the version" and say nothing of the check, so the next move that changes the check may meet it again.</p>
+<ul>
+<li><b>B. Write the order down (recommended).</b> Where a new version brings a new test check, a move is two changes in order: the version first, then the check. One sentence in the design and in ARCH's text; no tool change. Products get it with their next move.</li>
+<li><b>A. No change.</b> ARCH found the order itself this time.</li>
+</ul>
+<p>Reply on this item with your choice, for example "Decision: B".</p>
+</section>
+
+<section class="card">
+<h2>Done: civicsmith is on the update (24 Nov, on your line)</h2>
+<p>civicsmith's ARCH reports civicsmith moved to the new version, with its new test check in place. I cannot read civicsmith's records from here; this is as its coordinator passed it on.</p>
+</section>
+
+<section class="card">
+<h2>Optional: one read-only count on civicsmith</h2>
+<p>The mended check now sees two more kinds of import, so on civicsmith it may refuse some things it did not before, and it no longer refuses a declared use it cannot see. How many is not known. One read-only session counts it, changing nothing, and its report comes to me; I then tell you the numbers.</p>
 <ol>
 <li>Open <b>https://claude.ai/code</b> and start a new session with repository <b>neobobkrause/civicsmith-copy</b> only, branch <b>p4-tranche</b>, environment <b>BioDefault</b>, Auto mode.</li>
 <li>Give it this prompt:<div class="draft">You are a read-only reading session on neobobkrause/civicsmith-copy, for PROCESS of Process4. Change nothing: no commit, no
 push, no pull request, no comment, no record of the shared state; write files only under /tmp. Report at the end.
 
 1. git fetch origin p4-tranche, and work at the tip of origin/p4-tranche (detached). Note its commit id.
-2. Read process.json: note process.commit (the pinned version; call it OLD).
+2. OLD is Process4 commit 0eec86f2 (the version civicsmith was on before its move of 24 Nov; resolve the full id with
+   git ls-remote or after cloning). Read process.json and note process.commit too.
 3. Clone https://github.com/neobobkrause/process4 twice, outside the repository: /tmp/p4-old at OLD, and /tmp/p4-new at the
    newest commit of its main (note that commit id; call it NEW). In each, cd tool and npm ci.
 4. For every module in the product&#x27;s module list (the names in process/modules/order.txt, or as process.json&#x27;s module list
