@@ -173,6 +173,14 @@ test('results prints the test record\'s standing first, then the required run', 
   assert.match(out[1], /pass at hhhhhhhhhh: 4 passed, 0 failed, scope whole module/);
 });
 
+test('results says no test record is needed where the scope is nothing', () => {
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(makeRepo(), gh);
+  gh.createPR('o/product', { head: 'work/tranche-end', base: 'main', draft: false });
+  results(ctx, 1);
+  assert.match(out[0], /^test record: none needed: scope nothing, because the pull request is into the main branch/);
+});
+
 // GitHub's merge of a branch into the tranche, checked out, as the required run sees it.
 function merged(files, { branch = 'job/orders/1' } = {}) {
   const root = makeRepo(productFiles());

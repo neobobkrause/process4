@@ -269,7 +269,14 @@ export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   const { jobBlock, record } = recordsOf(ctx, n);
   const st = recordStands(record?.data, pr.head.sha, jobBlock);
-  ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
+  // Where there is no record, say whether one is needed: a pull request whose scope is nothing (into main, no module
+  // file changed, and so on) and that no notice reached needs none, as `ready` judges it.
+  let none = null;
+  if (!record && !noticeSeq(jobBlock)) {
+    try { const s = scopeForPR(ctx, pr, { jobBlock, related: false }); if (s.scope === 'nothing') none = s.why; } catch { /* say only what the record says */ }
+  }
+  if (none) ctx.log(`test record: none needed: scope nothing, because ${none}`);
+  else ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
   const d = record?.data;
   if (d) ctx.log(`  ${d.result} at ${String(d.commit).slice(0, 10)}: ${d.passed} passed, ${d.failed} failed, scope ${d.scope}, notice ${d.notice_seq}, ${d.fails_total} failed run(s) in all, written ${d.written}`);
   const required = requiredCheck(ctx.root);
