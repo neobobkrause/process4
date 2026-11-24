@@ -1,6 +1,6 @@
 # Part 3. The tranche, rounds, walks, and release
 
-Length: 74 lines. Last section: "8. Support beyond the process".
+Length: 75 lines. Last section: "8. Support beyond the process".
 
 ## 1. Opening a tranche
 
@@ -50,6 +50,7 @@ The coordinator gives the owner a short account: jobs done, flaws found, flaws c
 - What shows that the product's journeys complete at the tranche's end is the rounds' partial walks themselves, each scoped to the areas that round changed; the testing policy is unchanged, and no end-of-tranche sweep is added. A full external walk remains available only on the owner's request (section 3).
 - When the tranche ends, ARCH merges the tranche branch into the main branch as a whole, by pull request. None of the tests runs on that pull request.
 - A tranche that does not come clean goes on in rounds until the owner says. He then chooses between merging it with its flaws named and dropping it.
+- **A dropped tranche** is carried out as the tranche's merge into the main branch run the other way. ARCH, by the tool, puts back on the tranche branch the main branch's version of every module code and test file the tranche changed, and nothing else: requirements files, the module list, the process's named files, the decision records and the lanes' folders stay as they are. That pull request runs none of the tests, as none runs on the tranche's own pull request into the main branch, and only when every file it changes is the main branch's own. ARCH merges it, closes the tranche's open jobs unmerged, clears the round and waiting-work records, and writes "not yet met" on each requirement whose met mark came from the dropped tranche. No notice is sent: every module goes back together to the main branch's code. The next tranche goes on from the same branch.
 - A tranche merged with its flaws named has not ended in the sense of section 6; its flaws become work in the next tranche. The process neither forces nor forbids a release from such a tranche: whether anything is released is the owner's call, governed by his release approval and a clean install and update (section 6). Process4 is a development process, not the product, and leaves the balance of time, resources and quality to the owner.
 - One report is written at the tranche's end (by ARCH, and it lists the UX lane's changes), only from what git and GitHub already hold: time, work done and left, anything deferred and why, cost where it can be read and "unmeasured" otherwise, the overhead share, ARCH's idle time while work was ready, the owner's minutes, and every change the UX lane made during the tranche to the two documents the walks are measured against. No number is a target. Nothing reads the report to decide anything.
 

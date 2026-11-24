@@ -1,4 +1,4 @@
-Length: 107 lines. Last section: "8. Not settled here".
+Length: 108 lines. Last section: "8. Not settled here".
 
 # Process4 build specification, part 1: the tool and the required test run
 
@@ -65,6 +65,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 
 1. The base is the main branch: **nothing**, passes at once (the tranche's own pull request).
 2. No changed file is under any module's code or test folders, by the module list of the merged result: **nothing**, passes at once.
+2a. The head branch is a dropped tranche's, `drop/<tranche>` (build text 1b, command 26), and every file it changes is byte for byte the main branch's (`origin/main`, which part one's full checkout holds), or absent from both: **nothing**, passes at once, as step 1 (design part 3, section 5; the owner's decision of 24 Nov 2026). If one file is not the main branch's, or the main branch cannot be read, the run goes on to the steps below and says which file.
 3. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list passes at once and says so.
 4. The head branch is a job's otherwise: **whole module**, that module only.
 5. Any other branch that changes module code (the mechanical edit): **Decided here:** whole module for each module touched. Gives: the earlier process's behaviour, known to run. Costs: one long run. Trial item 9 also tries it with none run; one trial-only line of the process config asks for that (build text 2, section 7).
