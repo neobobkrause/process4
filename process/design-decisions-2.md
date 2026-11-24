@@ -607,3 +607,25 @@ Products receive it with their next move. Option B of two (A no change; B write 
 `process/research/move-with-new-workflow-24nov.md`.
 
 **The owner's words.** "Decision: B, as recommended" — 24 November 2026 (a comment on his standing page, on option B).
+
+### Subject: A tranche's scope, recorded by ARCH
+
+**The rule as it now stands.** Where a tranche holds less than all the work, ARCH writes its scope in the round record: the
+tranche, and the requirements (`<module> R<n>`) or whole modules it holds. While it stands, a requirement not yet met is work
+only where the scope names it; every other requirement waits until the tranche ends. Notices, walk flaws and flaws a job
+reports are always work, since they come from the tranche's own changes. ARCH rewrites the scope as it adds work, and in the
+same act as a split moves requirement lines. With no scope, every requirement is work, as before. `next-job`, `open`,
+`finished` and `round-done` all honour it; a job's block names only in-scope requirements and lists the module's others
+under `not_this_tranche`, which the job leaves alone. The scope ends with the tranche (design part 3, section 1; build text
+5, section 2; build text 1b, commands 3 and 9; ARCH's rule 6; the job's rule 1).
+
+It corrected a measured fault: the design gave ARCH a tranche's scope but the tool counted every requirement not yet met as
+work, so ARCH could not hold any out (civicsmith ARCH #8, 23 Nov; again, sharper, civicsmith ARCH #13, 24 Nov: 78
+requirements in 29 modules would start with the owner's refactoring-only tranche). civicsmith ARCH #13 checked the option
+against the refactoring's eight steps before the owner decided, at his word. Not given by it: confirming stability before
+other work starts is the owner's halt, kept on after the refactoring tranche merges. It changes the tool (`workOf`,
+`scopeOf` and `finished` in `tool/lib/round.mjs`; `open` in `commands.mjs`; with tests); it adds no test, gate, review or
+stop. Option D of four (A no change; B a held mark; C a held list; D a scope list). Researched in
+`process/research/held-requirements-23nov.md`.
+
+**The owner's words.** "Decision: D, as recommended" — 24 November 2026 (in PROCESS #11's session).

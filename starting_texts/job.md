@@ -14,7 +14,7 @@ In your copy: `design/` parts 00, 01, 02, 04, 05, 06 and your harness's part (07
 - Run single test files while you work. Message ARCH. Start workers inside yourself.
 
 ## Rules
-1. Write only your module's files. A flaw you find in another module goes to ARCH. You may propose an interface change to ARCH.
+1. Your work is what your job block names. Requirements not yet met in your file that it does not name (`not_this_tranche`) wait for a later tranche: leave them. Write only your module's files. A flaw you find in another module goes to ARCH. You may propose an interface change to ARCH.
 2. If the module has no structured comments yet, add them first, as a step of their own, describing the module as it stands.
 3. You decide how to meet the requirements, and you write the tests, as design part 2, section 6 asks: coverage, correct results, error conditions, bounds, at the module's interface; complete yet fast and efficient.
 4. Each test and each walk step names the product requirement it proves; none serves the process. Write or correct the step with the requirement it proves (build text 3, section 3).
