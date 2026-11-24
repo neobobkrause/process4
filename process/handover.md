@@ -3,46 +3,46 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 24 Nov 2026 ~19:40Z, by **PROCESS #10** (`session_018BhcefNApNicDPZ5rUX19x`), at its refresh point: about
-half full, a natural pause, nothing half done, everything merged. The successor is **PROCESS #11**: read the generation in
-`handover-process` (10), name yourself `PROCESS #11` with set-session-title (your own session id), record generation 11 and
-your session there (the file must start with the JSON block), and message each ROOT in the registry your address. Read your
-own fill (`get_session`, `context_usage`) after every owner turn. Refresh at the first natural pause after 50 percent.
-Never `git add -A`; add paths by name.
+Last written: 24 Nov 2026 ~20:20Z, by **PROCESS #11** (`session_018Bhced64Q8m7tFKd8HUrQ6`), at a natural pause, nothing
+half done, everything merged. Your successor is **PROCESS #12**: read the generation in `handover-process` (11), name
+yourself `PROCESS #12` with set-session-title (your own session id), record generation 12 and your session there (the file
+must start with the JSON block), and message each ROOT in the registry your address. Read your own fill (`get_session`,
+`context_usage`; it reads 0 mid-turn, so judge by the work done) after every owner turn. Refresh at the first natural
+pause after 50 percent. Never `git add -A`; add paths by name (helpers' worktrees under `.claude/worktrees/` are excluded
+locally in `.git/info/exclude`).
 
 **Your reading:** the design, build text 5, the two decision files, `process/README.md`, `process/research/README.md` (the
 index), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a worker, when a
 question needs it.
 
-## START HERE (PROCESS #11): build the update the owner decided
+## START HERE: the update is built; its trial on process3-probes waits for the owner's two lines
 
-The owner typed in PROCESS #10's session, 24 Nov 2026 ~19:30Z: **"Decision: the update plan as laid out"**. It is NOT yet
-recorded: write the entry in `process/design-decisions-2.md` with those exact words and date, and change the design in the
-same pull request as the build (rule 4). What to build, the texts to change and what follows:
-`process/research/update-build-spec-24nov.md` (read it in full first); the plan and its history:
-`process/research/update-plan-24nov.md`. In short: (1) a job's tests run once in its own session by a new `p4 test`, as one
-background command up to 2 hours, writing a pass record; `ready` runs nothing; GitHub's `module-tests` only reads the record;
-(2) a notice reaches a running job at once; (3) a ready job's merge waits for open jobs of the modules it uses (the owner's
-explicit word, given); (4) slots; (5) the check mended in two places; plus three fold-ins (notice reason size, class member
-bound, refusal (b) receiving side). Change 6 moved to a later step ("bring declared uses in line with real uses", after this
-update and after civicsmith's refactoring). Build with workers (separate worktrees for disjoint areas), run only the tests of
-the tool parts changed, replay the proof's 150 changes for the notice changes. Then the trial on process3-probes (the owner
-said yes), a read-only run on civicsmith for the check's new refusals, then civicsmith moves on the owner's line.
+The owner's "Decision: the update plan as laid out" (24 Nov) is recorded (`design-decisions-2.md`, last entry) and built:
+pull request 233 (tool, workflow `shims/module-tests.yml`, design parts 2, 4, 6, 7, 10, build texts 1, 1b, 2b, 5, the job's
+and ARCH's starting texts, the index) and 234 (`results` says when no test record is needed). The tool's full suite passed
+on GitHub. What it does, in one place: build text 1 section 5 and build text 1b commands 4, 6, 9, 11, 14, 15, 18, 27; the
+record forms in build text 5 section 5; `tool/lib/testrecord.mjs`, `testrun.mjs`, `uses.mjs`.
 
-**Done by PROCESS #10 (all merged):**
-- Decision C, 24 Nov: a dropped tranche is carried out as the tranche's merge run the other way (`p4 drop`, scope rule
-  `drop/<t>`; PR 225; entry in `design-decisions-2.md`). civicsmith's owner dropped t1 ("Decision: drop tranche t1 ..."), and
-  its coordinator knows the command; civicsmith gets it by the move line.
-- Research (index has each): long modules (a session's background command runs up to 2 hours), how a module's uses are known
-  (the check sees imports by path only), refusal (b) counted the value's comment, the civicsmith refactoring plan checked
-  against the update (`refactor-plan-check-24nov.md`; its points passed to civicsmith's coordinator as information).
-- civicsmith ROOT #4 and process3-probes ROOT #7 recorded PROCESS #10 in their roles records.
+Next, in order:
+1. **The trial on process3-probes** (the owner agreed). On his page: two lines he types in the session titled
+   "process3-probes coordinator" (`session_018BhceeRZwDtL5rXcx3Mp5q`, idle, about 64 percent full: it may be refreshed
+   first): the move line, then an instruction to try one ordinary job, one job told while open, one merge that waits. The
+   coordinator was told what changed (information, 24 Nov ~20:05Z). Its workflow copy must be replaced from
+   `shims/module-tests.yml`. Watch for process faults; each is researched and put to the owner as usual.
+2. **A read-only run on civicsmith** counting the check's new refusals (`require` and own-name imports are now read; a
+   declared use with no visible import is "cannot tell"). Brief a read-only session; the owner starts it.
+3. **civicsmith moves** on the owner's line in its coordinator session; its workflow copy replaced the same way.
 
-**On the owner's page, still waiting:** after the update is built, withdraw the 45-minute-limit and draft-run items (change 1
-removes both causes) and mark refusal (b), class bound and notice size built; held requirements (option C recommended) stays
-open; the move line for civicsmith; archiving PROCESS #8 and #9 (and now #10). The owner's comments on the page sometimes
-reach civicsmith's coordinator's session instead of PROCESS; the coordinator passes them on, and the comment itself is on
-PROCESS's page thread (read it there: that is his typed word).
+Known limits of the build (written in the texts): `merge` does not wait on an import the scan cannot follow (a computed
+one); the check does not read `require.resolve`, `#imports` or `createRequire(...)('<path>')`; refusal (b)'s receiving-side
+rule covers complaints 2322 and 2345 only. Not known: whether a background command goes on while a session waits between
+turns (the job waits within its turn); the re-run call and the verdict on real GitHub.
+
+**Done by PROCESS #11 (all merged):** the update (233, 234); the owner's page (231, 232, 235): the 45-minute and draft-run
+items withdrawn as covered by the update, PROCESS #8, #9 and #10 archived by the owner. civicsmith ROOT #4 recorded PROCESS
+#11 (19:38Z); process3-probes ROOT #7 was messaged, no reply seen.
+
+**On the owner's page, still waiting:** the trial's two lines; held requirements (option C recommended).
 
 ## Start checks
 
