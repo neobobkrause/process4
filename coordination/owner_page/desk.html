@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update you approved is being built; two of its three parts are done and pass their tests. Its first part removes both the 45-minute limit and the run that passed with no tests, so those two items are gone from this page. Next: the last part, the texts, then the trial product, then civicsmith on your move line. Still open for you: requirements held for later.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update you approved is built and merged. Next, and waiting for you: two lines in the trial product's coordinator session start its trial run (below). Then civicsmith, on your move line. Still open: requirements held for later.</p>
 </header>
 
 <section class="card">
@@ -39,9 +39,20 @@ a{color:var(--accent)}
 <h2>Done: PROCESS #8, #9 and #10 archived (24 Nov, on your word)</h2>
 </section>
 
+<section class="wait">
+<h2>Waiting for you, next: start the update's trial on the trial product</h2>
+<p>You agreed the update runs once on the trial product (process3-probes) before civicsmith gets it. Its coordinator has been told what changed. Two lines start it:</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>process3-probes coordinator</b>.</li>
+<li>Type: <div class="draft">Instruction: move process3-probes to the latest Process4 version</div>You should see it record your words and tell ARCH, then tell you when every session is on the new version. Part of the move is replacing the product's copy of the test check with the new one; if its approvals do not let a session merge that, you will be given one pull request to land with a click.</li>
+<li>Then type: <div class="draft">Instruction: try the update once: one ordinary job; one job that a provider's merge tells of a change while it is still open; and one merge that has to wait for an open job of a module it uses. Use small made-up requirements.</div>You should see ARCH add the requirements and run the jobs, and the coordinator report how each went.</li>
+</ol>
+<p>Any fault it meets comes to me. When it has run cleanly, civicsmith is next.</p>
+</section>
+
 <section class="card">
-<h2>Decided: the update (your decision of 24 Nov)</h2>
-<p>Tests run once, in the job, and GitHub only reads the recorded pass; a provider's change reaches running jobs at once; a ready job waits for the modules it uses; told jobs start above the slot number; the check mended in two places; and the three small fixes (a notice kept short, a limit on a class method, the false refusal that named the wrong module). Bringing declared uses in line with real uses is a later step. Next: PROCESS #11 builds it, runs it once on the trial product, then civicsmith moves on your line. Once it is built, the 45-minute limit and the run that passed with no tests are gone, so those two items below need nothing from you.</p>
+<h2>Done: the update is built (your decision of 24 Nov)</h2>
+<p>Merged (pull request 233), with your words recorded exactly. A job now runs its tests once, in its own session, for up to two hours, and records the result; it marks itself ready only on a recorded pass, and GitHub's check only reads that record. A provider's change reaches a running job at once. A ready job waits while a job of a module it uses is still open. A told job that comes earlier in the order than the latest running one starts at once, even with no free slot. The check now sees two more kinds of import, and no longer refuses a declared use it cannot see. The three small fixes are in. On the 150 changes recorded when the notice was first proven, every recorded answer is the same; 47 notices are now shorter, because a long list of places now stops at six. Not yet run in a real round: that is what the trial is for.</p>
 </section>
 
 
