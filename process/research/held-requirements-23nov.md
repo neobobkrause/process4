@@ -36,3 +36,34 @@ but no means to record it.
 Either B or C adds no test, gate, review or stop; each lets ARCH record a decision the design already gives it. Changes:
 the tool (`workOf`, and for C the round record's form), design part 2, section 2 or part 3, section 1, build text 5
 section 2 (for C), ARCH's starting text (one clause).
+
+## Again, sharper: civicsmith's refactoring tranche (24 Nov 2026, PROCESS #11)
+
+A process fault from civicsmith ARCH #13, passed on unchanged by coordinator #5 (~22:32Z), on Process4 ac962e7:
+
+> "the design says ARCH opens each tranche and decides its scope (part 3, section 1). The tool gives ARCH no way to keep
+> work out of a tranche. tool/lib/round.mjs takes a module's work to be every requirement "[not yet met]" at the tranche
+> branch's head plus waiting work, and next-job starts the earliest such module with no scope filter. Requirements have
+> only two marks, and "module put first" only reorders. civicsmith has 78 requirements not yet met in 29 modules
+> (p4-tranche 6c9dba5). The owner wants a tranche holding only the plane-scope refactoring, built and confirmed stable
+> before any other work. Under ac962e7, lifting his halt starts all 29 modules' jobs, and a refactoring job at plane or
+> control-plane also carries those modules' other requirements. So ARCH cannot carry out a scope decision for this
+> tranche. No workaround has been made."
+
+civicsmith's halt is in force, so nothing runs now; but lifting it waits on this. Option C would need ARCH to list 78
+held requirements, and to list again each one that lands in the tranche's modules later. A fourth option fits a tranche
+defined by what it holds:
+
+- **D. A scope list in the round record (now recommended).** ARCH, the round record's writer, writes what the tranche
+  holds: `"scope": ["plane R200", "control-plane R12", "store-assembly"]`, each a requirement (`<module> R<n>`) or a whole
+  module (all its requirements not yet met). Where a scope is written, `workOf` counts as work only the requirements it
+  names; every other requirement waits, as if held, until the tranche ends. Notices, walk flaws and flaws a job reports
+  are always work: they come from the tranche's own changes. No scope written means every requirement, as now. The
+  account after the round names the scope. One list either way, written in the words of ARCH's scope decision; it ends
+  with the tranche; it needs no merge.
+
+C stays an option where a tranche holds most of the work and leaves out a few. B and C as above; A no change (lifting
+the halt starts all 29 modules). Each of B, C, D adds no test, gate, review or stop: it lets ARCH record a decision the
+design already gives it. Changes for D: the tool (`workOf`, `finished`, `round-done` reading the round record's `scope`;
+a `scope` field written by `state write round`), design part 3, section 1, build text 5 section 2, ARCH's starting text
+(one clause).
