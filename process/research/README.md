@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 24 Nov 2026
+- `update-trial-process3-probes-24nov.md` — the update's trial on process3-probes: test records, the verdict on GitHub, a merge that waited, a notice reaching an open job; no fault; two things seen with no change; what it did not show.
 - `civicsmith-check-count-brief-24nov.md` — the brief for a read-only session on civicsmith-copy counting `check`'s refusals under the pinned version and the update's, before civicsmith moves; the trial on process3-probes ran cleanly (24 Nov ~21:40Z).
 - `update-build-spec-24nov.md` — the owner's "Decision: the update plan as laid out" (24 Nov) and exactly what to build, which texts change, and what follows; recorded and built by PROCESS #11 (entry in `design-decisions-2.md`). Built beyond the spec, as technical choices: a job's tests run in its own checkout at the pushed head, the scope decided on the merge into the base; `merge` reads uses at both the tranche tip and the job's head; refusal (b) also counts a handed function's own receiving parameter (else the proof lost three true catches).
 - `refactor-plan-check-24nov.md` — a worker's check of the civicsmith refactoring plan against the update plan: change 6 partly met, declared uses far from real uses (1,279 undeclared pairs), no module near 2 hours, gaps for non-job pull requests (worker).
