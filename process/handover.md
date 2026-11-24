@@ -3,78 +3,46 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 23 Nov 2026 ~06:35Z, by **PROCESS #9** (`session_018Bhcedhv9kRXZcX6PWLMdJ`), at its refresh point: about
-50 percent full, a natural pause, nothing half done, everything merged (main after pull request 207); the start prompt
-for PROCESS #10 is on the owner's page. The successor is **PROCESS #10**: read the generation in `handover-process` (9), name yourself
-`PROCESS #10` with set-session-title (your own session id), record generation 10 and your session there (the file must
-start with the JSON block), and message each ROOT in the registry your address. Read your own fill (`get_session`,
-`context_usage`) after every owner turn; it can read 0 while a turn is open. Refresh at the first natural pause after 50
-percent. Never `git add -A`; add paths by name.
+Last written: 24 Nov 2026 ~19:40Z, by **PROCESS #10** (`session_018BhcefNApNicDPZ5rUX19x`), at its refresh point: about
+half full, a natural pause, nothing half done, everything merged. The successor is **PROCESS #11**: read the generation in
+`handover-process` (10), name yourself `PROCESS #11` with set-session-title (your own session id), record generation 11 and
+your session there (the file must start with the JSON block), and message each ROOT in the registry your address. Read your
+own fill (`get_session`, `context_usage`) after every owner turn. Refresh at the first natural pause after 50 percent.
+Never `git add -A`; add paths by name.
 
 **Your reading:** the design, build text 5, the two decision files, `process/README.md`, `process/research/README.md` (the
-index; one line per file), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a
-worker, only when a question needs it.
+index), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a worker, when a
+question needs it.
 
-**PROCESS #9 did, all merged (entries in `design-decisions-2.md`, research in the index):**
-- Job branches are `job/<module>.<n>` (decision B, PR 192): civicsmith-copy's 207 flat `job/<module>` branches blocked
-  `job/<module>/<n>`.
-- A product's repository may hold secrets: act 3 lost "no repository secrets" (decision B, PR 195); a worker found act 3
-  the only source; session-written texts carry withdrawal notes.
-- `notify`: no code read when no module changed, and code-reading commands get 3/4 of machine memory (decision B, PR 199);
-  then, after a job merge still ran out at 12 GB and the owner asked whether the tool was well designed, a staged reading
-  of only what a merge can affect, with a plain "could not read ... notice owed" message (decision D, PR 205; built by a
-  worker; the 150-change proof replay gives identical reports).
-- `push --unblocked "<why>"`: a job whose block ARCH ended by its own decision says it goes on (decision B, PR 204; one
-  line added to `starting_texts/job.md`).
-- The owner's instruction (typed in this session, 23 Nov ~06:00Z): "Instruction: When the fixes are in and the new version
-  of process4 is ready, tell the civicsmith coordinator to bring civicsmith up to the latest version". Done: civicsmith
-  coordinator #4 (`session_018BhcedBfypmJzpjT9Drkdq`) was sent his exact words at ~06:30Z, main 4ef702c. Follow up: did
-  civicsmith move, and does a job merge's `notify` now fit (ARCH owes notices for 1152-1154 and later)? If the
-  coordinator says he must type the move line himself, put it on his page.
-  Result: coordinator #4 declined the relayed words (design part 6 §7; part 1 §4) and asked for the line on his page;
-  it is there ("civicsmith coordinator #4": "Instruction: move civicsmith to the latest Process4 version").
-- Open with the owner (on his page): requirements ARCH holds out of a tranche have no form, so the tool counts them as
-  work and the round cannot end (civicsmith ARCH #8, 06:28Z). Options A no change / B a `[held]` mark / C a held list in
-  the round record (recommended). Research `process/research/held-requirements-23nov.md`.
+## START HERE (PROCESS #11): build the update the owner decided
 
-**To put to the owner first (not yet on his page):** a class member's own `@bound` is left out of its listing, so a
-changed member bound tells nobody, against design part 2 §7 decision 3 (civicsmith publication #1, via ARCH #8 and
-coordinator #4, 07:11Z; confirmed at `tool/lib/notice/listing.mjs` lines 172-173). Options and grounds:
-`process/research/class-member-bound-23nov.md` (B recommended). Tell civicsmith's coordinator it is received.
+The owner typed in PROCESS #10's session, 24 Nov 2026 ~19:30Z: **"Decision: the update plan as laid out"**. It is NOT yet
+recorded: write the entry in `process/design-decisions-2.md` with those exact words and date, and change the design in the
+same pull request as the build (rule 4). What to build, the texts to change and what follows:
+`process/research/update-build-spec-24nov.md` (read it in full first); the plan and its history:
+`process/research/update-plan-24nov.md`. In short: (1) a job's tests run once in its own session by a new `p4 test`, as one
+background command up to 2 hours, writing a pass record; `ready` runs nothing; GitHub's `module-tests` only reads the record;
+(2) a notice reaches a running job at once; (3) a ready job's merge waits for open jobs of the modules it uses (the owner's
+explicit word, given); (4) slots; (5) the check mended in two places; plus three fold-ins (notice reason size, class member
+bound, refusal (b) receiving side). Change 6 moved to a later step ("bring declared uses in line with real uses", after this
+update and after civicsmith's refactoring). Build with workers (separate worktrees for disjoint areas), run only the tests of
+the tool parts changed, replay the proof's 150 changes for the notice changes. Then the trial on process3-probes (the owner
+said yes), a read-only run on civicsmith for the check's new refusals, then civicsmith moves on the owner's line.
 
-**Also to put to the owner (on his page as of 08:30Z):** a notice's "not followed fully" reason lists every place
-without bound, so the waiting-work record could not be written and notify 1236's notice was lost (civicsmith ARCH #9,
-via coordinator #4, 08:22Z). Grounds and options: `process/research/notice-reason-size-23nov.md` (B recommended).
+**Done by PROCESS #10 (all merged):**
+- Decision C, 24 Nov: a dropped tranche is carried out as the tranche's merge run the other way (`p4 drop`, scope rule
+  `drop/<t>`; PR 225; entry in `design-decisions-2.md`). civicsmith's owner dropped t1 ("Decision: drop tranche t1 ..."), and
+  its coordinator knows the command; civicsmith gets it by the move line.
+- Research (index has each): long modules (a session's background command runs up to 2 hours), how a module's uses are known
+  (the check sees imports by path only), refusal (b) counted the value's comment, the civicsmith refactoring plan checked
+  against the update (`refactor-plan-check-24nov.md`; its points passed to civicsmith's coordinator as information).
+- civicsmith ROOT #4 and process3-probes ROOT #7 recorded PROCESS #10 in their roles records.
 
-**START HERE (PROCESS #10).** The owner and PROCESS #9 spent 23 Nov afternoon defining a set of changes; read
-`process/research/tests-once-and-merge-order-23nov.md` in full first, including its last section. Not yet decided:
-(1) a job's tests run once in the job, recorded by the tool, GitHub runs none (sub-choice a or b; long modules taken out
-for now); (2) a notice reaches a running job at once; (3) jobs merge in order (PROCESS #9 suggested "every earlier open
-job" for now, since a job's known uses are only its imports); (4) slots: told jobs earlier than the latest running job
-start at once above the slot number. Then, as the owner asked, research with workers: long modules (plane), and how a
-module's real uses can be known (tests that start the whole product, read other modules' files, run their programs).
-Get his agreement on the four, then his marked decision, then build, test the tool parts changed, and have civicsmith
-moved. The owner's stance, in his words: a test runs "only as much as is minimally necessary"; never add tests, gates or
-reviews.
-
-**Stops work now (on his page as of 15:15Z):** the required run's 45-minute limit cancels plane's tests (44 minutes) just
-after they pass, so plane cannot merge and round 1 waits. `process/research/module-tests-timeout-23nov.md` (B: raise the
-limit; civicsmith's workflow copy needs the same line by pull request). Also under discussion with the owner, not decided:
-tests run once in the job, recorded by the tool, GitHub runs none; and merging a round's jobs in module order.
-
-**Most important for PROCESS #10 (on his page as of 08:55Z):** the required run can pass a ready pull request with no
-tests run, when a push and `ready` come close together (civicsmith PR 1228; process4 PR 205, the observation below).
-Grounds and options: `process/research/draft-run-passes-ready-pr-23nov.md` (B recommended).
-
-**Not yet investigated (not on his page):** `check` refusal (b) may name the wrong provider (civicsmith plane #1, via
-ARCH #10, 10:56Z): `process/research/check-names-wrong-provider-23nov.md`. Read the tool first, then put options.
-
-**Waiting for the owner (on his page):** archiving the PROCESS #8 session (`session_018BhcecJ8tf5Z9JtZZCD7Pz`), his click.
-The repository-secrets question of 22 Nov is withdrawn (it rested on the removed rule).
-
-**Observation, nothing measured failing (rule 6, no change):** PR 205 merged while its ready run of `tool-tests` still
-showed in progress; that run then passed. Earlier merges were refused while the run was in progress. Possibly the draft
-run's at-once pass satisfied the required check. Watch for it; a failing tool change could merge this way.
+**On the owner's page, still waiting:** after the update is built, withdraw the 45-minute-limit and draft-run items (change 1
+removes both causes) and mark refusal (b), class bound and notice size built; held requirements (option C recommended) stays
+open; the move line for civicsmith; archiving PROCESS #8 and #9 (and now #10). The owner's comments on the page sometimes
+reach civicsmith's coordinator's session instead of PROCESS; the coordinator passes them on, and the comment itself is on
+PROCESS's page thread (read it there: that is his typed word).
 
 ## Start checks
 
@@ -86,7 +54,8 @@ run's at-once pass satisfied the required check. Watch for it; a failing tool ch
      `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
    - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`): **civicsmith ROOT #4**
      `session_018BhceeqiFSaXdPrichfP66` (from 23 Nov ~05:15Z); coordinator #4 `session_018BhcedBfypmJzpjT9Drkdq`;
-     ARCH `session_018BhcedtuSwkeuCxhbrNGwr` (generation not read); its shared-state issue is 1122. Jobs are running.
+     ARCH #11 `session_018BhcegATtrs3QurPbq6bMb`; its shared-state issue is 1122. Tranche t1 dropped by the owner 24 Nov;
+     a refactoring (the "Civicsmith layers" plan) comes next, after this update.
 4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
    last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
    `process/lanes/civicsmith/`, stays: conversion plan, the three readings, `later-module-tests.md`,
