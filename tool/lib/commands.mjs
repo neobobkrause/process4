@@ -230,8 +230,11 @@ export function open(ctx, a) {
   git(['fetch', '-q', 'origin', `refs/heads/${base}`], { cwd: ctx.root });
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const waiting = records['waiting-work']?.data?.work || [];
-  const { reqs, mine, notices, kind } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting }, module);
+  const round = records.round?.data || {};
+  const { reqs, mine, notices, kind, waits } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round }, module);
   const job = { module, work: [...reqs, ...mine.map(describe)], kind };
+  // Requirements not yet met that the tranche's scope leaves for later are named, so the job knows they are not its work.
+  if (waits.length) job.not_this_tranche = waits;
   if (notices.length) job.uses = notices.flatMap((w) => w.uses || []);
   const n = Number(name.match(JOB)[2]);
   const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });

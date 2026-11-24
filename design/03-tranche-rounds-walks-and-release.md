@@ -1,10 +1,11 @@
 # Part 3. The tranche, rounds, walks, and release
 
-Length: 75 lines. Last section: "8. Support beyond the process".
+Length: 76 lines. Last section: "8. Support beyond the process".
 
 ## 1. Opening a tranche
 
 - A tranche opens because the product has work to do — requirements added or changed, issues raised by its lanes, flaws found by walks or by jobs, and notices between modules. There is no single purpose to state and no owner review before it opens: ARCH opens the tranche and decides its scope, and the owner directs the product continuously through the coordinator and the lanes and by marked instructions.
+- ARCH records the tranche's scope where it holds less than all the work: a list of the requirements, or whole modules, the tranche is for, in the round's own record, which ARCH rewrites as the tranche goes on. While it stands, a requirement not yet met is work only where the list names it; every other requirement waits until the tranche ends. Notices, walk flaws and flaws a job reports are always work. With no list, every requirement is work. The account after each round names the scope. The list ends with the tranche.
 - The tranche is built on the tranche branch. The main branch never moves while a tranche runs. There is one lasting tranche branch. After a tranche merges into the main branch, the next tranche goes on from the same branch.
 - A product's tranche runs on one fixed version of the process from open to close (part 6). A product moves to a changed process version only on the owner's approval (part 6, section 7). A version move loses no work — where no job is open it is made at once; where jobs are open it is made at the next round boundary, or, on the owner's word to move now, open jobs stop and restart from their branches on the new version (as after an approvals edit, part 4, section 7).
 - While a tranche runs, ARCH prepares what the next round or tranche needs.

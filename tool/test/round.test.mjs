@@ -203,3 +203,46 @@ test('a job blocked by two modules stays blocked until both have merged after th
   assert.deepEqual(t.out.slice(0, 2), ['module: dates', `branch: job/dates.1 (its job is ready again: the block by pricing and orders ended when pricing and orders merged)`]);
   assert.equal(record(t.gh, 'round').modules.find((m) => m.module === 'dates').pull_request, o.number);
 });
+
+test('the tranche\'s scope: only the requirements it names are work; the rest wait, and the round can finish', () => {
+  const t = product({
+    'process/modules/dates.md': '- **R1** [not yet met] one\n- **R2** [not yet met] two\n',
+  });
+  // ARCH writes the scope for tranche t2: dates R2 only. pricing's R1 waits.
+  writeRec(t.ctx, t.root, 'round', { tranche: 't2', round: 1, scope: { tranche: 't2', holds: ['dates R2'] } });
+  t.out.length = 0;
+  nextJob(t.ctx);
+  assert.ok(t.out.includes('module: dates'));
+  assert.ok(t.out.some((l) => l === 'work: R2'), t.out.join('\n'));
+  const b = t.out.find((l) => l.startsWith('branch: ')).split(' ')[1];
+  branch(t.ctx, b);
+  open(t.ctx, { _: [], module: 'dates' });
+  const blk = parseBlock(t.gh.s.comments.find((c) => c.body.startsWith('<!-- process4-job -->')).body, 'process4-job').data;
+  assert.deepEqual(blk.work, ['R2']);
+  assert.deepEqual(blk.not_this_tranche, ['R1']);
+  // No other job is ready: pricing's R1 is outside the scope.
+  t.out.length = 0;
+  nextJob(t.ctx);
+  assert.match(t.out.join('\n'), /none ready/);
+  // Once dates' job merges, the round is done, though dates R1 and pricing R1 are not yet met.
+  merged(t.gh, t.gh.s.prs.at(-1).number, '2026-11-24T23:00:00Z');
+  git(['checkout', '-q', 'main'], { cwd: t.root });
+  commit(t.root, { 'process/modules/dates.md': '- **R1** [not yet met] one\n- **R2** [met] two\n' }, 'dates R2 met');
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche', '--force'], { cwd: t.root });
+  t.out.length = 0;
+  roundDoneCmd(t.ctx);
+  assert.equal(t.out[0], 'done', t.out.join('\n'));
+});
+
+test('a whole module in the scope, and a scope written for another tranche counts nothing out', () => {
+  const t = product();
+  writeRec(t.ctx, t.root, 'round', { tranche: 't2', round: 1, scope: { tranche: 't2', holds: ['pricing'] } });
+  t.out.length = 0;
+  nextJob(t.ctx);
+  assert.ok(t.out.includes('module: pricing'), t.out.join('\n'));
+  const t2 = product();
+  writeRec(t2.ctx, t2.root, 'round', { tranche: 't3', round: 1, scope: { tranche: 't2', holds: ['pricing'] } });
+  t2.out.length = 0;
+  nextJob(t2.ctx);
+  assert.ok(t2.out.includes('module: dates'), t2.out.join('\n'));
+});

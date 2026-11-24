@@ -23,14 +23,30 @@ const jobOf = (pr) => {
 export const describe = (w) => (w.kind === 'notice' ? `notice from ${w.from} (pull request ${w.merged})`
   : w.kind === 'walk-flaw' ? `walk flaw ${w.flaw} ${w.link}` : `flaw from ${w.from}: ${w.words}`);
 
-// The work a module has now: requirements not yet met at the tranche branch's newest commit,
-// and what waits for it in the waiting-work record. A told job's kind when notices are all.
+// The tranche's scope (the owner's decision D of 24 Nov 2026): ARCH writes in the round record
+// `"scope": { "tranche": "<the round's tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While the round record
+// names that tranche, a requirement not yet met is work only where the scope names it, or names its whole module; every
+// other requirement waits until the tranche ends. Notices, walk flaws and flaws a job reports are always work. No scope,
+// or one written for another tranche, means every requirement, as before.
+export function scopeOf(round) {
+  const s = round?.scope;
+  if (!s || !Array.isArray(s.holds) || !round.tranche || s.tranche !== round.tranche) return null;
+  return new Set(s.holds.map((x) => String(x).trim().replace(/\s+/g, ' ')));
+}
+const inScope = (holds, module, r) => !holds || holds.has(module) || holds.has(`${module} ${r}`);
+
+// The work a module has now: requirements not yet met at the tranche branch's newest commit, within the tranche's scope,
+// and what waits for it in the waiting-work record. A told job's kind when notices are all. `waits` holds the
+// requirements not yet met that the scope leaves for a later tranche.
 export function workOf(view, module) {
-  const reqs = notYetMet(view.requirements[module]);
+  const holds = scopeOf(view.round);
+  const all = notYetMet(view.requirements[module]);
+  const reqs = all.filter((r) => inScope(holds, module, r));
+  const waits = all.filter((r) => !inScope(holds, module, r));
   const mine = view.waiting.filter((w) => w.module === module);
   const notices = mine.filter((w) => w.kind === 'notice');
   const kind = notices.length && notices.length === mine.length && !reqs.length ? 'told' : 'ordinary';
-  return { reqs, mine, notices, kind, any: reqs.length + mine.length > 0 };
+  return { reqs, mine, notices, kind, waits, any: reqs.length + mine.length > 0 };
 }
 
 // Everything the round's commands read, in one place. `ctx` is the commands' context.
@@ -96,7 +112,11 @@ export const isBlocked = (view, module, pr) => !!blockOf(view, pr)?.holds || !!a
 export function finished(view, module) {
   const jobs = jobsOf(view, module);
   const last = jobs[0];
-  if (!last) return { finished: false, why: 'no job yet' };
+  if (!last) {
+    // A module with no job and no work now (the tranche's scope leaves its requirements for later) has nothing to finish.
+    const w0 = workOf(view, module);
+    return w0.any ? { finished: false, why: 'no job yet' } : { finished: true, why: `no work in this tranche${w0.waits.length ? ` (${w0.waits.join(', ')} wait for a later tranche)` : ''}` };
+  }
   if (last.state === 'open') return { finished: false, why: `its job is open: pull request ${last.number}` };
   let why;
   if (last.merged_at) why = `pull request ${last.number} merged`;
