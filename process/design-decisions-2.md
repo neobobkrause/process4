@@ -591,3 +591,19 @@ of a tranche (still on his page). Unproven: all of it, until the trial on the tr
 With that, please lay out the process4 change plan for one final read through before approving it."). On the second line
 of item 1: "Tests are code. They don't even reference the environment's secret values. So your concerns about that are a
 non-issue." — 24 November 2026 (conversation).
+
+### Subject: The order of a move whose new version changes the required-run workflow
+
+**The rule as it now stands.** A product moves to a new Process4 version by one pull request setting its process config.
+Where the new version's required-run workflow (`shims/module-tests.yml`) differs from the product's copy, ARCH replaces the
+copy by a second pull request, merged after the first. The required run judges each pull request with the tool at the
+version its base names, so the new workflow cannot pass on the pull request that moves the version (design part 6, section
+7; ARCH's starting text, rule 6; build text 1b, command 25).
+
+It corrected a measured fault: civicsmith's move to the update of 24 Nov, made as one pull request carrying both, failed
+its required run (the new workflow ran the old tool, which has no `run verdict`), and passed as two pull requests in order
+(civicsmith ARCH #12, passed on by coordinator #4). Text only; no tool change; it adds no test, gate, review or stop.
+Products receive it with their next move. Option B of two (A no change; B write the order down). Researched in
+`process/research/move-with-new-workflow-24nov.md`.
+
+**The owner's words.** "Decision: B, as recommended" — 24 November 2026 (a comment on his standing page, on option B).
