@@ -25,8 +25,7 @@ refactoring plan another lane wrote; item 6 below assumes it keeps module tests 
    scope, the files run, the counts, pass or fail. `ready` runs nothing: it marks ready only where a pass record exists for
    the head commit, otherwise it says to run `p4 test`. GitHub's required check `module-tests` stays by name but only reads
    that record for the head commit, in seconds; so the branch rule still refuses a merge with no pass, and the owner
-   changes no setting. The tests start with only the variables a program needs (no secret values from the environment);
-   a job may already run its tests in its own session today, so this exposes nothing new. Removes: the 45-minute limit,
+   changes no setting. Removes: the 45-minute limit,
    the run that passed with no tests, every second run of a job's tests, the two-part run. Held by text: the job writes its
    own pass record, as it writes its own tests. A module whose tests take more than 2 hours is ARCH's to split.
 2. **A notice reaches a running job at once.** When a provider merges with a changed interface, `notify` adds the notice to
@@ -64,7 +63,7 @@ With t1 dropped, civicsmith runs no jobs until the refactoring starts. So the tw
 1. The tool and texts in Process4, one pull request per recorded decision as usual, tool tests run where the tool changes;
    the notice changes replay the proof's 150 changes and must give the same answers, any changed one written down.
 2. A trial on the trial product (process3-probes): one ordinary job, one told job reached while its job is open, one merge
-   that waits, so the new path has run once before civicsmith uses it.
+   that waits, so the new path has run once before civicsmith uses it. The owner agreed to it, 24 Nov.
 3. civicsmith moves by the owner's one line in its coordinator's session; its workflow copy is replaced from
    `shims/module-tests.yml` by one pull request (ARCH opens it where civicsmith's approvals allow; otherwise the owner lands
    it with a click).
@@ -76,3 +75,11 @@ With t1 dropped, civicsmith runs no jobs until the refactoring starts. So the tw
 - Whether the refactoring plan keeps every module test to imports (item 6), and when it starts.
 - How much item 3's waiting costs against the told jobs it saves.
 - Whether civicsmith's approvals let a session change its workflow copy.
+
+## The owner's comments, 24 Nov (conversation)
+
+- On 1's line about secret values: "Tests are code. They don't even reference the environment's secret values. So your
+  concerns about that are a non-issue." The line is removed; the job's tests run as the job's session runs them today.
+- "Yes to a trial-product run before returning to civicsmith."
+- The refactoring plan (https://claude.ai/artifact/HA4xENnaXEjX8cx4SQeAoL) is checked against this plan by a worker:
+  `refactor-plan-check-24nov.md`.
