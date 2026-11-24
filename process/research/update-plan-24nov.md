@@ -105,3 +105,15 @@ With t1 dropped, civicsmith runs no jobs until the refactoring starts. So the tw
 - "Yes to a trial-product run before returning to civicsmith."
 - The refactoring plan (https://claude.ai/artifact/HA4xENnaXEjX8cx4SQeAoL) is checked against this plan by a worker:
   `refactor-plan-check-24nov.md`.
+
+## The owner's framing, 24 Nov (conversation, not a decision)
+
+"The plan for updating process4 that we're considering here is an incremental step. So is the civicsmith refactoring plan.
+Another big change that will be researched is whether it's possible (and how) to update module and test code so that all
+references to other modules is done in a way that the provider's list of users is much more accurate than is currently
+possible. The goal is to bring declared uses in line with real uses. But that will be a different step explored after
+these changes to process4 and after the civicsmith refactoring."
+
+PROCESS #10's reading, put to him: item 6 belongs to that later step. The order rule it restates is already in the design
+(part 2, section 1), and its new part (every reach by path declared) is the later step's subject. So this step would be
+items 1 to 5 with the three folded-in fixes; item 3 stays as good as the notice's own reading of uses until the later step.
