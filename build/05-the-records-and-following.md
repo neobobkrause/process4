@@ -1,4 +1,4 @@
-Length: 214 lines. Last section: "8. Unproven, and not settled here".
+Length: 227 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -189,7 +189,7 @@ A use of a provider that U does not declare is noted on the notice: `note: uses 
 3. U calls by a name the tool cannot read, and P has operations.
 4. U names a table the tool cannot read, and P has tables.
 
-U is then told on any change to P's listing, also on a new entry or an accepts-more that tells no other user (the design, part 2, section 7, decision 2). The notice says so under the user, and the reason it carries is `{ "module": "pricing", "notFollowed": ["<why>", "<why>"], "through": null }`, with no places:
+Each cause names at most its first six places, then `and N more` (the owner's decision of 24 Nov 2026), so a notice is never lost for its size. U is then told on any change to P's listing, also on a new entry or an accepts-more that tells no other user (the design, part 2, section 7, decision 2). The notice says so under the user, and the reason it carries is `{ "module": "pricing", "notFollowed": ["<why>", "<why>"], "through": null }`, with no places:
 
 ```
   TOLD orders

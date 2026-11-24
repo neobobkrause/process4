@@ -1,4 +1,4 @@
-Length: 108 lines. Last section: "8. Not settled here".
+Length: 117 lines. Last section: "8. Not settled here".
 
 # Process4 build specification, part 1: the tool and the required test run
 

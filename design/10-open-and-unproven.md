@@ -1,6 +1,6 @@
 # Part 10. What is open, what is unproven, and the trial
 
-Length: 99 lines. Last section: "6. Risks with no trial".
+Length: 101 lines. Last section: "6. Risks with no trial".
 
 Most items are also marked where they belong in parts 1 to 9. This part gathers them and adds what belongs to no one part.
 

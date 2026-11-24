@@ -1,6 +1,6 @@
 # Part 2. Modules, jobs, module tests, and the notice
 
-Length: 107 lines. Last section: "9. Changes that are not a job's".
+Length: 109 lines. Last section: "9. Changes that are not a job's".
 
 ## 1. Modules and their order
 
@@ -59,7 +59,7 @@ The tool decides both, because each has one right answer:
 - The structured comments and the tool can also inform module tests, so that boundaries are properly checked.
 - Every requirement is tested at the module's interface.
 - Module tests include, in the words of the record, "a check that the module's declared uses match its imports". The check reads the module's test files as well as its source: "I think it has to check tests too". It also refuses a declared use of a module that is not before this one in the order, so that declaring a later module is no way to make a use of it pass. It reads imports by path, `require`, and imports by the product's own name; a declared use with no import it can see (one made by a path, for example) is "cannot tell", not refused. A job cannot settle that in its own module's files; where the use is needed it reports to ARCH and is recorded blocked (section 3), and ARCH corrects the order, the module list or the boundary (section 8).
-- The owner approved two refusals, and no other is taken. Inside a module's own tests the tool may refuse a structured comment that disagrees with the module's code, and may refuse the module's code where it disagrees with a provider's stated interface. These are parts of module tests, not further tests. Only these two refusals stand; no other is built into module tests. A value a test passes on purpose inside an error assertion (`assert.throws` or `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither refusal: the tool reads it as "cannot tell" and never refuses it. Nor is a complaint of the tool's reader about plain code, where no structured comment states what the code contradicts: that too is "cannot tell".
+- The owner approved two refusals, and no other is taken. Inside a module's own tests the tool may refuse a structured comment that disagrees with the module's code, and may refuse the module's code where it disagrees with a provider's stated interface; for a value handed across, only the comment on the side that receives it counts. These are parts of module tests, not further tests. Only these two refusals stand; no other is built into module tests. A value a test passes on purpose inside an error assertion (`assert.throws` or `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither refusal: the tool reads it as "cannot tell" and never refuses it. Nor is a complaint of the tool's reader about plain code, where no structured comment states what the code contradicts: that too is "cannot tell".
 - A module's tests and a walk's steps are product work. Each exists only to prove a product requirement, which it names. A test or step that serves the process is not allowed. This is a rule in text.
 - Built files are never committed. They are built at each walk, deployment and release.
 
@@ -80,7 +80,7 @@ The tool decides both, because each has one right answer:
 - Three points on what the owner's rule means: a told job's own edits count among "the changed parts"; tests are chosen by whole file; and where the tool cannot follow a told module's code, that module's whole tests run, since the tool cannot say which relate.
 - **Unproven:** that the tool can follow from a use to the tests that reach it inside a module, and can tell when it has lost the thread. It has not been built or run, and the saving is unmeasured.
 - **When the module list changes.** A change to the list sends no notice of itself. Where it moves code between modules or splits a module, the tool makes the interface listings of the modules touched before and after, and the users of any entry whose listing differs are told as for any other change. Where only a provider's name changes for its users, their code is changed by a mechanical edit.
-- **A declared use that no code makes.** The tool cannot follow it, so by decision 2 below it is told whenever that provider's listing changes at all. The check of declared uses in the module's own tests finds it at the module's next job, which removes the declaration.
+- **A declared use that no code makes.** The tool cannot follow it, so by decision 2 below it is told whenever that provider's listing changes at all. The check of declared uses calls it "cannot tell", since a use by path is not read; the module's job removes a declaration no code makes.
 
 For the tool that finds the change:
 
