@@ -50,6 +50,7 @@ const commands = {
   ready: (ctx, a) => c.ready(ctx, prOf(ctx, a)),
   results: (ctx, a) => c.results(ctx, prOf(ctx, a)),
   merge: (ctx, a) => c.merge(ctx, pr(a)),
+  drop: (ctx, a) => c.drop(ctx, a),
   'release prepare': (ctx, a) => releasePrepare(ctx, a._[0], a),
   'release publish': (ctx, a) => releasePublish(ctx, a._[0], a),
   close: (ctx, a) => c.close(ctx, prOf(ctx, a), a),
@@ -92,11 +93,12 @@ const commands = {
 // What each command does, printed by --help (or -h) and nothing else: a help flag never acts.
 export const HELP = {
   branch: 'branch <name> [--into <branch>]: makes job/<module>.<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
-  push: 'push [--blocked <module>[,<module>] "<why>" | --unblocked "<why>"]: pushes the current working branch to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request; with --unblocked, rewrites that record to say the job goes on, where ARCH ended the block by its own decision.',
+  push: 'push [--blocked <module>[,<module>] "<why>" | --unblocked "<why>"]: pushes the current working branch (job/, work/ or drop/) to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request; with --unblocked, rewrites that record to say the job goes on, where ARCH ended the block by its own decision.',
   open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request (from a detached checkout, name the branch with --branch); for a job writes the job block and prints its starting instructions. With one open already, prints it and its job block.',
   ready: 'ready [<pr>] [--branch <b>]: marks the pull request ready (named by number, by --branch, or the current branch\'s one open pull request), which asks for the required run.',
   results: 'results [<pr>] [--branch <b>]: prints the required run\'s state on the head commit (pull request named by number, by --branch, or the current branch), and for a failure the last lines of its output.',
   merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it.',
+  drop: 'drop --tranche <name>: for ARCH, makes drop/<name> from the tranche branch\'s newest commit, puts each module\'s code and test files back to main\'s version (deleting those main lacks), keeps requirements files, the module list, process.json, the decision records and the lanes\' folders as they are, pushes it, and opens a draft pull request into the tranche branch; prints its number and the files restored and deleted. ARCH marks it ready and merges it with ready and merge.',
   'release prepare': 'release prepare <version> --notes <file> [--file <built file>]...: makes an unpublished release at main\'s newest commit with the notes and files; with --development, a published pre-release with its tag.',
   'release publish': 'release publish <version> --approval "<the owner\'s words>": publishes the prepared release of that version; prints the owner\'s words back, unjudged.',
   close: 'close [<pr>] [--branch <b>] [--nothing-to-change "<why>"]: closes the pull request unmerged (named by number, by --branch, or the current branch); with the flag, first writes the job\'s record. A job starts on a detached checkout, so it names --branch <its branch> or the number.',

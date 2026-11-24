@@ -518,3 +518,25 @@ read one side at a time; C B with a plain message; D read only what a merge can 
 **The owner's words.** "The huge need for memory by this tool leaves me wondering if the tool is properly designed for
 the purpose it serves. Is there a more efficient design for this tool that can meet all requirements?" — 23 November
 2026 (conversation). "Decision: D" — 23 November 2026 (a comment on his page, on option D).
+
+### Subject: How a dropped tranche is carried out
+
+**The rule as it now stands.** A dropped tranche is carried out as the tranche's merge into main run the other way.
+ARCH runs `p4 drop --tranche <name>`, which puts back on the tranche branch main's version of every module code and test
+file the tranche changed, and nothing else: requirements files, the module list, the process's named files, the decision
+records and the lanes' folders stay. The required run passes that pull request at once, running none of the tests, only
+when every file it changes is main's own; otherwise it runs as any other branch. ARCH merges it, closes the tranche's open
+jobs unmerged, clears the round and waiting-work records, and writes "not yet met" on each requirement whose met mark came
+from the dropped tranche. No notice is sent (design part 3, section 5; build text 1 section 5, step 2a; build text 1b,
+command 26; ARCH's starting text).
+
+It corrected a measured fault that stopped work: the owner dropped civicsmith's tranche t1 on 24 Nov ("Decision: drop
+tranche t1. The refactor starts from main's code as it is; keep the requirements, the module list, the decision records
+and the lanes' design work.", typed in civicsmith's coordinator session), and the design named dropping but gave no way to
+carry it out: a restoring pull request ran every module t1 touched whole, plane among them, past the 45-minute limit, with
+main's own code failing `check` in several modules (civicsmith ARCH #11, passed on by coordinator #4). It removes a test run
+with no reason behind it (design part 2, section 6); it adds no test, gate, review or stop. Option C of three (A no change,
+each module's next job restores its own files; B the owner merges a restoring pull request past the required run; C a drop
+is the tranche's merge run the other way). Researched in `process/research/dropped-tranche-24nov.md`.
+
+**The owner's words.** "Decision: C, as recommended" — 24 November 2026 (a comment on his standing page, on option C).

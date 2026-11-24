@@ -1,4 +1,4 @@
-Length: 40 lines. Last section: "4. The commands".
+Length: 42 lines. Last section: "4. The commands".
 
 # Process4 build text 1b: the tool's commands
 
@@ -36,5 +36,7 @@ One for each act in part 6, section 5. Common to all: arguments are checked for 
 24. **`related <pr>`**. Lists a told job's related tests, as step 3 of build text 1, section 5 picks them, for the job to run in its own session if it chooses. It only lists; it runs nothing.
 
 25. **`latest-version`**. Reads only. Prints the newest commit of the process repository's main branch — the version a move to the latest adopts — from the address the process config names, and whether it differs from the pinned commit. ARCH runs it so a version move needs no commit id from the owner (the owner's decision C, 19 Nov 2026). **Unproven:** the read of another repository's main from a session.
+
+26. **`drop --tranche <name>`**. ARCH's session, when the owner has dropped a tranche (design part 3, section 5; the owner's decision C of 24 Nov 2026). Makes branch `drop/<name>` from the tranche branch's newest commit and puts back the main branch's version of every file that differs between the two and that a module's `files` or `tests` paths own, by either branch's module list; a file the main branch lacks is deleted. Each module's requirements file, the module list, the process config and the lanes' folders are left as they are. Commits, pushes, opens the pull request into the tranche branch, and prints its number and how many files were put back and deleted. Refuses, in one line, when `drop/<name>` already exists, when nothing differs, or when the tranche branch cannot be found. ARCH then runs `ready` and `merge`; the required run passes it at once only where every changed file is the main branch's (build text 1, section 5, step 2a).
 
 **The run's entry.** The workflow calls `p4.mjs run scope` and `p4.mjs run tests` (build text 1, section 5), on GitHub's machines only.
