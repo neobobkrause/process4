@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 24 Nov 2026
+- `update-plan-24nov.md` — the plan put to the owner on 24 Nov for the update: tests once in the job (`p4 test`, a pass record, GitHub only reads it), notices to running jobs, merging after the modules a job uses, slots, the check mended, module tests through imports; three small fixes folded in; order of building.
 - `dropped-tranche-24nov.md` — the owner dropped civicsmith's t1, and no route carries a drop out (a restoring pull request runs every touched module whole); options A to C (C: a drop is the tranche's merge in reverse, no tests run).
 
 ## 23 Nov 2026
