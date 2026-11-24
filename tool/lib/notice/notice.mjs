@@ -29,6 +29,14 @@ export function analyse(root) {
   return { tree, program, listings, uses };
 }
 
+/**
+ * The places a "not followed fully" reason names: the first six, then "and N more" as one more place (the owner's
+ * decision of 24 Nov 2026). Such a user runs its whole module's tests, so the places choose nothing; they only explain,
+ * and a reason without bound made a waiting-work record too large to write, losing the notice.
+ */
+export const PLACES_SHOWN = 6;
+export const firstPlaces = (places) => (places.length > PLACES_SHOWN ? [...places.slice(0, PLACES_SHOWN), `and ${places.length - PLACES_SHOWN} more`] : [...places]);
+
 /** Telling changes: those that tell the users of the entry. */
 const TELLS = new Set(['removed', 'cannot stand in', 'hands back differently', 'bound changed', 'declaration changed (not classified)', 'parameters moved']);
 
@@ -373,9 +381,9 @@ function noticeWith(R, provider) {
       if (declared) {
         const why = [];
         if (!useB?.size && !useA?.size) why.push(`declares ${m} but no use of it is found in its code`);
-        if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${ub.anything.join('; ')}`);
-        if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${ub.unreadOps.join(', ')}`);
-        if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${ub.unreadTables.join(', ')}`);
+        if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${firstPlaces(ub.anything).join('; ')}`);
+        if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${firstPlaces(ub.unreadOps).join(', ')}`);
+        if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${firstPlaces(ub.unreadTables).join(', ')}`);
         if (why.length) reasons.push({ module: m, notFollowed: why, through });
       }
     }

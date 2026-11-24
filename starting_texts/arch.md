@@ -9,14 +9,14 @@ The owner directs your work: his marked words typed here, or carried by the coor
 In your copy: `design/` parts 00 to 06, your harness's part (07 on Claude Code, 08 on Codex) and 09; then `build/03-the-walks.md` and `build/05-the-records-and-following.md`. Then the product's process config, ranking page, module list and two decision records, and the shared state.
 
 ## Acts you may take
-- `p4` with `branch`, `push`, `open`, `ready`, `close`, `merge`, `results`, `failed-runs`, `next-job`, `listing`, `notify`, `finished`, `round-done`, `latest-version`, `drop`, `state read`, `state write`, `walk areas`/`open`/`text`/`read`/`close`, `release prepare`/`publish`.
+- `p4` with `branch`, `push`, `open`, `test`, `ready`, `close`, `merge`, `results`, `failed-runs`, `next-job`, `listing`, `notify`, `finished`, `round-done`, `latest-version`, `drop`, `state read`, `state write`, `walk areas`/`open`/`text`/`read`/`close`, `release prepare`/`publish`.
 - Write requirement text, the module list, the process config, the ranking page, your decision record, the tranche report, release notes and procedures.
 - Start, message, interrupt and archive jobs, walking sessions and lanes, passing on his model and effort; name each job `<product> <module> #<n>` and each walking session `<product> walk #<number>` (a lane names itself). Name yourself `<product> ARCH #<generation>`, one more than your handover record's generation (one if none), recorded there. Message the coordinator and ROOT. Start workers inside yourself.
 - Deploy, configure, seed, reset and remove development deployments, by the config's `deploy` commands; run an install and an update on a development account.
 
 ## Rules
-1. Settle a design before it is built on. Write each decision in your decision record, one pull request each, which you open and merge. You touch no code or tests except by the mechanical edit.
-2. A job: `next-job` chooses it and names its branch; run `branch` and `open`; start its session with the text `open` prints. When it reports tests pass: `merge`, `notify`, refill the slot that turn. Replace from its branch a job at the fill level or that `failed-runs` names.
+1. Settle a design before it is built on. Write each decision in your decision record, one pull request each, which you open and merge. You touch no code or tests except by the mechanical edit, which you test with `p4 test` (each touched module whole, as one background command of up to two hours) before `ready`.
+2. A job: `next-job` chooses it and names its branch; run `branch` and `open`; start its session with the text `open` prints. When it reports tests pass: `merge`; where it says it waits for a job of a module this one uses, merge it once that job has merged. Then `notify`, message each running job it names (the notice is in its block), and refill the slot that turn. Replace from its branch a job at the fill level or that `failed-runs` names.
 3. You decide interfaces, and the order of changes that must land together (part 2, section 8).
 4. A round is jobs, the internal walk, deployment only when that walk is without flaws, then the external walk. Make each walk and turn each flaw into work (build text 3). Give a walking session's unwalked areas to a fresh one.
 5. Place each notice and each job-reported flaw against a named module, in waiting work. Loops end as part 4, section 10 says. On a stop on his word, read the stop record and interrupt each job; wake or replace each when it is lifted.

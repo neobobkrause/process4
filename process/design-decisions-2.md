@@ -540,3 +540,54 @@ each module's next job restores its own files; B the owner merges a restoring pu
 is the tranche's merge run the other way). Researched in `process/research/dropped-tranche-24nov.md`.
 
 **The owner's words.** "Decision: C, as recommended" — 24 November 2026 (a comment on his standing page, on option C).
+
+### Subject: Tests once in the job, notices that reach running jobs, merging after the modules a job uses, and slots
+
+**The rule as it now stands.**
+
+1. **A job's tests run once, in the job.** The job runs `p4 test` in its own session, as one background command of up to
+   two hours, and waits for it within its turn. The tool decides the scope as before (the whole module for an ordinary
+   job; the related test files for a told job; nothing where no module file changed), runs `check` and then the tests in
+   scope, and writes one test record on the pull request: the commit, the notice count, the scope, the files, the counts,
+   pass or fail, and the fails across every run. `ready` runs nothing: it marks a pull request ready only where a pass is
+   recorded for its head after every notice, or where nothing needs testing. GitHub's required check `module-tests` keeps
+   its name and only reads the record, in seconds; it runs no product code. The failed-run count that brings a fresh
+   session (third) and a block (fifth) is read from the record. ARCH's session tests a pull request that is not a job's and
+   changes module code or tests the same way, each touched module whole. A test file the module list gives to another
+   module, unchanged, is not run for the move. A module whose tests take more than two hours is ARCH's to split. Removed:
+   the run on GitHub's machines in two parts, its 45-minute limit, the second run of a job's tests, and the rule that
+   product code under test holds no access token.
+2. **A notice reaches a running job at once.** Where a told user's job is open, the notice is added to that job's block
+   (its work and uses; the block's notice count rises), and ARCH messages the job. A pass recorded before the notice no
+   longer counts. The job deals with the notice, runs `p4 test` again, and is ready again. A user with no open job gets a
+   told job, as before.
+3. **A ready job merges once no job is open among the modules it uses.** Those are the earlier modules its files import,
+   followed file to file as the notice reads them, and the modules it declares, directly or through others. `merge` says
+   which job it waits for and merges nothing; ARCH merges once that job has merged. A blocked job holds no one. `merge`
+   also refuses a job whose tests ran before its latest notice.
+4. **Slots.** New jobs start, earliest in the order first, only while slots in use are below the slot number. After a
+   provider's interface change, a module with a notice waiting and no open job, earlier in the order than the latest
+   running job's module, starts at once above the slot number; a later one waits its turn.
+5. **The check mended.** It also reads `require` and imports by the product's own name, as the notice does; a declared use
+   with no import it can see is "cannot tell", no longer refused.
+
+Folded in, each recommended on his page before: a "not followed fully" reason keeps its first six places and a count, so a
+notice is never lost for its size; a class member's own written bound is in its listing, so a changed bound tells its
+users; refusal (b) counts only the comment on the side that receives a value.
+
+Why. His requirements of 23 Nov, in his words: "running a test only as much as is minimally necessary to confirm that the
+test passes"; "a test should not be running multiple times"; "a job marks itself ready once it's already passed its
+tests"; "There's no reason for a job not to get the [notice] immediately"; and that the round wait for the earliest
+running job a job depends on. Measured: on civicsmith the required run's 45-minute limit cancelled plane's 44 minutes of
+tests after they passed, and a run that saw a pull request as a draft passed it once ready with no tests run. It removes
+test runs, a time limit and a second run; the merge's wait is added on his explicit word, which rule 2 of PROCESS's
+starting text needs, and was named to him before he decided. The tests a job runs, and what they prove, are unchanged.
+Not part of it: bringing declared uses in line with real uses (the later step he named), and ARCH holding requirements out
+of a tranche (still on his page). Unproven: all of it, until the trial on the trial product. Researched in
+`process/research/update-plan-24nov.md` and `update-build-spec-24nov.md`, with the files they name.
+
+**The owner's words.** "Decision: the update plan as laid out" — 24 November 2026 (in PROCESS #10's session, on the plan
+`process/research/update-plan-24nov.md` with its item 6 moved to a later step: "Agreed, move change 6 to the later step.
+With that, please lay out the process4 change plan for one final read through before approving it."). On the second line
+of item 1: "Tests are code. They don't even reference the environment's secret values. So your concerns about that are a
+non-issue." — 24 November 2026 (conversation).

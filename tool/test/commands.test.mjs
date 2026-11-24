@@ -3,8 +3,9 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
-import { parseBlock } from '../lib/github.mjs';
+import { block, parseBlock } from '../lib/github.mjs';
 import { mark } from '../lib/state.mjs';
+import { TEST_MARK } from '../lib/testrecord.mjs';
 import { git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
@@ -129,14 +130,17 @@ test('open --title opens a draft into the tranche, or into main with --into-main
   assert.throws(() => open(ctx, { _: [], module: 'orders' }), /no branch job\/orders/);
 });
 
+// A pass recorded for a pull request's head (tests once, in the job), so that ready marks it.
+const passFor = (gh, pr) => gh.addComment('o/product', pr.number, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 0, scope: 'whole module', result: 'pass', passed: 1, failed: 0 }));
+
 test('ready marks ready and reads it back', () => {
   const gh = fakeGitHub();
   const { ctx, out } = ctxFor(makeRepo(), gh);
-  gh.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true });
+  passFor(gh, gh.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true }));
   ready(ctx, 1);
   assert.match(out.join('\n'), /ready; the required run module-tests has been asked for/);
   const stuck = fakeGitHub({ markReady: () => {} });
-  stuck.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true });
+  passFor(stuck, stuck.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true }));
   assert.throws(() => ready(ctxFor(makeRepo(), stuck).ctx, 1), /still a draft/);
 });
 
@@ -151,7 +155,7 @@ test('results reads the required run on the head commit', () => {
   gh.s.runs.push({ id: 3, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'failure', started_at: '3', html_url: 'R3' });
   gh.s.logs[3] = 'line 1\nnot ok 1 - orders refuses 1000\n';
   results(ctx, 1);
-  assert.deepEqual(out.map((l) => l.split(':')[0]), ['waiting', 'passed', 'failed (failure)', 'line 1\nnot ok 1 - orders refuses 1000']);
+  assert.deepEqual(out.filter((l) => !l.startsWith('test record:')).map((l) => l.split(':')[0]), ['waiting', 'passed', 'failed (failure)', 'line 1\nnot ok 1 - orders refuses 1000']);
 });
 
 test('merge obeys the owner\'s hold, waits a minute after the last merge, and merges at the head commit', () => {
@@ -173,9 +177,93 @@ test('merge obeys the owner\'s hold, waits a minute after the last merge, and me
   assert.match(out.join('\n'), /waiting 30 s since the last merge[\s\S]*merged pull request 1 into tranche/);
 });
 
+// The owner's decision of 24 Nov 2026, item 3: a job merges once no job is open among the modules it uses.
+function usingProduct() {
+  const mod = (name, uses = []) => ({ name, files: [`src/${name}/`], tests: [`test/${name}/`], uses });
+  const root = makeRepo({
+    'process.json': config(),
+    'package.json': { name: 'shop', type: 'module', exports: { '.': './src/orders/index.mjs', './tax': './src/tax/index.mjs' } },
+    'process/modules/order.txt': 'base\ntax\ndates\npricing\norders\nlate\n',
+    'process/modules/base.json': mod('base'),
+    'process/modules/tax.json': mod('tax'),
+    'process/modules/dates.json': mod('dates'),
+    'process/modules/pricing.json': mod('pricing', ['dates']),
+    'process/modules/orders.json': mod('orders'),
+    'process/modules/late.json': mod('late'),
+    'src/base/index.mjs': 'export const b = 1;\n',
+    'src/base/legacy.cjs': 'module.exports = 1;\n',
+    'src/tax/index.mjs': 'export const t = 1;\n',
+    'src/dates/index.mjs': 'export const d = 1;\n',
+    // pricing declares dates and imports nothing
+    'src/pricing/index.mjs': 'export const p = 1;\n',
+    // orders: pricing by import, base by require, tax by the product's own package name in a test, late (later) by import
+    'src/orders/index.mjs': "import { p } from '../pricing/index.mjs';\nimport { l } from '../late/index.mjs';\nexport const o = p + l;\n",
+    'src/orders/old.mjs': "import { createRequire } from 'node:module';\nconst require = createRequire(import.meta.url);\nexport const x = require('../base/legacy.cjs');\n",
+    'test/orders/a.test.mjs': "import { t } from 'shop/tax';\nt;\n",
+    'src/late/index.mjs': 'export const l = 1;\n',
+  });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  return root;
+}
+
+test('merge of a job waits for an open job of each earlier module it uses, by import, by declaration and through others', () => {
+  const root = usingProduct();
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  const jobs = Object.fromEntries(['base', 'tax', 'dates', 'pricing', 'late', 'orders'].map((m) => [m, gh.createPR('o/product', { head: `job/${m}.1`, base: 'tranche', draft: false })]));
+  const n = jobs.orders.number;
+  assert.equal(merge(ctx, n), 0);
+  assert.deepEqual(out.filter((l) => l.startsWith('waits for')), [
+    `waits for base (pull request ${jobs.base.number})`, `waits for tax (pull request ${jobs.tax.number})`,
+    `waits for dates (pull request ${jobs.dates.number})`, `waits for pricing (pull request ${jobs.pricing.number})`]);
+  assert.match(out.at(-1), new RegExp(`pull request ${n} not merged`));
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), []);
+  // A blocked job holds no one; dates still holds it, through pricing's declaration.
+  gh.addComment('o/product', jobs.pricing.number, block(RECORD_MARK, { blocked: { by: 'dates', why: 'dates refuses a leap day' } }));
+  out.length = 0;
+  merge(ctx, n);
+  assert.deepEqual(out.filter((l) => l.startsWith('waits for')).map((l) => l.split(' ')[2]), ['base', 'tax', 'dates']);
+  // Once those have merged or closed, it merges: late is later in the order and holds no one.
+  for (const m of ['base', 'tax', 'dates']) jobs[m].state = 'closed';
+  out.length = 0;
+  assert.equal(merge(ctx, n), 0);
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), [['merge', n, jobs.orders.head.sha]]);
+  assert.match(out.join('\n'), new RegExp(`merged pull request ${n} into tranche`));
+});
+
+test('merge of a job waits for a module its head newly imports, though the tranche does not show the use', () => {
+  const root = usingProduct();
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  // The job's branch adds an import of dates to late, on its head commit only.
+  git(['checkout', '-q', '-b', 'job/late.1'], { cwd: root });
+  commit(root, { 'src/late/index.mjs': "import { d } from '../dates/index.mjs';\nexport const l = d;\n" });
+  git(['push', '-q', 'origin', 'job/late.1'], { cwd: root });
+  git(['checkout', '-q', 'main'], { cwd: root });
+  const dates = gh.createPR('o/product', { head: 'job/dates.1', base: 'tranche', draft: false });
+  const late = gh.createPR('o/product', { head: 'job/late.1', base: 'tranche', draft: false });
+  assert.equal(merge(ctx, late.number), 0);
+  assert.deepEqual(out.filter((l) => l.startsWith('waits for')), [`waits for dates (pull request ${dates.number})`]);
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), []);
+});
+
+test('merge of a job refuses when a notice reached it after its tests ran', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  const pr = gh.createPR('o/product', { head: 'job/orders.1', base: 'tranche', draft: false });
+  gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['R2', 'notice from dates (pull request 4)'], kind: 'ordinary', notice_seq: 1, notices: [{ from: 'dates', merged: 4 }] }));
+  const rec = gh.addComment('o/product', pr.number, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 0, result: 'pass' }));
+  assert.throws(() => merge(ctx, pr.number), /a notice reached orders's job after its tests ran; it must run p4 test again/);
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), []);
+  gh.editComment('o/product', rec.id, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 1, result: 'pass' }));
+  assert.equal(merge(ctx, pr.number), 0);
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), [['merge', pr.number, pr.head.sha]]);
+});
+
 test('merge prints GitHub\'s refusal', () => {
   const gh = fakeGitHub({ mergePR: () => ({ message: 'Required status check "module-tests" is expected.' }) });
-  const { ctx } = ctxFor(makeRepo(), gh);
+  const { ctx } = ctxFor(product(), gh);
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   assert.throws(() => merge(ctx, 1), /Required status check "module-tests" is expected/);
 });
@@ -202,7 +290,7 @@ test('results passes over a run cancelled by a newer one', () => {
   gh.s.runs.push({ id: 1, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'success', started_at: '1', html_url: 'R1' });
   gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
   results(ctx, 1);
-  assert.match(out.join('\n'), /^passed: .*R1$/);
+  assert.match(out.join('\n'), /^test record: does not stand: no test record; run p4 test\npassed: .*R1$/);
 });
 
 test('results says waiting, not failed, when the only run on the head was cancelled by the newer one (fault k)', () => {
@@ -211,7 +299,7 @@ test('results says waiting, not failed, when the only run on the head was cancel
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
   results(ctx, 1);
-  assert.match(out.join('\n'), /^waiting: .*no run that was not cancelled yet/);
+  assert.match(out.join('\n'), /\nwaiting: .*no run that was not cancelled yet/);
   assert.doesNotMatch(out.join('\n'), /failed/);
 });
 

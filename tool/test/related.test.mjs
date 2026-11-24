@@ -218,11 +218,10 @@ test('run scope reads the job block from the comment part one\'s workflow wrote 
   }
 });
 
-test('the shim reads the job block in part one with its read-only token, and widens no permission', async () => {
+test('the shim reads the job block and the test record with its read-only token, and widens no permission', async () => {
   const { readFileSync } = await import('node:fs');
   const wf = readFileSync(new URL('../../shims/module-tests.yml', import.meta.url), 'utf8');
   assert.deepEqual(wf.match(/^\s*permissions:\n(\s+\w[\w-]*: \w+\n)+/gm).map((x) => x.replace(/\s+/g, ' ').trim()), ['permissions: contents: read', 'permissions: contents: read']);
-  assert.match(wf, /- name: the job block\n.*startsWith\(github\.event\.pull_request\.head\.ref, 'job\/'\)/);
-  assert.match(wf, /--job-block "\$RUNNER_TEMP\/job-block\.txt"/);
-  assert.match(wf, /\n {2}scope:\n[\s\S]*npm ci[\s\S]*\n {2}module-tests:\n/);
+  assert.match(wf, /- name: the job block and the test record\n[\s\S]*case "\$HEAD_REF" in job\/\*\) read_mark process4-job [\s\S]*read_mark process4-test-record /);
+  assert.match(wf, /--job-block "\$RUNNER_TEMP\/job-block\.txt" --test-record "\$RUNNER_TEMP\/test-record\.txt"/);
 });

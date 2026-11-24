@@ -22,6 +22,15 @@ function boundsFor(lines, member, memberNames) {
   });
 }
 
+/** A class member's own bound lines: on its declaration, or on the statement of a field set by assignment (this.x = ...). */
+function memberOwnBounds(md) {
+  if (!md) return [];
+  let host = md;
+  if (ts.isPropertyAccessExpression(host) && host.parent && ts.isBinaryExpression(host.parent) && host.parent.left === host) host = host.parent;
+  if (ts.isBinaryExpression(host) && host.parent && ts.isExpressionStatement(host.parent)) host = host.parent;
+  return tagsOf(host, 'bound').map(tagText);
+}
+
 /** The kinds named by a @throws tag; {A|B} names two (iteration 6). */
 /** Iteration 7 (rule 48): the names of a signature's parameters, '_' for one written as a pattern. */
 const paramNamesOf = (sig) => sig.getParameters().map((p) => (p.name.startsWith('__') ? '_' : p.name));
@@ -169,8 +178,11 @@ export function makeLister(program, tree) {
             const mt = checker.getTypeOfSymbol(p);
             const msigs = mt.getCallSignatures();
             const ma = newCtx(), mh = newCtx();
-            if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
-            else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: nestedBounds(mh), where };
+            // The member's own bound lines, as a class's and a function's are listed (the owner's decision of 24 Nov
+            // 2026; design part 2, section 7, decision 3): a changed one tells its users.
+            const memberBounds = memberOwnBounds(p.declarations?.[0]);
+            if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
+            else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: [...memberBounds, ...nestedBounds(mh)], where };
             const md = p.declarations?.[0];
             if (md) ranges.push({ entry: e, ...rangeOf(md) });
           }

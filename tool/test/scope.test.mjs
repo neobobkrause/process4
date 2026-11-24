@@ -99,7 +99,12 @@ test('product code runs without the token variables', () => {
 });
 
 test('run tests runs the tool\'s check before a module\'s tests, and a disagreement fails the run', () => {
-  const { root, base } = merged({ 'src/orders/index.mjs': 'export const o = 1;\n', 'test/orders/a.test.mjs': passing });
+  // orders imports dates without declaring it: the check refuses that. (A declared use no code makes is "cannot
+  // tell" since the owner's decision of 24 Nov 2026, so it no longer serves as the disagreement here.)
+  const { root, base } = merged({
+    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: [] },
+    'src/dates/index.mjs': 'export const d = 1;\n',
+    'src/orders/index.mjs': "import { d } from '../dates/index.mjs';\nexport const o = d;\n", 'test/orders/a.test.mjs': passing });
   const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
   assert.equal(runTests(root, s, { log: () => {}, summary }), false);

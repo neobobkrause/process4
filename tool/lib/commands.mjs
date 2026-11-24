@@ -11,11 +11,14 @@ import {
 } from './state.mjs';
 import { fail, git, underPath } from './util.mjs';
 import { DROP } from './scope.mjs';
+import { noticeSeq, recordStands, testRecordOf } from './testrecord.mjs';
+import { recordsOf, scopeForPR } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
-  nextJobName, pickNext, readView, roundDone as isRoundDone, slots, workOf,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked,
+  moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
+import { earlierUsesAt } from './uses.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
@@ -240,8 +243,20 @@ export function open(ctx, a) {
   return 0;
 }
 
-// 4. ready <pr>
+// 4. ready <pr>: marks ready only where the test record stands for the head commit, or where nothing needs a record:
+// the scope, judged as the required run's verdict judges it, is nothing and no notice has reached the job. Otherwise
+// marks nothing and says why. In the process repository every pull request is into main: its scope is nothing.
 export function ready(ctx, n) {
+  const before = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  const { jobBlock, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, before.head.sha, jobBlock);
+  if (st.ok) ctx.log(st.why);
+  else {
+    const s = scopeForPR(ctx, before, { jobBlock, related: false });
+    if (s.scope !== 'nothing') fail(`not marked ready: ${st.why} (scope ${s.scope}, because ${s.why})`);
+    if (noticeSeq(jobBlock) > 0) fail(`not marked ready: ${st.why} (scope nothing, but ${noticeSeq(jobBlock)} notice(s) reached the job)`);
+    ctx.log(`no test record needed: scope nothing, because ${s.why}`);
+  }
   ctx.gh.markReady(ctx.slug, n);
   const pr = ctx.gh.getPR(ctx.slug, n);
   if (pr.draft) fail(`pull request ${n} is still a draft`);
@@ -249,9 +264,14 @@ export function ready(ctx, n) {
   return 0;
 }
 
-// 14. results <pr>: the required run's state on the head commit.
+// 14. results <pr>: the test record's standing, then the required run's state on the head commit.
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
+  const { jobBlock, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, pr.head.sha, jobBlock);
+  ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
+  const d = record?.data;
+  if (d) ctx.log(`  ${d.result} at ${String(d.commit).slice(0, 10)}: ${d.passed} passed, ${d.failed} failed, scope ${d.scope}, notice ${d.notice_seq}, ${d.fails_total} failed run(s) in all, written ${d.written}`);
   const required = requiredCheck(ctx.root);
   const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, required).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
   // A run cancelled by a newer one (`ready` cancels the draft's) is not the result. Where every
@@ -273,11 +293,50 @@ function notesInForce(ctx) {
   return liveNotes(readAll(ctx.gh, ctx.slug, issue)['standing-notes']?.data);
 }
 
-// 6. merge <pr>: the owner's hold, then one merge commit guarded by the head commit id.
+// A job's merge waits for the modules it uses (the owner's decision of 24 Nov 2026, item 3). First its tests must
+// stand after every notice that reached it: refused (exit 1) when a notice came after they ran. Then the modules it
+// uses, directly or through others, earlier in the order, read at the tranche branch's newest commit and at the job's
+// head commit (the union): each with an open job that is not blocked holds it. Returns the jobs it waits for, as lines.
+function jobWaits(ctx, pr, module) {
+  const comments = ctx.gh.comments(ctx.slug, pr.number);
+  const jobBlock = comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || null;
+  const record = testRecordOf(comments)?.data || null;
+  if (noticeSeq(jobBlock) > (Number(record?.notice_seq) || 0)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
+  const issue = findIssue(ctx.gh, ctx.slug);
+  const view = readView(ctx, { records: issue ? readAll(ctx.gh, ctx.slug, issue) : {} });
+  if (!view.modules.some((m) => m.name === module)) return [];
+  const tip = git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root });
+  // The job's head commit too: a use the job adds holds it as well. Fetched by its branch where it is not here.
+  const has = (sha) => /^[0-9a-f]{40}$/.test(sha || '') && git(['cat-file', '-e', `${sha}^{commit}`], { cwd: ctx.root, allowFail: true }).code === 0;
+  let head = pr.head?.sha;
+  if (!has(head)) {
+    const f = git(['fetch', '-q', 'origin', `refs/heads/${pr.head.ref}`], { cwd: ctx.root, allowFail: true });
+    head = has(head) ? head : f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null;
+    if (!head) ctx.log(`note: could not fetch ${pr.head.ref}; the uses are read at ${pr.base.ref}'s newest commit only`);
+  }
+  const lines = [];
+  for (const u of earlierUsesAt(ctx.root, head ? [tip, head] : [tip], module)) {
+    const open = openJob(view, u.module);
+    if (open && open.number !== pr.number && !isBlocked(view, u.module, open)) lines.push(`waits for ${u.module} (pull request ${open.number})`);
+  }
+  return lines;
+}
+
+// 6. merge <pr>: the owner's hold; for a job, its tests after every notice and the modules it uses; then one merge
+// commit guarded by the head commit id.
 export function merge(ctx, n) {
-  const pr = ctx.gh.getPR(ctx.slug, n);
+  const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   const held = notesInForce(ctx).find((x) => x.kind === 'held-merge' && Number(x.pull_request) === n);
   if (held) { ctx.log(`held: the owner holds pull request ${n} ("${held.words}"); not merged`); return 0; }
+  const module = pr.head?.ref?.match(JOB)?.[1];
+  if (module) {
+    const waits = jobWaits(ctx, pr, module);
+    if (waits.length) {
+      for (const l of waits) ctx.log(l);
+      ctx.log(`pull request ${n} not merged: ${module} uses ${waits.length === 1 ? 'a module whose job is' : 'modules whose jobs are'} open; merge it once ${waits.length === 1 ? 'that job has' : 'those have'} merged`);
+      return 0;
+    }
+  }
   const last = ctx.gh.closedPRs(ctx.slug, pr.base.ref).map((p) => p.merged_at).filter(Boolean).sort().pop();
   const since = last ? ctx.nowMs() - Date.parse(last) : Infinity;
   if (since < 60000) { ctx.log(`waiting ${Math.ceil((60000 - since) / 1000)} s since the last merge into ${pr.base.ref}`); ctx.wait(60000 - since); }
@@ -349,10 +408,11 @@ export function nextJob(ctx) {
   const view = readView(ctx, { records });
   const states = moduleStates(view);
   const s = slots(view, states);
-  const pick = pickNext(view, states);
+  const { pick, above, why, later, latest } = chooseNext(view, states, s);
   const write = (modules) => writeRecord(ctx.gh, ctx.slug, issue, records, 'round', { ...view.round, modules });
-  if (!pick) { write(states); ctx.log(`none ready; slots in use ${s.inUse} of ${s.share}`); return 0; }
-  if (s.inUse >= s.share) { write(states); ctx.log(`no free slot: ${s.inUse} in use of ${s.share}, from ${s.from}`); return 0; }
+  const wait = () => { if (later.length) ctx.log(`waiting their turn (after ${latest ? `${latest.module}, the latest running job` : 'no running job'}): ${later.join(', ')}, each with a notice waiting`); };
+  if (why === 'none ready') { write(states); ctx.log(`none ready; slots in use ${s.inUse} of ${s.share}`); return 0; }
+  if (!pick) { write(states); ctx.log(`no free slot: ${s.inUse} in use of ${s.share}, from ${s.from}`); wait(); return 0; }
   let entry;
   if (pick.ready_again) {
     const pr = view.prs.find((p) => p.number === pick.pull_request);
@@ -375,7 +435,9 @@ export function nextJob(ctx) {
     ctx.log(`then: branch ${name}; open --module ${pick.module} prints its starting instructions`);
   }
   write(states.map((x) => (x.module === pick.module ? entry : x)));
+  if (above) ctx.log(above);
   ctx.log(`slots in use ${s.inUse + 1} of ${s.share}`);
+  if (above) wait();
   return 0;
 }
 
@@ -415,14 +477,14 @@ export function roundDoneCmd(ctx) {
   return 0;
 }
 
-// 15. failed-runs <pr>: every failed required run on the pull request, with no reset.
+// 15. failed-runs <pr>: the failed test runs on the pull request, from its test record's fails_total, with no reset.
 export function failedRunsCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
-  const required = requiredCheck(ctx.root);
-  const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr, required);
-  ctx.log(`${failed.length} failed run(s) of ${required} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
+  const d = recordsOf(ctx, n).record?.data;
+  const failed = Number(d?.fails_total) || 0;
+  ctx.log(`${failed} failed test run(s) on pull request ${n}, from its test record${d ? ` (the last: ${d.result} at ${String(d.commit).slice(0, 10)}, written ${d.written})` : ' (none written yet)'}`);
   const module = pr.head.ref.match(JOB)?.[1] || pr.head.ref;
-  if (failed.length === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
-  if (failed.length >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
+  if (failed === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
+  if (failed >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
   return 0;
 }

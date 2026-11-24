@@ -6,7 +6,7 @@ Drafts written by Claude on 18 Nov 2026 from the seventh draft of the design (`p
 
 ## 1. The texts
 
-Limit for each: 8,192 bytes, measured on the role's instructions as filled in for a session with the one mechanical fetch line left out of the count (the owner's decision, 20 Nov 2026; part 4, section 11; part 5, section 2), and at most ten rules. Bytes below are of the whole file as it stands in the repository, measured with `wc -c` (last measured 22 Nov 2026); every file is plain ASCII. The as-filled figures that the limit is actually measured against are after the table.
+Limit for each: 8,192 bytes, measured on the role's instructions as filled in for a session with the one mechanical fetch line left out of the count (the owner's decision, 20 Nov 2026; part 4, section 11; part 5, section 2), and at most ten rules. Bytes below are of the whole file as it stands in the repository, measured with `wc -c` (last measured 24 Nov 2026); every file is plain ASCII. The as-filled figures that the limit is actually measured against are after the table.
 
 How the rules stand against "at most ten". Each text has ten numbered lines or fewer under "Rules". That is so only because several rules are joined on one numbered line. Counted singly, every text has well over ten: the table gives both counts. The single count takes each sentence of a numbered line as one rule, and each thing named in a "Never" line as one; another reader's count may differ by a few. The lines above "Rules" are in neither count: what the session is, who directs it, what it reads, and the acts it may take. Whether the limit is on the numbered lines or on the single rules is open with the owner (design part 10, section 1, item 10).
 
@@ -15,10 +15,10 @@ How the rules stand against "at most ten". Each text has ten numbered lines or f
 | `root.md` | ROOT: the owner's plain prompt (part A) and what ROOT reads first (part B) | 4,296 | 9 | 25 | Rules |
 | `watcher.md` | The watcher | 3,115 | 9 | 22 | Rules |
 | `coordinator.md` | The coordinator | 4,636 | 10 | 33 | Rules |
-| `arch.md` | ARCH | 4,432 | 10 | 28 | Rules |
+| `arch.md` | ARCH | 4,728 | 10 | 29 | Rules |
 | `process.md` | PROCESS | 6,179 | 10 | 32 | Rules |
 | `lane.md` | A lane (template: area, folder, design pages) | 3,722 | 8 | 26 | Rules |
-| `job.md` | A job (template the tool fills when ARCH's session opens the pull request: module, branch, pull request; the work, the kind and the uses stay in the job block there) | 3,688 | 10 | 29 | Rules |
+| `job.md` | A job (template the tool fills when ARCH's session opens the pull request: module, branch, pull request; the work, the kind and the uses stay in the job block there) | 4,207 | 10 | 33 | Rules |
 | `walking-session.md` | A walking session (template the tool fills with `walk text`: number, internal or external, tranche, round, the walk issue, the walks' folder, the copy's name and address; its areas stay in the round record and its two commands in the process config) | 3,622 | 10 | 27 | Rules |
 
 The commands named are those of build text 1b, section 4. Every text but PROCESS's and ROOT's carries the fetch line as a blank.
@@ -29,22 +29,22 @@ The binding text is `process.md`: it carries no fetch line, so its counted size 
 
 ## 2. What each text tells its session to read in full
 
-Sizes of the design's parts, in bytes (last measured 24 Nov 2026): 00 10,448; 01 11,967; 02 16,045; 03 10,507; 04 22,856; 05 5,720; 06 14,566; 07 12,996; 08 4,489; 09 2,628; 10 9,570. All eleven: 121,792. Build texts: 02 15,266; 02b 10,367; 03 20,922; 05 19,246. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (22,856) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
+Sizes of the design's parts, in bytes (last measured 24 Nov 2026): 00 10,448; 01 11,967; 02 18,129; 03 10,507; 04 23,036; 05 5,720; 06 14,784; 07 13,232; 08 4,489; 09 2,628; 10 10,053. All eleven: 124,993. Build texts: 02 15,266; 02b 10,873; 03 20,922; 05 20,870. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (23,036) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
 
-Each role reads one harness part, 07 or 08. The combined figure is given with 07, the larger; with 08 it is 8,530 less.
+Each role reads one harness part, 07 or 08. The combined figure is given with 07, the larger; with 08 it is 8,743 less.
 
 | Text | Design parts | Build texts | Combined bytes | Also told to read (sizes not known) |
 |---|---|---|---|---|
-| ROOT | 00, 01, 04, 05, 06, 07 or 08 | 05 | 97,637 | The shared state |
-| The watcher | 00, 01, 04, 05, 06, 07 or 08 | 05 | 97,637 | The roles, wakes and handover records; after a takeover, `root.md` |
-| The coordinator | 00 to 06, 07 or 08 | 05 | 124,028 | The ranking page, the product's record of the owner's decisions, the shared state |
-| ARCH | 00 to 06, 07 or 08, 09 | 03 and 05 | 147,578 | The process config, ranking page, module list, both decision records, the shared state |
-| PROCESS | All eleven | 05; each other one before changing it | 140,715 | The record of the owner's decisions about the design, its folder's README and research index, its handover record |
-| A lane | 00, 01, 03, 04, 05, 06, 07 or 08 | 05; and 03 for the UX lane | 108,144; the UX lane 129,066 | The ranking page, the index of the research in its folder, its design pages' links, its handover record |
-| A job | 00, 01, 02, 04, 05, 06, 07 or 08 | 02, 02b, 03 and 05 | 160,076 | The ranking page, the module order file, its module's entry and requirements file (kept under the single-text maximum by rule), its pull request |
-| A walking session | 00, 01, 03, 06, 07 or 08; and 09 for the external walk | 03 | 81,429 internal; 84,057 external | The process config and the ranking page; for each of its areas, its page of the Screens document or the journeys |
+| ROOT | 00, 01, 04, 05, 06, 07 or 08 | 05 | 100,057 | The shared state |
+| The watcher | 00, 01, 04, 05, 06, 07 or 08 | 05 | 100,057 | The roles, wakes and handover records; after a takeover, `root.md` |
+| The coordinator | 00 to 06, 07 or 08 | 05 | 128,693 | The ranking page, the product's record of the owner's decisions, the shared state |
+| ARCH | 00 to 06, 07 or 08, 09 | 03 and 05 | 152,243 | The process config, ranking page, module list, both decision records, the shared state |
+| PROCESS | All eleven | 05; each other one before changing it | 145,863 | The record of the owner's decisions about the design, its folder's README and research index, its handover record |
+| A lane | 00, 01, 03, 04, 05, 06, 07 or 08 | 05; and 03 for the UX lane | 110,564; the UX lane 131,486 | The ranking page, the index of the research in its folder, its design pages' links, its handover record |
+| A job | 00, 01, 02, 04, 05, 06, 07 or 08 | 02, 02b, 03 and 05 | 165,247 | The ranking page, the module order file, its module's entry and requirements file (kept under the single-text maximum by rule), its pull request |
+| A walking session | 00, 01, 03, 06, 07 or 08; and 09 for the external walk | 03 | 81,860 internal; 84,488 external | The process config and the ranking page; for each of its areas, its page of the Screens document or the journeys |
 
-Every set is under 175,000 bytes; the largest is a job's at 160,076, about 15,000 under the maximum. Whether a set stays under it once the product's own documents are added cannot be said: their sizes are not known, and the design sets no size for a record of decisions. A lane's and PROCESS's research is background, read through an index (design part 5, section 3), so it does not count in the set. Build text 3 keeps each page of the walks' documents under the single-text maximum.
+Every set is under 175,000 bytes; the largest is a job's at 165,247, about 10,000 under the maximum. Whether a set stays under it once the product's own documents are added cannot be said: their sizes are not known, and the design sets no size for a record of decisions. A lane's and PROCESS's research is background, read through an index (design part 5, section 3), so it does not count in the set. Build text 3 keeps each page of the walks' documents under the single-text maximum.
 
 The build texts are kept with the design in the process's repository, and a session reads those its starting text names (part 0, section 5). A job reads four because it writes structured comments, its entry's `uses`, the `[met]` mark and walk steps, and reads its job block, whose forms are only there. Each role that writes a record of the shared state reads build text 5, where the records' forms are.
 

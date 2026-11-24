@@ -28,10 +28,14 @@ const OWNS_NAMES = /@(?:optable|storedrows)\b/;
 const REEXPORT = /\bexport\s*(?:\*|\{)/;
 const BUILTIN = new Set(builtinModules);
 
+/** The product's own package: its root package.json read once ({} where it has none or cannot be read). */
+export function ownPackage(root) {
+  try { return JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')) ?? {}; } catch { return {}; }
+}
+
 /** The files a product's files import, followed by relative path without the reader. */
 export function makeReach(tree) {
-  let own = null;
-  try { own = JSON.parse(fs.readFileSync(path.join(tree.root, 'package.json'), 'utf8')).name ?? null; } catch { own = null; }
+  const own = ownPackage(tree.root).name ?? null;
   const isFile = (f) => { try { return fs.statSync(f).isFile(); } catch { return false; } };
   function resolve(spec, from) {
     if (spec.startsWith('.') || spec.startsWith('/')) {
