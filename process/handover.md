@@ -24,13 +24,12 @@ on GitHub. What it does, in one place: build text 1 section 5 and build text 1b 
 record forms in build text 5 section 5; `tool/lib/testrecord.mjs`, `testrun.mjs`, `uses.mjs`.
 
 Next, in order:
-1. **The trial on process3-probes** (the owner agreed). On his page: two lines he types in the session titled
-   "process3-probes coordinator" (`session_018BhceeRZwDtL5rXcx3Mp5q`, idle, about 64 percent full: it may be refreshed
-   first): the move line, then an instruction to try one ordinary job, one job told while open, one merge that waits. The
-   coordinator was told what changed (information, 24 Nov ~20:05Z). Its workflow copy must be replaced from
-   `shims/module-tests.yml`. Watch for process faults; each is researched and put to the owner as usual.
-2. **A read-only run on civicsmith** counting the check's new refusals (`require` and own-name imports are now read; a
-   declared use with no visible import is "cannot tell"). Brief a read-only session; the owner starts it.
+1. **Done: the trial on process3-probes** ran cleanly (`process/research/update-trial-process3-probes-24nov.md`); its
+   ROOT is now #8 (`session_018Bhcefa2wforoAh5zomFNh`), coordinator #4 (`session_018Bhcedx7Rp4XRCUFihCwvp`), ARCH #4;
+   the registry in `handover-process` says so.
+2. **A read-only count on civicsmith** of the check's refusals, old version against new: the brief is
+   `process/research/civicsmith-check-count-brief-24nov.md`, on the owner's page. Information only, not a gate: the owner
+   may move civicsmith first (told so 24 Nov); if he does, name the old commit in the brief before it is run.
 3. **civicsmith moves** on the owner's line in its coordinator session; its workflow copy replaced the same way.
 
 Known limits of the build (written in the texts): `merge` does not wait on an import the scan cannot follow (a computed
