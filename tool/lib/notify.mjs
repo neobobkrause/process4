@@ -11,8 +11,9 @@ import { makeLister } from './notice/listing.mjs';
 import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
-import { parseBlock } from './github.mjs';
-import { JOB, JOB_MARK } from './round.mjs';
+import { block, parseBlock } from './github.mjs';
+import { JOB, JOB_MARK, describe as workLine } from './round.mjs';
+import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
 
@@ -112,8 +113,37 @@ function readNotices(dirB, dirA, mods, n) {
   throw new Error(`reading the product failed:\n${err.trim().split('\n').slice(-12).join('\n')}`);
 }
 
+// A notice reaches a running job at once (the owner's decision of 24 Nov 2026, item 2): for each told user with an open
+// job pull request into the tranche branch, blocked or not, the notice goes into its job block, edited in place: its
+// work line, its reasons added to `uses`, `notice_seq` one higher (a test record made before it no longer stands), and
+// `notices` naming it by provider and merged pull request, so a second run for the same merge adds nothing. The block's
+// kind stays as it is. Returns the told users with no open job, whose notices wait for their next job.
+function toOpenJobs(ctx, base, told, n) {
+  if (!base || base === 'main') return told;
+  const open = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.state === 'open' && p.base?.ref === base && JOB.test(p.head?.ref || ''));
+  const rest = [];
+  for (const t of told) {
+    const pr = open.filter((p) => p.head.ref.match(JOB)[1] === t.module).sort((a, b) => Number(b.head.ref.match(JOB)[2]) - Number(a.head.ref.match(JOB)[2]))[0];
+    if (!pr) { rest.push(t); continue; }
+    const c = ctx.gh.comments(ctx.slug, pr.number).find((x) => parseBlock(x.body, JOB_MARK));
+    if (!c) { ctx.log(`pull request ${pr.number} of ${t.module} has no job block; the notice from ${t.from} waits for its next job`); rest.push(t); continue; }
+    const { data, words } = parseBlock(c.body, JOB_MARK);
+    const line = workLine(t);
+    const notices = Array.isArray(data.notices) ? data.notices : [];
+    if (notices.some((x) => x.from === t.from && Number(x.merged) === n) || (data.work || []).includes(line)) {
+      ctx.log(`the job of ${t.module} (pull request ${pr.number}) holds the notice from ${t.from} (pull request ${n}) already`);
+      continue;
+    }
+    const next = { ...data, work: [...(data.work || []), line], uses: [...(data.uses || []), ...(t.uses || [])], notice_seq: noticeSeq(data) + 1, notices: [...notices, { from: t.from, merged: n }] };
+    ctx.gh.editComment(ctx.slug, c.id, block(JOB_MARK, next, words));
+    ctx.log(`message the job of ${t.module} (pull request ${pr.number}): a notice from ${t.from} reached it`);
+  }
+  return rest;
+}
+
 // 11. notify <pr>: for a merged pull request, the notice for each module whose files the merge changed, in module
-// order; each told user's reasons are written into the waiting-work record, for the module's next job.
+// order; each told user's reasons go into its open job's block, or, with no open job, into the waiting-work record,
+// for the module's next job.
 export function notifyCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   if (!pr.merged_at || !pr.merge_commit_sha) fail(`pull request ${n} is not merged`);
@@ -123,7 +153,8 @@ export function notifyCmd(ctx, n) {
   }
   const before = git(['rev-parse', `${after}^1`], { cwd: ctx.root });
   const base = tempBase();
-  const told = [];
+  let told = [];
+  let tranche = null;
   try {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
     // changed file names alone; only when one changed is the code read, by one tool and one reader, in stages: the
@@ -132,6 +163,7 @@ export function notifyCmd(ctx, n) {
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
+    tranche = treeA.cfg.tranche_branch;
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
     const mods = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
     if (!mods.length) {
@@ -151,6 +183,8 @@ export function notifyCmd(ctx, n) {
   } finally {
     rmSync(base, { recursive: true, force: true });
   }
+  if (!told.length) return 0;
+  told = toOpenJobs(ctx, tranche, told, n);
   if (!told.length) return 0;
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const had = records['waiting-work']?.data || {};

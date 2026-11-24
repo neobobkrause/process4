@@ -8,7 +8,8 @@ import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
 import { analyse, notice } from '../lib/notice/notice.mjs';
 import { check, commentsOnly } from '../lib/notice/check.mjs';
-import { parseBlock } from '../lib/github.mjs';
+import { block, parseBlock } from '../lib/github.mjs';
+import { JOB_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
@@ -140,6 +141,40 @@ test('notify tells the users of a changed entry and writes their reasons into wa
   // Run again for the same merge: its own entries are rewritten, not doubled.
   notifyCmd(ctx, 7);
   assert.equal(waitingWork(gh).work.length, 3);
+});
+
+test('notify adds a notice to a told user\'s open job block, once, and the rest to waiting work', () => {
+  // The owner's decision of 24 Nov 2026, item 2: a notice reaches a running job at once.
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  // orders has an open told job into the tranche, blocked; report has only a pull request into main, which is no job's.
+  gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+  gh.s.prs.push({ number: 21, state: 'open', head: { ref: 'job/report.1', sha: 'h'.repeat(40) }, base: { ref: 'main' } });
+  const old = { module: 'dates', entry: 'old' };
+  gh.addComment('o/product', 20, block(JOB_MARK, { module: 'orders', work: ['notice from dates (pull request 3)'], kind: 'told', uses: [old] }, 'words kept'));
+  gh.addComment('o/product', 20, block(RECORD_MARK, { blocked: { by: 'dates', why: 'waits' } }));
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const jobBlock = () => parseBlock(gh.s.comments.find((c) => c.on === 20 && parseBlock(c.body, JOB_MARK)).body, JOB_MARK);
+  const b = jobBlock();
+  assert.equal(b.data.kind, 'told');
+  assert.deepEqual(b.data.work, ['notice from dates (pull request 3)', 'notice from dates (pull request 7)']);
+  assert.deepEqual(b.data.uses[0], old);
+  assert.deepEqual(b.data.uses.slice(1).map((u) => u.entry).sort(), ['Day', 'parseDay']);
+  assert.equal(b.data.notice_seq, 1);
+  assert.deepEqual(b.data.notices, [{ from: 'dates', merged: 7 }]);
+  assert.equal(b.words, 'words kept');
+  assert.match(out.join('\n'), /message the job of orders \(pull request 20\): a notice from dates reached it/);
+  assert.deepEqual(waitingWork(gh).work.map((w) => [w.module, w.from, w.merged]), [['report', 'dates', 7]]);
+  // A second run for the same merge adds nothing to the block.
+  out.length = 0;
+  notifyCmd(ctx, 7);
+  assert.deepEqual(jobBlock().data, b.data);
+  assert.match(out.join('\n'), /the job of orders \(pull request 20\) holds the notice from dates \(pull request 7\) already/);
+  assert.doesNotMatch(out.join('\n'), /message the job/);
+  assert.equal(waitingWork(gh).work.length, 1);
 });
 
 test('notify on a merge that changes no module\'s files says so before reading any code', () => {

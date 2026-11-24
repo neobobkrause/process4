@@ -66,6 +66,31 @@ test('the owner\'s module first and slot number are obeyed', () => {
   assert.match(t.out[0], /no free slot: 1 in use of 1, from the owner's slot number/);
 });
 
+test('with no free slot, a told module earlier than the latest running job starts at once; a later one waits its turn', () => {
+  // The owner's decision of 24 Nov 2026, item 4.
+  const t = product({ 'process/modules/dates.md': '- **R1** [met] one\n', 'process/modules/orders.md': '- **R1** [met] one\n' });
+  writeRec(t.ctx, t.root, 'standing-notes', { notes: [{ kind: 'slot-number', number: 1, written: '2026-11-20T09:00Z' }] });
+  const p = startJob(t, 'pricing');
+  writeRec(t.ctx, t.root, 'waiting-work', { work: [
+    { module: 'orders', kind: 'notice', from: 'pricing', merged: 4, uses: [] },
+    { module: 'dates', kind: 'notice', from: 'clock', merged: 5, uses: [] }] });
+  t.out.length = 0; nextJob(t.ctx);
+  assert.deepEqual(t.out.slice(0, 4), ['module: dates', 'branch: job/dates.1', 'work: notice from clock (pull request 5)', 'kind: told']);
+  assert.match(t.out.join('\n'), new RegExp(`dates starts above the slot number \\(1 in use of 1\\): a notice from clock \\(pull request 5\\) waits for it, and it comes before pricing \\(pull request ${p.number}\\), the latest running job\nslots in use 2 of 1`));
+  assert.match(t.out.join('\n'), /waiting their turn \(after pricing, the latest running job\): orders, each with a notice waiting/);
+  branch(t.ctx, 'job/dates.1');
+  open(t.ctx, { _: [], module: 'dates' });
+  // orders comes after pricing, the latest running job: it waits for a free slot.
+  t.out.length = 0; nextJob(t.ctx);
+  assert.deepEqual(t.out, ['no free slot: 2 in use of 1, from the owner\'s slot number (1)', 'waiting their turn (after pricing, the latest running job): orders, each with a notice waiting']);
+  // A module with only a requirement does not start above the slot number either.
+  const t2 = product({ 'process/modules/orders.md': '- **R1** [met] one\n' });
+  writeRec(t2.ctx, t2.root, 'standing-notes', { notes: [{ kind: 'slot-number', number: 1, written: '2026-11-20T09:00Z' }, { kind: 'module-first', module: 'pricing', written: '2026-11-20T09:00Z' }] });
+  startJob(t2, 'pricing');
+  t2.out.length = 0; nextJob(t2.ctx);
+  assert.match(t2.out[0], /^no free slot: 1 in use of 1/);
+});
+
 test('a job whose block ARCH ended by its own decision says so with push --unblocked, and holds its slot again', () => {
   // civicsmith, 23 Nov 2026: three blocks ended by ARCH's module-list change or rewritten decision, not by a merge.
   const t = product();

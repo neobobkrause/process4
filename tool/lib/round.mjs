@@ -62,7 +62,7 @@ export function readView(ctx, { records } = {}) {
 
 // A module's job pull requests, the newest job first.
 const jobsOf = (view, module) => view.prs.filter((p) => jobOf(p).module === module).sort((a, b) => jobOf(b).n - jobOf(a).n);
-const openJob = (view, module) => jobsOf(view, module).find((p) => p.state === 'open') || null;
+export const openJob = (view, module) => jobsOf(view, module).find((p) => p.state === 'open') || null;
 
 // A job's blocked record holds until a job of the blocking module merges after it was written
 // (build text 5, section 5). Returns null (no block), { holds: true, ... } or { holds: false, ... }.
@@ -88,6 +88,9 @@ const archBlocked = (view, module, pr) => {
   const e = entryOf(view, module);
   return e?.state === 'blocked' && !view.jobRecord(pr.number)?.blocked ? e : null;
 };
+
+// Whether a module's open job is blocked, and so holds no one: its own blocked record holds, or ARCH recorded it blocked.
+export const isBlocked = (view, module, pr) => !!blockOf(view, pr)?.holds || !!archBlocked(view, module, pr);
 
 // 12. Whether a module's work is finished, with the ground.
 export function finished(view, module) {
@@ -147,13 +150,41 @@ export function slots(view, states) {
   return { share, inUse: jobs + walkers, from: note ? `the owner's slot number (${note.words || note.number})` : 'process.json' };
 }
 
-// 9. The next job: the earliest ready module in order, after any module the owner put first.
+// 9. The ready modules, ranked: any module the owner put first, then the earliest in order.
 export function pickNext(view, states) {
+  return rankReady(view, states)[0] || null;
+}
+
+function rankReady(view, states) {
   const ready = states.filter((s) => s.state === 'has work' && (s.ready_again || workOf(view, s.module).any));
   const order = new Map(view.modules.map((m) => [m.name, m.order]));
   const first = view.notes.filter((n) => n.kind === 'module-first').map((n) => n.module);
   const rank = (s) => (first.includes(s.module) ? first.indexOf(s.module) - 1e6 : order.get(s.module) ?? 1e9);
-  return ready.sort((a, b) => rank(a) - rank(b))[0] || null;
+  return ready.sort((a, b) => rank(a) - rank(b));
+}
+
+// 9. The next job, with the slots (the owner's decision of 24 Nov 2026, item 4). New work starts, the ranked first,
+// only while the slots in use are below the slot number. Above it, only a told start: a module with a notice waiting
+// for it and no open job, earlier in the order than the latest running (open, not blocked) job's module, starts at
+// once; a later one waits its turn. Returns { pick, above, why, later }: `pick` null with `why` 'none ready' or
+// 'no free slot'; `above` the ground of a told start above the slot number; `later` the told modules that wait.
+export function chooseNext(view, states, s) {
+  const ready = rankReady(view, states);
+  if (!ready.length) return { pick: null, why: 'none ready', later: [] };
+  if (s.inUse < s.share) return { pick: ready[0], later: [] };
+  const order = new Map(view.modules.map((m) => [m.name, m.order]));
+  const latest = states.filter((x) => x.state === 'open').sort((a, b) => (order.get(b.module) ?? 0) - (order.get(a.module) ?? 0))[0];
+  const notice = (m) => view.waiting.find((w) => w.module === m && w.kind === 'notice');
+  const told = ready.filter((x) => !x.ready_again && !x.pull_request && notice(x.module));
+  const earlier = latest ? told.filter((x) => (order.get(x.module) ?? 1e9) < (order.get(latest.module) ?? 0)) : [];
+  const later = told.filter((x) => !earlier.includes(x)).map((x) => x.module);
+  if (!earlier.length) return { pick: null, why: 'no free slot', later, latest };
+  const pick = earlier[0];
+  const w = notice(pick.module);
+  return {
+    pick, later, latest,
+    above: `${pick.module} starts above the slot number (${s.inUse} in use of ${s.share}): a notice from ${w.from} (pull request ${w.merged}) waits for it, and it comes before ${latest.module} (pull request ${latest.pull_request}), the latest running job`,
+  };
 }
 
 export function nextJobName(view, module) {
