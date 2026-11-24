@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. One choice waits for you before civicsmith's halt is lifted: how a tranche holds only the refactoring (below). civicsmith is on the update; the move order is written down; the read-only count is optional.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. Your decision D is built: a tranche can now hold only the refactoring. Next, when you choose: the move line for civicsmith, then lift its halt (below). Nothing else waits for you; the read-only count is optional.</p>
 </header>
 
 <section class="card">
@@ -110,15 +110,14 @@ if your approvals allow; otherwise end your turn with it, and the owner passes i
 </section>
 
 <section class="wait">
-<h2>Waiting for you, before you lift civicsmith's halt: a tranche that holds only the refactoring</h2>
-<p><b>The bottom line.</b> You want civicsmith's next tranche to hold only the refactoring, built and confirmed stable before anything else. The design says ARCH decides what a tranche holds, but the tool gives it no way to keep anything out: it counts every requirement not yet met as work now. civicsmith has 78 of them in 29 modules, so lifting your halt would start jobs for all 29, and a refactoring job would also carry its module's other requirements. ARCH has advised you to keep the halt until this is settled. One thing no option does: to confirm the refactoring is stable before other work starts, keep the halt on after the refactoring tranche merges and lift it when you are satisfied; ARCH opens the next tranche, with everything in it, as soon as that one ends. Nothing runs meanwhile. (This is the same fault as the earlier "ARCH cannot hold a requirement" item, now with your refactoring behind it.)</p>
-<ul>
-<li><b>D. ARCH writes what the tranche holds (recommended, and checked with civicsmith's ARCH).</b> A short list in the round's own record of the requirements, or whole modules, the tranche is for; every other requirement waits until the tranche ends. ARCH went through the refactoring's eight steps and says the list can name all of its work: about 20 to 35 requirements it writes, plus about 25 to 40 pieces of work it hands to modules directly, which count anyway. ARCH rewrites the list as each step's turn comes. The tool honours it both when choosing the next job and when opening one, and a job is told that the other unmet requirements in its file are not its work. Modules told of a change the refactoring makes still get a job for that change alone: ARCH expects a handful to a few dozen and calls them the guard on stability you want.</li>
-<li><b>C. ARCH writes what the tranche leaves out.</b> The same idea the other way round: suits a tranche that holds nearly everything. For the refactoring it would list 78 requirements.</li>
-<li><b>B. A third mark, "held", written on each requirement.</b> Visible in the files, but each hold and release is a change to merge.</li>
-<li><b>A. No change.</b> Lifting the halt starts all 29 modules' work.</li>
-</ul>
-<p>Each lets ARCH carry out a decision the design already gives it; none adds a test, gate, review or stop. It is a tool change, so civicsmith gets it by your move line once built. Reply on this item with your choice, for example "Decision: D".</p>
+<h2>Waiting for you, when you choose: move civicsmith onto the tranche scope, then lift its halt</h2>
+<p>Your decision D is built and merged (pull request 246), your words recorded exactly. ARCH can now write the list of what a tranche holds, and only that is worked; everything else waits for a later tranche. civicsmith gets it by your move line:</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #5</b>.</li>
+<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div>You should see it record your words and tell ARCH, and then tell you when every session is on the new version. This move changes no test check, so it is one change.</li>
+<li>Then give the refactoring's direction to the lane when you like, and lift the halt in the coordinator's session when you are ready: ARCH writes the refactoring's list first, so only that work starts.</li>
+</ol>
+<p>To confirm the refactoring is stable before anything else starts, keep the halt on after the refactoring tranche merges, and lift it when you are satisfied.</p>
 </section>
 
 <section class="card">

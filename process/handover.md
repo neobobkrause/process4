@@ -41,7 +41,14 @@ turns (the job waits within its turn); the re-run call and the verdict on real G
 items withdrawn as covered by the update, PROCESS #8, #9 and #10 archived by the owner. civicsmith ROOT #4 recorded PROCESS
 #11 (19:38Z); process3-probes ROOT #7 was messaged, no reply seen.
 
-**On the owner's page, still waiting:** the trial's two lines; held requirements (option C recommended).
+**Since (24 Nov, PROCESS #11, all merged):** the trial ran cleanly (239); civicsmith moved to the update (its ARCH needed two
+pull requests, version then workflow: the owner's decision B writes that order down, 242); a tranche's scope recorded by ARCH
+in the round record (the owner's decision D, 246; tool `scopeOf`/`workOf`/`finished`, job's rule 1, ARCH's rule 6). Registry:
+process3-probes ROOT #8 `session_018Bhcefa2wforoAh5zomFNh`; civicsmith ROOT #5 `session_018BhceghTxHcQbupRs5sxhW`,
+coordinator #5 `session_018Bhcef3DYVByKnSKFGwN1g`, ARCH #13.
+
+**On the owner's page, still waiting:** his move line for civicsmith (to get D), then lifting civicsmith's halt; the
+read-only count is optional (brief names the old version 0eec86f).
 
 ## Start checks
 
