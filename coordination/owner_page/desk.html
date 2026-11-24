@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. civicsmith is on the update, and the order of a move is now written down (your decision B). Nothing new is waiting for you except requirements held for later; the read-only count on civicsmith is optional.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. One choice waits for you before civicsmith's halt is lifted: how a tranche holds only the refactoring (below). civicsmith is on the update; the move order is written down; the read-only count is optional.</p>
 </header>
 
 <section class="card">
@@ -110,14 +110,15 @@ if your approvals allow; otherwise end your turn with it, and the owner passes i
 </section>
 
 <section class="wait">
-<h2>Waiting for you: ARCH cannot hold a requirement out of this tranche</h2>
-<p><b>The bottom line.</b> ARCH decides what each tranche covers, and it has held seven civicsmith requirements back for later. But the tool counts every requirement not yet met as work for now, so it keeps handing out jobs for them, and the round can never finish. Meanwhile ARCH is getting by with a stopgap: those jobs record themselves as held up by another module, which frees their slots but spends a job each time that module merges.</p>
+<h2>Waiting for you, before you lift civicsmith's halt: a tranche that holds only the refactoring</h2>
+<p><b>The bottom line.</b> You want civicsmith's next tranche to hold only the refactoring, built and confirmed stable before anything else. The design says ARCH decides what a tranche holds, but the tool gives it no way to keep anything out: it counts every requirement not yet met as work now. civicsmith has 78 of them in 29 modules, so lifting your halt would start jobs for all 29, and a refactoring job would also carry its module's other requirements. ARCH has advised you to keep the halt until this is settled. Nothing runs meanwhile. (This is the same fault as the earlier "ARCH cannot hold a requirement" item, now with your refactoring behind it.)</p>
 <ul>
-<li><b>C. A "held for later" list kept by ARCH for the tranche (recommended).</b> ARCH lists the requirements it holds back in the round's own record; the tool leaves them out until the tranche ends, when they come back as work unless ARCH holds them again. The report after each round names them. No file changes for each hold.</li>
-<li><b>B. A third mark on the requirement itself, "held".</b> ARCH writes it in the module's requirements file and changes it back when the requirement comes into scope. Visible in the file, but each hold or release is a change to merge.</li>
-<li><b>A. No change.</b> ARCH keeps the stopgap.</li>
+<li><b>D. ARCH writes what the tranche holds (recommended).</b> A short list in the round's own record: the requirements, or whole modules, this tranche is for. Every other requirement waits until the tranche ends. Changes a provider's merge forces on other modules, and flaws a walk or a job finds, are always worked, since they come from the tranche's own changes. With no list, everything counts, as now. For the refactoring it is one short list, in ARCH's own words.</li>
+<li><b>C. ARCH writes what the tranche leaves out.</b> The same idea the other way round: suits a tranche that holds nearly everything. For the refactoring it would list 78 requirements.</li>
+<li><b>B. A third mark, "held", written on each requirement.</b> Visible in the files, but each hold and release is a change to merge.</li>
+<li><b>A. No change.</b> Lifting the halt starts all 29 modules' work.</li>
 </ul>
-<p>Reply on this item with your choice, for example "Decision: C".</p>
+<p>Each lets ARCH carry out a decision the design already gives it; none adds a test, gate, review or stop. It is a tool change, so civicsmith gets it by your move line once built. Reply on this item with your choice, for example "Decision: D".</p>
 </section>
 
 <section class="card">
