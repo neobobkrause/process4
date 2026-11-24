@@ -35,7 +35,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 ## 3. Signing in, and what the permission checker sees
 
 - **In a session.** The tool starts `gh` and `git` as child programs. The harness has already connected them to GitHub as the sessions' second account through the session's proxy. The tool holds, reads and prints no token, and removes the token variables from every `git` it starts. Only GitHub's REST calls are used; the earlier process measured that sessions could not reach the other interface (note in `tool/lib/github.mjs`).
-- **On GitHub's machines.** The workflow's own token, read-only by the owner's setting, given only to part one (section 5).
+- **On GitHub's machines.** The workflow's own token, read-only by the owner's setting; the required run starts no product code (section 5).
 - **Limits.** Every write obeys GitHub's rate-limit answer: it waits as told and tries again up to four times, then fails. `merge` waits until a minute has passed since the last merge into the same branch. `push` keeps to six a minute. No queue of later writes is kept.
 - **The deny list** takes `git push` and `gh` away from the session's own commands. It does not reach programs the tool starts.
 - **One judged act for each command.** The checker sees one line, `node <copy>/tool/p4.mjs <command> <arguments>`, and judges it against the owner's approvals.
@@ -45,36 +45,45 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 | `branch` | Making a new branch in the product's repository |
 | `push` | A push to the session's own working branch |
 | `open`, `ready`, `close` | Opening a draft pull request; marking it ready; closing it unmerged. `open`, `close` and `push` may also write a comment on it; `open --module` and `walk open` also rewrite a shared-state comment |
+| `test` | Running a pull request's module tests in the session's own checkout, writing the test record on the pull request, and asking GitHub to run the required run again |
 | `merge` | Merging a pull request into the tranche branch (or the tranche's into main) after the required run passed, with no person's review |
 | `release prepare`; `release publish` | Making an unpublished release, or with `--development` a pre-release with its tag; publishing a release, with the owner's approval typed in that session |
-| `notify`, `state write`, `next-job`, `walk write` | Rewriting a comment on an issue |
+| `notify`, `state write`, `next-job`, `walk write` | Rewriting a comment on an issue; `notify` also rewrites an open job's block |
 | `walk open`, `walk close` | Opening an issue in the product's repository; closing it |
 | `listing`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `latest-version`, `walk areas`, `walk text`, `walk read` | Reading only |
 
 **Unproven:** every row. No approvals wording for Process4 is committed, and no act of this tool has been judged. Trial item 2 measures `merge`.
 
-## 5. The required test run
+## 5. The tests of a pull request, and the required run
 
-- **What defines it.** One workflow file, `.github/workflows/module-tests.yml`, copied into the product from `shims/module-tests.yml`. It runs on every pull request event that changes the head, the base, or draft to ready. A draft passes at once.
-- **Its one name. Decided here:** the check GitHub requires is named `module-tests`. It is the workflow's second job. Gives: the name is fixed before the tool is built, so the owner's act 10 need not wait on a first run if GitHub accepts a name that has not yet reported (unproven). Costs: part one shows as a second, unrequired line.
-- **Part one, job `scope`.** Holds the read-only token. Checks out GitHub's merge of the pull request, with credentials not kept. Reads the process config **at the base branch's commit**, clones the process repository at the commit it names, and runs `run scope`. This is how "the tool at the tranche branch's version" is held: the pull request cannot move the version that judges it. Where the base has no process config (the first pull request of a product), the head's is used and the run says so. It runs no product code: the reader reads files and starts nothing. It hands part two a small file: the scope, the modules, the test files, and the files to check.
-- **Part two, job `module-tests`.** Holds no token: its permissions are for reading contents only, used by the checkout step, with credentials not kept; no later step is given the token, and the tool removes the token variables before starting any product program. It installs the product's dependencies from the lock files the config names, fetches the same tool copy, runs `check` and then each module's test command over the files in the list, and writes a summary: the scope, files run, files left out, counts. It passes when every command exits 0. **Decided here:** it runs with `if: always()` and fails when part one did not succeed. Gives: a failed part one cannot leave the required check "skipped", which GitHub counts as passed (from memory; to be tried). Costs: one more line in the workflow.
-- **Decided here:** the run writes nothing to the pull request; its result is GitHub's own check and summary. Gives: the token stays read-only and no comments build up. Costs: `results` must fetch the output from the run.
+Since the owner's decision of 24 Nov 2026 ("the update plan as laid out"), a pull request's module tests run once, in the session that owns it, and GitHub's required run only reads the result (the design, part 2, section 6).
 
-**How `run scope` decides,** in order:
+- **Where the tests run.** `p4 test` (build text 1b, command 27), in the job's own session, as one background command of up to two hours that the session waits for within its turn; or in ARCH's session for a pull request that is not a job's and changes module code or tests. The session's checkout must be clean and at the pull request's head commit, so the tests run on what was pushed, with the dependencies the session has installed.
+- **The scope** is decided on GitHub's merge of the head into the base's newest commit, made by `git merge-tree` into a temporary checkout outside the working tree, by the steps below. A merge conflict fails plainly: the job merges the base in first.
+- **What runs.** For each module in scope, `check` and then the module's test command over the files in scope, one module after another, as before. A check disagreement counts as a failure.
+- **The test record.** One comment on the pull request, hidden mark `<!-- process4-test-record -->`, rewritten in place (build text 5, section 5): the commit, the job block's notice count then, the scope and why, the files, the counts, pass or fail, and the fails across every run. Scope nothing writes a pass with no files.
+- **After a pass** `p4 test` asks GitHub to run the head's newest required run again, so a run that started before the record passes. Where none exists, or GitHub refuses, it says so in one line.
+- **`ready`** runs nothing. It marks the pull request ready only where the record stands for its head (a pass, at that commit, made after every notice the job block holds), or where the scope is nothing and no notice has reached the job. Otherwise it says why and marks nothing.
+- **What defines the required run.** One workflow file, `.github/workflows/module-tests.yml`, copied into the product from `shims/module-tests.yml`. It runs on every pull request event that changes the head, the base, or draft to ready.
+- **Its one name.** The check GitHub requires is named `module-tests`, the workflow's one job. A product changes no setting for the update.
+- **What it does.** It holds the read-only token and runs no product code and installs none of the product's dependencies; it ends within ten minutes. It reads the process config **at the base branch's commit**, clones the process repository at the commit it names (so the pull request cannot move the version that judges it; where the base has no process config, the head's is used and the run says so), reads the job block and the test record with GitHub's REST interface, and runs `run verdict`. That passes when the steps below give **nothing**, or when the record stands for the head; otherwise it fails with `no pass recorded for <sha>; run p4 test`, or why the record does not stand. It writes a summary. For the verdict a told job always needs its record: the run does not make the related list.
+- **Removed by the update:** the run's two parts, part two's installing and running of tests on GitHub's machines with the token variables removed, its 45-minute limit, and a second run of a job's tests.
+
+**How the scope is decided,** in order (`decideScope`, used by `p4 test`, `ready` and the verdict):
 
 1. The base is the main branch: **nothing**, passes at once (the tranche's own pull request).
+1a. A draft: **nothing** for the required run, which passes it at once; `p4 test` decides as for a ready one.
 2. No changed file is under any module's code or test folders, by the module list of the merged result: **nothing**, passes at once.
-2a. The head branch is a dropped tranche's, `drop/<tranche>` (build text 1b, command 26), and every file it changes is byte for byte the main branch's (`origin/main`, which part one's full checkout holds), or absent from both: **nothing**, passes at once, as step 1 (design part 3, section 5; the owner's decision of 24 Nov 2026). If one file is not the main branch's, or the main branch cannot be read, the run goes on to the steps below and says which file.
-3. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list passes at once and says so.
+2a. The head branch is a dropped tranche's, `drop/<tranche>` (build text 1b, command 26), and every file it changes is byte for byte the main branch's (`origin/main`), or absent from both: **nothing**, passes at once, as step 1 (design part 3, section 5; the owner's decision of 24 Nov 2026). If one file is not the main branch's, or the main branch cannot be read, the steps below apply and the summary says which file.
+3. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list is a pass with no files.
 4. The head branch is a job's otherwise: **whole module**, that module only.
-5. Any other branch that changes module code (the mechanical edit): **Decided here:** whole module for each module touched. Gives: the earlier process's behaviour, known to run. Costs: one long run. Trial item 9 also tries it with none run; one trial-only line of the process config asks for that (build text 2, section 7).
+5. Any other branch that changes module code (the mechanical edit): whole module for each module touched, tested by ARCH's session. One trial-only line of the process config asks for none (build text 2, section 7).
 
 - No scope runs a module's `walk/internal/` or `walk/external/` folders, which lie under its `tests` paths (build text 3, section 3).
-
-- **Decided here:** a module with no test files passes, and the summary says none ran. Gives: no refusal the design did not approve. Costs: a job that wrote no tests is not stopped by the run.
+- A test file the module list gives to another module, unchanged, changes no module file, so it is not run for the move; it runs at the new owner's next job.
+- **Decided here:** a module with no test files passes, and the summary says none ran. Gives: no refusal the design did not approve. Costs: a job that wrote no tests is not stopped.
 - **GitHub settings that name it** are the owner's act 10 (build text 4, section 4).
-- **Unproven:** the related scope altogether; that the workflow file, which comes from the pull request, is left alone; the time a whole module takes.
+- **Unproven:** all of it: the background command of two hours, the re-run asked after a pass, the verdict on GitHub, and the related scope.
 
 ## 6. The tool's own tests
 
@@ -101,8 +110,8 @@ The order is build text 4's (`04-the-trial.md`, section 3), which rules. What ea
 
 Everything in this text is unproven; each doubt is marked where it lies.
 
-1. **Whether the process repository is public.** The fetch on GitHub's machines and in part two assumes it is, as the earlier one was. If private, part two needs a token and the two-part split fails as written.
-2. **The mechanical edit's scope** (step 5): the design marks it unproven, and only trial item 9 can choose.
+1. **Whether the process repository is public.** The fetch on GitHub's machines assumes it is, as the earlier one was. If private, the required run needs a token to fetch the tool.
+2. **The mechanical edit's scope** (step 5): whole module for each module touched, tested by ARCH's session; trial item 9 can try none.
 3. **The owner's approvals** must name the fetch, each act of section 3, and the tool's path; the proposal in `owner_acts_and_approvals.md` was written before the path existed.
 4. **Codex:** how `gh` and `git` are signed in there, and whether a child can fetch, are not known (part 8).
 5. **The proof's data** and the earlier tool's `github push` (on another branch) were not read.

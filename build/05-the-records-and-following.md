@@ -100,7 +100,7 @@ them when it starts them.
 { "role": "arch", "session": "session_01C", "generation": 3, "written": "2026-11-20T11:00Z" }
 ```
 
-**Slots in use** for a product (the design, part 2, section 5): its open job pull requests with no blocked record, plus the walking sessions the round record shows live. `next-job` counts these against the product's share, or against a `slot-number` note where one stands.
+**Slots in use** for a product (the design, part 2, section 5): its open job pull requests with no blocked record, plus the walking sessions the round record shows live. `next-job` counts these against the product's share, or against a `slot-number` note where one stands; a module with a notice waiting, earlier in the order than the latest running job's, starts above it (build text 1b, command 9).
 
 ## 3. What ends each kind of standing note
 
@@ -123,11 +123,11 @@ The process's repository has an issue of the same label and form, made by PROCES
 { "changes": [ { "change": "shorter job text", "pull_request": 12, "waits_for": "the owner's choice" } ] }
 ```
 
-## 5. The two comments on a job's pull request
+## 5. The three comments on a job's pull request
 
 Each has a hidden mark on its first line and one JSON block, one writing session, and is written and read only by the tool (the design, part 4, section 11).
 
-The job block, `<!-- process4-job -->`, is written once by ARCH's session, by `open --module <name>`, from the waiting-work record and the requirements file:
+The job block, `<!-- process4-job -->`, is written by ARCH's session, first by `open --module <name>` from the waiting-work record and the requirements file, and again by `notify` for each notice that reaches the job while it is open (the owner's decision of 24 Nov 2026):
 
 ```json
 { "module": "orders", "work": ["notice from pricing"], "kind": "told",
@@ -138,6 +138,7 @@ The job block, `<!-- process4-job -->`, is written once by ARCH's session, by `o
 ```
 
 - `work` is the work placed: requirement numbers, notices, and flaws by number and link. The job's starting text carries none of it; it names the pull request.
+- `notice_seq` (absent is 0) counts the notices `notify` has added while the job is open, and `notices` holds each one's `{ "from": <provider>, "merged": <pull request> }`, so a second run for the same merge adds nothing. Each adds its words to `work` and its reasons to `uses`; the kind stays as it was. A test record made before the latest notice no longer stands.
 - `kind` is `told` only when notices are the module's only work. With other work as well it is `ordinary`: the block still carries the `uses`, which the job reads, and the whole module's tests run (the design, part 2, section 7). A block with no notice has no `uses`.
 - Each of `uses` is a reason of the proof's notice (proof: `tool/lib/notice.mjs:223-259`; the proof is the one build text 2, section 1 names). `module` is the provider, or a later module changed `through` the provider, which `through` then names. `entry` is the entry's name in that module. `changes` holds the proof's words (build text 2b, section 6); the three on the accepting side are one word, `cannot stand in`. `lines` are the places in the told module that use the entry.
 - A module the tool does not follow fully has, in place of that, the proof's reason `{ "module": "pricing", "notFollowed": ["<why>"], "through": null }`, with no lines (section 6).
@@ -153,7 +154,19 @@ The job's record, `<!-- process4-job-record -->`, is written only by the job's s
 
 - `blocked` is written by `push --blocked <module> "<why>"`, `unblocked` by `push --unblocked "<why>"` (where ARCH ended the block by its own decision; the job is then open and holds its slot), `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`. A later record rewrites the comment in place.
 - The tool reads `blocked.by` to make the job ready again when that module merges, and reads `nothing_to_change` on a pull request closed unmerged to count the module finished (the design, part 2, section 4). No test runs for that record.
-- **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's. Costs: a notice that arrives while the job is open waits in waiting work for the module's next job.
+- **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's.
+
+The test record, `<!-- process4-test-record -->`, is written only by the session that ran the tests, by `p4 test` (the job's; ARCH's for a pull request that is not a job's), and rewritten in place at each run:
+
+```json
+{ "commit": "<head sha>", "notice_seq": 1, "scope": "related", "why": "told job of orders: 2 related test file(s), 5 left out",
+  "files": ["test/orders/lines.test.mjs", "test/orders/total.test.mjs"], "passed": 14, "failed": 0,
+  "result": "pass", "fails_total": 1, "written": "2026-11-24T20:00Z" }
+```
+
+- It stands for a head commit when `commit` is that commit, `notice_seq` is at least the job block's, and `result` is `pass` (`tool/lib/testrecord.mjs`). `ready`, the required run's verdict and `merge` read it so.
+- `fails_total` counts the fail results across every run on the pull request, with no reset; `failed-runs` reads it (the design, part 4, section 10).
+- Held by text: the job writes its own pass record, as it writes its own tests.
 
 ## 6. "Cannot follow": between modules, at the notice
 
