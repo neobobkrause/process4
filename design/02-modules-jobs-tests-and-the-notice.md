@@ -20,18 +20,18 @@ Length: 107 lines. Last section: "9. Changes that are not a job's".
 
 1. **The module has work.** A requirement in its file is marked not yet met, or a walk flaw, a notice, or a flaw reported by another module's job has been placed against it.
 2. **Its job is ready:** the module has work and no job already open. It does not wait for the modules it uses.
-3. **It takes a slot.** Ready jobs take free slots, earliest in the module order first. Only the owner's marked instruction puts a module ahead. The tool decides who takes a free slot.
+3. **It takes a slot.** Ready jobs take free slots, earliest in the module order first. Only the owner's marked instruction puts a module ahead. A told job may start above the slot number (section 5). The tool decides who takes a free slot.
 4. **The job session is started,** with instructions naming every act the job may take.
 5. **The job works** in a draft pull request, writing only its own module's files, its tests among them. A flaw it finds in another module goes to ARCH, which places it against that module.
-6. **The job completes.** It pushes and marks the pull request ready. Its module's tests run on GitHub's machines. The job fixes its own failures and sends ARCH one message when the tests pass.
-7. **ARCH merges it** into the tranche branch with the tool, the only way a session can merge. There is no review and no act of the owner's.
+6. **The job completes.** It pushes and runs its module's tests once, in its own session, by the tool, which records the result on the pull request (section 6). It fixes its own failures and runs them again. On a pass it marks the pull request ready and sends ARCH one message.
+7. **ARCH merges it** into the tranche branch with the tool, the only way a session can merge, once no job is open among the modules this one uses (section 8). There is no review and no act of the owner's.
 8. **The slot is refilled** in the same turn, and the notice is sent if the module's interface listing changed (section 7).
 
 - A job decides how to meet its module's requirements and writes that module's tests. In the owner's words: "Yes, a job writes its own tests. That's an important responsibility."
 - A job writes only its own module's files. In the owner's words: "A job for module A isn't allowed to change module B. The only other way of editing a module is when a mechanical edit (like a word table change) makes the change." This is held by the job's instructions and by no check.
 - A job never merges, starts a session, deploys or changes the process.
 - A job stopped by another module's flaw reports the flaw to ARCH, records that it is blocked, pushes and stops. Its slot is freed. When the other module merges, the job is made ready again. Where ARCH ends the block by its own decision instead (part 2, section 8) and tells the job to go on, the job records that it goes on, and holds its slot again.
-- A job's module tests run on its pull request as GitHub would merge it into the tranche branch at that moment. A later merge by another module does not run them again. A break caused that way is found by that module's next job or by a walk.
+- A job's module tests run at its pull request's head, in scope as GitHub would merge it into the tranche branch at that moment. A later merge by another module does not run them again, unless a notice reaches the job while it is open (section 7). A break caused another way is found by that module's next job or by a walk.
 
 ## 4. When a module's work is finished, and when a round's jobs are done
 
@@ -45,6 +45,7 @@ The tool decides both, because each has one right answer:
 ## 5. Slots
 
 - Eight by default, counted across the account. The owner can change the number by a marked instruction. A product's slots in use are its open jobs that are not recorded blocked, and its live walking sessions.
+- New jobs start, earliest in the order first, only while the slots in use are below the number. After a provider's interface change, a module told of it, with no open job, that is earlier in the order than the latest running job's module starts its told job at once, above the number; a later one waits its turn.
 - The standing roles and workers use no slot. Lane sessions use none either, and walking sessions use the slots, since a walk is made when no job is open.
 - When two products run at once, each product's process config names its share of the slots, and the shares add up to the account's number. The default is an equal split. The owner changes a share by a marked instruction. A product does not borrow another's unused share, because no record is shared between two products. **Unproven:** two products have never run at once.
 
@@ -52,14 +53,14 @@ The tool decides both, because each has one right answer:
 
 - The tests of Process4 are module tests, the internal walk and the external walk. Before a release, an install and an update are each confirmed to have succeeded. Nothing more: no further test phases, gates or reviews, and no full regression, on request or otherwise. Every other check that could stop work has ended.
 - A test runs only when there is a fully informed reason to run it.
-- Module tests run for the job's own module only, on GitHub's machines, when the job marks its pull request ready. A failure goes back to the job.
+- Module tests run for the job's own module only, once, in the job's own session, by the tool, before the job marks its pull request ready. The tool records on the pull request the commit, the scope, the files run, the counts, and pass or fail. The pull request can be marked ready and merged only on a pass recorded for its head after every notice that reached the job. GitHub's required run only reads that record; it runs no product code. A failure goes back to the job. Held by text: the job writes its own pass record, as it writes its own tests. **Unproven:** a job's tests run as one command of its own session, and the required run reading the record; neither has run in a round.
+- A pull request that is not a job's and changes module code or tests is tested the same way by ARCH's session, each touched module whole. A test file the module list gives to another module, unchanged, is not run for the move; it runs at the new owner's next job. A module whose tests take longer than one command of a session can run is ARCH's to split.
 - They give appropriate coverage of the code, demonstrate correct results, show that error conditions are properly identified and communicated, and check bounds. A test does not fail because it got a different but still valid response. They "must be complete yet fast and efficient". This is a duty of the job, held by its instructions; nothing measures it.
 - The structured comments and the tool can also inform module tests, so that boundaries are properly checked.
 - Every requirement is tested at the module's interface.
-- Module tests include, in the words of the record, "a check that the module's declared uses match its imports". The check reads the module's test files as well as its source: "I think it has to check tests too". It also refuses a declared use of a module that is not before this one in the order, so that declaring a later module is no way to make a use of it pass. A job cannot settle that in its own module's files; where the use is needed it reports to ARCH and is recorded blocked (section 3), and ARCH corrects the order, the module list or the boundary (section 8).
+- Module tests include, in the words of the record, "a check that the module's declared uses match its imports". The check reads the module's test files as well as its source: "I think it has to check tests too". It also refuses a declared use of a module that is not before this one in the order, so that declaring a later module is no way to make a use of it pass. It reads imports by path, `require`, and imports by the product's own name; a declared use with no import it can see (one made by a path, for example) is "cannot tell", not refused. A job cannot settle that in its own module's files; where the use is needed it reports to ARCH and is recorded blocked (section 3), and ARCH corrects the order, the module list or the boundary (section 8).
 - The owner approved two refusals, and no other is taken. Inside a module's own tests the tool may refuse a structured comment that disagrees with the module's code, and may refuse the module's code where it disagrees with a provider's stated interface. These are parts of module tests, not further tests. Only these two refusals stand; no other is built into module tests. A value a test passes on purpose inside an error assertion (`assert.throws` or `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither refusal: the tool reads it as "cannot tell" and never refuses it. Nor is a complaint of the tool's reader about plain code, where no structured comment states what the code contradicts: that too is "cannot tell".
 - A module's tests and a walk's steps are product work. Each exists only to prove a product requirement, which it names. A test or step that serves the process is not allowed. This is a rule in text.
-- Module tests run in two parts, so that product code under test holds no access token.
 - Built files are never committed. They are built at each walk, deployment and release.
 
 ## 7. The notice to user modules
@@ -69,12 +70,12 @@ The tool decides both, because each has one right answer:
 - **What counts as a change.** In the owner's words: "any change to either a provider's domain or range necessitates that its users be retested. But if both domain and range stay the same, then no retesting of users is needed." For what a provider accepts, users are told only when the new interface cannot stand in for the old: something removed, renamed, newly required or newly refused. Accepting more tells no one. For what a provider hands back, any change to an entry tells that entry's users.
 - **How it is found.** The tool writes out the module's interface, from its code and its structured comments together, before and after the job's change. The notice is sent only when the two listings differ. A comment edited with no change to the listing sends nothing.
 - **Who is told.** In the owner's words, "ideally only the users of the entry that changed". The tool sends the notice and decides to whom.
-- **A module whose job is already open.** The notice waits in the waiting-work record until that job's pull request merges or closes. The module then has work again, and its next job is the told job. Nothing is passed to the open job.
+- **A module whose job is already open.** The notice reaches that job at once: it is added to the job's own record of its work, and ARCH tells the job. A pass recorded before the notice no longer counts; the job deals with the notice and runs its tests again. A module with no open job gets a told job, its next job.
 - **A module with no comments yet.** The first thing its job does is add the structured comments, as a step of their own, describing the module as it stands. That step sends no notice.
 - **What a told job does.** It checks only the changed parts and runs only the tests that relate to them.
 - **Which tests relate.** The tool picks them, not the job. The notice carries the places in the told module's files that name the changed entry. The related tests are the module's test files that hold such a place, or reach code that holds one, or reach code the told job itself changed, together with any test file the job changed. They are chosen by whole test file.
 - A job is a told job only when notices are its module's only work. A module with other work as well has an ordinary job, which reads the notice's uses and whose whole module's tests run.
-- **The run on GitHub.** There is one required run with one name. The tool, at the tranche branch's version, sets its scope: nothing, the related tests, or the whole module. It works the list out itself, so the job supplies nothing. An ordinary job runs the whole module; a told job runs the related tests.
+- **The scope.** The tool sets it: nothing, the related tests, or the whole module. It works the list out itself, so the job supplies nothing. An ordinary job runs the whole module; a told job runs the related tests. There is one required run on GitHub with one name; it reads the job's record of its tests.
 - A told job that finds nothing to change records that in its pull request and closes it unmerged. No test runs, because nothing changed.
 - Three points on what the owner's rule means: a told job's own edits count among "the changed parts"; tests are chosen by whole file; and where the tool cannot follow a told module's code, that module's whole tests run, since the tool cannot say which relate.
 - **Unproven:** that the tool can follow from a use to the tests that reach it inside a module, and can tell when it has lost the thread. It has not been built or run, and the saving is unmeasured.
@@ -96,12 +97,13 @@ Which language reader the tool uses is a fact of the product, named in its proce
 ## 8. Who decides an interface, and changes that must land together
 
 - ARCH decides the interface between two modules. A provider's job may propose a change; where users are affected ARCH decides it before it is built.
+- A job's pull request merges once no job is open among the modules it uses: the earlier modules its files import, followed file to file as the notice reads them, and those it declares, directly or through others. A blocked job holds no one. A use made by a path and not declared is missed here, as by the notice.
 - There is no merge of several modules together other than the mechanical edit. Where modules must change together, ARCH orders the work so that each merge passes on its own: the provider first accepts the new form beside the old, the users move, and the provider then drops the old form.
 - Where that cannot be done, the boundary between those modules is an architecture bug. ARCH corrects the module list or the interface, and does not work round it.
 
 ## 9. Changes that are not a job's
 
-- **The mechanical edit.** A worker in ARCH's session makes it as one change covering every affected module, and it is merged once; and the moment: when no job is open, between a round's last merge and its internal walk. A module where the change needs judgment gets its own job. **Unproven:** which test run GitHub requires on that one change.
+- **The mechanical edit.** A worker in ARCH's session makes it as one change covering every affected module, and it is merged once; and the moment: when no job is open, between a round's last merge and its internal walk. ARCH's session tests it as section 6 says. A module where the change needs judgment gets its own job.
 - **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing. The owner has not confirmed this.
-- **Requirement text, the module list, and the process's named files.** These change no code and no tests, so their pull requests merge through the tool with no module tests run. The required test run reports on every pull request. It passes at once when no module's code or tests changed, and on the tranche's own pull request into the main branch, where none of the tests runs (part 3, section 5).
+- **Requirement text, the module list, and the process's named files.** These change no code and no tests, so their pull requests merge through the tool with no module tests run and no record of them. The required run reports on every pull request. It passes at once when no module's code or tests changed, and on the tranche's own pull request into the main branch, where none of the tests runs (part 3, section 5).
 - **The owner's approvals and forbidden commands** are committed by the owner alone (part 6).

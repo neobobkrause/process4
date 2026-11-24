@@ -43,7 +43,8 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **Walks made by sessions:** a session's browser reaching the development site; a walk shared among sessions; the hosting account bearing the walkers.
 - **A walk ending without flaws.**
 - **A deployment made from a session** inside a round.
-- **The mechanical edit's one merge,** and the test run it needs.
+- **The mechanical edit's one merge,** tested by ARCH's session.
+- **A job's tests run once in its own session,** as one command of up to two hours, and GitHub's required run reading the record of them; **a notice reaching a running job**; and **a merge that waits** for a job of a module it uses.
 - **The tranche branch merging into the main branch.**
 - **The release path:** an install, an update, and a release prepared as far as the owner's approval.
 - **A stop on the owner's word** that the hourly wake does not undo; a held merge; a module put first; a new slot number.
@@ -81,6 +82,7 @@ What the trial rehearses, each once unless a number is given:
 13. The rule for who takes a free slot gives the same answer every time.
 14. The hosting account bears the external walkers.
 15. An account switch loses no work.
+16. A job runs its tests once in its own session and the required run passes on its record; a notice reaches a job while it is open and its tests run again; a ready job's merge waits for an open job of a module it uses, and merges once that one has.
 
 ## 5. Only the first real tranche can show
 

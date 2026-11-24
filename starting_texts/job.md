@@ -10,8 +10,8 @@ In your copy: `design/` parts 00, 01, 02, 04, 05, 06 and your harness's part (07
 
 ## Acts you may take
 - Write the module's own files, its tests and walk steps among them; mark a requirement `[met]` in its requirements file; change `uses` in its entry.
-- `p4` with `open` (it prints your pull request and job block), `push`, `push --blocked <other module> "<why>"`, `push --unblocked "<why>"`, `ready`, `results`, `close --nothing-to-change "<why>"`, `listing`, `check`, `related`, and `walk read` for a walk flaw placed with you.
-- Run the module's tests on your own machine; nothing requires it. Message ARCH. Start workers inside yourself.
+- `p4` with `open` (it prints your pull request and job block), `push`, `push --blocked <other module> "<why>"`, `push --unblocked "<why>"`, `test --branch <branch>`, `ready --branch <branch>`, `results`, `close --nothing-to-change "<why>"`, `listing`, `check`, `related`, and `walk read` for a walk flaw placed with you.
+- Run single test files while you work. Message ARCH. Start workers inside yourself.
 
 ## Rules
 1. Write only your module's files. A flaw you find in another module goes to ARCH. You may propose an interface change to ARCH.
@@ -19,8 +19,8 @@ In your copy: `design/` parts 00, 01, 02, 04, 05, 06 and your harness's part (07
 3. You decide how to meet the requirements, and you write the tests, as design part 2, section 6 asks: coverage, correct results, error conditions, bounds, at the module's interface; complete yet fast and efficient.
 4. Each test and each walk step names the product requirement it proves; none serves the process. Write or correct the step with the requirement it proves (build text 3, section 3).
 5. The module's declared uses match its imports, its test files included. Remove a declared use that no code makes.
-6. To complete: `push`, `ready`, fix your own test failures, and send ARCH one message when the tests pass.
-7. A told job checks only the changed parts; `related` lists the tests that relate, and runs nothing. If nothing needs changing, run no test and `close --branch <branch> --nothing-to-change` (your checkout is detached on the tranche branch, so name `--branch` or the number). Whatever your kind, a walk flaw that needs no change here goes back to ARCH.
+6. To complete: `push`, then start `p4 test --branch <branch>` yourself as one background command with a timeout of 7,200,000 ms (two hours), never in a worker, and wait for it within your turn. It runs `check` and the tests in scope once and writes the test record on your pull request. On a fail, fix, push and run it again. On a pass, `ready --branch <branch>`, and send ARCH one message.
+7. A told job checks only the changed parts; `related` lists the tests that relate, and `p4 test` runs only those. A notice that reaches you while you are open comes as a message from ARCH and is added to your job block: deal with it, then run `p4 test` again before `ready`; a pass recorded before it no longer counts. If nothing needs changing, run no test and `close --branch <branch> --nothing-to-change` (your checkout is detached on the tranche branch, so name `--branch` or the number). Whatever your kind, a walk flaw that needs no change here goes back to ARCH.
 8. If another module's flaw stops you: report it to ARCH, `push --blocked`, and stop. If ARCH then tells you to go on before that module merges, `push --unblocked`. These flags and `--nothing-to-change` write your own record.
 9. One judged act for each command. A refused act is never reworded or handed on; three refusals in a row stop you. A process fault goes to ARCH, written once. At 50 percent of your context: `push`, tell ARCH in one message, and stop; ARCH replaces you from <branch>. Otherwise do not end your turn while work remains that you can do.
 10. Never: merge; start a session; deploy; change the process; write another module's files; commit built files; talk to a lane; write a record of the shared state; add a test, check, gate, review or stop that serves the process.

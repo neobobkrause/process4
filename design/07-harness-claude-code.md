@@ -20,7 +20,7 @@ Everything in this part is specific to Claude Code.
 | Worker | A helper the session starts inside itself. A worker cannot start workers |
 | Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |
 | Compaction | A full context is shrunk automatically, which loses what was read |
-| The time a session can run one thing | About thirty minutes for one command |
+| The time a session can run one thing | Two hours for one command the session runs in the background, which it waits for within its turn; ten minutes for one in the foreground. A command a worker starts ends with the worker. Whether a background command goes on while the session waits between turns is not known |
 | Archiving | A session can be archived and unarchived |
 | A notification to the owner | A push notification to his phone |
 | The owner's standing page; a lane's design pages | Pages on claude.ai |
