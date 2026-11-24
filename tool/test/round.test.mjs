@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { close, failedRunsCmd, finishedCmd, nextJob, open, push, roundDoneCmd, branch, stateWrite } from '../lib/commands.mjs';
+import { close, finishedCmd, nextJob, open, push, roundDoneCmd, branch, stateWrite } from '../lib/commands.mjs';
 import { parseBlock } from '../lib/github.mjs';
 import { mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
@@ -184,21 +184,6 @@ test('a block recorded by ARCH at the fifth failed run carries into the next rou
   t.out.length = 0; roundDoneCmd(t.ctx);
   assert.match(t.out.join('\n'), /dates: blocked, carried into the next round: five failed runs/);
   assert.equal(d.state, 'open');
-});
-
-test('failed-runs counts failed required runs, not cancelled ones, and speaks at the third and fifth', () => {
-  const t = product();
-  const pr = t.gh.createPR('o/product', { head: 'job/dates.1', base: 'tranche', draft: false });
-  const run = (conclusion, name = 'module-tests') => t.gh.s.wfruns.push({ name, conclusion, head_branch: 'job/dates.1', html_url: `R${t.gh.s.wfruns.length}`, pull_requests: [{ number: pr.number }] });
-  run('failure'); run('cancelled'); run('success'); run('failure'); run('failure', 'other');
-  t.out.length = 0; failedRunsCmd(t.ctx, pr.number);
-  assert.deepEqual(t.out, [`2 failed run(s) of module-tests on pull request ${pr.number}: R0 R3`]);
-  run('timed_out');
-  t.out.length = 0; failedRunsCmd(t.ctx, pr.number);
-  assert.match(t.out[1], /replace its session with a fresh one/);
-  run('failure'); run('failure');
-  t.out.length = 0; failedRunsCmd(t.ctx, pr.number);
-  assert.match(t.out.join('\n'), /^5 failed[\s\S]*record dates blocked/);
 });
 
 test('a job blocked by two modules stays blocked until both have merged after the block (fault n)', () => {

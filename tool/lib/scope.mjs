@@ -1,5 +1,6 @@
-// The required run's two parts (build text 1, section 5): `run scope` on part one, which holds
-// the read-only token and runs no product code; `run tests` on part two, which holds none.
+// The scope of a pull request's tests, and the tests themselves (build text 1, section 5). The tests run once, in
+// the session that owns the work (`p4 test`, tool/lib/testrun.mjs); GitHub's required run only reads the record
+// (`run verdict`). `run scope` and `run tests` stay for reading a scope and for running it by hand.
 import { appendFileSync } from 'node:fs';
 import { loadConfig, loadModules, ownerOf } from './config.mjs';
 import { relatedList } from './notice/related.mjs';
@@ -22,8 +23,10 @@ export const DROP = /^drop\/([A-Za-z0-9._-]+)$/;
 // `jobBlock` is the job block of the pull request (its `<!-- process4-job -->` comment), or null.
 // `mainRef` is the main branch as the checkout holds it (fetch-depth 0 brings origin/main), read
 // only for a drop's pull request (branch drop/<tranche>).
+// `related: false` makes no related list: a told job is judged as needing its test record, as the required run's
+// verdict judges it (it runs no reader on GitHub's machines).
 // Returns { scope, why, config_from, modules: [{ name, files, related?, left_out? }] }.
-export function decideScope(root, { base, baseRef, branch, draft, jobBlock = null, mainRef = 'origin/main' }) {
+export function decideScope(root, { base, baseRef, branch, draft, jobBlock = null, mainRef = 'origin/main', related = true }) {
   const parents = git(['rev-list', '--parents', '-n', '1', 'HEAD'], { cwd: root }).split(' ').slice(1);
   const mergedBase = parents.length === 2 ? parents[0] : base;
   let cfg = loadConfig(root, mergedBase);
@@ -53,6 +56,9 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
   if (job) {
     const m = modules.find((x) => x.name === job);
     if (!m) return out('whole module', `job branch for ${job}, which the module list does not name: every module touched`, whole(touched));
+    if (jobBlock?.kind === 'told' && !related) {
+      return out('whole module', `told job of ${job}: its related tests run in its own session (p4 test), so it needs its test record`, whole([m]));
+    }
     if (jobBlock?.kind === 'told') {
       // Step 3: the related list, made with the reader on the merged result (build text 5, section 7).
       let r;
@@ -90,33 +96,56 @@ function dropCheck(root, mergedBase, mainRef) {
   return first ? { ok: false, why: `${first} is not main's` } : { ok: true, count: changed.length };
 }
 
-// Runs each module's test command over its files, with the token variables removed.
-// Before each module's tests, the tool's `check` of that module (build text 1, section 5, part
-// two), run from this same copy of the tool with the token variables removed.
+// Runs each module's check and test command over its files, with the token variables removed. One code path for
+// `p4 test` in the session and `run tests`. Before each module's tests, the tool's `check` of that module (build
+// text 1, section 5), run from this same copy of the tool. `onStart`/`onEnd` report each module as it goes.
+// Returns [{ name, files, check: { code, out }, code, out, passed, failed, ok }]; `code` is null where no test file ran.
 const P4 = new URL('../p4.mjs', import.meta.url).pathname;
 const runCheck = (root, name) => run(process.execPath, [P4, 'check', name], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });
+const countOf = (text, k) => { const m = text.match(new RegExp(`^(?:ℹ|#) ${k} (\\d+)`, 'm')); return m ? Number(m[1]) : null; };
+
+export function runModules(root, scope, { check = runCheck, onStart = () => {}, onEnd = () => {} } = {}) {
+  if (scope.scope === 'nothing') return [];
+  const cfg = loadConfig(root, 'HEAD');
+  const [cmd, ...args] = cfg.test_command.split(/\s+/).filter(Boolean);
+  const results = [];
+  for (const m of scope.modules) {
+    onStart(m, `${cmd} ${[...args, ...m.files].join(' ')}`);
+    const c = check(root, m.name);
+    const res = { name: m.name, files: m.files, check: { code: c.code, out: c.stdout + c.stderr }, code: null, out: '', passed: 0, failed: 0, tests: 0 };
+    if (m.files.length) {
+      const r = run(cmd, [...args, ...m.files], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });
+      res.code = r.code;
+      res.out = r.stdout + r.stderr;
+      res.tests = countOf(res.out, 'tests');
+      res.passed = countOf(res.out, 'pass');
+      res.failed = countOf(res.out, 'fail');
+    }
+    res.ok = c.code === 0 && (res.code === null || res.code === 0);
+    results.push(res);
+    onEnd(res);
+  }
+  return results;
+}
 
 export function runTests(root, scope, { log = console.log, summary = process.env.GITHUB_STEP_SUMMARY, check = runCheck } = {}) {
   const lines = [`## module-tests`, '', `Scope: **${scope.scope}**, because ${scope.why}. Config read from ${scope.config_from}.`, ''];
-  let ok = true;
-  if (scope.scope !== 'nothing') {
-    const cfg = loadConfig(root, 'HEAD');
-    const [cmd, ...args] = cfg.test_command.split(/\s+/).filter(Boolean);
-    for (const m of scope.modules) {
-      const c = check(root, m.name);
-      log(c.stdout + c.stderr);
-      if (c.code !== 0) { ok = false; lines.push(`- ${m.name}: check found a disagreement (exit ${c.code})`); }
-      for (const r of m.related || []) lines.push(`  - related: ${r.file}: ${r.reasons.join('; ')}`);
-      if (m.left_out) lines.push(`  - left out: ${m.left_out.length ? m.left_out.join(', ') : 'none'}`);
-      if (!m.files.length) { lines.push(`- ${m.name}: no test files; none ran`); continue; }
-      log(`== ${m.name}: ${cmd} ${[...args, ...m.files].join(' ')}`);
-      const r = run(cmd, [...args, ...m.files], { cwd: root, unset: [...NO_TOKENS, 'NODE_TEST_CONTEXT'] });
-      log(r.stdout + r.stderr);
-      const count = (k) => (r.stdout + r.stderr).match(new RegExp(`^(?:ℹ|#) ${k} (\\d+)`, 'm'))?.[1] ?? '?';
-      lines.push(`- ${m.name}: exit ${r.code}; ${m.files.length} file(s): ${m.files.join(', ')}; tests ${count('tests')}, pass ${count('pass')}, fail ${count('fail')}`);
-      if (r.code !== 0) ok = false;
-    }
+  const byName = new Map(scope.modules.map((m) => [m.name, m]));
+  const results = runModules(root, scope, {
+    check,
+    onStart: (m, line) => { if (m.files.length) log(`== ${m.name}: ${line}`); },
+    onEnd: (r) => { log(r.check.out); if (r.code !== null) log(r.out); },
+  });
+  const n = (x) => x ?? '?';
+  for (const r of results) {
+    const m = byName.get(r.name);
+    if (r.check.code !== 0) lines.push(`- ${r.name}: check found a disagreement (exit ${r.check.code})`);
+    for (const x of m.related || []) lines.push(`  - related: ${x.file}: ${x.reasons.join('; ')}`);
+    if (m.left_out) lines.push(`  - left out: ${m.left_out.length ? m.left_out.join(', ') : 'none'}`);
+    if (r.code === null) { lines.push(`- ${r.name}: no test files; none ran`); continue; }
+    lines.push(`- ${r.name}: exit ${r.code}; ${r.files.length} file(s): ${r.files.join(', ')}; tests ${n(r.tests)}, pass ${n(r.passed)}, fail ${n(r.failed)}`);
   }
+  const ok = results.every((r) => r.ok);
   lines.push('', ok ? 'Passed.' : 'Failed.');
   if (summary) appendFileSync(summary, lines.join('\n') + '\n');
   log(lines.join('\n'));
