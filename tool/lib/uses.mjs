@@ -96,42 +96,51 @@ export function makeFollow(tree) {
 
 /**
  * The modules a module uses, directly or through others, in module order: by import (its files and what they reach)
- * and by declaration, closed over the used modules' own uses. Each with its ground.
+ * and by declaration, closed over the used modules' own uses. Each with its ground. Given several trees (the tranche's
+ * newest commit and the job's head), a module's direct uses are the union of what each tree shows; the order is the
+ * first tree's, then any module only a later tree has.
  */
-export function usesOf(tree, moduleId) {
-  const follow = makeFollow(tree);
+export function usesOf(trees, moduleId) {
+  trees = [].concat(trees);
+  const follows = trees.map((t) => makeFollow(t));
   const direct = new Map();
   const directOf = (id) => {
     if (direct.has(id)) return direct.get(id);
-    const mod = tree.byId.get(id);
     const out = new Map();
-    if (mod) {
-      for (const f of follow.closure(mod.files)) { const m = tree.moduleOfFile(f); if (m && m !== id && !out.has(m)) out.set(m, 'imports'); }
+    trees.forEach((tree, i) => {
+      const mod = tree.byId.get(id);
+      if (!mod) return;
+      for (const f of follows[i].closure(mod.files)) { const m = tree.moduleOfFile(f); if (m && m !== id && !out.has(m)) out.set(m, 'imports'); }
       for (const u of mod.uses) if (u !== id && tree.byId.has(u) && !out.has(u)) out.set(u, 'declares');
-    }
+    });
     direct.set(id, out);
     return out;
   };
   const found = new Map();
-  const todo = [...directOf(moduleId)].map(([m, how]) => [m, how]);
+  const todo = [...directOf(moduleId)];
   while (todo.length) {
     const [m, how] = todo.shift();
     if (m === moduleId || found.has(m)) continue;
     found.set(m, how);
     for (const [u, h] of directOf(m)) if (!found.has(u)) todo.push([u, `through ${m} (${h})`]);
   }
-  const order = tree.modules.map((x) => x.id);
+  const order = orderOf(trees);
   return [...found].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).map(([module, how]) => ({ module, how }));
 }
 
-/** The modules earlier in the order that a module uses, read at a commit written out to a folder outside the checkout. */
-export function earlierUsesAt(root, sha, moduleId) {
+const orderOf = (trees) => [...new Set(trees.flatMap((t) => t.modules.map((x) => x.id)))];
+
+/**
+ * The modules earlier in the order that a module uses, read at one or more commits (the tranche branch's newest first,
+ * whose order counts), each written out to a folder outside the checkout; the union of their uses, closed.
+ */
+export function earlierUsesAt(root, shas, moduleId) {
   const base = mkdtempSync(path.join(tmpdir(), 'p4-uses-'));
   try {
-    const tree = loadTree(writeOut(root, sha, base));
-    const me = tree.byId.get(moduleId);
-    if (!me) return [];
-    return usesOf(tree, moduleId).filter((u) => tree.byId.get(u.module).index < me.index);
+    const trees = [...new Set([].concat(shas))].map((sha) => loadTree(writeOut(root, sha, base)));
+    const order = orderOf(trees);
+    if (!order.includes(moduleId)) return [];
+    return usesOf(trees, moduleId).filter((u) => order.indexOf(u.module) < order.indexOf(moduleId));
   } finally {
     rmSync(base, { recursive: true, force: true });
   }

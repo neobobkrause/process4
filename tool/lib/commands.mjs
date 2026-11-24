@@ -295,8 +295,8 @@ function notesInForce(ctx) {
 
 // A job's merge waits for the modules it uses (the owner's decision of 24 Nov 2026, item 3). First its tests must
 // stand after every notice that reached it: refused (exit 1) when a notice came after they ran. Then the modules it
-// uses, directly or through others, earlier in the order, read at the tranche branch's newest commit: each with an
-// open job that is not blocked holds it. Returns the jobs it waits for, as lines.
+// uses, directly or through others, earlier in the order, read at the tranche branch's newest commit and at the job's
+// head commit (the union): each with an open job that is not blocked holds it. Returns the jobs it waits for, as lines.
 function jobWaits(ctx, pr, module) {
   const comments = ctx.gh.comments(ctx.slug, pr.number);
   const jobBlock = comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || null;
@@ -306,8 +306,16 @@ function jobWaits(ctx, pr, module) {
   const view = readView(ctx, { records: issue ? readAll(ctx.gh, ctx.slug, issue) : {} });
   if (!view.modules.some((m) => m.name === module)) return [];
   const tip = git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root });
+  // The job's head commit too: a use the job adds holds it as well. Fetched by its branch where it is not here.
+  const has = (sha) => /^[0-9a-f]{40}$/.test(sha || '') && git(['cat-file', '-e', `${sha}^{commit}`], { cwd: ctx.root, allowFail: true }).code === 0;
+  let head = pr.head?.sha;
+  if (!has(head)) {
+    const f = git(['fetch', '-q', 'origin', `refs/heads/${pr.head.ref}`], { cwd: ctx.root, allowFail: true });
+    head = has(head) ? head : f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null;
+    if (!head) ctx.log(`note: could not fetch ${pr.head.ref}; the uses are read at ${pr.base.ref}'s newest commit only`);
+  }
   const lines = [];
-  for (const u of earlierUsesAt(ctx.root, tip, module)) {
+  for (const u of earlierUsesAt(ctx.root, head ? [tip, head] : [tip], module)) {
     const open = openJob(view, u.module);
     if (open && open.number !== pr.number && !isBlocked(view, u.module, open)) lines.push(`waits for ${u.module} (pull request ${open.number})`);
   }

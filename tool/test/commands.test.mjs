@@ -231,6 +231,22 @@ test('merge of a job waits for an open job of each earlier module it uses, by im
   assert.match(out.join('\n'), new RegExp(`merged pull request ${n} into tranche`));
 });
 
+test('merge of a job waits for a module its head newly imports, though the tranche does not show the use', () => {
+  const root = usingProduct();
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  // The job's branch adds an import of dates to late, on its head commit only.
+  git(['checkout', '-q', '-b', 'job/late.1'], { cwd: root });
+  commit(root, { 'src/late/index.mjs': "import { d } from '../dates/index.mjs';\nexport const l = d;\n" });
+  git(['push', '-q', 'origin', 'job/late.1'], { cwd: root });
+  git(['checkout', '-q', 'main'], { cwd: root });
+  const dates = gh.createPR('o/product', { head: 'job/dates.1', base: 'tranche', draft: false });
+  const late = gh.createPR('o/product', { head: 'job/late.1', base: 'tranche', draft: false });
+  assert.equal(merge(ctx, late.number), 0);
+  assert.deepEqual(out.filter((l) => l.startsWith('waits for')), [`waits for dates (pull request ${dates.number})`]);
+  assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), []);
+});
+
 test('merge of a job refuses when a notice reached it after its tests ran', () => {
   const root = product();
   const gh = fakeGitHub();
