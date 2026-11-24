@@ -9,10 +9,11 @@
 // Also: the comments-only verification of a module's first step.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeProgram, options, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
 import { makeLister } from './listing.mjs';
 import { makeUsage } from './usage.mjs';
+import { ownPackage } from './staged.mjs';
 
 /**
  * Complaints that mean "I cannot tell", never a disagreement. Decided here:
@@ -106,6 +107,9 @@ function within(node, outer) { return node.pos >= outer.pos && node.end <= outer
  * is about that comment. One more, decided here: an import of a name that a file of another module does not export
  * (or a name asked of such a file's module object) is answered by that file's exports, not by kinds the reader works
  * out, so the reader can tell for certain: it is (b), whether or not the file is one of the module's interface files.
+ * For a value that cannot be assigned where it goes (the owner's decision of 24 Nov 2026), only the receiving side
+ * counts: what is expected where the value goes, and, for a function handed over, its own parameter that the other
+ * side hands a value into. The value's own comment is not what such a complaint contradicts.
  *
  * The answer: `providers`, the other modules whose interface files (`public`) state a claim the complaint rests on
  * (refusal b); `own`, whether this module's own comments state one (refusal a). Neither: the reader cannot tell.
@@ -116,6 +120,11 @@ const STATING_TAGS = new Set(['type', 'param', 'arg', 'argument', 'returns', 're
 const NO_SUCH_EXPORT = new Set([2305, 2724, 2614, 2694, 2459, 2460]);
 /** The reader's complaints about the number of arguments a call gives. */
 const ARITY = new Set([2554, 2555, 2556, 2557, 2575]);
+/** The reader's complaints that a value cannot be assigned where it goes ("Type 'X' is not assignable to type 'Y'",
+ * "Argument of type 'X' is not assignable to parameter of type 'Y'"). */
+const ASSIGNS = new Set([2322, 2345]);
+/** The places a complaint names as where the expected kind comes from (a field, an index, a signature's answer). */
+const EXPECTED_FROM = new Set([6500, 6501, 6502]);
 const isJSDocNode = (n) => n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode;
 
 function makeClaims(checker, tree, mod) {
@@ -260,6 +269,50 @@ function makeClaims(checker, tree, mod) {
     }
   }
 
+  /**
+   * The parameters of the value handed over that receive a value from the other side: the complaint's chain of reasons
+   * goes straight from the value to "Types of parameters 'a' and 'b' are incompatible" (its code 2328), once, through
+   * restatements only, so a is the value's own parameter and what the other side hands it is what cannot be assigned.
+   */
+  function receivingParams(d) {
+    const out = [];
+    let c = typeof d.messageText === 'string' ? null : d.messageText;
+    for (c = c?.next?.[0]; c; c = c.next?.[0]) {
+      if (c.code === 2328) {
+        const m = /^Types of parameters '([^']+)' and '([^']+)'/.exec(typeof c.messageText === 'string' ? c.messageText : '');
+        // a second flip (a parameter of a parameter) hands the value back the other way: not followed
+        let rest = c.next?.[0], again = false;
+        for (; rest; rest = rest.next?.[0]) if (rest.code === 2328) again = true;
+        if (m && !again) out.push(m[1]);
+        break;
+      }
+      if (![2322, 2345, 2328].includes(c.code)) break; // a property, a return or another step: not the value's parameter
+    }
+    return out;
+  }
+  /** The value's parameter of that name, where a structured comment states it (or the whole signature is a comment's). */
+  function fromParam(said, e, name) {
+    let t;
+    try { t = checker.getTypeAtLocation(e); } catch { return; }
+    for (const sig of t?.getCallSignatures?.() ?? []) {
+      const decl = sig.declaration;
+      if (!decl) continue;
+      const param = decl.parameters?.find((p) => ts.isIdentifier(p.name) && p.name.text === name);
+      // its kind given whole by a comment: `/** @type {(a: K) => R} */ const f = (a) => ...`
+      const host = decl.parent && (ts.isVariableDeclaration(decl.parent) || ts.isPropertyAssignment(decl.parent)) ? decl.parent : null;
+      if (param && states(param)) note(said, param);
+      else if (inComment(decl) || (host && ts.getJSDocType(host))) note(said, decl);
+    }
+  }
+
+  /** Is e the place a value is put into: the name of a declaration, or the left of an assignment? */
+  function isTarget(e) {
+    const p = e.parent;
+    if (!p) return false;
+    if ((ts.isVariableDeclaration(p) || ts.isParameter(p) || ts.isPropertyDeclaration(p) || ts.isBindingElement(p)) && p.name === e) return true;
+    return ts.isBinaryExpression(p) && p.left === e && p.operatorToken.kind === ts.SyntaxKind.EqualsToken;
+  }
+
   /** d: the complaint; sf: its file; node: the deepest node at its start. */
   return function saidBy(d, sf, node) {
     const said = { own: false, providers: new Set() };
@@ -268,15 +321,23 @@ function makeClaims(checker, tree, mod) {
     const end = (d.start ?? 0) + (d.length ?? 0);
     while (e.parent && !ts.isSourceFile(e.parent) && e.parent.getStart(sf) === e.getStart(sf) && e.parent.end <= end) e = e.parent;
     if (ts.isReturnStatement(e) && e.expression) e = e.expression;
+    // A value that cannot be assigned where it goes (the owner's decision of 24 Nov 2026): only the receiving side
+    // counts, the parameter, field, variable or answer the value goes into. What the value handed over states is not
+    // what the complaint contradicts. Where the complaint points at the receiving place itself (a declaration's name,
+    // the left of an assignment), that place is read as before.
+    const receivingOnly = ASSIGNS.has(d.code) && !isTarget(e);
     // A complaint inside a structured comment is about that comment.
     const at = deepAt(sf, d.start ?? 0);
     if (inComment(at)) note(said, at);
-    const asked = askedOf(node, e);
+    const asked = receivingOnly ? [] : askedOf(node, e);
     // A name a file of another module does not export: that module's exports say so, for certain.
     if (NO_SUCH_EXPORT.has(d.code) || ((d.code === 2339 || d.code === 2551) && asked.some((x) => ts.isExpression(x) && isModuleNamespace(x)))) {
       for (const m of exportingModules([node, at], asked)) if (m !== mod.id) said.providers.add(m);
     }
-    fromValue(said, e);
+    if (!receivingOnly) fromValue(said, e);
+    // A function handed over whose parameter receives what the other side will hand it ("Types of parameters 'a' and
+    // 'b' are incompatible": b's value goes into a): there the function's own parameter is the receiving side.
+    if (receivingOnly) for (const name of receivingParams(d)) fromParam(said, e, name);
     fromExpected(said, e);
     // where a value written in place is held (an argument, a variable, a returned value)
     const holder = holderOf(e);
@@ -290,12 +351,13 @@ function makeClaims(checker, tree, mod) {
     let call = e;
     while (call && !ts.isCallExpression(call) && !ts.isNewExpression(call) && !ts.isStatement(call)) call = call.parent;
     // (for a complaint at an argument, only one about the number of arguments: the parameter answers the others)
-    if (call && (ts.isCallExpression(call) || ts.isNewExpression(call)) && (call === e || call.expression === e || within(e, call.expression) || (ARITY.has(d.code) && call.arguments?.includes(e)))) {
+    if (!receivingOnly && call && (ts.isCallExpression(call) || ts.isNewExpression(call)) && (call === e || call.expression === e || within(e, call.expression) || (ARITY.has(d.code) && call.arguments?.includes(e)))) {
       const decl = signatureOf(call)?.declaration;
       if (decl && (inComment(decl) || hasMark(decl) || decl.parameters?.some(states) || statesAnswer(decl))) note(said, decl);
       fromValue(said, call.expression);
     }
-    for (const r of d.relatedInformation ?? []) if (r.file && r.start !== undefined) fromPlace(said, r.file, r.start);
+    // the places the complaint names as related; for a value that cannot be assigned, only those of the expected kind
+    for (const r of d.relatedInformation ?? []) if (r.file && r.start !== undefined && (!receivingOnly || EXPECTED_FROM.has(r.code))) fromPlace(said, r.file, r.start);
     return said;
   };
 
@@ -510,8 +572,8 @@ export function check(tree, moduleId, opts = {}) {
   return { module: moduleId, refused: refusals.length > 0, refusals, cannotTell };
 }
 
-/** The product files a file imports: import and export from, import() of a written name, @import and import('...') in
- * comments. A name the tool cannot read is "cannot tell". */
+/** The product files a file imports: import and export from, import() and require() of a written name, @import and
+ * import('...') in comments. A name the tool cannot read is "cannot tell". */
 function importsOf(sf, cannot) {
   const out = [];
   const spec = (node, s) => { if (s && (ts.isStringLiteral(s) || ts.isNoSubstitutionTemplateLiteral(s))) out.push({ node, spec: s.text }); };
@@ -519,7 +581,8 @@ function importsOf(sf, cannot) {
     if ((ts.isImportDeclaration(n) || ts.isExportDeclaration(n)) && n.moduleSpecifier) spec(n, n.moduleSpecifier);
     else if (ts.isJSDocImportTag?.(n)) spec(n, n.moduleSpecifier);
     else if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument)) spec(n, n.argument.literal);
-    else if (ts.isCallExpression(n) && n.expression.kind === ts.SyntaxKind.ImportKeyword) {
+    // import(...), and require(...) under that name (a require made by createRequire too, as the staged scan reads it)
+    else if (ts.isCallExpression(n) && (n.expression.kind === ts.SyntaxKind.ImportKeyword || (ts.isIdentifier(n.expression) && n.expression.text === 'require'))) {
       const a0 = n.arguments[0];
       if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
     }
@@ -529,21 +592,55 @@ function importsOf(sf, cannot) {
 }
 
 /**
+ * The product file an import by the product's own package name stands for (the `name` of its root package.json, as
+ * the staged scan reads it): as the language reader resolves it (through the package's `exports`); without `exports`,
+ * <name>/<path> is that path from the product's top. Returns null where it cannot be followed.
+ */
+function makeOwnName(tree) {
+  const pkg = ownPackage(tree.root);
+  const own = typeof pkg.name === 'string' && pkg.name ? pkg.name : null;
+  const isOwn = (spec) => !!own && (spec === own || spec.startsWith(`${own}/`));
+  const seen = new Map(); // folder|name -> file or null
+  const resolve = (spec, from) => {
+    const key = `${path.dirname(from)}|${spec}`;
+    if (!seen.has(key)) seen.set(key, find(spec, from));
+    return seen.get(key);
+  };
+  const find = (spec, from) => {
+    try {
+      const r = ts.resolveModuleName(spec, from, options(), ts.sys).resolvedModule?.resolvedFileName;
+      if (r && !path.relative(tree.root, r).startsWith('..')) return path.resolve(r);
+    } catch { /* not resolved */ }
+    if (pkg.exports === undefined && spec.startsWith(`${own}/`)) return path.resolve(tree.root, spec.slice(own.length + 1));
+    return null;
+  };
+  return { isOwn, resolve };
+}
+
+/**
  * Declared uses against imports (design part 2, section 6: "a check that the module's declared uses match its
- * imports", reading its tests as well as its source). An import of another module's file that the entry does not
- * declare disagrees. A declared use of a module that is not before this one in the order disagrees. A declared use that neither an import nor a call by name through a carrier makes disagrees,
- * unless the module calls by names, or names tables, the reader cannot read, or reads values of unknown kind: then the
- * reader cannot tell.
+ * imports", reading its tests as well as its source). An import is one by a written path or by the product's own
+ * package name, made by import, export from, import(), require() or a comment's @import or import('...') (the owner's
+ * decision of 24 Nov 2026). An import of another module's file that the entry does not declare disagrees. A declared
+ * use of a module that is not before this one in the order disagrees. A declared use that neither an import nor a call
+ * by name through a carrier makes is "cannot tell", never refused (the owner's decision of 24 Nov 2026): it may be made
+ * by a path (a file read, a program run), which the check does not read.
  */
 function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel) {
   const imported = new Map();
   const entryFile = `${tree.cfg.process_folder.replace(/\/?$/, '/')}modules/${mod.id}.json`;
+  const ownName = makeOwnName(tree);
   for (const f of mod.files) {
     const sf = program.getSourceFile(f) ?? ts.createSourceFile(f, fs.readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
     const at = (node) => `${rel(f)}:${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}`;
     for (const { node, spec } of importsOf(sf, (node) => cannotTell.push({ at: at(node), code: 'import', why: 'an import of a name the tool cannot read', text: node.getText(sf).slice(0, 60) }))) {
-      if (!spec.startsWith('.') && !spec.startsWith('/')) continue; // from outside the product
-      const other = tree.moduleOfFile(path.resolve(path.dirname(f), spec));
+      let target;
+      if (spec.startsWith('.') || spec.startsWith('/')) target = path.resolve(path.dirname(f), spec);
+      else if (ownName.isOwn(spec)) {
+        target = ownName.resolve(spec, f);
+        if (!target) { cannotTell.push({ at: at(node), code: 'import', why: "an import by the product's own package name that the tool cannot follow to a file", text: node.getText(sf).slice(0, 60) }); continue; }
+      } else continue; // from outside the product
+      const other = tree.moduleOfFile(target);
       if (!other || other === mod.id) continue;
       if (!imported.has(other)) imported.set(other, []);
       imported.get(other).push({ at: at(node), file: rel(f) });
@@ -587,7 +684,8 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
       cannotTell.push({ at: entryFile, code: 'uses', why: 'calls by names, tables or values of unknown kind the reader cannot read may make this use', text: `declares ${p}; no import of it` });
       continue;
     }
-    refusals.push({ at: entryFile, code: 'uses', text: `declares ${p} in uses, but neither its source nor its tests import it or call it by name`, kind: 'declared uses disagree with the imports' });
+    // Neither source nor tests import it or call it by name: a use by path (a file read, a program run) may make it.
+    cannotTell.push({ at: entryFile, code: 'uses', why: `declares ${p} but no import of it is seen; a use by path is not read`, text: `declares ${p}; no import of it` });
   }
 }
 

@@ -351,7 +351,8 @@ export const word = () => 'a';
   assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /disagreement\(s\) in orders/);
   const text = out.join('\n');
   assert.match(text, /src\/orders\/index\.mjs:2 declared uses disagree with the imports: imports report, which process\/modules\/orders\.json does not declare in uses/);
-  assert.match(text, /src\/orders\/index\.mjs:7 \(b\) code disagrees with the stated interface of dates: Type 'number' is not assignable to type 'string'/);
+  // A value dates states, handed back where orders' own @returns receives it: the receiving side is orders' own (a).
+  assert.match(text, /src\/orders\/index\.mjs:7 \(a\) a comment disagrees with this module's code: Type 'number' is not assignable to type 'string'/);
   assert.match(text, /src\/orders\/index\.mjs:8 \(b\) code disagrees with the stated interface of dates: Argument of type 'number'/);
   assert.match(text, /src\/orders\/index\.mjs:11 \(a\) a comment disagrees with this module's code: Type 'string' is not assignable to type 'number'/);
   // --files: only the files named.
@@ -381,13 +382,14 @@ test('check: a declared use of a later module disagrees, in source or in tests, 
   assert.doesNotMatch(out.join('\n'), /not before this one/);
 });
 
-test('check: a declared use no code makes disagrees; what the reader cannot tell is said, never refused; rules of form are not taken', () => {
+test('check: a declared use with no import seen is "cannot tell"; what the reader cannot tell is said, never refused; rules of form are not taken', () => {
   const files = productFiles();
   files['process/modules/report.json'] = entry('report', ['dates', 'orders']);
   const root = makeRepo(files);
   const { ctx, out } = ctxFor(root, untouchable);
-  assert.throws(() => checkCmd(ctx, 'report', { _: [] }), /1 disagreement/);
-  assert.match(out.join('\n'), /process\/modules\/report\.json declared uses disagree with the imports: declares orders in uses, but neither its source nor its tests import it/);
+  // It may be made by a path (a file read, a program run), which the check does not read (the owner's decision of 24 Nov).
+  assert.equal(checkCmd(ctx, 'report', { _: [] }), 0);
+  assert.match(out.join('\n'), /cannot tell, not refused: process\/modules\/report\.json declares orders but no import of it is seen; a use by path is not read/);
   // An import of a provider's private file (the proof's rule 28), `this` in a plain handle (rule 49), a throw of an
   // unstated kind (rule 29): none refused. A computed import(): cannot tell.
   commit(root, {
@@ -481,4 +483,130 @@ test('a very long expression (20,000 terms) does not run the tool out of stack',
   const r = check(loadTree(root), 'report');
   assert.equal(r.refused, false);
   assert.match(r.cannotTell.find((c) => c.code === 'stack')?.why ?? '', /^the reader ran out of stack on this file/);
+});
+
+test('check reads require() of a written path and imports by the product\'s own package name, as imports', () => {
+  const files = productFiles();
+  files['package.json'] = { name: 'shop', type: 'module' };
+  // report declares dates only; its test reaches orders by require and by the product's own name.
+  files['test/report/index.test.mjs'] = `import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { orderDay } = require('../../src/orders/index.mjs');
+import { o2 } from 'shop/src/orders/index.mjs';
+const which = 'x';
+require(which);
+orderDay('3');
+`;
+  const root = makeRepo(files);
+  let r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.text}`), [
+    'test/report/index.test.mjs:3 imports orders, which process/modules/report.json does not declare in uses',
+    'test/report/index.test.mjs:4 imports orders, which process/modules/report.json does not declare in uses',
+  ]);
+  assert.ok(r.cannotTell.some((c) => c.at === 'test/report/index.test.mjs:6' && c.why === 'an import of a name the tool cannot read'));
+  // Declared, both settle; orders is earlier than report.
+  commit(root, { 'process/modules/report.json': JSON.stringify(entry('report', ['dates', 'orders'])) });
+  r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals, []);
+  assert.ok(!r.cannotTell.some((c) => /declares orders/.test(c.why)));
+  // From orders (line 2), an import of report (line 3) by the own name is refused as a later module.
+  commit(root, { 'test/orders/index.test.mjs': `import { orderDay } from '../../src/orders/index.mjs';\nimport 'shop/src/report/index.mjs';\norderDay('3');\n` });
+  r = check(loadTree(root), 'orders');
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.text}`), ['test/orders/index.test.mjs:2 imports report, which process/modules/orders.json does not declare in uses; report is later in the order, so declaring it would not settle this']);
+  // With the package's exports, the own name is followed as the reader resolves it; a name it cannot follow is
+  // "cannot tell".
+  commit(root, {
+    'package.json': JSON.stringify({ name: 'shop', type: 'module', exports: { './report': './src/report/index.mjs' } }),
+    'test/orders/index.test.mjs': `import { orderDay } from '../../src/orders/index.mjs';\nimport 'shop/report';\nimport 'shop/nowhere';\norderDay('3');\n`,
+  });
+  r = check(loadTree(root), 'orders');
+  assert.deepEqual(r.refusals.map((x) => x.at), ['test/orders/index.test.mjs:2']);
+  assert.ok(r.cannotTell.some((c) => c.at === 'test/orders/index.test.mjs:3' && /own package name that the tool cannot follow/.test(c.why)));
+});
+
+test('check: in a value that cannot be assigned, only the receiving side\'s comment counts (refusal b)', () => {
+  // dates states its function deliver; orders' assemble states nothing of its options; report hands deliver to it.
+  const files = productFiles();
+  files['src/dates/index.mjs'] = `${DATES()}
+/**
+ * @param {string} what
+ * @returns {Promise<{ ok: boolean }>}
+ */
+export async function deliver(what) { return { ok: !!what }; }
+`;
+  files['src/orders/index.mjs'] = `${ORDERS}export function assemble(ctx, { deliver = null } = {}) { return { ctx, deliver }; }\n`;
+  files['process/modules/report.json'] = entry('report', ['dates', 'orders']);
+  files['src/report/index.mjs'] = `import { deliver } from '../dates/index.mjs';\nimport { assemble } from '../orders/index.mjs';\nexport const store = assemble(1, { deliver });\n`;
+  const root = makeRepo(files);
+  let r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals, []);
+  assert.deepEqual(r.cannotTell.filter((c) => c.at === 'src/report/index.mjs:3').map((c) => c.why), ['plain code: no structured comment states what this contradicts']);
+  // Once orders states the option, the refusal names orders, whose comment the value contradicts.
+  commit(root, { 'src/orders/index.mjs': `${ORDERS}/**
+ * @param {number} ctx
+ * @param {{ deliver?: null }} [opts]
+ */
+export function assemble(ctx, { deliver = null } = {}) { return { ctx, deliver }; }
+` });
+  r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.kind}`), ['src/report/index.mjs:3 (b) code disagrees with the stated interface of orders']);
+  // Its own stated answer, contradicted by a value a provider states, is (a): the answer is what receives it.
+  commit(root, { 'src/report/index.mjs': `import { parseDay } from '../dates/index.mjs';\nimport { assemble } from '../orders/index.mjs';\n/** @returns {string} */\nexport const day = () => parseDay('1').n;\nexport const s = assemble;\n` });
+  r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.kind}`), ["src/report/index.mjs:4 (a) a comment disagrees with this module's code"]);
+  // A function of dates handed to map: map hands its index into the function's stated parameter, so that parameter is
+  // the receiving side, and dates is named.
+  commit(root, {
+    'src/dates/index.mjs': `${DATES()}\n/**\n * @param {string} text\n * @param {'short' | 'long'} [form]\n * @returns {string}\n */\nexport function label(text, form) { return form ? text : text; }\n`,
+    'src/report/index.mjs': `import { label } from '../dates/index.mjs';\nexport const labels = ['a', 'b'].map(label);\n`,
+  });
+  r = check(loadTree(root), 'report');
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.kind}`), ['src/report/index.mjs:2 (b) code disagrees with the stated interface of dates']);
+});
+
+test('a class member\'s own bound is in its listing, and a changed one tells its users', () => {
+  const root = mkdtempSync(join(tmpdir(), 'p4-cb-'));
+  const after = mkdtempSync(join(tmpdir(), 'p4-cb-'));
+  const cal = (bound) => `${DATES()}
+export class Cal {
+  /**
+   * @param {number} n
+   * @returns {number}
+   * @bound n: whole number, ${bound}
+   */
+  day(n) { return n; }
+  /**
+   * @param {number} n
+   * @returns {number}
+   * @bound at most ${bound}
+   */
+  static max(n) { return n; }
+}
+`;
+  const files = productFiles();
+  files['src/dates/index.mjs'] = cal('1 to 31');
+  files['src/orders/index.mjs'] = `${ORDERS}import { Cal } from '../dates/index.mjs';\n/** @returns {number} */\nexport const first = () => new Cal().day(1) + Cal.max(2);\n`;
+  write(root, files);
+  write(after, { ...files, 'src/dates/index.mjs': cal('1 to 30') });
+  const l = analyse(root).listings.get('dates').entries;
+  assert.deepEqual(l['Cal#day'].bounds, ['n: whole number, 1 to 31']);
+  assert.deepEqual(l['Cal.max'].bounds, ['at most 1 to 31']);
+  const r = notice(root, after, 'dates');
+  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['Cal#day: bound changed', 'Cal.max: bound changed']);
+  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => `${x.entry}: ${x.changes}`)]), [['orders', ['Cal#day: bound changed', 'Cal.max: bound changed']]]);
+});
+
+test('not followed fully: a reason names its first six places and how many more, so the notice keeps a size', () => {
+  const root = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
+  const after = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
+  const files = productFiles();
+  files['process/modules/order.txt'] = 'dates\norders\nreport\nidle\n';
+  files['process/modules/idle.json'] = entry('idle', ['dates']);
+  files['src/idle/index.mjs'] = Array.from({ length: 9 }, (_, i) => `export const v${i} = JSON.parse('{}').f${i};\n`).join('');
+  write(root, files);
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
+  const r = notice(root, after, 'dates');
+  const nf = r.told.find((t) => t.user === 'idle').reasons[0].notFollowed;
+  const places = Array.from({ length: 6 }, (_, i) => `src/idle/index.mjs:${i + 1} JSON.parse('{}')`).join('; ');
+  assert.deepEqual(nf, ['declares dates but no use of it is found in its code', `reads or calls values of unknown kind: ${places}; and 3 more`]);
 });
