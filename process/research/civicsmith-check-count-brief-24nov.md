@@ -16,7 +16,8 @@ You are a read-only reading session on neobobkrause/civicsmith-copy, for PROCESS
 push, no pull request, no comment, no record of the shared state; write files only under /tmp. Report at the end.
 
 1. git fetch origin p4-tranche, and work at the tip of origin/p4-tranche (detached). Note its commit id.
-2. Read process.json: note process.commit (the pinned version; call it OLD).
+2. OLD is Process4 commit 0eec86f2 (the version civicsmith was on before its move of 24 Nov; resolve the full id with
+   git ls-remote or after cloning). Read process.json and note process.commit too.
 3. Clone https://github.com/neobobkrause/process4 twice, outside the repository: /tmp/p4-old at OLD, and /tmp/p4-new at the
    newest commit of its main (note that commit id; call it NEW). In each, cd tool and npm ci.
 4. For every module in the product's module list (the names in process/modules/order.txt, or as process.json's module list
