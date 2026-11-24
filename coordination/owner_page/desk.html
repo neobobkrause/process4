@@ -22,12 +22,21 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #10. You approved the update; PROCESS #10 has handed over so a fresh PROCESS #11 builds it: start it (below). Your drop of t1 is built; civicsmith gets it, and the update, by your move line once the update is in. Still open: requirements held for later; archiving old PROCESS sessions.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. The update you approved is being built; two of its three parts are done and pass their tests. Its first part removes both the 45-minute limit and the run that passed with no tests, so those two items are gone from this page. Next: the last part, the texts, then the trial product, then civicsmith on your move line. Still open for you: requirements held for later.</p>
 </header>
 
 <section class="card">
 <h2>Done: your drop of tranche t1 (your decision C, 24 Nov)</h2>
 <p>Built and merged (pull request 225). ARCH carries a drop out with one tool command that puts back main's version of every code and test file the tranche changed, keeping your requirements, module list, records and lanes' work; the test run passes it at once only when every changed file is exactly main's. civicsmith gets it by your move line.</p>
+</section>
+
+<section class="card">
+<h2>Covered by the update: the 45-minute limit, and the run that passed with no tests</h2>
+<p>Both items you saw here before need nothing from you. In the update, a job runs its tests once, in its own session, and GitHub's test check only reads the recorded result. So GitHub runs no tests at all: there is no 45-minute run to be cut off, and no run that can see a job as unfinished and pass it with nothing tested. civicsmith gets this with the update, by your move line, once it is built and tried on the trial product. Until then civicsmith runs no jobs (you dropped t1), so neither fault can bite in the meantime.</p>
+</section>
+
+<section class="card">
+<h2>Done: PROCESS #8, #9 and #10 archived (24 Nov, on your word)</h2>
 </section>
 
 <section class="card">
@@ -37,28 +46,9 @@ a{color:var(--accent)}
 
 
 
-<section class="wait">
-<h2>Waiting for you, urgent: civicsmith's round is stuck on a 45-minute limit</h2>
-<p><b>The bottom line.</b> The test run on GitHub is cut off after 45 minutes. civicsmith's plane module has tests that take 44 minutes; with the setup before them, the run passes 45 minutes and GitHub cancels it just after all its tests pass. It has happened three times. plane cannot merge, and round 1 waits on it. (This corrects what I told you earlier: it was not edits cancelling the run.) The 45 minutes is a number in the test setup file; nothing in the design asked for it.</p>
-<ul>
-<li><b>B. Raise the limit to GitHub's own ceiling, 6 hours (recommended now).</b> One line in the test setup file. civicsmith keeps its own copy of that file, so the same line goes into civicsmith's copy too, by a change in civicsmith's repository.</li>
-<li><b>C. The bigger change we are discussing:</b> the job's own test run is the only run, and GitHub runs no tests. That removes this limit with the rest, but takes longer to build. B can be done now and C later.</li>
-<li><b>A. No change.</b> plane can never merge.</li>
-</ul>
-<p>Meanwhile civicsmith's ARCH has decided, as a product matter, that plane's job speeds up its own tests without dropping anything they prove (target about 30 minutes), which may unstick plane without any change from you. The limit would still stop any module whose tests take longer.</p>
-<p>Reply on this item with your choice, for example "Decision: B".</p>
-</section>
 
-<section class="wait">
-<h2>Waiting for you, most important: a change can pass its tests with no test run</h2>
-<p><b>The bottom line.</b> When a job sends its last change and marks itself ready within the same second, GitHub starts two test runs. The one that survives can be the one that still saw the job as unfinished, and such a run passes at once without running anything. GitHub then counts the tests as passed. civicsmith's ARCH caught it on one job and did not merge. The same thing let one of my own tool changes merge here before its tests had finished; they passed afterwards. Nothing broken is known to have merged.</p>
-<ul>
-<li><b>B. The test run checks, when it starts, whether the change is really marked ready (recommended),</b> instead of trusting what it was told when it was started. A run that starts after the ready mark then always runs the tests. Also, the tool's report of a run says when nothing ran. This changes the test setup each product keeps on GitHub, so civicsmith needs it brought in with the version move.</li>
-<li><b>C. The tool refuses to merge on a run that saw an unfinished change,</b> and asks for the run again. A guard on the merge rather than a cure; reaches civicsmith by the move line alone.</li>
-<li><b>A. No change.</b> Untested changes can merge when the timing is close.</li>
-</ul>
-<p>If you choose the group of changes above, its first item removes this fault altogether, and C is then the better stopgap until it is built: it needs no change in civicsmith's repository. Reply on this item with your choice, for example "Decision: C".</p>
-</section>
+
+
 
 <section class="wait">
 <h2>Waiting for you, first: one line that moves civicsmith onto today's fixes</h2>
@@ -101,15 +91,7 @@ a{color:var(--accent)}
 
 
 
-<section class="wait">
-<h2>Waiting for you: start PROCESS #11 to build the update, then archive PROCESS #8, #9 and #10</h2>
-<p>You approved the update plan (24 Nov, "Decision: the update plan as laid out"). PROCESS #10 is half full, so it wrote down exactly what to build and handed over; PROCESS #11 records your words, builds it, runs it once on the trial product, and then brings it to civicsmith on your line.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md and process/design-decisions-2.md; process/README.md; the index of your research, process/research/README.md; process/lanes/civicsmith/README.md; and process/handover.md — read it last and continue from it. Open a research file only when a question needs it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>It names itself <b>PROCESS #11</b>. Then archive the sessions named <b>PROCESS #8</b>, <b>PROCESS #9</b> and <b>PROCESS #10</b> (each session's menu, <b>Archive</b>).</li>
-</ol>
-</section>
+
 
 <section class="card">
 <h2>Done: civicsmith is on your three decisions</h2>
