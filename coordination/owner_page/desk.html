@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. civicsmith is on the update. Its move met one small fault in how a move is written down: a choice for you below (it waits on nothing). The read-only count on civicsmith is now optional information. Still open: requirements held for later.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #11. civicsmith is on the update, and the order of a move is now written down (your decision B). Nothing new is waiting for you except requirements held for later; the read-only count on civicsmith is optional.</p>
 </header>
 
 <section class="card">
@@ -39,14 +39,9 @@ a{color:var(--accent)}
 <h2>Done: PROCESS #8, #9 and #10 archived (24 Nov, on your word)</h2>
 </section>
 
-<section class="wait">
-<h2>Waiting for you, when convenient: write down the order of a move that changes the test check</h2>
-<p><b>The bottom line.</b> civicsmith moved to the update, but its ARCH first tried it as one change and GitHub's test check failed it. The new check fetches the tool at the version civicsmith was on before the change, and that older tool cannot read the new test record. ARCH then did it as two changes in order, first the version, then the new check, and both passed. Nothing is stuck; it cost one failed run. The written steps for a move say "one change to the version" and say nothing of the check, so the next move that changes the check may meet it again.</p>
-<ul>
-<li><b>B. Write the order down (recommended).</b> Where a new version brings a new test check, a move is two changes in order: the version first, then the check. One sentence in the design and in ARCH's text; no tool change. Products get it with their next move.</li>
-<li><b>A. No change.</b> ARCH found the order itself this time.</li>
-</ul>
-<p>Reply on this item with your choice, for example "Decision: B".</p>
+<section class="card">
+<h2>Done: the order of a move that changes the test check (your decision B, 24 Nov)</h2>
+<p>Merged (pull request 242), your words recorded exactly. Where a new version brings a new test check, a move is now written as two changes in order: the version first, then the check. One sentence in the design, in ARCH's text and in the tool's command list; no tool change. Products get it with their next move.</p>
 </section>
 
 <section class="card">
