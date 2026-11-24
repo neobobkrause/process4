@@ -28,9 +28,12 @@ export function makeGitHub(gh = realGh) {
     // Every pull request into a branch, open and closed, newest first.
     allPRs: (slug, base) => pages(`repos/${slug}/pulls?state=all&base=${encodeURIComponent(base)}&sort=created&direction=desc&per_page=100`),
     closePR: (slug, n) => send('PATCH', `repos/${slug}/pulls/${n}`, { state: 'closed' }),
-    // The runs of one workflow on a branch, from GitHub's record of runs.
-    workflowRuns: (slug, branch) => pages(`repos/${slug}/actions/runs?branch=${encodeURIComponent(branch)}&event=pull_request&per_page=100`)
+    // The workflow runs of pull request events on one head commit, from GitHub's record of runs.
+    runsForHead: (slug, sha) => pages(`repos/${slug}/actions/runs?head_sha=${sha}&event=pull_request&per_page=100`)
       .flatMap((p) => p.workflow_runs || []),
+    // Asks GitHub to run a workflow run again. True when GitHub took it, false when it refused (a run still going).
+    // `-i` prints the answer's status line, so that an empty answer to a taken request is told from a refusal.
+    rerunRun: (slug, id) => gh(['api', '-i', '-X', 'POST', `repos/${slug}/actions/runs/${id}/rerun`], { allowFail: true }) !== null,
     closedPRs: (slug, base) => api(`repos/${slug}/pulls?state=closed&base=${encodeURIComponent(base)}&sort=updated&direction=desc&per_page=50`) || [],
     createPR: (slug, body) => {
       const pr = send('POST', `repos/${slug}/pulls`, body);

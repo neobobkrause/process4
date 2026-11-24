@@ -3,10 +3,15 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { HELP, heapFlag, main } from '../p4.mjs';
 import { requiredCheck } from '../lib/config.mjs';
+import { block } from '../lib/github.mjs';
+import { TEST_MARK } from '../lib/testrecord.mjs';
 import { git } from '../lib/util.mjs';
 import { fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
 // Any reach to GitHub, git's checkout or the clock fails the test: --help must only print.
+// A pass recorded for a pull request's head, so that ready marks it.
+const passFor = (gh, pr) => gh.addComment('o/product', pr.number, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 0, scope: 'whole module', result: 'pass', passed: 1, failed: 0 }));
+
 const untouchable = new Proxy({}, { get: (_, k) => () => { throw new Error(`--help reached ${String(k)}`); } });
 
 test('every command\'s --help only prints its help, and acts on nothing', () => {
@@ -23,9 +28,16 @@ test('every command\'s --help only prints its help, and acts on nothing', () => 
   assert.equal(out.length, Object.keys(HELP).length);
 });
 
-test('the required run\'s second part does not run when the run was cancelled', () => {
+// Tests once, in the job (24 Nov 2026): the required run is one job, still named module-tests, that runs no test,
+// installs none of the product's dependencies, and only reads the test record.
+test('the required run is one short job named module-tests that runs no test, only the verdict', () => {
   const wf = readFileSync(new URL('../../shims/module-tests.yml', import.meta.url), 'utf8');
-  assert.match(wf, /module-tests:\n\s+needs: scope\n(\s+#.*\n)*\s+if: \$\{\{ !cancelled\(\) \}\}/);
+  assert.match(wf, /\njobs:\n {2}module-tests:\n {4}runs-on: ubuntu-latest\n {4}timeout-minutes: 10\n/);
+  assert.equal(wf.match(/^ {2}[\w-]+:\n {4}runs-on:/gm).length, 1);
+  assert.match(wf, /p4\.mjs" run verdict --base "\$BASE" --base-ref "\$BASE_REF" --branch "\$HEAD_REF" --draft "\$DRAFT" --head "\$HEAD_SHA"/);
+  assert.doesNotMatch(wf, /run tests|lock_files|needs:/);
+  assert.match(wf, /concurrency:\n {2}group: module-tests-\$\{\{ github\.event\.pull_request\.number \}\}\n {2}cancel-in-progress: true/);
+  assert.match(wf, /types: \[opened, synchronize, reopened, edited, ready_for_review, converted_to_draft\]/);
 });
 
 // Fault A: the required check's name is tool-tests on the process repo (which holds the tool),
@@ -43,6 +55,7 @@ test('ready with no number uses the current branch\'s open pull request', () => 
   git(['checkout', '-q', '-b', 'job/dates/1'], { cwd: root });
   const gh = fakeGitHub();
   const pr = gh.createPR('o/product', { head: 'job/dates/1', base: 'tranche', draft: true, title: 'x' });
+  passFor(gh, pr);
   const out = [];
   const code = main(['ready'], { root, slug: 'o/product', gh, log: (l) => out.push(String(l)), wait: () => {} });
   assert.equal(code, 0);
@@ -74,6 +87,7 @@ test('close/ready resolve the pull request from --branch on a detached checkout'
   assert.equal(gh.getPR('o/product', pr.number).state, 'closed');
   // ready resolves --branch the same way.
   const pr2 = gh.createPR('o/product', { head: 'job/dates/3', base: 'tranche', draft: true, title: 'y' });
+  passFor(gh, pr2);
   assert.equal(main(['ready', '--branch', 'job/dates/3'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} }), 0);
   assert.equal(gh.getPR('o/product', pr2.number).draft, false);
 });

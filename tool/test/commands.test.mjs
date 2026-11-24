@@ -3,7 +3,8 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
-import { parseBlock } from '../lib/github.mjs';
+import { block, parseBlock } from '../lib/github.mjs';
+import { TEST_MARK } from '../lib/testrecord.mjs';
 import { mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
@@ -129,14 +130,17 @@ test('open --title opens a draft into the tranche, or into main with --into-main
   assert.throws(() => open(ctx, { _: [], module: 'orders' }), /no branch job\/orders/);
 });
 
+// A pass recorded for a pull request's head (tests once, in the job), so that ready marks it.
+const passFor = (gh, pr) => gh.addComment('o/product', pr.number, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 0, scope: 'whole module', result: 'pass', passed: 1, failed: 0 }));
+
 test('ready marks ready and reads it back', () => {
   const gh = fakeGitHub();
   const { ctx, out } = ctxFor(makeRepo(), gh);
-  gh.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true });
+  passFor(gh, gh.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true }));
   ready(ctx, 1);
   assert.match(out.join('\n'), /ready; the required run module-tests has been asked for/);
   const stuck = fakeGitHub({ markReady: () => {} });
-  stuck.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true });
+  passFor(stuck, stuck.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true }));
   assert.throws(() => ready(ctxFor(makeRepo(), stuck).ctx, 1), /still a draft/);
 });
 
@@ -151,7 +155,7 @@ test('results reads the required run on the head commit', () => {
   gh.s.runs.push({ id: 3, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'failure', started_at: '3', html_url: 'R3' });
   gh.s.logs[3] = 'line 1\nnot ok 1 - orders refuses 1000\n';
   results(ctx, 1);
-  assert.deepEqual(out.map((l) => l.split(':')[0]), ['waiting', 'passed', 'failed (failure)', 'line 1\nnot ok 1 - orders refuses 1000']);
+  assert.deepEqual(out.filter((l) => !l.startsWith('test record:')).map((l) => l.split(':')[0]), ['waiting', 'passed', 'failed (failure)', 'line 1\nnot ok 1 - orders refuses 1000']);
 });
 
 test('merge obeys the owner\'s hold, waits a minute after the last merge, and merges at the head commit', () => {
@@ -202,7 +206,7 @@ test('results passes over a run cancelled by a newer one', () => {
   gh.s.runs.push({ id: 1, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'success', started_at: '1', html_url: 'R1' });
   gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
   results(ctx, 1);
-  assert.match(out.join('\n'), /^passed: .*R1$/);
+  assert.match(out.join('\n'), /^test record: does not stand: no test record; run p4 test\npassed: .*R1$/);
 });
 
 test('results says waiting, not failed, when the only run on the head was cancelled by the newer one (fault k)', () => {
@@ -211,7 +215,7 @@ test('results says waiting, not failed, when the only run on the head was cancel
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
   results(ctx, 1);
-  assert.match(out.join('\n'), /^waiting: .*no run that was not cancelled yet/);
+  assert.match(out.join('\n'), /\nwaiting: .*no run that was not cancelled yet/);
   assert.doesNotMatch(out.join('\n'), /failed/);
 });
 

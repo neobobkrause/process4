@@ -11,9 +11,11 @@ import {
 } from './state.mjs';
 import { fail, git, underPath } from './util.mjs';
 import { DROP } from './scope.mjs';
+import { noticeSeq, recordStands } from './testrecord.mjs';
+import { recordsOf, scopeForPR } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, describe, failedRuns as countFailed, finished as isFinished, moduleStates,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, describe, finished as isFinished, moduleStates,
   nextJobName, pickNext, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
 
@@ -240,8 +242,20 @@ export function open(ctx, a) {
   return 0;
 }
 
-// 4. ready <pr>
+// 4. ready <pr>: marks ready only where the test record stands for the head commit, or where nothing needs a record:
+// the scope, judged as the required run's verdict judges it, is nothing and no notice has reached the job. Otherwise
+// marks nothing and says why. In the process repository every pull request is into main: its scope is nothing.
 export function ready(ctx, n) {
+  const before = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  const { jobBlock, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, before.head.sha, jobBlock);
+  if (st.ok) ctx.log(st.why);
+  else {
+    const s = scopeForPR(ctx, before, { jobBlock, related: false });
+    if (s.scope !== 'nothing') fail(`not marked ready: ${st.why} (scope ${s.scope}, because ${s.why})`);
+    if (noticeSeq(jobBlock) > 0) fail(`not marked ready: ${st.why} (scope nothing, but ${noticeSeq(jobBlock)} notice(s) reached the job)`);
+    ctx.log(`no test record needed: scope nothing, because ${s.why}`);
+  }
   ctx.gh.markReady(ctx.slug, n);
   const pr = ctx.gh.getPR(ctx.slug, n);
   if (pr.draft) fail(`pull request ${n} is still a draft`);
@@ -249,9 +263,14 @@ export function ready(ctx, n) {
   return 0;
 }
 
-// 14. results <pr>: the required run's state on the head commit.
+// 14. results <pr>: the test record's standing, then the required run's state on the head commit.
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
+  const { jobBlock, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, pr.head.sha, jobBlock);
+  ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
+  const d = record?.data;
+  if (d) ctx.log(`  ${d.result} at ${String(d.commit).slice(0, 10)}: ${d.passed} passed, ${d.failed} failed, scope ${d.scope}, notice ${d.notice_seq}, ${d.fails_total} failed run(s) in all, written ${d.written}`);
   const required = requiredCheck(ctx.root);
   const runs = ctx.gh.checkRuns(ctx.slug, pr.head.sha, required).sort((x, y) => String(y.started_at).localeCompare(String(x.started_at)));
   // A run cancelled by a newer one (`ready` cancels the draft's) is not the result. Where every
@@ -415,14 +434,14 @@ export function roundDoneCmd(ctx) {
   return 0;
 }
 
-// 15. failed-runs <pr>: every failed required run on the pull request, with no reset.
+// 15. failed-runs <pr>: the failed test runs on the pull request, from its test record's fails_total, with no reset.
 export function failedRunsCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
-  const required = requiredCheck(ctx.root);
-  const failed = countFailed(ctx.gh.workflowRuns(ctx.slug, pr.head.ref), pr, required);
-  ctx.log(`${failed.length} failed run(s) of ${required} on pull request ${n}${failed.length ? `: ${failed.map((r) => r.html_url).join(' ')}` : ''}`);
+  const d = recordsOf(ctx, n).record?.data;
+  const failed = Number(d?.fails_total) || 0;
+  ctx.log(`${failed} failed test run(s) on pull request ${n}, from its test record${d ? ` (the last: ${d.result} at ${String(d.commit).slice(0, 10)}, written ${d.written})` : ' (none written yet)'}`);
   const module = pr.head.ref.match(JOB)?.[1] || pr.head.ref;
-  if (failed.length === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
-  if (failed.length >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
+  if (failed === 3) ctx.log(`for ARCH: two corrections of ${module} have failed; replace its session with a fresh one, which first works out why the corrections were made`);
+  if (failed >= 5) ctx.log(`for ARCH: the replacement of ${module} has also failed twice; record ${module} blocked with the reason, free its slot, and take it as a design question`);
   return 0;
 }
