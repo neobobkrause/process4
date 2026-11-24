@@ -67,3 +67,31 @@ the halt starts all 29 modules). Each of B, C, D adds no test, gate, review or s
 design already gives it. Changes for D: the tool (`workOf`, `finished`, `round-done` reading the round record's `scope`;
 a `scope` field written by `state write round`), design part 3, section 1, build text 5 section 2, ARCH's starting text
 (one clause).
+
+## civicsmith ARCH #13 on D, step by step (24 Nov 2026, ~22:40Z)
+
+Asked at the owner's word ("Yes, ask civicsmith's ARCH first", 24 Nov); answer passed on unchanged by coordinator #5. In
+short (its words where quoted; measured: 78 requirements not yet met in 29 modules; the rest its judgment):
+
+- The eight steps become "roughly 20 to 35 new or reworded requirements, roughly 25 to 40 placed flaws, about 15 or more
+  module-list PRs of mine, and no mechanical edit planned". Most of step 3 (about 120 test files to about 20 owners) and
+  step 8 is placed work, which D counts whatever the scope says.
+- "Can a scope list name all of it? Yes, with four points": entries by requirement (`<module> R<n>`) where a module already
+  holds unmet ones (control-plane 15, plane 7, journey-check 16); ARCH rewrites the scope during the tranche as it adds each
+  step's requirements, so the tool must read it fresh at each `next-job` and `open`; a split moves requirement lines to a
+  new module, so ARCH rewrites the scope in the same act; a met requirement reworded back to not yet met waits unless named.
+- "D must reach `open --module` as well as next-job. A job's block must carry only in-scope requirements plus placed work,
+  and the job's text must say that the other "[not yet met]" lines in its requirements file are not its work."
+- "No step needs a job to change another module's files": step 3 is two merges, ARCH's module-list move, then the new
+  owner's job.
+- The order between steps is kept by when ARCH writes each step's work, not by the scope.
+- Told jobs outside the scope: not measured; "a handful to a few dozen across the tranche"; starting them above the slot
+  number "is acceptable to me. They carry only their notice, run only related tests, and are the guard on stability that
+  the owner wants."
+- "D is the right shape, because the scope belongs to the tranche and ends with it, while C and B would leave marks in the
+  requirements files that outlive it."
+
+So D as built must: read `round.scope` afresh in `workOf` (so `next-job`, `open --module`, `finished` and `round-done` all
+honour it); write only in-scope requirements into a job block; and the job's starting text says the requirements its block
+does not name are not its work. Not given by D, told to the owner: confirming stability before other work starts is his
+halt kept on after the refactoring tranche merges (the next tranche opens with everything, and needs no approval of his).
