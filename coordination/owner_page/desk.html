@@ -22,8 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 23 Nov 2026, evening, by PROCESS #10. The research you asked for is done. Waiting for you: the group of changes we discussed, now with the research in it; the 45-minute limit (urgent); a change passing with no tests run; four smaller questions; one line in civicsmith's coordinator session; archiving PROCESS #8 and #9.</p>
+<p class="updated">Updated 24 Nov 2026 by PROCESS #10. New and stopping civicsmith: your drop of tranche t1 has no way to be carried out (top). Also waiting: the group of changes we discussed; the 45-minute limit; a change passing with no tests run; four smaller questions; one line in civicsmith's coordinator session; archiving PROCESS #8 and #9.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you, stops civicsmith now: your drop of tranche t1 cannot be carried out</h2>
+<p><b>The bottom line.</b> You decided to drop t1 and start the refactor from main's code. The design lets you drop a tranche but never says how it is done. Putting main's code back onto the tranche branch takes a pull request, and the test run on such a pull request runs every module t1 touched, plane among them: over the 45-minute limit, and main's own code fails the check in several modules. civicsmith's ARCH found it and stopped.</p>
+<ul>
+<li><b>C. A drop is the tranche's merge into main, run the other way (recommended).</b> When a tranche merges into main, none of the tests runs. A drop carries main's code back the same way: ARCH runs one tool command that puts back main's version of every code and test file t1 changed, and nothing else (your requirements, the module list, the records and the lanes' design work stay, as you said). The test run passes it at once only when every file it changes is exactly main's, so nothing untested can ride along. ARCH then closes t1's open jobs, clears the round, and marks "not yet met" the requirements t1 had met. A small tool change; civicsmith gets it by the move line.</li>
+<li><b>B. You merge the pull request yourself, past the test run, by a click on GitHub.</b> No tool change, if your branch rule lets you (not known). You would be landing hundreds of files with nothing to show they are only main's.</li>
+<li><b>A. No change.</b> Each module's next job first puts its own files back to main's, then does its work. Modules that get no job keep t1's code, and every restore runs that module's whole tests and the check.</li>
+</ul>
+<p>Reply on this item, for example "Decision: C".</p>
+</section>
 
 <section class="wait">
 <h2>Waiting for you, the main one: the group of changes we discussed, with the research done</h2>

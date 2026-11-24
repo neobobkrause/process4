@@ -4,6 +4,9 @@ PROCESS records its research here before it proposes a change (design part 6, se
 text). Research is background, not governing text (design part 5, section 3): PROCESS reads this index in full, and reads
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
+## 24 Nov 2026
+- `dropped-tranche-24nov.md` — the owner dropped civicsmith's t1, and no route carries a drop out (a restoring pull request runs every touched module whole); options A to C (C: a drop is the tranche's merge in reverse, no tests run).
+
 ## 23 Nov 2026
 - `change-group-23nov.md` — the group put to the owner on 23 Nov evening: tests once in the job (one background command, up to 2 hours), notices to running jobs, merging after the modules a job uses, slots, the check's two faults, module tests through imports only; and what to do now.
 - `long-modules-23nov.md` — where tests run and how long each place allows: a session's background command up to 2 hours, GitHub 6 hours, the 45 minutes the process's own; tests already run in parallel; options (worker).
