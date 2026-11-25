@@ -469,6 +469,11 @@ export function noticeText(r) {
     if (e.notConfirmed) L.push(`      accepts more, not confirmed: ${e.notConfirmed}`);
     if (e.before?.accepts !== e.after?.accepts && (e.before?.accepts || e.after?.accepts)) L.push(`      accepts before: ${e.before?.accepts ?? '-'}\n      accepts after:  ${e.after?.accepts ?? '-'}`);
     if (e.before?.handsBack !== e.after?.handsBack && (e.before?.handsBack || e.after?.handsBack)) L.push(`      hands back before: ${e.before?.handsBack ?? '-'}\n      hands back after:  ${e.after?.handsBack ?? '-'}`);
+    // The kinds of error raised, and a message's channel, are part of what is handed back: printed where they differ, so a
+    // "hands back differently" that comes from them is visible (civicsmith notify 1356 showed only the kinds).
+    if (JSON.stringify(e.before?.throws ?? []) !== JSON.stringify(e.after?.throws ?? [])) L.push(`      raises before: ${JSON.stringify(e.before?.throws ?? [])}\n      raises after:  ${JSON.stringify(e.after?.throws ?? [])}`);
+    if ((e.before?.channel ?? '') !== (e.after?.channel ?? '')) L.push(`      channel before: ${e.before?.channel ?? '-'}\n      channel after:  ${e.after?.channel ?? '-'}`);
+    if (e.before?.optional !== e.after?.optional && e.after?.optional) L.push('      may now be missing');
     if (JSON.stringify(e.before?.bounds) !== JSON.stringify(e.after?.bounds) && e.changes.includes('bound changed')) L.push(`      bounds before: ${JSON.stringify(e.before?.bounds ?? [])}\n      bounds after:  ${JSON.stringify(e.after?.bounds ?? [])}`);
   }
   for (const t of r.told) {

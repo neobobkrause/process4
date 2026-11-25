@@ -143,7 +143,9 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
   const rest = [];
   for (const t of told) {
     const mine = jobs.filter((p) => p.head.ref.match(JOB)[1] === t.module).sort((a, b) => Number(b.head.ref.match(JOB)[2]) - Number(a.head.ref.match(JOB)[2]));
-    const holder = mine.find((p) => names(blockOf(p), t) || (p.state === 'open' && (blockOf(p)?.data.work || []).includes(workLine(t))));
+    // A block that names the notice in `notices`, or in its work lines (a told job opened from waiting work, before
+    // `open` wrote `notices`), holds it, whatever the pull request's state.
+    const holder = mine.find((p) => names(blockOf(p), t) || (blockOf(p)?.data.work || []).includes(workLine(t)));
     if (holder) {
       ctx.log(`the job of ${t.module} (pull request ${holder.number}${holder.state === 'open' ? '' : `, ${holder.merged_at ? 'merged' : 'closed'}`}) holds the notice from ${t.from} (pull request ${n}) already`);
       continue;

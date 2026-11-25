@@ -240,6 +240,8 @@ export function open(ctx, a) {
   // merged pull request (noticecomments.mjs).
   const comments = new Map();
   if (notices.length) job.uses = notices.flatMap((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
+  // The notices the job carries, by provider and merged pull request, so a re-run of notify knows it has them (no repeats).
+  if (notices.length) job.notices = notices.map((w) => ({ from: w.from, merged: Number(w.merged) }));
   const n = Number(name.match(JOB)[2]);
   const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
   ctx.gh.addComment(ctx.slug, pr.number, block(JOB_MARK, job));

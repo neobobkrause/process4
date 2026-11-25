@@ -145,6 +145,8 @@ test('open --module copies each waiting notice\'s reasons for its module from th
   assert.deepEqual(job.work, ['notice from dates (pull request 7)', 'notice from dates (pull request 8)', 'notice from dates (pull request 9)']);
   // Every part's reasons of this module, in order; an older entry that carries its reasons, as is; not another module's.
   assert.deepEqual(job.uses, [...big, { module: 'dates', entry: 'old' }, day]);
+  // The notices it carries, so a re-run of notify skips it whatever its state (no repeats).
+  assert.deepEqual(job.notices, [{ from: 'dates', merged: 7 }, { from: 'dates', merged: 8 }, { from: 'dates', merged: 9 }]);
   const waiting = parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work;
   assert.deepEqual(waiting.map((w) => w.module), ['report']);
 });
