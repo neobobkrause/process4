@@ -1,7 +1,8 @@
 // The product as the notice reads it, from the Process4 forms (build text 2, sections 3 and 7): process.json names
 // the process folder and the language reader's code files; <process folder>/modules/order.txt gives the order; each
-// module's entry <name>.json gives its files, tests, interface files (`public`) and declared uses. A file belongs to
-// the module with the longest matching path. Replaces the proof's loader of its own modules.json.
+// module's entry <name>.json gives its files, tests and interface files (`public`). A file belongs to the module with
+// the longest matching path. A module's declared uses are not here: they are the providers its uses file names
+// (usesfile.mjs, declaredUses). Replaces the proof's loader of its own modules.json.
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, loadModules } from '../config.mjs';
@@ -61,7 +62,7 @@ export function loadTree(root) {
   // the product's code. Without the field, nothing is left out.
   const isLeftOut = globTest(cfg.language_reader?.exclude ?? []);
   const modules = entries.map((e, index) => ({
-    id: e.name, index, uses: e.uses ?? [], entry: e, public: [], src: [], tests: [], files: [],
+    id: e.name, index, entry: e, public: [], src: [], tests: [], files: [],
   }));
   const byId = new Map(modules.map((m) => [m.id, m]));
   for (const rel of walk(root).sort((a, b) => (path.join(root, a) < path.join(root, b) ? -1 : 1))) {

@@ -613,7 +613,8 @@ export const word = () => 'a';
   const { ctx, out } = ctxFor(root, untouchable);
   assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /disagreement\(s\) in orders/);
   const text = out.join('\n');
-  assert.match(text, /src\/orders\/index\.mjs:2 declared uses disagree with the imports: imports report, which process\/modules\/orders\.json does not declare in uses/);
+  // orders has no uses file yet: its declared uses are its imports, and report is later in the order.
+  assert.match(text, /src\/orders\/index\.mjs:2 a use of a module that is not before this one: imports report, which is later in the order \(line 3 of the order file; orders is line 2\)/);
   // A value dates states, handed back where orders' own @returns receives it: the receiving side is orders' own (a).
   assert.match(text, /src\/orders\/index\.mjs:7 \(a\) a comment disagrees with this module's code: Type 'number' is not assignable to type 'string'/);
   assert.match(text, /src\/orders\/index\.mjs:8 \(b\) code disagrees with the stated interface of dates: Argument of type 'number'/);
@@ -625,34 +626,39 @@ export const word = () => 'a';
   assert.doesNotMatch(out.join('\n'), /src\/orders\/index\.mjs/);
 });
 
-test('check: a declared use of a later module disagrees, in source or in tests, and declaring it settles nothing', () => {
-  // orders (line 2) reaches report (line 3) from a test file, and declares it: the declaration is what disagrees.
+test('check: a use of a later module disagrees, from the uses file or, without one, from the imports; a place outside the standard that may refer to one is "cannot tell"', () => {
+  // orders (line 2) reaches report (line 3) from a test file.
   const files = productFiles();
-  files['process/modules/orders.json'] = entry('orders', ['dates', 'report']);
   files['test/orders/index.test.mjs'] = `import { orderDay } from '../../src/orders/index.mjs';\nimport { show } from '../../src/report/index.mjs';\norderDay('3');\nshow(1);\n`;
   const root = makeRepo(files);
   const { ctx, out } = ctxFor(root, untouchable);
+  // No uses file yet: its imports.
   assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /1 disagreement/);
-  assert.match(out.join('\n'), /process\/modules\/orders\.json a declared use of a module that is not before this one: declares report in uses, but report is later in the order \(line 3 of the order file; orders is line 2\): a module may use only modules before it/);
-  // Undeclared, the import itself disagrees, and the line says that declaring it would not settle it.
+  assert.match(out.join('\n'), /test\/orders\/index\.test\.mjs:2 a use of a module that is not before this one: imports report, which is later in the order \(line 3 of the order file; orders is line 2\): a module may use only modules before it/);
+  // With its uses file, as the tool writes it: the order fault at its place; a place outside the standard that may
+  // refer to report is "cannot tell"; a provider the order now puts after it disagrees as well.
   out.length = 0;
-  commit(root, { 'process/modules/orders.json': JSON.stringify(entry('orders', ['dates'])) });
+  commit(root, { 'process/modules/orders.uses.json': JSON.stringify({ module: 'orders', providers: ['dates'], uses: [],
+    outside: [{ rule: 'S5', file: 'test/orders/index.test.mjs', side: 'test', line: 4, what: 'readFileSync of a path into report\'s folder', mayRefer: ['report'], waitsOn: 'report: an exported reader or accessor', tests: [] }],
+    orderFaults: [{ provider: 'report', item: 'show', itemKind: 'function', type: 'call', file: 'test/orders/index.test.mjs', side: 'test', line: 4 }], copies: [] }) });
   assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /1 disagreement/);
-  assert.match(out.join('\n'), /test\/orders\/index\.test\.mjs:2 declared uses disagree with the imports: imports report, which process\/modules\/orders\.json does not declare in uses; report is later in the order, so declaring it would not settle this/);
-  // A declared use of an earlier module is untouched.
+  assert.match(out.join('\n'), /test\/orders\/index\.test\.mjs:4 a use of a module that is not before this one: uses report show \(call\), and report is later in the order/);
+  assert.match(out.join('\n'), /cannot tell, not refused: test\/orders\/index\.test\.mjs:4 a place outside the coding standard \(S5\) that may refer to report, later in the order/);
+  out.length = 0;
+  commit(root, { 'process/modules/order.txt': 'orders\ndates\nreport\n' });
+  assert.throws(() => checkCmd(ctx, 'orders', { _: [] }), /2 disagreement/);
+  assert.match(out.join('\n'), /process\/modules\/orders\.uses\.json a use of a module that is not before this one: its uses file names dates, which is later in the order/);
+  // An earlier module's use of an earlier one is untouched.
   out.length = 0;
   checkCmd(ctx, 'report', { _: [] });
   assert.doesNotMatch(out.join('\n'), /not before this one/);
 });
 
-test('check: a declared use with no import seen is "cannot tell"; what the reader cannot tell is said, never refused; rules of form are not taken', () => {
+test('check: what the reader cannot tell is said, never refused; rules of form are not taken', () => {
   const files = productFiles();
-  files['process/modules/report.json'] = entry('report', ['dates', 'orders']);
   const root = makeRepo(files);
   const { ctx, out } = ctxFor(root, untouchable);
-  // It may be made by a path (a file read, a program run), which the check does not read (the owner's decision of 24 Nov).
   assert.equal(checkCmd(ctx, 'report', { _: [] }), 0);
-  assert.match(out.join('\n'), /cannot tell, not refused: process\/modules\/report\.json declares orders but no import of it is seen; a use by path is not read/);
   // An import of a provider's private file (the proof's rule 28), `this` in a plain handle (rule 49), a throw of an
   // unstated kind (rule 29): none refused. A computed import(): cannot tell.
   commit(root, {
@@ -748,10 +754,10 @@ test('a very long expression (20,000 terms) does not run the tool out of stack',
   assert.match(r.cannotTell.find((c) => c.code === 'stack')?.why ?? '', /^the reader ran out of stack on this file/);
 });
 
-test('check reads require() of a written path and imports by the product\'s own package name, as imports', () => {
+test('check, for a module with no uses file yet, reads require() of a written path and imports by the product\'s own package name, as imports', () => {
   const files = productFiles();
   files['package.json'] = { name: 'shop', type: 'module' };
-  // report declares dates only; its test reaches orders by require and by the product's own name.
+  // report's test reaches orders (earlier) by require and by the product's own name.
   files['test/report/index.test.mjs'] = `import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { orderDay } = require('../../src/orders/index.mjs');
@@ -762,20 +768,13 @@ orderDay('3');
 `;
   const root = makeRepo(files);
   let r = check(loadTree(root), 'report');
-  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.text}`), [
-    'test/report/index.test.mjs:3 imports orders, which process/modules/report.json does not declare in uses',
-    'test/report/index.test.mjs:4 imports orders, which process/modules/report.json does not declare in uses',
-  ]);
-  assert.ok(r.cannotTell.some((c) => c.at === 'test/report/index.test.mjs:6' && c.why === 'an import of a name the tool cannot read'));
-  // Declared, both settle; orders is earlier than report.
-  commit(root, { 'process/modules/report.json': JSON.stringify(entry('report', ['dates', 'orders'])) });
-  r = check(loadTree(root), 'report');
+  // orders is earlier than report: both uses stand.
   assert.deepEqual(r.refusals, []);
-  assert.ok(!r.cannotTell.some((c) => /declares orders/.test(c.why)));
+  assert.ok(r.cannotTell.some((c) => c.at === 'test/report/index.test.mjs:6' && c.why === 'an import of a name the tool cannot read'));
   // From orders (line 2), an import of report (line 3) by the own name is refused as a later module.
   commit(root, { 'test/orders/index.test.mjs': `import { orderDay } from '../../src/orders/index.mjs';\nimport 'shop/src/report/index.mjs';\norderDay('3');\n` });
   r = check(loadTree(root), 'orders');
-  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.text}`), ['test/orders/index.test.mjs:2 imports report, which process/modules/orders.json does not declare in uses; report is later in the order, so declaring it would not settle this']);
+  assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.text}`), ["test/orders/index.test.mjs:2 imports report, which is later in the order (line 3 of the order file; orders is line 2): a module may use only modules before it; if the use is needed, it is ARCH's to settle"]);
   // With the package's exports, the own name is followed as the reader resolves it; a name it cannot follow is
   // "cannot tell".
   commit(root, {

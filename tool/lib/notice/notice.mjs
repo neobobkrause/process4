@@ -427,7 +427,7 @@ function noticeWith(R, provider) {
     const reasons = [];
     for (const [m, diff] of changed) {
       if (A.tree.byId.get(m).index >= mod.index) continue;
-      const declared = mod.uses.includes(m);
+      const declared = (mod.entry.uses ?? []).includes(m);
       const useB = ub?.uses.get(m), useA = ua?.uses.get(m);
       // Uses are read from the user's code as it stood before the change; uses found against the provider after the
       // change are added, so a by-name call to a new name is seen too.
@@ -458,7 +458,7 @@ function noticeWith(R, provider) {
       }
     }
     if (reasons.length) report.told.push({ user, reasons, undeclared: (ub?.undeclared ?? []).filter((p) => changed.has(p)) });
-    else if (mod.uses.some((u) => changed.has(u)) || [...changed.keys()].some((m) => ub?.uses.has(m))) report.notTold.push({ user, why: 'uses none of the entries that changed in a way that tells' });
+    else if ((mod.entry.uses ?? []).some((u) => changed.has(u)) || [...changed.keys()].some((m) => ub?.uses.has(m))) report.notTold.push({ user, why: 'uses none of the entries that changed in a way that tells' });
   }
   const tellingEntries = report.entries.filter((e) => e.tells !== 'nobody');
   report.summary = !changed.size

@@ -14,7 +14,8 @@ const remote = (root, b) => git(['ls-remote', '--heads', 'origin', `refs/heads/$
 
 // main as productFiles with a UX lane; the tranche branch with module code changed, added and
 // deleted, a new module, and the files a drop keeps changed too.
-const MAIN = () => ({ ...productFiles(), 'process.json': config({ lanes: [{ name: 'ux', folder: 'lanes/ux/' }] }), 'test/orders/o.test.mjs': 'main test\n' });
+const MAIN = () => ({ ...productFiles(), 'process.json': config({ lanes: [{ name: 'ux', folder: 'lanes/ux/' }] }), 'test/orders/o.test.mjs': 'main test\n',
+  'process/modules/orders.uses.json': { module: 'orders', providers: ['dates'], uses: [] } });
 function product({ tranche = true } = {}) {
   const root = makeRepo(MAIN());
   if (!tranche) return root;
@@ -27,6 +28,8 @@ function product({ tranche = true } = {}) {
     'process/modules/pricing.json': { name: 'pricing', files: ['src/pricing/'], tests: ['test/pricing/'], uses: [] },
     'process/modules/pricing.md': '- **R1** [not yet met] price\n',
     'src/pricing/p.mjs': 'export const p = 1;\n',
+    'process/modules/orders.uses.json': { module: 'orders', providers: [], uses: [] },
+    'process/modules/pricing.uses.json': { module: 'pricing', providers: [], uses: [] },
     'process/modules/orders.md': '- **R1** [met] one\n- **R2** [met] two\n- **R3** [not yet met] three\n',
     'process.json': config({ lanes: [{ name: 'ux', folder: 'lanes/ux/' }], slots: { default: 4, share: 4 } }),
     'process/decisions-arch.md': 'Decision: whole pence.\n',
@@ -51,17 +54,18 @@ test('drop restores module code and tests to main\'s, deletes what main lacks, a
   git(['fetch', '-q', 'origin', 'drop/t1'], { cwd: root });
   assert.equal(git(['rev-parse', `${tip}^`], { cwd: root }), tranche);
   const changed = git(['diff', '--no-renames', '--name-only', tranche, tip], { cwd: root }).split('\n').sort();
-  assert.deepEqual(changed, ['src/dates/index.mjs', 'src/orders/extra.mjs', 'src/orders/index.mjs', 'src/pricing/p.mjs', 'test/orders/a.test.mjs', 'test/orders/o.test.mjs']);
-  // Changed module files and files the tranche deleted are main's again; files main lacks are gone.
-  for (const f of ['src/orders/index.mjs', 'src/dates/index.mjs', 'test/orders/o.test.mjs']) assert.equal(show(root, tip, f), show(root, 'main', f), f);
-  for (const f of ['src/orders/extra.mjs', 'test/orders/a.test.mjs', 'src/pricing/p.mjs']) assert.equal(show(root, tip, f), null, f);
+  assert.deepEqual(changed, ['process/modules/orders.uses.json', 'process/modules/pricing.uses.json', 'src/dates/index.mjs', 'src/orders/extra.mjs', 'src/orders/index.mjs', 'src/pricing/p.mjs', 'test/orders/a.test.mjs', 'test/orders/o.test.mjs']);
+  // Changed module files and files the tranche deleted are main's again; files main lacks are gone. A module's uses
+  // file, written from its code, goes back with that code.
+  for (const f of ['src/orders/index.mjs', 'src/dates/index.mjs', 'test/orders/o.test.mjs', 'process/modules/orders.uses.json']) assert.equal(show(root, tip, f), show(root, 'main', f), f);
+  for (const f of ['src/orders/extra.mjs', 'test/orders/a.test.mjs', 'src/pricing/p.mjs', 'process/modules/pricing.uses.json']) assert.equal(show(root, tip, f), null, f);
   // Requirements, the module list, process.json, the decision records, a lane's folder and other files stay the tranche's.
   for (const f of ['process/modules/orders.md', 'process/modules/pricing.md', 'process/modules/order.txt', 'process/modules/pricing.json',
     'process.json', 'process/decisions-arch.md', 'lanes/ux/notes.md', 'README.md']) assert.equal(show(root, tip, f), show(root, tranche, f), f);
   assert.equal(git(['log', '-1', '--format=%an <%ae>|%s', tip], { cwd: root }), "Claude <noreply@anthropic.com>|Drop tranche t1: module code and tests back to main's");
   const pr = gh.s.prs[0];
   assert.deepEqual([pr.head.ref, pr.base.ref, pr.title, pr.draft], ['drop/t1', 'tranche', 'Drop tranche t1', true]);
-  assert.match(out.join('\n'), /pull request 1: [\s\S]*3 file\(s\) restored to main's, 3 deleted/);
+  assert.match(out.join('\n'), /pull request 1: [\s\S]*4 file\(s\) restored to main's, 4 deleted/);
   // The session's checkout did not move.
   assert.equal(git(['rev-parse', 'HEAD'], { cwd: root }), before);
   assert.equal(git(['branch', '--show-current'], { cwd: root }), 'main');
@@ -70,7 +74,7 @@ test('drop restores module code and tests to main\'s, deletes what main lacks, a
   git(['merge', '-q', '--no-ff', '--no-edit', tip], { cwd: root });
   const s = decideScope(root, { base: tranche, baseRef: 'tranche', branch: 'drop/t1', draft: false });
   assert.equal(s.scope, 'nothing');
-  assert.match(s.why, /^drop of tranche t1: every one of the 6 changed file\(s\) is main's/);
+  assert.match(s.why, /^drop of tranche t1: every one of the 8 changed file\(s\) is main's/);
 });
 
 test('drop refuses an existing drop branch, nothing to restore, a missing tranche branch, and no name', () => {
@@ -96,7 +100,10 @@ test('push accepts a drop/ branch', () => {
   git(['checkout', '-q', '-b', 'drop/t2'], { cwd: root });
   const sha = commit(root, { 'src/orders/index.mjs': 'export const o = 3;\n' });
   assert.equal(push(ctx, { _: [] }), 0);
-  assert.equal(remote(root, 'drop/t2'), sha);
+  // The push carries the uses file of the module it changes, written from the code as pushed.
+  assert.equal(remote(root, 'drop/t2'), git(['rev-parse', 'HEAD'], { cwd: root }));
+  assert.equal(git(['rev-parse', 'HEAD^'], { cwd: root }), sha);
+  assert.equal(git(['diff', '--name-only', sha, 'HEAD'], { cwd: root }), 'process/modules/orders.uses.json');
 });
 
 // GitHub's merge of drop/<t> into the tranche, checked out; `files` are the drop's changes.

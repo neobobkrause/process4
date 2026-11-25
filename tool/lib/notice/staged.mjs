@@ -39,10 +39,9 @@ const OWNS_NAMES = /@(?:optable|storedrows)\b/;
 const REEXPORT = /\bexport\s*(?:\*|\{)/;
 const BUILTIN = new Set(builtinModules);
 
-/** The product's own package: its root package.json read once ({} where it has none or cannot be read). */
-export function ownPackage(root) {
-  try { return JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')) ?? {}; } catch { return {}; }
-}
+/** The product's own package: its root package.json ({} where it has none or cannot be read); read in usesfile.mjs. */
+import { ownPackage } from '../usesfile.mjs';
+export { ownPackage };
 
 /** The files a product's files import, followed by relative path without the reader. */
 export function makeReach(tree) {
@@ -251,7 +250,7 @@ export function stagedReader(treeB, treeA, provider, confirm, differs, addsNames
     const mayChange = new Set([provider, ...through, ...(opsInPlay ? flagged : [])]);
     for (const id of later) {
       const mod = treeA.byId.get(id);
-      const declared = [...new Set([...(mod?.uses ?? []), ...(treeB.byId.get(id)?.uses ?? [])])];
+      const declared = [...new Set([...(mod?.entry.uses ?? []), ...(treeB.byId.get(id)?.entry.uses ?? [])])];
       if (reaches(id, 'files', mayChange) || declared.some((u) => mayChange.has(u)) || unresolvedIn(id) || (opsInPlay && reachesCarrier(id))) candidates.add(id);
     }
     // The code after the change adds a use only by a name new or renamed in it, by operations or tables, or where the

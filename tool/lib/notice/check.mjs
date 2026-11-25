@@ -1,7 +1,7 @@
 // The check, run inside one module's own tests and on that module only (design part 2, section 6; build text 1b,
 // command 18). Ported from the notice's proof (proof: tool/lib/check.mjs), keeping only three parts:
-//   declared uses: the module's declared uses against the imports of its source and its tests;
-//     and against the order: a declared use of a module that is not before this one disagrees;
+//   declared uses against the order: a use of a module that is not before this one disagrees (the uses file, which
+//     the tool writes from the module's code and tests; without one, the module's imports);
 //   (a) a structured comment that disagrees with the module's own code;
 //   (b) the module's code that disagrees with a provider's stated interface.
 // The proof's 23 refusals of rules of form (rules 2, 3, 4, 5, 11, 14, 19, 20, 22, 28, 29, 30, 31, 34, 35, 36, 38, 40,
@@ -9,9 +9,9 @@
 // Also: the comments-only verification of a module's first step.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, options, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
-import { ownPackage } from './staged.mjs';
+import { declaredUses } from '../usesfile.mjs';
 
 /**
  * Complaints that mean "I cannot tell", never a disagreement. Decided here:
@@ -387,7 +387,8 @@ export function check(tree, moduleId, opts = {}) {
   loadReader();
   const mod = tree.byId.get(moduleId);
   if (!mod) throw new Error(`no such module: ${moduleId}`);
-  const ownProgram = () => makeProgram([...mod.files, ...mod.uses.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
+  // The module's files and the interface files of the providers it declares (its uses file, or its imports).
+  const ownProgram = () => makeProgram([...mod.files, ...declaredUses(tree, mod).providers.flatMap((u) => tree.byId.get(u)?.public ?? [])]);
   let program = opts.analysis?.program ?? ownProgram();
   let checker = program.getTypeChecker();
   let saidBy = makeClaims(checker, tree, mod);
@@ -565,104 +566,46 @@ export function check(tree, moduleId, opts = {}) {
     }
   }
 
-  declaredUses(tree, mod, program, refusals, cannotTell, only, rel);
+  declaredUsesCheck(tree, mod, refusals, cannotTell, only);
   return { module: moduleId, refused: refusals.length > 0, refusals, cannotTell };
 }
 
-/** The product files a file imports: import and export from, import() and require() of a written name, @import and
- * import('...') in comments. A name the tool cannot read is "cannot tell". */
-function importsOf(sf, cannot) {
-  const out = [];
-  const spec = (node, s) => { if (s && (ts.isStringLiteral(s) || ts.isNoSubstitutionTemplateLiteral(s))) out.push({ node, spec: s.text }); };
-  const visit = (n) => {
-    if ((ts.isImportDeclaration(n) || ts.isExportDeclaration(n)) && n.moduleSpecifier) spec(n, n.moduleSpecifier);
-    else if (ts.isJSDocImportTag?.(n)) spec(n, n.moduleSpecifier);
-    else if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument)) spec(n, n.argument.literal);
-    // import(...), and require(...) under that name (a require made by createRequire too, as the staged scan reads it)
-    else if (ts.isCallExpression(n) && (n.expression.kind === ts.SyntaxKind.ImportKeyword || (ts.isIdentifier(n.expression) && n.expression.text === 'require'))) {
-      const a0 = n.arguments[0];
-      if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
-    }
-  };
-  forEachNode(sf, visit, { jsDoc: true });
-  return out;
-}
-
 /**
- * The product file an import by the product's own package name stands for (the `name` of its root package.json, as
- * the staged scan reads it): as the language reader resolves it (through the package's `exports`); without `exports`,
- * <name>/<path> is that path from the product's top. Returns null where it cannot be followed.
+ * Declared uses against the order (design part 2, section 6). A module's declared uses are the providers its uses file
+ * names, which the tool writes from its code and tests (usesfile.mjs), so they match its imports by construction; a
+ * module with no uses file yet declares the modules its code and tests import (build text 1b, command 18). A use of a
+ * module that is not before this one in the order disagrees: the providers and the order faults its uses file names,
+ * read against the order as it stands now. A place outside the coding standard that may refer to such a module is
+ * "cannot tell", never refused; so is an import the tool cannot read or follow.
  */
-function makeOwnName(tree) {
-  const pkg = ownPackage(tree.root);
-  const own = typeof pkg.name === 'string' && pkg.name ? pkg.name : null;
-  const isOwn = (spec) => !!own && (spec === own || spec.startsWith(`${own}/`));
-  const seen = new Map(); // folder|name -> file or null
-  const resolve = (spec, from) => {
-    const key = `${path.dirname(from)}|${spec}`;
-    if (!seen.has(key)) seen.set(key, find(spec, from));
-    return seen.get(key);
-  };
-  const find = (spec, from) => {
-    try {
-      const r = ts.resolveModuleName(spec, from, options(), ts.sys).resolvedModule?.resolvedFileName;
-      if (r && !path.relative(tree.root, r).startsWith('..')) return path.resolve(r);
-    } catch { /* not resolved */ }
-    if (pkg.exports === undefined && spec.startsWith(`${own}/`)) return path.resolve(tree.root, spec.slice(own.length + 1));
-    return null;
-  };
-  return { isOwn, resolve };
-}
-
-/**
- * Declared uses against imports (design part 2, section 6: "a check that the module's declared uses match its
- * imports", reading its tests as well as its source). An import is one by a written path or by the product's own
- * package name, made by import, export from, import(), require() or a comment's @import or import('...') (build text
- * 1b, command 18). An import of another module's file that the entry does not declare disagrees. A declared use of a
- * module that is not before this one in the order disagrees. A declared use with no import seen is "cannot tell",
- * never refused.
- */
-function declaredUses(tree, mod, program, refusals, cannotTell, only, rel) {
-  const imported = new Map();
-  const entryFile = `${tree.cfg.process_folder.replace(/\/?$/, '/')}modules/${mod.id}.json`;
-  const ownName = makeOwnName(tree);
-  for (const f of mod.files) {
-    const sf = program.getSourceFile(f) ?? ts.createSourceFile(f, fs.readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
-    const at = (node) => `${rel(f)}:${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}`;
-    for (const { node, spec } of importsOf(sf, (node) => cannotTell.push({ at: at(node), code: 'import', why: 'an import of a name the tool cannot read', text: node.getText(sf).slice(0, 60) }))) {
-      let target;
-      if (spec.startsWith('.') || spec.startsWith('/')) target = path.resolve(path.dirname(f), spec);
-      else if (ownName.isOwn(spec)) {
-        target = ownName.resolve(spec, f);
-        if (!target) { cannotTell.push({ at: at(node), code: 'import', why: "an import by the product's own package name that the tool cannot follow to a file", text: node.getText(sf).slice(0, 60) }); continue; }
-      } else continue; // from outside the product
-      const other = tree.moduleOfFile(target);
-      if (!other || other === mod.id) continue;
-      if (!imported.has(other)) imported.set(other, []);
-      imported.get(other).push({ at: at(node), file: rel(f) });
-    }
-  }
-  // A module may use only modules before it (design part 2, section 1). A declared use of a module at the same or a
-  // later place in the order disagrees (design part 2, section 6), so declaring a later module is no way
-  // to make an import of it pass. The job cannot settle that in its own files: it goes to ARCH (part 2, section 3).
+function declaredUsesCheck(tree, mod, refusals, cannotTell, only) {
+  const d = declaredUses(tree, mod);
   const notBefore = (id) => { const o = tree.byId.get(id); return o && o.index >= mod.index ? o : null; };
-  for (const u of mod.uses) {
-    const o = notBefore(u);
-    if (!o) continue;
-    refusals.push({ at: entryFile, code: 'uses', text: `declares ${u} in uses, but ${u} is ${o.index === mod.index ? 'this module itself' : 'later in the order'} (line ${o.index + 1} of the order file; ${mod.id} is line ${mod.index + 1}): a module may use only modules before it; if the use is needed, it is ARCH's to settle`, kind: 'a declared use of a module that is not before this one' });
-  }
-  for (const [other, places] of imported) {
-    if (mod.uses.includes(other)) continue;
-    const later = notBefore(other) ? `; ${other} is later in the order, so declaring it would not settle this` : '';
-    for (const p of places) {
-      if (only && !only.has(p.file)) continue;
-      refusals.push({ at: p.at, code: 'uses', text: `imports ${other}, which ${entryFile} does not declare in uses${later}`, kind: 'declared uses disagree with the imports' });
+  const why = (o) => `${o.index === mod.index ? 'this module itself' : 'later in the order'} (line ${o.index + 1} of the order file; ${mod.id} is line ${mod.index + 1}): a module may use only modules before it; if the use is needed, it is ARCH's to settle`;
+  const kind = 'a use of a module that is not before this one';
+  if (d.from === 'imports') {
+    for (const c of d.cannot) cannotTell.push({ at: c.at, code: 'import', why: c.why, text: c.text });
+    for (const [other, places] of d.imported) {
+      const o = notBefore(other);
+      if (!o) continue;
+      for (const p of places) if (!only || only.has(p.file)) refusals.push({ at: p.at, code: 'uses', text: `imports ${other}, which is ${why(o)}`, kind });
     }
+    return;
   }
-  // A declared use that no import shows is "cannot tell", never refused (design part 2, section 6): it may be made by
-  // a path (a file read, a program run) or a call by name, which the check does not follow.
-  for (const p of mod.uses.filter((u) => !imported.has(u))) {
-    cannotTell.push({ at: entryFile, code: 'uses', why: `declares ${p} but no import of it is seen; a use by path is not read`, text: `declares ${p}; no import of it` });
+  const faults = d.data.orderFaults ?? [];
+  for (const p of d.data.providers ?? []) {
+    const o = notBefore(p);
+    if (o && !faults.some((f) => f.provider === p)) refusals.push({ at: d.file, code: 'uses', text: `its uses file names ${p}, which is ${why(o)}`, kind });
+  }
+  for (const f of faults) {
+    const o = notBefore(f.provider);
+    if (!o || (only && !only.has(f.file))) continue;
+    refusals.push({ at: `${f.file}:${f.line}`, code: 'uses', text: `uses ${f.provider} ${f.item} (${f.type}), and ${f.provider} is ${why(o)}`, kind });
+  }
+  for (const x of d.data.outside ?? []) {
+    const later = (x.mayRefer ?? []).filter((m) => m !== '*' && notBefore(m));
+    if (!later.length || (only && !only.has(x.file))) continue;
+    cannotTell.push({ at: `${x.file}:${x.line}`, code: x.rule, why: `a place outside the coding standard (${x.rule}) that may refer to ${later.join(', ')}, later in the order`, text: x.what });
   }
 }
 

@@ -49,6 +49,25 @@ export function makeProgram(files, host = undefined) {
 }
 
 /**
+ * The reading under the coding standard (build text 2, section 10; design part 2, section 7): every reading's settings,
+ * with the checker's further strictness the standard names, and the rest of the tool's description of the host
+ * (host.d.ts: Node's modules a product names, and every untyped channel, such as JSON.parse, given the kind unknown).
+ * The uses file is written from this reading only; the check's two refusals and the listing keep options() as they are,
+ * so that no new refusal comes from these settings.
+ */
+export const HOST_DESCRIPTION = fileURLToPath(new URL('./host.d.ts', import.meta.url));
+export const standardOptions = () => ({
+  ...options(),
+  useUnknownInCatchVariables: true,
+  noUncheckedIndexedAccess: true,
+  exactOptionalPropertyTypes: true,
+});
+export function makeStandardProgram(files, oldProgram = undefined) {
+  loadReader();
+  return ts.createProgram([...files, NODE_DESCRIPTION, HOST_DESCRIPTION], standardOptions(), undefined, oldProgram);
+}
+
+/**
  * Iteration 4 (rule 18): a file's declared interface as TypeScript itself prints it, per exported name, with comments
  * removed and a plain constant's single value widened to its kind. "Kind.member" holds each member of a kind written as
  * an object type. Written to memory only.

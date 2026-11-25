@@ -8,6 +8,7 @@ import { getHeapStatistics } from 'node:v8';
 import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
+import { usesCmd } from './lib/usescmd.mjs';
 import { walkOpen, walkClose, walkWrite, walkRead, walkText, walkAreas } from './lib/walk.mjs';
 import { releasePrepare, releasePublish } from './lib/release.mjs';
 import { parseBlock } from './lib/github.mjs';
@@ -66,6 +67,7 @@ const commands = {
   listing: (ctx, a) => listingCmd(ctx, a._[0], a),
   notify: (ctx, a) => notifyCmd(ctx, pr(a)),
   check: (ctx, a) => checkCmd(ctx, a._[0], a),
+  uses: (ctx, a) => usesCmd(ctx, a._[0], a),
   related: (ctx, a) => relatedCmd(ctx, pr(a)),
   'walk open': (ctx, a) => walkOpen(ctx, a._[0]),
   'walk close': (ctx, a) => walkClose(ctx, a._[0]),
@@ -86,12 +88,12 @@ const commands = {
 // What each command does, printed by --help (or -h) and nothing else: a help flag never acts.
 export const HELP = {
   branch: 'branch <name> [--into <branch>]: makes job/<module>.<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
-  push: 'push [--blocked <module>[,<module>] "<why>" | --unblocked "<why>"]: pushes the current working branch (job/, work/ or drop/) to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request; with --unblocked, rewrites that record to say the job goes on, where ARCH ended the block by its own decision.',
+  push: 'push [--blocked <module>[,<module>] "<why>" | --unblocked "<why>"]: first rewrites, from the code as pushed, the uses file of each module whose code or tests the push changes (and of a job\'s own module) and commits it; then pushes the current working branch (job/, work/ or drop/) to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request; with --unblocked, rewrites that record to say the job goes on, where ARCH ended the block by its own decision.',
   open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request (from a detached checkout, name the branch with --branch); for a job writes the job block and prints its starting instructions. With one open already, prints it and its job block.',
   test: 'test [<pr>] [--branch <b>]: runs the pull request\'s tests in this checkout, which must be clean and at the pull request\'s head commit: the scope decided on the merge of the head into the base\'s newest commit, then each module\'s check and its test files. Prints each module as it starts and ends. Writes the test record on the pull request, rewritten in place; after a pass asks GitHub to run the required run again; exit 1 on a fail, with the last lines of the failing output.',
   ready: 'ready [<pr>] [--branch <b>]: marks the pull request ready (named by number, by --branch, or the current branch\'s one open pull request), which asks for the required run; only where its test record stands for the head commit, or where nothing needs one (scope nothing and no notice reached the job). Otherwise marks nothing and says why: run test.',
   results: 'results [<pr>] [--branch <b>]: prints whether the test record stands for the head commit and what it holds, then the required run\'s state on the head commit (pull request named by number, by --branch, or the current branch), and for a failure the last lines of its output.',
-  merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it; for a job, refuses (exit 1) when a notice reached it after its tests ran, and merges nothing while a module it uses (by import or declaration, directly or through others, earlier in the order) has an open job not blocked, printing waits for <module> (pull request <n>).',
+  merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it; for a job, refuses (exit 1) when a notice reached it after its tests ran, and merges nothing while a module it uses (a provider its uses file names, or without one a module it imports, directly or through others, earlier in the order) has an open job not blocked, printing waits for <module> (pull request <n>).',
   drop: 'drop --tranche <name>: for ARCH, makes drop/<name> from the tranche branch\'s newest commit, puts each module\'s code and test files back to main\'s version (deleting those main lacks), keeps requirements files, the module list, process.json, the decision records and the lanes\' folders as they are, pushes it, and opens a draft pull request into the tranche branch; prints its number and the files restored and deleted. ARCH marks it ready and merges it with ready and merge.',
   'release prepare': 'release prepare <version> --notes <file> [--file <built file>]...: makes an unpublished release at main\'s newest commit with the notes and files; with --development, a published pre-release with its tag.',
   'release publish': 'release publish <version> --approval "<the owner\'s words>": publishes the prepared release of that version; prints the owner\'s words back, unjudged.',
@@ -105,7 +107,8 @@ export const HELP = {
   'state write': 'state write <record> --from <file> [--create [--process]]: rewrites one record in place; --create makes the issue and its empty records once.',
   listing: 'listing <module> [--at <commit>]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints the module\'s interface listing; writes nothing to GitHub.',
   notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into its open job\'s block (printing that ARCH messages the job), or with no open job into notice comments on the merged pull request, which the waiting-work record names.',
-  check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports and with the order (a declared use of a module not before this one), of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
+  check: 'check <module> [--files <list>]: prints each use of a module not before this one in the order (from its uses file; without one, its imports), each disagreement of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
+  uses: 'uses <module> [--at <commit>] [--json]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints what the tool reads in the module under the coding standard: each use of an earlier module\'s item with its places, each place outside the standard with its rule, the order faults, the copies and the host facilities used; writes nothing, to GitHub or the checkout (push writes the uses file).',
   related: 'related <pr>: lists a told job\'s related test files, each with the rule that put it there, and the files left out, from the merged result of the pull request into its base; runs nothing.',
   'walk open': 'walk open <internal|external>: opens the walk issue, titled with the tranche, round and kind, and writes its number into the round record.',
   'walk close': 'walk close <issue>: closes the walk issue once ARCH has placed every entry.',
@@ -117,7 +120,7 @@ export const HELP = {
 };
 
 // GitHub is reached only for commands that need it; `run`, `listing` and `check` read the checkout alone.
-const LOCAL = new Set(['listing', 'check']);
+const LOCAL = new Set(['listing', 'check', 'uses']);
 export function context(name, overrides = {}) {
   const root = overrides.root || repoRoot();
   return {
@@ -160,7 +163,7 @@ export function main(argv, overrides) {
 // The commands that read a product's code may read the whole product twice, which on a large product needs more
 // memory than node gives by default (build text 1b, command 11, "Limits"). They run with most of the machine's memory: the
 // node flag that allows it, or null where the default already allows that much or the run already carries it.
-const READS_CODE = new Set(['listing', 'notify', 'check']);
+const READS_CODE = new Set(['listing', 'notify', 'check', 'uses', 'push']);
 export function heapFlag(name, { total = totalmem(), limit = getHeapStatistics().heap_size_limit, env = process.env } = {}) {
   if (!READS_CODE.has(name) || env.P4_HEAP) return null;
   const mb = Math.floor((total / 1048576) * 0.75);

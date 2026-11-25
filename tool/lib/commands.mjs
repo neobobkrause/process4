@@ -20,6 +20,8 @@ import {
   moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
+import { writeUsesFiles } from './usescmd.mjs';
+import { isUsesPath } from './usesfile.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
@@ -87,6 +89,8 @@ function writeJobRecord(ctx, n, data) {
 
 // 2. push [--blocked <module> "<why>" | --unblocked "<why>"]: the current branch to the same-named branch, never forced.
 // --unblocked rewrites the job's record when a block ends by ARCH's decision rather than by the blocking module's merge.
+// First the uses file of each module the push changes, and of a job's own module, is rewritten from the code as pushed
+// and committed, so the push carries it (design part 2, section 7; usescmd.mjs). No check of the file is made.
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
@@ -94,6 +98,7 @@ export function push(ctx, a) {
   const by = a.blocked === undefined ? null : blockers(a.blocked);
   if (by && !a._[0]) fail('say --blocked <module> "<why>"');
   if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
+  writeUsesFiles(ctx, name, { job: name.match(JOB)?.[1] ?? null });
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
@@ -139,7 +144,9 @@ export function drop(ctx, a) {
     || modules.some((m) => f === requirementsFile(c, m.name)));
 
   const differs = git(['diff', '--no-renames', '--name-only', '-z', main, tip], { cwd: ctx.root }).split('\0').filter(Boolean);
-  const files = differs.filter((f) => ownerOf(modules, f) && !kept(f));
+  // A module's uses file is written from its code (design part 2, section 7): it goes back to main's with that code.
+  const usesFile = (f) => cfgs.some((c) => isUsesPath(c, f));
+  const files = differs.filter((f) => usesFile(f) || (ownerOf(modules, f) && !kept(f)));
   if (!files.length) fail(`nothing to restore: no file a module owns differs between main and ${tranche}`);
 
   // main's version of each, into a separate index made from the tranche's tip.

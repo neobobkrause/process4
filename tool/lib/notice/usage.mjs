@@ -208,7 +208,7 @@ export function makeUsage(program, tree, listings) {
       // A node's comment blocks too, before its children; kept on a list, not by recursion (forEachNode).
       if (sf) forEachNode(sf, (n) => { visit(n); }, { jsDoc: true });
     }
-    const undeclared = [...uses.keys()].filter((p) => !mod.uses.includes(p));
+    const undeclared = [...uses.keys()].filter((p) => !(mod.entry.uses ?? []).includes(p));
     return { uses, anything: [...new Set(anything)], unreadOps, unreadTables, undeclared };
   }
 
