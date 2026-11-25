@@ -80,6 +80,24 @@ file lists for those entries. The merge wait reads the uses files' provider list
 **E. Jobs that change no code run no tests,** said at the top of their instructions: a job that only writes its module's
 uses file or comments runs nothing. A job that changes code runs its module's tests as now.
 
+**H. The first job on each module: into the standard, copies marked, uses written** (asked for by the owner, 25 Nov,
+§6). One job per module, in module order where a provider must first export a reader or accessor, otherwise in parallel:
+- **The tool lists** every place in the module's code and tests outside the standard, with its rule, and every literal
+  that exactly matches a value an earlier module exports (a candidate copy).
+- **The job decides and converts.** Each non-standard reference to an earlier module is rewritten to the standard form
+  (where the provider must first export a reader or accessor, the job reports it and the provider's job comes first).
+  Each copy is replaced by an import where one is possible; where not (a test's deliberately literal expected value, a
+  data file, a fixture, text in another language), it is marked by the copy convention: in code, the name declares that
+  it is a copy and of which module's entry; where there is no name, an equivalent marker the tool reads. The job also
+  looks for copies the tool could not list (a reworded or translated value) and marks them. It states its module's kinds
+  where S4 asks.
+- **The tool writes the uses file** from the converted code, marked copies included, and lists what is still outside the
+  standard; such a place is told of every change of the provider concerned until a later job converts it.
+- **Tests:** the job runs its module's tests once when it changed running code (conversions and renames do); a job that
+  only marked data files or wrote comments runs nothing, said at the top of its instructions.
+- **What the first pass of 8 shows per module:** places converted, copies found and marked, cost and time, and whether
+  the uses file is right.
+
 **F. Removed:** the tool's inference of users (~480 lines), the import-following lookups (~215, replaced by a lookup),
 the "not followed fully" telling for modules that keep the standard; from the texts, design part 2 §7 rules 1 and 2,
 "Which tests relate" by following calls, and the passers' multiplication. The listing stays as one input to C and for the
@@ -113,8 +131,7 @@ refactoring plan was to correct anyway.
 
 **The first pass, as the owner set it:** the finished design, texts and tool, built and proven on the tool's own tests and
 the proof (re-recorded with the 13 found breaks); then civicsmith moved to it; then jobs run in parallel on the first 8
-real modules in the order, each bringing its module into the standard where it refers to earlier modules, writing its
-kinds, and letting the tool write its uses file; then a stop. The owner sees, per module: the effort (time, cost), the
+real modules in the order, each the first job of H; then a stop. The owner sees, per module: the effort (time, cost), the
 uses file beside the code, and whether it serves the provider/user requirement. The files are kept once confirmed. Then he
 decides to go on, fix the method, or abandon it (and correct the files written).
 
@@ -180,3 +197,13 @@ part 3 §5), carried out by ARCH with the drop built 24 Nov, which civicsmith's 
 and tests come back; the plan, ARCH's decisions, requirement text, the module list and the lanes stay; the met marks t2 gave
 go back to not yet met. The steps for the owner are on his page. The first pass: the finished tool and job texts, run on 8
 real modules whose files are kept once correct, the effort acceptable and the files shown to meet the requirement.
+
+The owner, later the same day (conversation): "So the question is whether these gaps can be reliably identified and
+converted to "standard" uses?"; "The code that passes a copy does know that it's passing a copy, right? If so, then one
+straightforward way of identifying that case is to adopt a naming convention for the value variable being passed so that
+it "declares" both that it's a copy and what its a copy of."; "It sounds like the tool that will create the metadata file
+while also converting code to use only standard references must also be tasked with properly renaming these copy
+variables. Is that reasonable?"; and, on PROCESS's answer (the tool lists, the job judges and converts, the tool writes the
+file): "Yes, build that into the corrected design". Built in as §2 H. Also: "Every reference means every reference, not
+every reference except a bounch of others" — the claim is withheld until each gap is closed or proven unclosable
+(`every-reference.md`, in progress).
