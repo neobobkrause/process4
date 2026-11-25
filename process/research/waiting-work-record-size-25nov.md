@@ -41,3 +41,9 @@ Reading: decision B of 25 Nov (second group) keeps a job block under 60,000 char
 job (reasons lose before/after, then one reason that runs the whole module); `open --module` copies every notice's reasons
 whole and applies no such cut (`open` in `tool/lib/commands.mjs`). Folded into choice 6: 6B also makes `open` apply the same
 cut, and its block never exceeds what a comment holds.
+
+Correction (ARCH #26 via coordinator #9, 12:59Z, unchanged): "the pull request did open (1669, draft, job/filings.1);
+GitHub's 422 refused the job-block comment, not the pull request. So 1669 stands open with no job block and no job session.
+An open filings job also makes `merge` wait for it in every later module that uses filings. I leave 1669 as it is until the
+mend; no job is started on it." So the fault also holds merges of filings' users until 6B lands (or ARCH, on its own
+judgment, closes 1669 unmerged; a product matter, not PROCESS's to direct).
