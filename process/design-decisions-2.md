@@ -268,7 +268,7 @@ PROCESS #16's session, on the design document above).
    work names and the job declares.
 3. It then reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
    item; and, for any change to the module's files, whether or not an item changed, those with a place outside the
-   standard that may refer to it and those with no uses file yet that import it (the subject "Who a change tells").
+   standard that may refer to it or an order fault naming it, and those with no uses file yet that import it (the subject "Who a change tells").
 4. The commands that read a product's code (`listing`, `notify`, `check`) run with a memory allowance of three quarters of
    the machine's memory where node's default is less. Where a reading still does not fit, `notify` says so plainly, tells
    nobody, and names the notice owed, instead of crashing.
