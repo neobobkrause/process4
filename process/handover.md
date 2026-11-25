@@ -16,6 +16,11 @@ handover. Open a research file, or give it to a worker, when a question needs it
 
 ## START HERE: two choices wait for the owner, on his page
 
+**Urgent first (09:05Z):** civicsmith `notify 1404`, a comments-only change, told ~150 (nearly all not followed fully) on
+55db8e4, which lacks 3B; ~70 old merges wait in ARCH #22's notify queue. On the owner's page, top: (1) his hold on
+notice-only checks until civicsmith moves (his instruction in civicsmith's coordinator session); (2) choice 2 (2C+);
+(3) the move. Pushed to his phone. If he decides 2C+, build it at once (below).
+
 **Choice 2 — a module's first comments tell users** (research: `process/research/notify-1356-still-197-25nov.md`, its last
 two sections; prototype `process/research/first-comments-2c-25nov/prototype.diff`, switch `P4_OWNCODE`). Options on his page:
 2A no change; 2C a first `@throws`/`@bound` on an entry whose own code is unchanged tells no one; **2C+ (recommended)** 2C, and
