@@ -35,7 +35,7 @@ Each role reads one harness part, 07 or 08. The combined figure is given with 07
 | The watcher | 00, 01, 04, 05, 06, 07 or 08 | 05 | 103,220 | The roles, wakes and handover records; after a takeover, `root.md` |
 | The coordinator | 00 to 06, 07 or 08 | 05 | 133,422 | The ranking page, the product's record of the owner's decisions, the shared state |
 | ARCH | 00 to 06, 07 or 08, 09 | 03 and 05 | 156,877 | The process config, ranking page, module list, both decision records, the shared state |
-| PROCESS | All eleven | None; each one before changing it, and any when a question touches it | 127,433 with its folder's README (1,943), the index of the owner's decisions (5,860) and its research index (14,917) | Its handover record |
+| PROCESS | All eleven | None; each one before changing it, and any when a question touches it | 146,929: the design 127,433, its folder's README (1,945), the index of the owner's decisions (2,634) and its research index (14,917) | Its handover record |
 | A lane | 00, 01, 03, 04, 05, 06, 07 or 08 | 05; and 03 for the UX lane | 113,858; the UX lane 134,685 | The ranking page, the index of the research in its folder, its design pages' links, its handover record |
 | A job | 00, 01, 02, 04, 05, 06, 07 or 08 | 02, 02b, 03 and 05 | 170,742 | The ranking page, the module order file, its module's entry and requirements file (kept under the single-text maximum by rule), its pull request |
 | A walking session | 00, 01, 03, 06, 07 or 08; and 09 for the external walk | 03 | 82,421 internal; 85,049 external | The process config and the ranking page; for each of its areas, its page of the Screens document or the journeys |
