@@ -115,3 +115,45 @@ changed code and test files in 124 modules, mostly comments and notice responses
 Record; rewrite the design and texts in place; build the tool (proof re-recorded with the 13 found breaks added to its
 `needs`, and the uses files the worker wrote as its fixture); trial on process3-probes; measure the uses pass on five
 civicsmith modules (read-only brief); then civicsmith's path as chosen.
+
+## 6. The owner's reply (25 Nov ~15:45Z, in PROCESS #15's session; conversation, not marked)
+
+"It's important that the tool that identifies provider uses be rigorous so that we have a very high level of confidence that
+no references are being missed. Making this determination should simply be by trying a few modules. Rather, the tool's
+operation should be based directly from a deep understanding of JS's specific means by which a reference is made.
+
+You say that a helper found 31 ways in four families that civicsmith's code refers to an earlier module. We should research
+and consider whether we should establish a list of ways that code can refer to an earlier module, make that be the
+standard, and change existing references outside those standard ways so that all modules conform to that standard. (Just
+brainstorming)
+
+There's no need for the module jobs to run tests when no code is being run. That needs to be in the instructions given at
+the top of these jobs.
+
+It sounds like it makes sense to abandon the minimal refactoring work done so far so that we can complete this
+provider/user fix before returning to the refactoring.
+
+Yes, there were some decisions made earlier related to the provider/user problem that we knew may not work (and in fact
+didn't work). Those decisions to try those methods conflict with the proposed solution we're talking about here. It's
+important that the recording of any decisions we make here be entered into the record in ways that keep the record
+consistent and update existing records whenever possible rather than just piling more new rulings into an already full
+record.
+
+If you're going to measure 5 files to estimate the effort of creating and maintaining module metadata, then I recommend that
+we first develop a load-bearing design that meets all requirements, develop and test the tool, develop the plan for running
+jobs that process each module (with parallel running), but stop after the first 5 or 8 modules to see how much effort each
+module job is taking and the fidelity of each resulting metadata file. There's no advantage to "testing" this on 5 modules
+when we can run the real tool. If we find after the initial set of modules that the process isn't workable we can decide at
+that point how to fix it or abandon the plan (and fix the metadata files generated so far accordingly).
+
+Yes, it's also important that jobs updating module code recognize and properly handle external interface changes that
+providers need to be notified of from other changes that providers don't need to be notfied of."
+
+PROCESS #15's reading: "should simply be by trying" read as "should not simply be" (the next sentence begins "Rather");
+asked to confirm. "Abandon the minimal refactoring work done so far" sounds decided; asked once whether to record it.
+What follows: the design is reworked to be load-bearing on two new researches (`standard.md`: the complete set of
+JavaScript's means of reference and a standard that lets the tool find every use with certainty; `changes.md`: what is an
+interface change in JavaScript, what the tool can list mechanically, and the job's guide); jobs that change no code run no
+tests, said at the top of their instructions; the five-module sample is dropped in favour of the real pass stopped after
+the first 5 to 8 modules for review; decisions recorded by rewriting the existing entries in place (the notice subjects in
+`design-decisions-2.md`), not by new ones.

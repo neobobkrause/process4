@@ -22,29 +22,21 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:45 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. Two matters wait for you below: your proposal for who uses what, with civicsmith's path; and sessions that sit idle being compacted.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:55 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. Below: the design of who uses what, being reworked on your points, with one question; and the choice about idle sessions being compacted.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: your proposal for who uses what, and civicsmith's path</h2>
-<p><b>Bottom line.</b> Your idea is right, and it fixes half the problem. I recommend adopting it together with its other half (choice 1B), then restarting civicsmith's refactoring from main once it is built (choice 2, R2). The two choices go together.</p>
-<p><b>What I found.</b> Telling the right modules after a change needs two answers: who uses this item, and did this item really change. The tool guesses both today. Your file answers the first fully. Four helpers tried it on the 150 recorded test changes, writing each module's file the way a careful job would. Finding every user then took 45 thousandths of a second, against 50 seconds today and up to 40 minutes on civicsmith, and nothing was told merely because the tool could not follow the code. But the 45 "needed and missed" turned out to be about the second answer: in 43 of them, the code changed and its written description did not, so the tool saw no change. Usually the job changed code and forgot to update its own comment. Your files alone left 44 of the 45 missed.</p>
-<p><b>The other half, by your own reasoning.</b> Every reference was written with forethought, and so is every change: the job that makes a change knows what it changed. So each job would also state, in its pull request, which of its items changed what they accept or hand back. To stop a forgotten one, the tool lists every item whose code changed, and the job must answer for each; one left unanswered counts as changed. With both files, the trial missed 1 of the needed modules instead of 45. That one is a change your existing rule says tells no one ("accepting more"). It also found 13 real breaks that the test record had never listed; today's tool tells none of them.</p>
-<p><b>What it changes.</b> It replaces your rule "No list is kept by hand", and reshapes your choice 3B of this morning. About 700 lines of the tool's guessing go. Each module's job writes and keeps its own file, as it writes its tests. Nothing new can stop a job: the only check is the one that already compares a module's imports with the modules it says it uses. Not proven: how reliably jobs keep the files and statements accurate, and the cost on civicsmith.</p>
-<p><b>Choice 1: the fix.</b></p>
+<h2>Being reworked on your points: who uses what, and civicsmith's path</h2>
+<p>Thank you. I am reworking the design on your points before I put it to you again:</p>
 <ul>
-<li><b>1-0. No change.</b> civicsmith cannot go on: its notices can no longer be written down, and 99 merged changes never told their users.</li>
-<li><b>1A. Your file only.</b> Ends the over-telling. Leaves the misses: in the trial, 44 of 45 still missed.</li>
-<li><b>1B. Your file, plus each job's statement of what it changed (recommended).</b> Ends the over-telling and the misses: in the trial, 1 missed.</li>
+<li><b>Rigour from the language itself.</b> One helper is listing, from JavaScript's own definitions rather than from samples, every way one module's code can depend on another's. It is also weighing your idea of a standard: a short list of allowed ways to refer to an earlier module, with existing code changed to match. If the allowed ways are ones a tool can read with certainty, the tool can find every use itself, and the job's file becomes a checked record, not a guess.</li>
+<li><b>Telling outward changes from inward ones.</b> A second helper is defining exactly what counts as a change to what an item takes in or hands back in JavaScript. It is also working out what the tool can list mechanically so that no changed item is left off, and writing a short guide each job follows.</li>
+<li><b>No tests where no code changes:</b> said at the top of those jobs' instructions.</li>
+<li><b>No sample:</b> build the real design and tool, run the real pass in parallel, and stop after the first 5 to 8 modules for you to see the effort and how faithful each file is.</li>
+<li><b>The record:</b> your decisions will rewrite the existing entries on who is told in place, retiring the earlier rulings this replaces, not add new ones beside them.</li>
 </ul>
-<p><b>Choice 2: civicsmith's refactoring</b>, once the fix is built. civicsmith's ARCH measured where it stands. Of the plan's eight steps, step 1 and half of step 2 are built. Most of the 324 jobs since it began were answers to notices, about 163 of them closing with nothing to change. 99 merged changes never told their users, and 938 notices from the old method are waiting.</p>
-<ul>
-<li><b>2-0. No change:</b> hold, then carry on. Not workable as is: the old notices cannot be redone under the new method.</li>
-<li><b>R1. Keep the work.</b> Every module's first job writes its file and runs its module's tests once, to catch whatever the 99 untold changes broke; then the refactoring continues. Keeps everything; costs a test run in all 204 modules.</li>
-<li><b>R2. Restart from main (recommended).</b> Dropping the current batch keeps the plan, ARCH's decisions, the requirements and the module list, and puts back main's code. Every module's first job writes its file from main's code, where nothing is untold. Then the refactoring starts again at step 1. Loses step 1, half of step 2, and the comment work in 124 modules. Starts from a known state.</li>
-</ul>
-<p><b>Effort of writing every module's file</b> (estimate, not measured): 204 jobs, about $400 to $1,000 and 6 to 13 hours. I would measure five modules first.</p>
-<p>To choose, reply here starting with "Decision:", for example "Decision: 1B and R2". You may also set any of this aside or ask me questions first. The full design is in <code>process/research/uses-metadata-25nov/design.md</code>.</p>
+<p><b>One question.</b> You wrote that it makes sense to abandon the refactoring work done so far and finish this fix first. Shall I record that as a decision? If so, reply here with "Decision:" and your words. Nothing is done to civicsmith until the fix is built in any case.</p>
+<p>My reading of one line: "should simply be by trying a few modules" I take as "should not". Tell me if I have it wrong.</p>
 </section>
 
 <section class="wait">
