@@ -38,7 +38,7 @@ provider; civicsmith's measured habits), `proof.md` (the proof's 45 explained; t
 
 ## 2. The design, reworked on the owner's points (option C below)
 
-Grounds added since the first version: `standard.md` (every means of reference, from the language's definitions; a
+Grounds added since the first version: `every-reference.md` (every gap closed and shown), `standard.md` (every means of reference, from the language's definitions; a
 standard of permitted forms, S1–S13) and `changes.md` (domain and range in JavaScript; the tool's list of entries that may
 have changed, sound on all 150 proof changes; the job's guide). The first version (a job-written file only) is option A.
 
@@ -49,10 +49,31 @@ calls by name only through a declared table, with a gathering module in place of
 state across modules (S8); no code built from text (S9); generated files name their source (S11); tests follow the same
 rules (S12); import, never copy (S13). And the rule that makes values passed through a middle module visible (S4): every
 exported item states the kinds it takes and hands back, the type checker runs strictly, and a value of another module's
-kind is never relabelled as one's own. Two of these already stand (design part 2 §7 rules 4 and 5). The standard is
-derived from the language's definitions: the six channels the language itself defines are closed by it; the host's own
-facilities are covered for the Node and workerd versions read; what values flow at run time is undecidable in general,
-which is why the standard requires kinds rather than inferring them.
+kind is never relabelled as one's own. Two of these already stand (design part 2 §7 rules 4 and 5). Added
+by `every-reference.md` to close every gap the first version left: no value of unknown kind anywhere (R1); data from another
+module's channel only through that module's reader, never given a shape by a cast or a hand-written type test (R2–R4,
+R12); the tool itself relates every conversion between kinds, so the claim does not rest on the type checker's documented
+unsound points (R5–R7, R9, R11); no writes onto another module's value by reflection (R8); no comments that silence the
+checker (R10); the checker setting that types a caught error as unknown turned on (today's tool turns it off, which alone
+hides a reference now, case B8). Each gap was shown, by running TypeScript 6.0.2 and 5.6.3 on 27 small cases, to hide its
+reference under today's settings and to be found under the new rules: 50 runs of 50; two controls of ordinary conforming
+code produce nothing.
+
+**The claim, exactly as shown.** Under the standard, every reference of a later module U to an earlier module P is either
+listed as a use of P's entry or sits at a place listed as outside the standard (and is told of every change of P until
+converted). A reference is a place in U's code or tests that names an entry of P, uses a channel P owns, or operates on a
+value whose kind there, or on either side of a conversion made there, is P's. It rests on the pinned type checker computing
+each expression's kind as documented, the same footing as trusting the parser to read imports. Not yet run: the standard's
+rule on another module's files misses a path relative to the working directory handed to a file read; one more rule closes
+it (S5).
+
+**Copies are the one dependency without a reference.** Whether text is a copy depends on how it was written, not on the
+text, so no tool can find every copy (proven in `every-reference.md`). They are made findable by the owner's convention:
+a copy is marked as a copy of a named entry (`/** @copyof <module>:<Entry> */` or a name `copyOf_<module>_<Entry>`; in a
+data file, an entry in the module's uses file), read by the tool as a reference, with drift from the provider's value
+reported; and a literal equal to an earlier module's exported value is outside the standard unless marked, so every exact
+copy is found. What no tool can find: an unmarked copy that is also reworded, translated, derived or built at run time.
+The job's duty to mark copies, the user's own tests and the walks are what catch it; judged rare, not measured.
 
 **B. Who uses what is computed by the tool, from code that keeps the standard, and recorded.** At a job's push the tool
 writes the module's uses file (`process/modules/<module>.uses.json`, beside its requirements file): each earlier module,
@@ -116,7 +137,7 @@ wait's reading of 24 Nov. It carries out his 24 Nov words "The goal is to bring 
 | **0. No change** | Inferred | Description compared | 116 / 62 / 45 (at least 57 with the 13 found breaks) | civicsmith cannot go on |
 | **A. Job-written file** | The job's word; imports checked | Tool list, job's marks | 187 / 89 / 1 (marks as the oracle) | Rests on each job's care |
 | **B. Standard without the kinds rule (S4)** | Tool-computed for direct references; values through a middle module recorded by the job | Tool list, job's marks | as A | Certain for direct references only |
-| **C. Full standard (recommended)** | Tool-computed for every reference, from the standard | Tool list, job's marks | as A | Certain except the listed unsound spots |
+| **C. Full standard (recommended)** | Tool-computed for every reference, from the standard | Tool list, job's marks | as A | Every reference found or its place listed; only unmarked, inexact copies unfindable |
 
 With every entry left unmarked (the worst job), A to C give 429 / 330 / 0: more told, nobody missed. Not proven: how
 reliably real jobs mark; the cost of bringing civicsmith's 204 modules into the standard, above all S4's kinds (judged the
