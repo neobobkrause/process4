@@ -12,7 +12,7 @@ import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { block, parseBlock } from './github.mjs';
-import { writeNotice } from './noticecomments.mjs';
+import { NOTICE_LIMIT, cutReason, writeNotice } from './noticecomments.mjs';
 import { JOB, JOB_MARK, describe as workLine } from './round.mjs';
 import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
@@ -117,27 +117,59 @@ function readNotices(dirB, dirA, mods, n) {
 // A notice reaches a running job at once (the owner's decision of 24 Nov 2026, item 2): for each told user with an open
 // job pull request into the tranche branch, blocked or not, the notice goes into its job block, edited in place: its
 // work line, its reasons added to `uses`, `notice_seq` one higher (a test record made before it no longer stands), and
-// `notices` naming it by provider and merged pull request, so a second run for the same merge adds nothing. The block's
-// kind stays as it is. Returns the told users with no open job, whose notices wait for their next job.
-function toOpenJobs(ctx, base, told, n) {
+// `notices` naming it by provider and merged pull request. The block's kind stays as it is. Three more rules (the
+// owner's decision B of 25 Nov 2026, after notify 1350 and 1356 on civicsmith):
+// - no repeats: a told user whose job pull request of any state, open, merged or closed, already names the notice in
+//   its block's `notices` has it; nothing more is written for it;
+// - a job block stays under the size of one comment: where the notice's reasons would pass it, they go in without their
+//   before and after; where still too many, one reason in their place says so, and the whole module's tests run;
+// - a job merged or closed while its block was written did not carry the notice: the block is put back as it was, and
+//   the user counts as having no open job.
+// Returns the told users with no open job, whose notices wait for their next job.
+function toOpenJobs(ctx, base, told, n, mergedAt) {
   if (!base || base === 'main') return told;
-  const open = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.state === 'open' && p.base?.ref === base && JOB.test(p.head?.ref || ''));
+  // Every job pull request into the tranche branch that was still open when the merge was made.
+  const jobs = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || '')
+    && (p.state === 'open' || !mergedAt || !p.closed_at || p.closed_at >= mergedAt));
+  const blocks = new Map();
+  const blockOf = (pr) => {
+    if (!blocks.has(pr.number)) {
+      const c = ctx.gh.comments(ctx.slug, pr.number).find((x) => parseBlock(x.body, JOB_MARK));
+      blocks.set(pr.number, c ? { c, ...parseBlock(c.body, JOB_MARK) } : null);
+    }
+    return blocks.get(pr.number);
+  };
+  const names = (b, t) => (Array.isArray(b?.data.notices) ? b.data.notices : []).some((x) => x.from === t.from && Number(x.merged) === n);
   const rest = [];
   for (const t of told) {
-    const pr = open.filter((p) => p.head.ref.match(JOB)[1] === t.module).sort((a, b) => Number(b.head.ref.match(JOB)[2]) - Number(a.head.ref.match(JOB)[2]))[0];
-    if (!pr) { rest.push(t); continue; }
-    const c = ctx.gh.comments(ctx.slug, pr.number).find((x) => parseBlock(x.body, JOB_MARK));
-    if (!c) { ctx.log(`pull request ${pr.number} of ${t.module} has no job block; the notice from ${t.from} waits for its next job`); rest.push(t); continue; }
-    const { data, words } = parseBlock(c.body, JOB_MARK);
-    const line = workLine(t);
-    const notices = Array.isArray(data.notices) ? data.notices : [];
-    if (notices.some((x) => x.from === t.from && Number(x.merged) === n) || (data.work || []).includes(line)) {
-      ctx.log(`the job of ${t.module} (pull request ${pr.number}) holds the notice from ${t.from} (pull request ${n}) already`);
+    const mine = jobs.filter((p) => p.head.ref.match(JOB)[1] === t.module).sort((a, b) => Number(b.head.ref.match(JOB)[2]) - Number(a.head.ref.match(JOB)[2]));
+    const holder = mine.find((p) => names(blockOf(p), t) || (p.state === 'open' && (blockOf(p)?.data.work || []).includes(workLine(t))));
+    if (holder) {
+      ctx.log(`the job of ${t.module} (pull request ${holder.number}${holder.state === 'open' ? '' : `, ${holder.merged_at ? 'merged' : 'closed'}`}) holds the notice from ${t.from} (pull request ${n}) already`);
       continue;
     }
-    const next = { ...data, work: [...(data.work || []), line], uses: [...(data.uses || []), ...(t.uses || [])], notice_seq: noticeSeq(data) + 1, notices: [...notices, { from: t.from, merged: n }] };
-    ctx.gh.editComment(ctx.slug, c.id, block(JOB_MARK, next, words));
-    ctx.log(`message the job of ${t.module} (pull request ${pr.number}): a notice from ${t.from} reached it`);
+    const pr = mine.find((p) => p.state === 'open');
+    if (!pr) { rest.push(t); continue; }
+    const b = blockOf(pr);
+    if (!b) { ctx.log(`pull request ${pr.number} of ${t.module} has no job block; the notice from ${t.from} waits for its next job`); rest.push(t); continue; }
+    const { c, data, words } = b;
+    const bodyWith = (uses) => block(JOB_MARK, { ...data, work: [...(data.work || []), workLine(t)], uses: [...(data.uses || []), ...uses], notice_seq: noticeSeq(data) + 1, notices: [...(data.notices || []), { from: t.from, merged: n }] }, words);
+    const reasons = t.uses || [];
+    const tooMany = { module: t.from, notFollowed: [`the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block; the whole module's tests run`], through: null };
+    const body = [reasons, reasons.map(cutReason), [tooMany]].map(bodyWith).find((x) => x.length < NOTICE_LIMIT);
+    if (!body) { ctx.log(`the job block of ${t.module} (pull request ${pr.number}) is too large to take the notice from ${t.from}; it waits for its next job`); rest.push(t); continue; }
+    const was = c.body;
+    ctx.gh.editComment(ctx.slug, c.id, body);
+    blocks.delete(pr.number);
+    // A job merged or closed meanwhile ran its tests without the notice: its block is put back, and the notice waits.
+    const now = ctx.gh.getPR(ctx.slug, pr.number);
+    if (!now || now.state !== 'open' || now.merged_at) {
+      ctx.gh.editComment(ctx.slug, c.id, was);
+      ctx.log(`the job of ${t.module} (pull request ${pr.number}) ${now?.merged_at ? 'merged' : 'closed'} while the notice from ${t.from} was written; it waits for its next job`);
+      rest.push(t);
+      continue;
+    }
+    ctx.log(`message the job of ${t.module} (pull request ${pr.number}): a notice from ${t.from} reached it${body === bodyWith(reasons) ? '' : ' (its reasons shortened to fit the job block)'}`);
   }
   return rest;
 }
@@ -186,7 +218,7 @@ export function notifyCmd(ctx, n) {
     rmSync(base, { recursive: true, force: true });
   }
   if (!told.length) return 0;
-  told = toOpenJobs(ctx, tranche, told, n);
+  told = toOpenJobs(ctx, tranche, told, n, pr.merged_at);
   if (!told.length) return 0;
   // The reasons first, on the merged pull request, one notice for each changed module; then the record that names them.
   for (const from of [...new Set(told.map((t) => t.from))]) {

@@ -1,6 +1,6 @@
 # Part 2. Modules, jobs, module tests, and the notice
 
-Length: 109 lines. Last section: "9. Changes that are not a job's".
+Length: 110 lines. Last section: "9. Changes that are not a job's".
 
 ## 1. Modules and their order
 
@@ -72,6 +72,7 @@ The tool decides both, because each has one right answer:
 - **Who is told.** In the owner's words, "ideally only the users of the entry that changed". The tool sends the notice and decides to whom.
 - **A module whose job is still open when the notice is worked out.** The notice reaches that job at once: it is added to the job's own record of its work, and ARCH tells the job. A pass recorded before the notice no longer counts; the job deals with the notice and runs its tests again. A module with no open job gets a told job, its next job.
 - **A module with no comments yet.** The first thing its job does is add the structured comments, as a step of their own, describing the module as it stands. That step sends no notice.
+- **A kind that was unknown and is now stated.** Where an entry's kind, at some place, was read as "anything" before and is a stated kind after, that is the entry being described, not changed, and tells no one, in the module itself and in every later module whose listing passes it on. Any other difference in the same entry tells as before.
 - **What a told job does.** It checks only the changed parts and runs only the tests that relate to them.
 - **Which tests relate.** The tool picks them, not the job. The notice carries the places in the told module's files that name the changed entry. The related tests are the module's test files that hold such a place, or reach code that holds one, or reach code the told job itself changed, together with any test file the job changed. They are chosen by whole test file.
 - A job is a told job only when notices are its module's only work. A module with other work as well has an ordinary job, which reads the notice's uses and whose whole module's tests run.

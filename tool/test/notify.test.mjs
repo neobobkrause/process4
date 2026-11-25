@@ -9,7 +9,7 @@ import { loadTree } from '../lib/notice/model.mjs';
 import { analyse, notice } from '../lib/notice/notice.mjs';
 import { check, commentsOnly } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
-import { NOTICE_LIMIT, NOTICE_MARK, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
+import { NOTICE_LIMIT, NOTICE_MARK, cutReason, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
 import { JOB_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
@@ -188,6 +188,88 @@ test('notify adds a notice to a told user\'s open job block, once, and the rest 
   assert.match(out.join('\n'), /the job of orders \(pull request 20\) holds the notice from dates \(pull request 7\) already/);
   assert.doesNotMatch(out.join('\n'), /message the job/);
   assert.equal(waitingWork(gh).work.length, 1);
+});
+
+// The owner's decision B of 25 Nov 2026, items 2 and 3 (notify 1350 and 1356 on civicsmith).
+test('no repeats: a told user whose job of any state already names the notice is skipped; nothing is written for it', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  // orders' job carried the notice and merged; report's job named it and was closed.
+  gh.s.prs.push({ number: 20, state: 'closed', merged_at: '2026-11-20T11:00:00Z', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+  gh.s.prs.push({ number: 21, state: 'closed', head: { ref: 'job/report.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+  const held = { module: 'orders', work: ['notice from dates (pull request 7)'], kind: 'told', notice_seq: 1, notices: [{ from: 'dates', merged: 7 }] };
+  gh.addComment('o/product', 20, block(JOB_MARK, held));
+  gh.addComment('o/product', 21, block(JOB_MARK, { ...held, module: 'report' }));
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const text = out.join('\n');
+  assert.match(text, /the job of orders \(pull request 20, merged\) holds the notice from dates \(pull request 7\) already/);
+  assert.match(text, /the job of report \(pull request 21, closed\) holds the notice from dates \(pull request 7\) already/);
+  assert.equal(waitingWork(gh).work, undefined);
+  assert.deepEqual(noticeComments(gh, 7), []);
+  assert.deepEqual(parseBlock(gh.s.comments.find((c) => c.on === 20).body, JOB_MARK).data, held);
+});
+
+test('a job merged while its block took the notice did not carry it: the block is put back and the notice waits', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+  const before = block(JOB_MARK, { module: 'orders', work: ['R1'], kind: 'ordinary' });
+  const c = gh.addComment('o/product', 20, before);
+  // The job is merged at the moment its block is written.
+  const edit = gh.editComment;
+  gh.editComment = (slug, id, body) => { if (id === c.id) Object.assign(gh.getPR(slug, 20), { state: 'closed', merged_at: '2026-11-20T11:00:00Z' }); return edit(slug, id, body); };
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  assert.equal(gh.s.comments.find((x) => x.id === c.id).body, before);
+  assert.match(out.join('\n'), /the job of orders \(pull request 20\) merged while the notice from dates was written; it waits for its next job/);
+  assert.deepEqual(waitingWork(gh).work.map((w) => w.module), ['orders', 'report']);
+  assert.deepEqual(Object.keys(noticeComments(gh, 7)[0].users), ['orders', 'report']);
+});
+
+test('a job block stays under one comment\'s size: reasons without their words, or one reason that says the whole module runs', () => {
+  // The reasons orders is told, read from a first run with no open job.
+  const reasonsOf = () => {
+    const root = makeRepo(productFiles());
+    const gh = fakeGitHub();
+    create(gh, 'o/product', ['waiting-work'], () => {});
+    mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+    notifyCmd(ctxFor(root, gh).ctx, 7);
+    return noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 7 });
+  };
+  const reasons = reasonsOf();
+  const tooMany = { module: 'dates', notFollowed: [`the notice from dates (pull request 7) has ${reasons.length} reasons, too many for the job block; the whole module's tests run`], through: null };
+  // A job block already holding `k` characters of earlier uses, and what it is with the notice's `uses` added.
+  const data = (k) => ({ module: 'orders', work: ['R1'], kind: 'ordinary', uses: [{ module: 'dates', entry: 'old', note: 'x'.repeat(k) }] });
+  const withNotice = (k, uses) => block(JOB_MARK, { ...data(k), work: ['R1', 'notice from dates (pull request 7)'], uses: [...data(k).uses, ...uses], notice_seq: 1, notices: [{ from: 'dates', merged: 7 }] }).length;
+  const fill = (uses) => NOTICE_LIMIT - 10 - (withNotice(0, uses) - 0);
+  const run = (k) => {
+    const root = makeRepo(productFiles());
+    const gh = fakeGitHub();
+    create(gh, 'o/product', ['waiting-work'], () => {});
+    gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+    gh.addComment('o/product', 20, block(JOB_MARK, data(k)));
+    mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+    const { ctx, out } = ctxFor(root, gh);
+    notifyCmd(ctx, 7);
+    const body = gh.s.comments.find((x) => x.on === 20).body;
+    assert.ok(body.length < NOTICE_LIMIT);
+    assert.match(out.join('\n'), /message the job of orders \(pull request 20\): a notice from dates reached it \(its reasons shortened to fit the job block\)/);
+    return parseBlock(body, JOB_MARK).data.uses.slice(1);
+  };
+  // Room for the reasons without their before and after, not with them.
+  const k1 = fill(reasons.map(cutReason));
+  assert.ok(withNotice(k1, reasons) >= NOTICE_LIMIT);
+  assert.deepEqual(run(k1), reasons.map(cutReason));
+  assert.ok(run(k1).every((r) => r.cut && r.before === undefined && r.lines.length));
+  // Room only for one reason: the job's related tests err to its whole module.
+  const k2 = fill([tooMany]);
+  assert.ok(withNotice(k2, reasons.map(cutReason)) >= NOTICE_LIMIT);
+  assert.deepEqual(run(k2), [tooMany]);
 });
 
 test('notify on a merge that changes no module\'s files says so before reading any code', () => {
@@ -381,6 +463,28 @@ export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }
   assert.match(mk.notConfirmed, /not find the new entry assignable to the old/);
   assert.deepEqual(b.told.map((t) => t.user), ['u']);
   assert.deepEqual(b.told[0].reasons.map((r) => `${r.entry}: ${r.changes}`), ['make: cannot stand in']);
+});
+
+test('an unknown kind becoming known tells no one; any other difference in the same entry still tells', () => {
+  // The owner's decision B of 25 Nov 2026: where the reader inferred "anything" before and a comment now states a kind,
+  // the running code is the same; nothing changed for a user, here or "through" a later module that passes it on.
+  const root = mkdtempSync(join(tmpdir(), 'p4-known-'));
+  const after = mkdtempSync(join(tmpdir(), 'p4-known-'));
+  const RAW = '\nexport function raw(x) { return x; }\n';
+  const STATED = '\n/**\n * @param {string} x\n * @returns {string}\n */\nexport function raw(x) { return x; }\n';
+  const files = productFiles();
+  files['src/dates/index.mjs'] = DATES() + RAW;
+  files['src/orders/index.mjs'] = `import { raw } from '../dates/index.mjs';\n${ORDERS.split('\n').slice(1).join('\n')}\nexport const shown = () => raw('a');\n`.replace('export function orderDay', "import { parseDay } from '../dates/index.mjs';\nexport function orderDay");
+  write(root, files);
+  write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED });
+  const r = notice(root, after, 'dates');
+  assert.deepEqual([r.entries, r.told, r.changedModules], [[], [], []]);
+  assert.equal(r.summary, 'The listing before and after is the same. Nobody is told.');
+  // With another change in the same entry (a parameter newly required), that change still tells its users.
+  write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED.replace(' * @returns', ' * @param {number} y\n * @returns').replace('raw(x)', 'raw(x, y)') });
+  const m = notice(root, after, 'dates');
+  assert.deepEqual(m.entries.filter((e) => e.module === 'dates').map((e) => `${e.entry}: ${e.changes}`), ['raw: cannot stand in']);
+  assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.entry === 'raw')));
 });
 
 test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {

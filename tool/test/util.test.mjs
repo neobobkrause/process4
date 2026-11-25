@@ -40,6 +40,16 @@ test('a call allowed to fail answers null and keeps GitHub\'s words until the ne
   assert.equal(gh.refused, null);
 });
 
+test('a refusal keeps GitHub\'s own message from standard output, thrown or kept', () => {
+  const body = JSON.stringify({ message: 'Validation Failed', errors: [{ resource: 'IssueComment', code: 'custom', field: 'body', message: 'body is too long (maximum is 65536 characters)' }], status: '422' });
+  const refused = { code: 1, stderr: 'gh: Validation Failed (HTTP 422)', stdout: body };
+  const gh = makeGh({ exec: answers(refused, refused).exec, wait: () => {} });
+  const words = 'gh: Validation Failed (HTTP 422); GitHub said: Validation Failed; body is too long (maximum is 65536 characters)';
+  assert.throws(() => gh(['api', 'x']), (e) => e instanceof Fail && e.message === `GitHub refused: ${words}`);
+  assert.equal(gh(['api', 'x'], { allowFail: true }), null);
+  assert.equal(gh.refused, words);
+});
+
 test('arguments', () => {
   assert.deepEqual(parseArgs(['push', '--blocked', 'dates', 'why not']), { _: ['push', 'why not'], blocked: 'dates' });
   assert.deepEqual(parseArgs(['open', '--into-main', '--title', 't']), { _: ['open'], 'into-main': true, title: 't' });
