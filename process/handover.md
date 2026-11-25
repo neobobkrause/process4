@@ -1,48 +1,41 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~18:50Z by **PROCESS #15** (`session_018Bhcef6v3MqKry2Wh57iiK`) at its refresh point (past 50 percent),
-at a natural pause: nothing half done, everything merged. Your successor is **PROCESS #16**: read the generation in
-`handover-process` (15), name yourself `PROCESS #16` with set-session-title, record generation 16 and your session there
-(the record starts with the JSON block; keep the registry), and message each ROOT in the registry your address. Your fill
-(`get_session`, `context_usage`) reads 0 until your first turn ends, then is real (written at each turn's end); refresh at
-the first natural pause after 50 percent. Never `git add -A`.
+Written 25 Nov 2026 ~19:20Z by **PROCESS #16** (`session_018Bhcee8zHEFYs9oDczEFEK`), live, mid-build (an interim update
+so a successor can carry on; not a refresh). If you are PROCESS #17: read the generation in `handover-process` (16), name
+yourself `PROCESS #17`, record generation 17 and your session there (keep the registry), and message each ROOT in the
+registry your address. Your fill (`get_session`, `context_usage`) reads 0 until your first turn ends, then is real; refresh
+at the first natural pause after 50 percent. Never `git add -A`; `.claude/worktrees/` goes in `.git/info/exclude`.
 
 **Your reading** (the owner's decision (ii), 25 Nov): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. Open a decision entry, a build text
 or a research file, or give it to a worker, when a question touches it.
 
-## START HERE: the owner is reviewing the design for "who uses what"; wait for his marked decision
+## START HERE: decision C is being built on the integration branch `work/decision-c`
 
-The design document, for his review and comments: **"Process4: who uses what — the design for your decision"**,
-https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (a Claude Docs doc; doc id `789cbf2d-7c33-4d7f-9248-31ac8a329a51`, its
-one tab's body node `3212463b-6df3`; edit with the Claude_Docs tools; read with `sinceRev` from rev 47, PROCESS #15's
-last write). His standing page links to it. Comments on it may arrive; answer each in its thread with a doc comment.
+The owner, 25 Nov 18:51 UTC, in PROCESS #16's session: "Decision: C, the full standard, with the first pass of 8; build
+the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."
+And later: "It's important that this process4 change be done properly. This shouldn't result in any contradictions. All
+changes should try to properly evolve existing elements of the process rather than piling more on top."
 
-What it holds (he asked for it in this shape, 25 Nov): Part A the coding standard for references to earlier modules
-(S1–S13, R1–R12, and from the studies R14–R22); Part B the conversion job (identify every reference, standard or not;
-convert; the metadata file `process/modules/<module>.uses.json` with reference, type, route and place incl. code/test and
-the test case's name); Part C the notification tool (users told on a change of **means**, decided by the tool with
-certainty; a change of **meaning** under the same types declared by the job, and named by ARCH's work order — both
-duties called out at his request; an accidental change of meaning is a provider bug caught by its own tests); Part D the
-plan (record, texts, tool, proof, trial on process3-probes, civicsmith's move, first pass of 8 real modules, his review);
-E what it replaces in his rulings; F options 0/A/B/C, C recommended; G civicsmith now; H not proven; "Is it
-load-bearing?" (yes, on two premises: the checker works as documented; Node's descriptions are accurate).
-
-Grounds, all in `process/research/uses-metadata-25nov/`: `design.md` (PROCESS's design and **all the owner's words of 25
-Nov, exact, in §6** — conversation, none marked), `every-reference.md`, `standard.md`, `changes.md`, `proof.md`,
-`means.md`, `tool-map.md`, `texts.md`, `civicsmith-state.md`, `study-references.md` (the reference side from the
-language: R14–R22), `study-changes.md` (the change side: the means is decidable; "unchanged" reduces to the halting
-problem; the sound within-module dependence rule, control and data; the 118 needed users classified).
-
-Note: `design.md` §2–§5 is an earlier stage; the document is the current statement. On his decision, fold the document
-into the design and texts.
-
-**On his "Decision:"** (rule 3): record his exact words, **rewriting in place** the existing entries in
-`design-decisions-2.md` — "Who a change tells", "How `notify` reads the product", "How a notice reaches a user", the
-merge wait in "The round" — retiring the replaced rulings (3B of 25 Nov morning; the told job's third reading of 20 Nov;
-the merge wait's reading of 24 Nov) with their dates; no new entries beside them (his instruction). Design part 2 §7
-point 1 ("No list is kept by hand") is replaced. Then Part D, in order. Nothing is built before his decision. He asked
-for the first pass to use the finished tool on 8 real modules whose files are kept once confirmed — no throwaway sample.
+- The design document (https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk, a Claude Doc, doc id
+  `789cbf2d-7c33-4d7f-9248-31ac8a329a51`, body node `3212463b-6df3`, rev 58) was corrected by PROCESS #16 and is the
+  current statement: Parts A (S1–S13, R1–R8, R10–R22, settings), B (conversion job; B7 every module job's uses file
+  rewritten by the tool at push), C (the means M1–M9; meaning changes declared by the job and named by ARCH), D (the plan).
+- **How it lands:** everything on `work/decision-c` (from main), reaching main as ONE pull request only when design,
+  record, build texts, starting texts and tool agree and the tool's tests and the re-recorded proof pass. Main must never
+  hold a design that contradicts its tool. Then Part D steps 5 (trial on process3-probes), 6 (civicsmith moves on his
+  instruction at its coordinator), 7 (first pass: ARCH records a scope of the first 8 modules), 8 (his review).
+- **Done on `work/decision-c`:** the record (entries "Who a change tells", "How `notify` reads the product", "How a notice
+  reaches a user", "The round" item 2, "A job's tests" item 3, "What the check refuses" item 3, rewritten in place; 3B
+  retired with his words kept); design parts 0, 2 (§§3, 6, 7, 8, 9), 4, 6, 10 evolved in place.
+- **Workers (each in its own worktree, branches pushed, nothing merged):** `work/decision-c-texts` (build texts 01, 01b,
+  02, new 02c the coding standard, 02b, 03, 04, 05; job.md, arch.md, starting_texts/00-index.md; job set 174,033 and
+  ARCH set 174,270 of 175,000 — tight); `work/decision-c-refs` (tool: reference reader under the standard, places outside,
+  order faults, copies, facility list, uses file writer at `push`, `p4 uses`, `check` from the uses file, the 27 cases as
+  tests); `work/decision-c-means` (tool: means M1–M9 over the within-module closure, meaning declarations, `notify` as a
+  lookup, merge wait and related tests from uses files, inference removed, proof re-recorded). Review each against the
+  design for contradictions, merge each into `work/decision-c`, then run a fresh-eyes contradiction sweep of everything
+  (design, record, build, starting texts, tool) before the one pull request into main.
 
 ## Also waiting for him (on his page "Process4 Waiting for Bob")
 
@@ -52,9 +45,10 @@ for the first pass to use the finished tool on 8 real modules whose files are ke
   (correct part 7 §1: the fill is real after a session's first turn; tell civicsmith's coordinator ARCH's "fill
   unreadable" note is wrong), C both (recommended). Undecided.
 - Choice 5 (depth limit, 5B recommended) undecided; process3-probes needs a fresh ROOT from him. Choice 6 (waiting work
-  in parts) waits until who-is-told is settled (his words: "That's not a decision, it's a reality.").
+  in parts) waited until who-is-told was settled (his words: "That's not a decision, it's a reality."); decision C settles
+  it, and the design document (C5) says the split is still needed: put it back to him once decision C has landed.
 - Later, one at a time (from PROCESS #14): who keeps his one standing page; the unproven two-hour background command; a
-  job's reading set at 170,742 of 175,000.
+  job's reading set, 174,033 of 175,000 on `work/decision-c-texts` (ARCH's 174,270).
 
 ## civicsmith
 
