@@ -1,6 +1,6 @@
 # Precision of who is told, measured on a converted proof (25–26 Nov 2026, PROCESS #17)
 
-Length: 62 lines. Last section: "The owner's words on how findings are judged (25 Nov ~22:30Z, conversation, not marked)".
+Length: 78 lines. Last section: "The owner on \"accepts more\" and on re-measuring (25 Nov ~22:45Z, conversation, not marked)".
 
 ## Files
 
@@ -60,3 +60,19 @@ PROCESS asked once whether to record the second as a decision. Under it: correct
 back up what ARCH names and the job declares, design 2 §7, §8); correction 2 (P3) put to him; the 75 of kind A counted
 as retests his rule calls for; the 87 others to be checked one by one for changes the job knows stayed inside its module
 (the design lets a declaration add a notice, never remove one).
+
+## The owner on "accepts more" and on re-measuring (25 Nov ~22:45Z, conversation, not marked)
+
+"If you think some rule of mine says that accepting more tells no one then we need to get rid of that rule - as it's it's
+obviously false."
+
+"BTW, I'm NOT suggesting that you retest these situations - again. I just don't think that the data produced by constantly
+and repeatedly running these tests is helpful... * they (far too) often don't reflect real world conditions in the
+workflow * they eat up tokens and time though the results are almost never rigorous. * the less than rigorous results
+convince you with certainty that something is true or false, only to find out later that it missed a multiple of
+conditions and situations that completely invalidate your conclusions"
+
+Found: "accepting more tells no one" (design 2 §7) and rule 7 for the tool are not his words; they were written by
+PROCESS from the notice's earlier proof, and contradict his rule ("any change to either a provider's domain or range
+necessitates that its users be retested"). PROCESS stopped the needless-notice classification worker and asked once
+whether to record his removal of the rule as a decision.
