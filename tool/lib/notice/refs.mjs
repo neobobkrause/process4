@@ -29,6 +29,8 @@ const PROTOCOL = ['then', 'toJSON', 'valueOf', 'toString', 'constructor'];
 const PRIMITIVE = ['toString', 'valueOf'];
 const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 const HOOKS = new Set(['before', 'after', 'beforeEach', 'afterEach']);
+/** The marks of the tables and carriers of calls by name (build text 2b, section 5). */
+const MARKS = new Set(['carriesop', 'carriestable', 'optable']);
 /** Facilities that are never on a facility list (study-references §1.5), each with the rule it breaks. */
 const NEVER = new Map([
   ['SymbolConstructor.for', 'S8'], ['SymbolConstructor.keyFor', 'S8'], ['eval', 'S9'], ['Function', 'S9'],
@@ -90,9 +92,13 @@ export function readReferences(tree, moduleId, opts = {}) {
     let out = null;
     const sf = decl.getSourceFile();
     const m = tree.moduleOfFile(sf.fileName);
-    if (m && m !== mod.id) {
+    if (m && m !== mod.id && ts.isSourceFile(decl)) {
+      // the module object itself (import * as W, import()): named by its members where they are read
+      out = { module: m, item: '*', kind: 'module', listed: tree.byId.get(m).public.includes(sf.fileName), decl };
+    } else if (m && m !== mod.id) {
       const l = sf.isDeclarationFile ? null : listingOf(m);
-      const at = (decl.name ?? decl).end - 1;
+      // located by its name, so a kind is not mistaken for its last member; a kind written in place, by its start
+      const at = decl.name ? decl.name.end - 1 : decl.getStart(sf);
       let best = null;
       for (const r of l?.ranges ?? []) if (r.file === sf.fileName && r.start <= at && at < r.end && (!best || r.end - r.start < best.end - best.start)) best = r;
       if (best) out = { module: m, item: best.entry, kind: l.entries[best.entry]?.kind ?? 'entry', listed: true, decl };
@@ -110,18 +116,22 @@ export function readReferences(tree, moduleId, opts = {}) {
   function testIndex(sf) {
     if (testIndexes.has(sf)) return testIndexes.get(sf);
     const calls = new Map();
+    const idx = { calls, leaves: [] };
+    testIndexes.set(sf, idx);
+    const unnamed = [];
     forEachNode(sf, (n) => {
       if (!isTestCall(n) || HOOKS.has(calleeName(n))) return;
       const a0 = n.arguments[0];
       let parent = null;
       for (let p = n.parent; p; p = p.parent) if (calls.has(p)) { parent = calls.get(p); break; }
       const written = a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) ? a0.text : null;
-      if (written === null) place('S12', n, { what: 'a test whose name is not written out', mayRefer: [], waitsOn: 'this module: a written-out name' });
+      if (written === null) unnamed.push(n);
       const name = written ?? `<name not written out, line ${lineOf(n)}>`;
       calls.set(n, { node: n, name, full: parent ? `${parent.full} > ${name}` : name, suite: /^(describe|suite)$/.test(calleeName(n)), parent });
     });
-    const idx = { calls, leaves: [...calls.values()].filter((c) => !c.suite) };
-    testIndexes.set(sf, idx);
+    idx.leaves = [...calls.values()].filter((c) => !c.suite);
+    // S12: a test's name is written out, so a place can name it
+    for (const n of unnamed) place('S12', n, { what: 'a test whose name is not written out', mayRefer: [], waitsOn: 'this module: a written-out name' });
     return idx;
   }
   const calleeName = (call) => (ts.isIdentifier(call.expression) ? call.expression.text : ts.isPropertyAccessExpression(call.expression) ? call.expression.name.text : '');
@@ -456,16 +466,30 @@ export function readReferences(tree, moduleId, opts = {}) {
       const f = calleeFacility(e);
       if (f === 'JSON.parse') return ownChannel(e.arguments[0], depth + 1);
       if (f && FS.test(f)) { const c = classifyPath(evaluate(e.arguments[0], e.getSourceFile().fileName)); return !c.unknown && !c.cwd && !c.others.length; }
+      // rows of a shared table the module itself owns (@storedrows), named through the store's carrier
+      const c = carrierOf(checker, e);
+      if (c?.kind === 'table' && c.names?.length) return c.names.every((t) => ownTables().has(t));
+      // a list's own methods hand back what the list holds
+      if (ts.isPropertyAccessExpression(e.expression) && checker.isArrayType(typeAt(e.expression.expression) ?? { flags: 0 })) return ownChannel(e.expression.expression, depth + 1);
       return false;
     }
+    if (ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e)) return ownChannel(e.expression, depth + 1);
     if (ts.isIdentifier(e)) {
       const d = checker.getSymbolAtLocation(e)?.valueDeclaration;
       if (d && ts.isVariableDeclaration(d) && d.initializer && d.parent.flags & ts.NodeFlags.Const) return ownChannel(d.initializer, depth + 1);
-      // the unknown parameter of the module's own exported validator
-      if (d && ts.isParameter(d)) { const fn = d.parent; return isExported(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id; }
+      if (d && ts.isParameter(d)) {
+        const fn = d.parent;
+        // the unknown parameter of the module's own exported validator
+        if (isExported(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id) return true;
+        // an element handed to a callback of a list's own method (rows.map((r) => ...))
+        const call = fn.parent;
+        if (call && ts.isCallExpression(call) && call.arguments.includes(fn) && ts.isPropertyAccessExpression(call.expression) && checker.isArrayType(typeAt(call.expression.expression) ?? { flags: 0 })) return ownChannel(call.expression.expression, depth + 1);
+      }
     }
     return false;
   }
+  let ownTableNames = null;
+  const ownTables = () => (ownTableNames ??= new Set(mod.public.some((f) => program.getSourceFile(f)) ? Object.keys(listingOf(mod.id).entries).filter((k) => k.startsWith('table:')).map((k) => k.slice(6)) : []));
   function isExported(fn) {
     let n = fn;
     if ((ts.isArrowFunction(n) || ts.isFunctionExpression(n)) && n.parent && ts.isVariableDeclaration(n.parent)) n = n.parent.parent?.parent;
@@ -532,6 +556,8 @@ export function readReferences(tree, moduleId, opts = {}) {
     const fresh = depth === 0 && isFresh(e);
     // R7: a function with more parameters than the one expected
     const ss = S.getCallSignatures(), tsigs = T.getCallSignatures();
+    // a generic signature is related by the checker's own instantiation (R20 keeps generic kinds to those it relates)
+    if (ss.some((x) => x.typeParameters?.length) || tsigs.some((x) => x.typeParameters?.length)) return;
     if (ss.length && tsigs.length) {
       const sp = ss[0].getParameters().length, tp = Math.max(...tsigs.map((x) => x.getParameters().length));
       const restT = tsigs.some((x) => x.getParameters().some((p) => p.valueDeclaration && ts.isParameter(p.valueDeclaration) && p.valueDeclaration.dotDotDotToken));
@@ -674,36 +700,46 @@ export function readReferences(tree, moduleId, opts = {}) {
       place('S4', node, { what: `the checker: ${msg}`.slice(0, 300), mayRefer: untyped ? [ANY] : [...involved], waitsOn: 'this module: code the checker accepts under the standard\'s settings' });
     }
 
-    forEachNode(sf, (n) => {
-      // ---- names (S1 to S3, R11): identifiers in code and in comments ----
-      if (ts.isIdentifier(n)) {
-        if (isDeclName(n)) return;
-        let sym = checker.getSymbolAtLocation(n);
-        if (!sym && n.parent && ts.isShorthandPropertyAssignment(n.parent)) sym = checker.getShorthandAssignmentValueSymbol(n.parent);
-        const target = resolve(sym);
-        if (!target) return;
-        const decls = target.declarations ?? [];
-        const host = decls.length && decls.every((d) => isHostFile(d.getSourceFile()));
-        const kind = refType(n);
-        if (host) {
-          if (kind !== 'type' && kind !== 'import') facility(n, target, { write: kind === 'write' && ts.isPropertyAccessExpression(n.parent) && n.parent.name === n });
-          return;
-        }
-        for (const d of decls) {
-          const e = entryOf(d);
-          if (!e) continue;
-          if (d.getSourceFile().isDeclarationFile) place('R10', n, { what: `refers to ${e.item}, declared in a declaration file the checker does not check`, mayRefer: [e.module] });
-          const base = ts.isPropertyAccessExpression(n.parent) && n.parent.name === n ? n.parent.expression : null;
-          addUse(e, n, kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module));
-        }
-        // S3: a computed member of another module's namespace
+    /** A name (S1 to S3, R11, R14): what an identifier in code or in a comment resolves to. */
+    const nameUse = (n) => {
+      if (isDeclName(n)) return;
+      let sym = checker.getSymbolAtLocation(n);
+      if (!sym && n.parent && ts.isShorthandPropertyAssignment(n.parent)) sym = checker.getShorthandAssignmentValueSymbol(n.parent);
+      const target = resolve(sym);
+      if (!target) return;
+      const decls = target.declarations ?? [];
+      const host = decls.length && decls.every((d) => isHostFile(d.getSourceFile()));
+      const kind = refType(n);
+      if (host) {
+        if (kind !== 'type' && kind !== 'import') facility(n, target, { write: kind === 'write' && ts.isPropertyAccessExpression(n.parent) && n.parent.name === n });
         return;
       }
+      for (const d of decls) {
+        const e = entryOf(d);
+        if (!e) continue;
+        if (d.getSourceFile().isDeclarationFile) place('R10', n, { what: `refers to ${e.item}, declared in a declaration file the checker does not check`, mayRefer: [e.module] });
+        const base = ts.isPropertyAccessExpression(n.parent) && n.parent.name === n ? n.parent.expression : null;
+        addUse(e, n, kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module));
+      }
+    };
+
+    forEachNode(sf, (n) => {
+      if (ts.isIdentifier(n)) nameUse(n);
+      // an import that names nothing (import '…'), and export * from '…': the module object is used
+      if ((ts.isImportDeclaration(n) && !n.importClause) || (ts.isExportDeclaration(n) && !n.exportClause)) {
+        if (n.moduleSpecifier && ts.isStringLiteral(n.moduleSpecifier)) loadOf(n.moduleSpecifier.text, n, 'import');
+      }
+      // S3: a computed member of another module's module object, or of a value of a product kind
       if (ts.isElementAccessExpression(n)) {
         const s = resolve(checker.getSymbolAtLocation(n.expression));
         const ns = (s?.declarations ?? []).find((d) => ts.isSourceFile(d));
-        const lit = ts.isStringLiteral(n.argumentExpression) || ts.isNumericLiteral(n.argumentExpression) || literalUnion(typeAt(n.argumentExpression));
+        const lit = ts.isStringLiteral(n.argumentExpression) || ts.isNumericLiteral(n.argumentExpression) ? [n.argumentExpression.text] : literalUnion(typeAt(n.argumentExpression));
         if (ns && !lit) { const m = tree.moduleOfFile(ns.fileName); if (m && m !== mod.id) place('S3', n, { what: `a computed member of ${m}'s module object`, mayRefer: [m] }); }
+        else if (ns && lit) {
+          // W[k] with k a written-out name or a choice of them: a use of each member it may name (S3)
+          const exports = checker.getExportsOfModule(checker.getSymbolAtLocation(n.expression) ? resolve(checker.getSymbolAtLocation(n.expression)) : s);
+          for (const name of lit) for (const x of exports.filter((y) => y.name === name)) for (const d of resolve(x)?.declarations ?? []) addUse(entryOf(d), n, refType(n.argumentExpression) === 'type' ? 'type' : 'read', 'direct');
+        }
         else if (!lit && productKind(typeAt(n.expression) ?? {})) {
           const t = typeAt(n.expression);
           if (t && !checker.getIndexInfosOfType(t).length && !checker.isArrayType(t) && !checker.isTupleType(t)) place('S3', n, { what: 'a member named by a value the tool cannot read', mayRefer: [ANY] });
@@ -733,7 +769,9 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression)) {
         const s = checker.getSymbolAtLocation(n.expression);
         const declared = s && s.valueDeclaration ? checker.getTypeOfSymbol(s) : undefined;
-        if (declared && hasUnknown(declared) && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
+        // narrowed by instanceof to another module's class (S4 iv), it is that module's value, found by its kind
+        const theirs = kindDecls(typeAt(n.expression)).length > 0;
+        if (declared && hasUnknown(declared) && !theirs && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
       }
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InKeyword) {
         const t = typeAt(n.right);
@@ -792,7 +830,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) implicit(typeAt(n.right), ['__@hasInstance'], n.right);
       // ---- comments: kinds outside K (R20), overloads (R10) ----
       if (isJSDocNode(n) && ts.isJSDoc(n)) for (const tag of n.tags ?? []) if (tag.tagName.text === 'overload') place('R10', tag, { what: 'an @overload signature, a claim the checker does not hold to the code', mayRefer: [] });
-      if ((ts.isConditionalTypeNode(n) || ts.isMappedTypeNode(n) || ts.isIndexedAccessTypeNode(n) || ts.isTemplateLiteralTypeNode(n) || ts.isInferTypeNode(n))) {
+      if ((ts.isConditionalTypeNode(n) || ts.isMappedTypeNode(n) || ts.isIndexedAccessTypeNode(n) || ts.isTemplateLiteralTypeNode(n) || ts.isInferTypeNode(n)) && !tableKind(n)) {
         const ids = []; forEachNode(n, (x) => { if (ts.isIdentifier(x)) ids.push(x); });
         place('R20', n, { what: `a kind outside the kinds the standard allows (${ts.SyntaxKind[n.kind]})`, mayRefer: modulesOf(ids.flatMap((x) => resolve(checker.getSymbolAtLocation(x))?.declarations ?? [])) });
       }
@@ -831,6 +869,28 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (mod.public.includes(fileName)) ownInterface(sf);
   }
 
+  /**
+   * A kind of the tables and carriers of calls by name (design part 2, section 7, rule 5; build text 2b, section 5): in a
+   * declaration marked @carriesop, @carriestable or @optable, or built from a kind so marked. The tool reads these by
+   * their marks (carriers.mjs), and their written form needs indexed, mapped and text-pattern kinds, so R20 is not
+   * applied to them.
+   */
+  function tableKind(node, depth = 0) {
+    for (let p = node; p; p = p.parent) {
+      if (ts.isJSDoc(p)) { if ((p.tags ?? []).some((t) => MARKS.has(t.tagName.text))) return true; break; }
+      if (ts.isStatement(p)) break;
+    }
+    if (depth > 2) return false;
+    let hit = false;
+    forEachNode(node, (x) => {
+      if (hit || !ts.isIdentifier(x)) return;
+      for (const d of resolve(checker.getSymbolAtLocation(x))?.declarations ?? []) {
+        if (!ts.isJSDocTypedefTag(d)) continue;
+        if ((d.parent?.tags ?? []).some((t) => MARKS.has(t.tagName.text)) || (d.typeExpression && tableKind(d.typeExpression, depth + 1))) hit = true;
+      }
+    });
+    return hit;
+  }
   function narrower(flow, declared) {
     if (assignable(flow, declared) && !assignable(declared, flow)) return true;
     return false;
@@ -885,7 +945,6 @@ export function readReferences(tree, moduleId, opts = {}) {
     }
     if (f === 'ImportMeta.resolve' && !(args[0] && ts.isStringLiteral(args[0]))) place('S2', n, { what: 'import.meta.resolve of a name the tool cannot read' });
     // S9: code from text
-    if (f === 'eval' || f === 'FunctionConstructor' || f === 'Function' || (f && f.startsWith('"node:vm"'))) place('S9', n, { what: `code made from text (${f})` });
     if (f && TIMERS.has(f) && args[0] && (ts.isStringLiteral(args[0]) || ts.isTemplateExpression(args[0]))) place('S9', n, { what: `${f} of a text` });
     // S5, S6: files, programs and workers by a path the tool works out
     const fsm = f && FS.exec(f);
@@ -948,6 +1007,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (c?.names === null) place('S7', n, { what: `a call by a name the tool cannot read through ${c.member}`, waitsOn: 'this module: a written-out name through the declared table' });
       else if (c) for (const name of c.names) {
         const key = `${c.kind}:${name}`;
+        if (mod.public.some((f2) => program.getSourceFile(f2)) && listingOf(mod.id).entries[key]) continue; // its own table
         const owner = [...tree.modules].filter((m) => m.id !== mod.id && m.public.some((f2) => program.getSourceFile(f2))).find((m) => listingOf(m.id).entries[key]);
         if (owner) addUse({ module: owner.id, item: key, kind: listingOf(owner.id).entries[key].kind, listed: true }, n, c.kind === 'op' ? 'call by name' : 'table by name');
         else place('S7', n, { what: `a call by the name ${name}, which no module's table answers`, waitsOn: 'ARCH: the module that answers it' });
