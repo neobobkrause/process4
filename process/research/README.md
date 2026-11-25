@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `notify-slow-early-provider-25nov.md` — `notify` after record-grammar's merge ran 38 minutes and 8 GB on civicsmith without a notice; ARCH holds six merges meanwhile; research questions, no options yet; the tranche drawing in modules.
 - `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche (PROCESS #11's own choice in the update); options A to C, not yet put to the owner.
 
 ## 24 Nov 2026
