@@ -264,6 +264,11 @@ PROCESS #16's session, on the design document above).
 On who classifies host facilities: "Decision: use the simplification: the tool carries Node's and workerd's facility
 classification; ARCH names the boundary modules and classifies the packages its product uses." — 25 November 2026, 20:26
 UTC (in PROCESS #16's session, on the options: no change, ARCH keeps the whole list per product; or this simplification).
+On what a change is (his definitions and rule, in the notice session of 14 November, recorded in neobobkrause/process3,
+`process4/owner_words/bob_words_14nov_notice_session.md` at commit 2a43eb5, message 3): "The interface to a provider is it's domain. The
+bounds of valid values passed to and received from a provider are it's range. So what I'm saying is that any change to
+either a provider's domain or range necessitates that its users be retested. But if both domain and range stay the same,
+then no retesting of users is needed." — 14 November 2026.
 On accepting more: "Decision: remove the rule that accepting more tells no one; any change to what a provider accepts tells
 its users." — 25 November 2026, 23:07 UTC (in PROCESS #17's session; researched in `process/research/precision-26nov/`,
 `misses.md` §3).
