@@ -629,3 +629,29 @@ stop. Option D of four (A no change; B a held mark; C a held list; D a scope lis
 `process/research/held-requirements-23nov.md`.
 
 **The owner's words.** "Decision: D, as recommended" — 24 November 2026 (in PROCESS #11's session).
+
+### Subject: Merging goes on while a notice is worked out
+
+**The rule as it now stands.** After a merge, ARCH refills the slot in the same turn and starts `notify` for that merge as
+its own background command of up to two hours, and goes on merging other ready jobs meanwhile. When `notify` ends, a
+notice reaches each told user whose job is still open then, at once, as before: it goes into the job's block, ARCH
+messages the job, and a pass recorded before it no longer counts. A user that merged before the notice was worked out
+has no open job then, so its notice waits in waiting work for its next job, a told job, the path the design already had
+for a user with no open job (design part 2, sections 3 and 7; build text 1b, command 11; ARCH's starting text, rule 2).
+
+It corrected a measured fault: on civicsmith, after record-grammar (third of 204 modules) merged, `notify` ran most of an
+hour (38 minutes, cut by the harness's 30-minute limit on a command moved to the background, then restarted), and ARCH
+held nine ready jobs whose tests had passed, because the design promised an open job its notice "at once" before it
+merged, and ARCH's text ran merge and notice in one sequence in one turn (civicsmith ARCH #15, 25 Nov 2026). The owner:
+"This is just wasted time. We need to figure out what the process is telling ARCH that's making it wait and fix that."
+Costs: a user merged meanwhile may need a small told job afterwards; until then its merged code has not been judged
+against the provider's change, as for any user whose job was not open. Text only, no tool change; it removes a wait and
+adds no test, gate, review or stop. Products receive it with their next move. Option B of three (A no change; B merging
+goes on; C only make `notify` faster, still being measured; B and C combine). Researched in
+`process/research/merges-held-for-notify-25nov.md`.
+
+**The owner's words.** "You say that that holding is ARCH's own choice, but process4 must have instructed it to do so.
+This is just wasted time. We need to figure out what the process is telling ARCH that's making it wait and fix that." —
+25 November 2026 (conversation, in PROCESS #12's session). "Decision: B, as recommended" — 25 November 2026 (in PROCESS
+#12's session, right after the options for this item were put to him; PROCESS read it as this item, and asked him
+whether it also answers the other item on his page, the stale-branch test, which also recommends B).
