@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `cleanup-audit-25nov/` — the owner asked whether the last 36 hours' changes were made properly and limits kept: five workers' audits (design, build, starting texts, record, tool), measured limits (PROCESS's reading set ~300,000), why it happened, options A–C and PROCESS's reading set; summary in its `README.md`.
 - `waiting-work-record-size-25nov.md` — civicsmith's waiting-work record (1,937 entries, ~171,000 bytes) passed GitHub's 65,536-character comment limit; `notify` cannot place notices for modules with no open job; a starting job's block too (filings 1669, following 1674); options A to C; 6B built as `waiting-work-record-size-25nov/6b.patch`, waiting for the owner's word.
 - `depth-limit-watcher-25nov.md` — process3-probes watcher #12 at depth 8 could not arm its wake; the warning "two levels away" comes one takeover late (a ROOT at depth 7 has broken children); options A to C.
 - `first-comments-2c-25nov/` — a worker's prototype of options 2C, 2C+ and 2D (a first `@throws`/`@bound`, or any difference, on an entry whose own code is unchanged tells no one); results in `notify-1356-still-197-25nov.md`, last section (membership's first comments, PR 1457).
