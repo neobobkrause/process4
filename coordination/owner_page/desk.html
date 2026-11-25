@@ -22,13 +22,27 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:30 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. I am now designing your proposal for recording which providers each module uses.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:35 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. One choice for you below: sessions that sit idle are compacted. I am also designing your proposal for recording which providers each module uses.</p>
 </header>
 
 <section class="card">
 <h2>Next: your proposal that each module records the providers it uses</h2>
 <p>You proposed that every module keep a file of the providers, and the items of each, that its code and tests use. A job that understands the code writes it first; every later job keeps it current. Finding a provider's users then becomes a lookup taking seconds, instead of the tool guessing from plain JavaScript, which is the main cause of the over-telling. I agree it addresses the root problem rather than patching it. Option C is set aside while it is designed.</p>
 <p>PROCESS #15 (me) is designing it in full and will put it to you with options. Two things the design must settle besides the file: whether an item really changed (describing unchanged code must not count), and that it replaces your earlier rule "No list is kept by hand". Your words and my first analysis are in <code>process/research/uses-metadata-25nov.md</code>. Nothing is built before your decision.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: sessions that sit idle are compacted</h2>
+<p><b>The question.</b> Should sessions stop being compacted when they sit idle?</p>
+<p><b>What happened.</b> civicsmith's ARCH session lost what it had read. It was not because it filled up. It was 43 percent full, below the 50 percent point where it would hand over. It had been idle for 76 minutes, waiting on merges. When it woke, Claude Code shrank its memory to a summary. Claude Code's own notice said so: "Compacted using a summary written while you were away", and it names a setting that turns this off. Your design says refreshes must make compaction unnecessary, but it only knew about compaction when a session fills up. Any role idle for about an hour is exposed. ARCH is the most exposed, and ROOT wakes only hourly.</p>
+<p><b>A second finding.</b> ARCH's handover notes say it cannot read how full it is. That is wrong, and has been passed down from ARCH to ARCH. The figure reads 0 only until a session finishes its first reply; after that it is real. Proven: ARCH #26 had a real figure available at about 80 points and never looked again after its first minute. My own session showed the same.</p>
+<ul>
+<li><b>0. No change.</b> Idle roles keep being compacted and carry on from a summary.</li>
+<li><b>A. Turn idle compaction off.</b> The setup script of the environment the sessions run in already writes one settings block for every session. It would also write <code>"idleCompaction": false</code>. I propose the change through Claude Code's own approval prompt, and you approve it with one click there. It applies to sessions started after that. Cost: a session waking after a long idle re-reads its memory at full price, roughly $1 to $3 each time (estimated, not measured). Not proven: that the setting works. Its only source is Claude Code's notice. The next idle hour of a fresh session will show it.</li>
+<li><b>B. Correct the claim.</b> The design will say the figure is real after a session's first reply. I tell civicsmith's coordinator that ARCH's note is wrong. Text only.</li>
+<li><b>C. A and B (recommended).</b> A removes what happened; B removes the false belief that would hide the other kind of compaction.</li>
+</ul>
+<p>To choose, reply here starting with "Decision:", for example "Decision: C". You may also set these options aside.</p>
 </section>
 
 <section class="wait">
@@ -43,7 +57,6 @@ a{color:var(--accent)}
 <section class="card">
 <h2>Also waiting, when convenient</h2>
 <ul>
-<li><b>A new process fault from civicsmith:</b> its ARCH session filled up and was compacted before asking for a refresh; it reports it could not read how full it was. PROCESS #15 is researching it and will bring you options.</li>
 <li><b>Choice 5, the depth limit</b> (I recommend 5B): ask you for a fresh ROOT one handover earlier, and make no planned handover that is known to break. Text only. The trial product (process3-probes) needs a fresh ROOT from you now; its coordinator's page has the steps.</li>
 <li><b>Choice 6 waits</b> until who is told is corrected, as you said. Meanwhile civicsmith's notices for modules with no open job are not written down, and its filings and following jobs stay stuck; civicsmith's coordinator knows.</li>
 </ul>
