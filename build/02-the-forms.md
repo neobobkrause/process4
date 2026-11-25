@@ -1,24 +1,14 @@
-Length: 173 lines. Last section: "9. What could not be settled".
+Length: 163 lines. Last section: "9. What could not be settled".
 
 # Process4 build text 2: the forms of the files the design names
 
-Written by Claude on 18 Nov 2026, beside the design (`design/`), not into it. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It answers part 10, section 2, items 6 and 7 of the design; where the two differ, the design rules. It adds no check, gate, review or stop. Reconciled the same day with build texts 1, 3 and 5 and with part 4, section 11. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b) since 19 Nov 2026, and section 10, the coding standard and the uses file, in `02c-the-coding-standard.md` (build text 2c), to keep each file under 24,000 bytes; the numbers are kept.
+Beside the design (`design/`), not in it. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It answers part 10, section 2, items 6 and 7 of the design; where the two differ, the design rules. It adds no check, gate, review or stop. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b), and section 10, the coding standard and the uses file, in `02c-the-coding-standard.md` (build text 2c), to keep each file under 24,000 bytes; the numbers are kept.
 
 Marks: **Decided here:** a choice made in this text, with what it gives and what it costs. **Unproven:** never shown to work in this form. Every example is made up: a product in plain JavaScript with modules `dates`, `pricing` and `orders`.
 
-## 1. What was proven, and in what form
+## 1. The proof the forms come from
 
-Read for this text: the seventh draft, parts 0, 2, 4, 5 and 6 in full; `schema/` and `tool/`; `process4/working/notice_study/`; and, on 19 Nov, the proof of the notice (`neobobkrause/process3-probes`, branch `notice-proof`, folder `notice-proof/`; "proof:" paths here and in build text 2b are in that folder) with the comparison `process4/working/readiness_18nov/notice_proof_forms_compared.md`.
-
-**Measured by the study session (15 Nov),** on a past record: TypeScript 5.6.3 wrote out every module's interface from plain JavaScript with no comments added (1,181 source files, none failed). The study's trial forms are not used below.
-
-**Proven by the proof session (15 Nov), as its `PROOF_RESULT.md` states it.** On a made-up product of eleven modules and 150 changes, design 7 (Node 22, TypeScript 5.6.3) was run again on "all 133 changes written before it" and "told exactly whom the method's rules say on all 133". On the 17 changes of round 8, written blind against it, 8 holes were found. Holes found, design 1 to design 7: "5, 8, 15, 6, 7, 10, 8. There is no downward trend." Over the 150 it sent 182 notices where telling every declaring module sends 474. Sections 5 and 6 (build text 2b) give its forms.
-
-**Not proven, in its words:** "The made-up modules are not the real product." "No real job wrote these comments." "What a told job does was not run." "Design 8 was not built or run."
-
-**The form the design takes** (part 2, section 7) keeps the proof's structured comment and listing (sections 5 and 6) and finds users from the uses files of section 10 and changes from each item's means (build text 5, section 6), with no refusal the owner has not approved. It has not been built or run; the 133 were measured with the 23 refusals in the tool.
-
-**The process before this one** kept its module list as `build/modules.json` (220 modules) and requirements as `build/requirements/<module>.md`. Sections 2 to 4, 7 and 8 start there.
+Sections 5 and 6 (build text 2b) give the forms of the notice's proof (`neobobkrause/process3-probes`, branch `notice-proof`, folder `notice-proof/`; "proof:" paths here and in build text 2b are in that folder): eleven made-up modules and 150 changes, run with 23 refusals the design does not take, comparing listings and inferring users. The design keeps its structured comment and listing, and finds users from the uses files of section 10 and changes from each item's means (build text 5, section 6), with no refusal the owner has not approved. Not proven, in the proof's words: "The made-up modules are not the real product." "No real job wrote these comments." "What a told job does was not run." "Design 8 was not built or run."
 
 ## 2. Where everything is
 
@@ -62,9 +52,9 @@ orders
 ```
 
 - `name`: as in the file's name and the order file.
-- `files`: the paths of the code the module owns. A path ending in `/` is a folder with everything under it. A file belongs to the module with the longest matching path, as in the process before this one.
+- `files`: the paths of the code the module owns. A path ending in `/` is a folder with everything under it. A file belongs to the module with the longest matching path.
 - `tests`: the paths of its tests, read the same way. Its walk steps are under these paths too, in `walk/internal/` and `walk/external/`, and the module's test command never runs those two folders (build text 3, section 3).
-- `public`: its interface files, read the same way: the files whose exports, with the further entries named there, make its listing (build text 2b, section 6). The proof's field of the same name (proof: `product/modules.json`). A helper for other modules' tests is one too, as the proof's `product/store/src/testing.mjs` was.
+- `public`: its interface files, read the same way: the files whose exports, with the further entries named there, make its listing (build text 2b, section 6). A helper for other modules' tests is one too.
 - The requirements file is not named: it is always the `.md` of the same name, and the uses file the `.uses.json`, which names the module's declared uses (section 10). An entry that still holds `uses` is read without fault; nothing reads that field. The test command is not here either: it is one line of the process config (section 7).
 - A module is identified everywhere by its `name`: in the tool's commands, in a job's branch `job/<name>.<n>` (build text 1b, command 1), and in the records.
 

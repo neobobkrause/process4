@@ -3,7 +3,7 @@
 This folder belongs to PROCESS: the session that changes Process4, and the only
 place it is changed (design part 6). PROCESS keeps its folder here in the
 process's own repository and records its research here before it proposes a
-change (design part 6, section 5).
+change (design part 6, section 7).
 
 ## What is kept here
 
@@ -20,7 +20,7 @@ change (design part 6, section 5).
   and this file is retired.
 - `research/` — PROCESS's working notes and research. PROCESS records its
   research here before it proposes a change, so the grounds of every proposal
-  can be read (design part 6, section 5; rule 3 of PROCESS's starting text).
+  can be read (design part 6, section 7; rule 3 of PROCESS's starting text).
 
 ## What is not kept here
 
@@ -29,6 +29,8 @@ change (design part 6, section 5).
   relays them.
 - The design document, the build texts and the starting texts. Those live in
   `design/`, `build/` and `starting_texts/`. PROCESS changes the starting texts
-  and the tool only as a process change, on the owner's word.
+  and the tool only as a process change, on the owner's word. `build/README.md`
+  indexes the build texts by section; PROCESS reads it in full with this file, and
+  a build text when a question touches it (design part 5, section 3).
 - The shared-state records that live on GitHub as comments on the shared-state
   issue (design part 4, section 4).

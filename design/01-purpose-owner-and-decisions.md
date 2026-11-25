@@ -1,6 +1,6 @@
 # Part 1. Purpose, the owner, his decisions, and working principles
 
-Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
+Length: 83 lines. Last section: "7. Known weaknesses of AI sessions".
 
 ## 1. What Process4 is for
 
@@ -53,7 +53,6 @@ Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 - No technical question is brought to him. The AI decides it and reports it in one plain line.
 - No session assures him that something will work. Each claim put to him says what is proven and what is not, names its source, and calls anything unread or unmeasured unknown.
 - One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. The coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show. While a product is being onboarded, its onboarding lane keeps that product's page (part 6, section 8).
-- He can see each open job's progress and status without speaking to it (part 4, section 9).
 - When the process is completely blocked he gets one plain message with a numbered list of what is his to do. In every other case the stop is recorded as a named blocker and other work goes on.
 
 ## 6. Working principles
@@ -61,7 +60,7 @@ Length: 84 lines. Last section: "7. Known weaknesses of AI sessions".
 - Every problem is either an architecture bug or an implementation error. An architecture bug is corrected by rewriting the part of the design it belongs to, never by appending to it; an implementation error is corrected in the code or text that has it.
 - A workaround is not a fix.
 - Two kinds of refusal are kept apart. An act the permission checker refused is never retried elsewhere. An act a session declined only because its instructions did not name it may be given to a new session whose instructions do.
-- A third case is kept apart from both. Where the permission checker refuses an act the owner's approvals and the permissions-management settings (part 7, section 5) sanction, and the refusal is non-substantive — the checker allowed an identical act before or invites another attempt, or the act was refused only because the session malformed the command, mixing a forbidden command into a legitimate one — the session makes the sanctioned act again, cleanly: it keeps its prior state, re-attempts at its next wake or after a short wait, and brings the matter to the owner if it persists. This is not working a refusal around (section 7): a genuinely unsanctioned act is still never reworded or handed on, a relayed consent (part 3, section 6) is still not retried, and three refusals in a row still stop the session.
+- A third case is kept apart from both: a non-substantive refusal of a sanctioned act is made again, cleanly and bounded, as part 6, section 4 says. This is not working a refusal around (section 7).
 - Workers are the standing way a long-lived role keeps heavy reading out of its own context: a narrow brief, a short answer in a set shape, and the worker ends when its work is done. A brief may hand the worker a decision to make, which it reports with its grounds. No worker is briefed to review another session's work.
 - A hard open question gets a session of its own with a written brief and a bounded task, and ends with a written result once the result is usable.
 - A session saves its work to the repository before its turn ends.
@@ -78,7 +77,7 @@ Process4 steps around the situations where a known weakness does harm, and does 
 | A claim is made that was not checked | It is about to tell the owner that something works or will work | Says what is proven, by what, and what is not (section 5) |
 | Conversation is taken as a decision | The owner says something that sounds decided, without the mark | Asks once whether to record it (section 4) |
 | Caution grows the process | It is about to add a test, check, gate, review or stop, or to write a demand into another session's instructions | Does not. Reports a process fault if one exists (part 6, section 6) |
-| A refusal is worked around | The permission checker refuses an act | Does not reword it or hand it on. Three refusals in a row stop the session, which is replaced. A non-substantive refusal of a sanctioned act — classifier noise, or a command the session malformed — is re-attempted cleanly and bounded (section 6), which is not working it around |
+| A refusal is worked around | The permission checker refuses an act | Does not reword it or hand it on. Three refusals in a row stop the session, which is replaced. A non-substantive refusal of a sanctioned act is re-attempted cleanly and bounded (part 6, section 4), which is not working it around |
 | A successor acts from memory it does not have | A session starts as the new holder of a role | Starts only from the shared state and the repository |
 | The same correction fails again and again | A job's second correction fails | The job is replaced by a fresh session, which first works out why the corrections were made (part 4, section 10) |
 | Work stops with nothing calling for it | It is about to end its turn while work remains that it can do | Goes on. A stop nothing called for is a process fault (part 4, section 10) |
