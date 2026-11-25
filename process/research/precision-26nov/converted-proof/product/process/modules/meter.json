@@ -1,0 +1,15 @@
+{
+  "name": "meter",
+  "files": [
+    "meter/src/"
+  ],
+  "tests": [
+    "meter/test/"
+  ],
+  "public": [
+    "meter/src/index.mjs"
+  ],
+  "uses": [
+    "money"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "billing",
+  "files": [
+    "billing/src/"
+  ],
+  "tests": [
+    "billing/test/"
+  ],
+  "public": [
+    "billing/src/index.mjs"
+  ],
+  "uses": [
+    "money",
+    "store",
+    "rooms",
+    "bookings",
+    "door",
+    "meter"
+  ]
+}

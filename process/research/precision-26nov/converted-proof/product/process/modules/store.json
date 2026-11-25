@@ -1,0 +1,14 @@
+{
+  "name": "store",
+  "files": [
+    "store/src/"
+  ],
+  "tests": [
+    "store/test/"
+  ],
+  "public": [
+    "store/src/index.mjs",
+    "store/src/testing.mjs"
+  ],
+  "uses": []
+}

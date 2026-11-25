@@ -1,0 +1,2181 @@
+{
+ "about": [
+  "The users of each recorded change of the converted proof that truly needed telling (precision-26nov). Built by needs.mjs from the proof's recorded needs (tool/test/fixtures/notice-proof/expected.json) and each later module's own tests, run before and after each change on both copies (tests.mjs).",
+  "A user whose tests pass before and fail after a change on the converted copy needs telling; a recorded need is kept unless needs-dropped.json says why the converted code makes it disappear; a break the original does not count either (carried through a middle module that itself breaks) is not counted."
+ ],
+ "report": {
+  "added": [],
+  "dropped": [
+   "A01-stored-row-shape reports: reports reads bookings only through bookings' reader list (converted from reading the table bookings by name and casting its rows), which reads each row back through find; the change keeps rows in a short form and find reads them back, so list hands back the same Bookings and reports' tests pass",
+   "Y05-row-cast-at-write reports: as A01: rows written without the first day, read back by find, so bookings' reader list, all that reports reads, hands back the same Bookings; reports' tests pass",
+   "U01-table-renamed-mark-forgotten reports: the change renames the table in all of bookings' own code, its reader list too; reports reads only through list, so it reads the renamed table; reports' tests pass (the forgotten @storedrows mark now matters to no other module)",
+   "U02-table-name-in-constant-rows-compact reports: as A01: rows kept without the first day under a named constant, read back by find; reports reads only through bookings' reader list; reports' tests pass"
+  ],
+  "brokenNotRecorded": [
+   "P28-handle-method-renamed billing: breaks on both copies; not counted on the original either",
+   "P28-handle-method-renamed front: breaks on both copies; not counted on the original either",
+   "P28-handle-method-renamed reports: breaks on both copies; not counted on the original either",
+   "A13-computed-member-renamed billing: breaks on both copies; not counted on the original either",
+   "A13-computed-member-renamed front: breaks on both copies; not counted on the original either",
+   "A13-computed-member-renamed reports: breaks on both copies; not counted on the original either"
+  ],
+  "recordedNotBroken": 9
+ },
+ "changes": {
+  "P01-price-content": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P02-reword-explanation": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P03-remove-function": {
+   "provider": "text-rules",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P04-rename-function": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P05-answer-field-removed": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P06-answer-field-renamed": {
+   "provider": "rooms",
+   "needs": [
+    "bookings",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "front": "recorded"
+   },
+   "recorded": [
+    "bookings",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "P07-accept-optional": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P08-newly-required": {
+   "provider": "bookings",
+   "needs": [
+    "billing",
+    "front",
+    "reports"
+   ],
+   "why": {
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break",
+    "reports": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing",
+    "front",
+    "reports"
+   ],
+   "breaksOriginal": [
+    "billing",
+    "front",
+    "reports"
+   ],
+   "breaksConverted": [
+    "billing",
+    "front",
+    "reports"
+   ]
+  },
+  "P09-newly-refused": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P10-answer-gains-field": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P11-list-gains-name": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P12-bound-line-changed": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "P13-kind-renamed": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing"
+   ],
+   "why": {
+    "bookings": "recorded",
+    "meter": "recorded",
+    "billing": "recorded"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing"
+   ],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P14-meaning-changed-comment-updated": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P15-meaning-changed-comment-not-updated": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P16-code-changed-comment-forgotten-visible": {
+   "provider": "text-rules",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P17-code-changed-comment-forgotten-running-only": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P18-operation-retired": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P19-operation-body-field-renamed": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P20-message-kind-changed": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P21-unfollowable-users-provider": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P22a-first-job-comments-step": {
+   "provider": "calendar",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P22b-first-job-real-change": {
+   "provider": "calendar",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P23-user-already-disagrees": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "P24-new-entry": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "P25-two-changes-one-commit": {
+   "provider": "rooms",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P26-reaches-through-third-module": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "meter": "recorded; its tests break",
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksConverted": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "P27-test-helper-changed": {
+   "provider": "store",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "P28-handle-method-renamed": {
+   "provider": "store",
+   "needs": [
+    "rooms",
+    "bookings"
+   ],
+   "why": {
+    "rooms": "recorded; its tests break",
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "rooms",
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "rooms",
+    "bookings",
+    "billing",
+    "front",
+    "reports"
+   ],
+   "breaksConverted": [
+    "rooms",
+    "bookings",
+    "billing",
+    "front",
+    "reports"
+   ]
+  },
+  "A01-stored-row-shape": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": []
+  },
+  "A03-reexported-function": {
+   "provider": "text-rules",
+   "needs": [
+    "rooms",
+    "front"
+   ],
+   "why": {
+    "rooms": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "rooms",
+    "front"
+   ],
+   "breaksOriginal": [
+    "rooms",
+    "front"
+   ],
+   "breaksConverted": [
+    "rooms",
+    "front"
+   ]
+  },
+  "A04-message-kind-not-shared": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "A06-error-kind-changed": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "A07-bound-test-moved-line-not": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "A08-request-line-built-in-steps": {
+   "provider": "billing",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "A09-assert-narrowing": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "A10-kind-split-same-shape": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "A11-string-spelled-String": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "A12-caught-error-makes-user-unfollowed": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "A13-computed-member-renamed": {
+   "provider": "store",
+   "needs": [
+    "rooms",
+    "bookings"
+   ],
+   "why": {
+    "rooms": "recorded; its tests break",
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "rooms",
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "rooms",
+    "bookings",
+    "billing",
+    "front",
+    "reports"
+   ],
+   "breaksConverted": [
+    "rooms",
+    "bookings",
+    "billing",
+    "front",
+    "reports"
+   ]
+  },
+  "A14-copy-of-kind-in-the-middle": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "meter": "recorded; its tests break",
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksConverted": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "X01-optional-param-callback": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "X02-opaque-id-digits": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "X03-port-bound-changed": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "X04-includes-on-literal-list": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "X05-stale-write": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "X06-bound-reworded": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "X07-list-gains-name-lookup-table": {
+   "provider": "rooms",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "X08-new-op-name-clash": {
+   "provider": "rooms",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "X09-message-channel": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "X10-node-timer": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Y01-method-error-kind": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Y02-amount-cannot-be-changed": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "meter": "recorded; its tests break",
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksConverted": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "Y03-handle-member-optional": {
+   "provider": "door",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Y04-row-kind-written-through-helper": {
+   "provider": "rooms",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Y05-row-cast-at-write": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": []
+  },
+  "Y06-channel-line-built-first": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Y07-limit-outside-bound-test": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "Y08-bound-on-number-kind": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "Y09-newer-library-method": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Y10-map-has-get-provider-kind": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Y11-tests-grouped-with-it": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Y12-bound-test-rewritten-same-meaning": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Y13-constructor-accepts-differently": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z01-bound-test-same-values-other-checks": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Z02-limit-read-from-module": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "Z03-blank-line-after-each-message": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z04-stream-chosen-into-variable": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z05-amount-built-by-static-factory": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "meter": "recorded; its tests break",
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksConverted": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "Z06-wrapping-handler-error-kind": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z07-handle-method-handed-on": {
+   "provider": "rooms",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Z08-second-overload-hands-back": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z09-list-parameter-becomes-rest": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z10-readonly-list-now-sorted": {
+   "provider": "text-rules",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Z11-request-lines-change-nothing": {
+   "provider": "door",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "Z12-returned-text-kind-bound": {
+   "provider": "text-rules",
+   "needs": [
+    "rooms"
+   ],
+   "why": {
+    "rooms": "recorded; its tests break"
+   },
+   "recorded": [
+    "rooms"
+   ],
+   "breaksOriginal": [
+    "rooms"
+   ],
+   "breaksConverted": [
+    "rooms"
+   ]
+  },
+  "Z13-static-method-hands-back": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z14-member-may-be-undefined": {
+   "provider": "door",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "Z15-uncommented-module-changed": {
+   "provider": "calendar",
+   "needs": [
+    "reports"
+   ],
+   "why": {
+    "reports": "recorded; its tests break"
+   },
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": [
+    "reports"
+   ]
+  },
+  "Z16-random-booking-ids": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Z17-filter-boolean": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Z18-object-groupby": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Z19-at-sign-in-bound-line": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Z20-test-helper-renamed": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "Z21-throws-explained-in-two-lines": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V01-accepts-more-hides-static": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "V02-bound-values-in-mapped-list": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V03-refusals-through-console-error": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "V04-instance-built-in-a-conditional": {
+   "provider": "money",
+   "needs": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break",
+    "meter": "recorded; its tests break",
+    "billing": "recorded; its tests break",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksOriginal": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ],
+   "breaksConverted": [
+    "bookings",
+    "meter",
+    "billing",
+    "front"
+   ]
+  },
+  "V05-error-kind-in-bound-test": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "V06-non-interface-file-renamed": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "V07-write-with-callback": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V08-limit-read-from-json": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V09-pop-after-length-check": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V10-checked-cast-to-kind": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V11-door-copy-in-two-steps": {
+   "provider": "door",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V12-destructured-parameter": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V13-states-named": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V14-overload-added": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "V15-bound-test-through-helper": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W01-meter-start-argument": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "W02-meter-ready-line": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "W03-error-stated-on-kind-not-checked": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "W04-bound-on-built-method": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W05-price-list-in-euros": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "W06-old-overload-kept-behind": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "W07-throws-union": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W08-cast-after-has": {
+   "provider": "rooms",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W09-row-written-in-place": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W10-json-settings-file": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W11-structured-log-line": {
+   "provider": "door",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W12-error-code": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W13-fields-reordered": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W14-list-kind-named": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W15-export-list": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W16-store-gains-id": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "W17-limit-read-through-namespace": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "U01-table-renamed-mark-forgotten": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": []
+  },
+  "U02-table-name-in-constant-rows-compact": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": []
+  },
+  "U03-coded-error-through-object-assign": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "U04-messages-encoded-by-named-function": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "U05-start-environment-through-node-process": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "U06-limit-lowered-in-json": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "U07-method-now-needs-its-handle": {
+   "provider": "rooms",
+   "needs": [
+    "reports"
+   ],
+   "why": {
+    "reports": "recorded; its tests break"
+   },
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": [
+    "reports"
+   ]
+  },
+  "U08-same-kind-parameters-swap-places": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "U09-price-sheet-in-euros": {
+   "provider": "bookings",
+   "needs": [
+    "front"
+   ],
+   "why": {
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "U10-handle-renamed-member-changed": {
+   "provider": "rooms",
+   "needs": [
+    "bookings",
+    "front"
+   ],
+   "why": {
+    "bookings": "recorded",
+    "front": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings",
+    "front"
+   ],
+   "breaksOriginal": [
+    "front"
+   ],
+   "breaksConverted": [
+    "front"
+   ]
+  },
+  "U11-test-uses-notStrictEqual": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "U12-worker-path-through-import-meta-resolve": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "U13-error-subclass-of-stated-kind": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "U14-inline-import-to-at-import": {
+   "provider": "store",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "U15-functions-written-as-arrows": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "U16-equal-written-strictEqual": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T01-rooms-handle-built-as-class": {
+   "provider": "rooms",
+   "needs": [
+    "front",
+    "reports"
+   ],
+   "why": {
+    "front": "recorded; its tests break",
+    "reports": "recorded; its tests break"
+   },
+   "recorded": [
+    "front",
+    "reports"
+   ],
+   "breaksOriginal": [
+    "front",
+    "reports"
+   ],
+   "breaksConverted": [
+    "front",
+    "reports"
+   ]
+  },
+  "T02-quote-bound-not-reaching-operation": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T03-unknown-room-refused-in-helper": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T04-tally-full-error": {
+   "provider": "money",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T05-meter-ready-line-console-log": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T06-weekday-takes-text-after-partial-first-step": {
+   "provider": "calendar",
+   "needs": [
+    "reports"
+   ],
+   "why": {
+    "reports": "recorded; its tests break"
+   },
+   "recorded": [
+    "reports"
+   ],
+   "breaksOriginal": [
+    "reports"
+   ],
+   "breaksConverted": [
+    "reports"
+   ]
+  },
+  "T07-price-function-parameters-swap": {
+   "provider": "bookings",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T08-limit-lowered-in-test-helper": {
+   "provider": "money",
+   "needs": [
+    "bookings"
+   ],
+   "why": {
+    "bookings": "recorded; its tests break"
+   },
+   "recorded": [
+    "bookings"
+   ],
+   "breaksOriginal": [
+    "bookings"
+   ],
+   "breaksConverted": [
+    "bookings"
+   ]
+  },
+  "T09-messages-pretty-printed": {
+   "provider": "meter",
+   "needs": [
+    "billing"
+   ],
+   "why": {
+    "billing": "recorded; its tests break"
+   },
+   "recorded": [
+    "billing"
+   ],
+   "breaksOriginal": [
+    "billing"
+   ],
+   "breaksConverted": [
+    "billing"
+   ]
+  },
+  "T10-new-operation": {
+   "provider": "bookings",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T11-bound-test-assertion-messages": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T12-list-kind-written-as-Array": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T13-data-file-url-in-a-constant": {
+   "provider": "text-rules",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T14-write-with-encoding": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T15-message-line-as-template": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T16-errors-made-by-helper": {
+   "provider": "money",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  },
+  "T17-test-shows-meter-output": {
+   "provider": "meter",
+   "needs": [],
+   "why": {},
+   "recorded": [],
+   "breaksOriginal": [],
+   "breaksConverted": []
+  }
+ }
+}

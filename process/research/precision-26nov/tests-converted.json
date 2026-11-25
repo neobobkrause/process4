@@ -1,0 +1,8612 @@
+{
+ "P01-price-content": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P02-reword-explanation": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P03-remove-function": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "front/test/index.test.mjs"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P04-rename-function": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "billing/test/index.test.mjs"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P05-answer-field-removed": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P06-answer-field-renamed": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "P07-accept-optional": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P08-newly-required": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked",
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an invoice for a cancelled booking is refused",
+     "an estimate is what the booking then costs, with a deposit of a fifth"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing",
+   "front",
+   "reports"
+  ]
+ },
+ "P09-newly-refused": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P10-answer-gains-field": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P11-list-gains-name": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P12-bound-line-changed": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "P13-kind-renamed": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P14-meaning-changed-comment-updated": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate is what the booking then costs, with a deposit of a fifth"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P15-meaning-changed-comment-not-updated": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate is what the booking then costs, with a deposit of a fifth"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P16-code-changed-comment-forgotten-visible": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking needs a valid email"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P17-code-changed-comment-forgotten-running-only": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P18-operation-retired": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P19-operation-body-field-renamed": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate is what the booking then costs, with a deposit of a fifth"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P20-message-kind-changed": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P21-unfollowable-users-provider": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P22a-first-job-comments-step": {
+  "provider": "calendar",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P22b-first-job-real-change": {
+  "provider": "calendar",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P23-user-already-disagrees": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "P24-new-entry": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "P25-two-changes-one-commit": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "the room menu lists rooms with their seats"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P26-reaches-through-third-module": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "the total grows with party and nights and is in whole cents"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": false,
+    "failed": [
+     "one reading per use, in order, then done"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings",
+   "meter",
+   "billing",
+   "front"
+  ]
+ },
+ "P27-test-helper-changed": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked",
+     "booking needs a valid email",
+     "a booking outside the bounds is refused",
+     "cancel names the cancelled booking",
+     "the kinds menu has one line per kind, each starting with a capital",
+     "the room menu lists rooms with their seats"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "P28-handle-method-renamed": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": false,
+    "failed": [
+     "add then find hands back the room under its slug",
+     "bound seats: whole number, 1 to 500",
+     "add refuses an unknown kind and a taken name",
+     "list filters by kind and keeps name order",
+     "roomlist operation answers with the rooms of a kind"
+    ],
+    "timedOut": false
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "open hands back an open booking that find returns",
+     "the total grows with party and nights and is in whole cents",
+     "bound party: whole number, 1 to 200, and no more than the room's seats",
+     "bound nights: whole number, 1 to 14",
+     "bound day: a real calendar day written YYYY-MM-DD",
+     "cancel closes an open booking once; unknown rooms and bookings are refused",
+     "bound bookquote.total: what the whole stay costs, for the whole party and every night",
+     "operations answer as the table says"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an invoice for a cancelled booking is refused",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked",
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "rooms",
+   "bookings",
+   "billing",
+   "front",
+   "reports"
+  ]
+ },
+ "A01-stored-row-shape": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A03-reexported-function": {
+  "provider": "text-rules",
+  "before": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": false,
+    "failed": [
+     "add then find hands back the room under its slug"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "a room id is the slug of its name"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "rooms",
+   "front"
+  ]
+ },
+ "A04-message-kind-not-shared": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "A06-error-kind-changed": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice in more instalments than allowed is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "A07-bound-test-moved-line-not": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "A08-request-line-built-in-steps": {
+  "provider": "billing",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A09-assert-narrowing": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A10-kind-split-same-shape": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A11-string-spelled-String": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A12-caught-error-makes-user-unfollowed": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "A13-computed-member-renamed": {
+  "provider": "store",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": false,
+    "failed": [
+     "add then find hands back the room under its slug",
+     "bound seats: whole number, 1 to 500",
+     "add refuses an unknown kind and a taken name",
+     "list filters by kind and keeps name order",
+     "roomlist operation answers with the rooms of a kind"
+    ],
+    "timedOut": false
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "open hands back an open booking that find returns",
+     "the total grows with party and nights and is in whole cents",
+     "bound party: whole number, 1 to 200, and no more than the room's seats",
+     "bound nights: whole number, 1 to 14",
+     "bound day: a real calendar day written YYYY-MM-DD",
+     "cancel closes an open booking once; unknown rooms and bookings are refused",
+     "bound bookquote.total: what the whole stay costs, for the whole party and every night",
+     "operations answer as the table says"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an invoice for a cancelled booking is refused",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked",
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "rooms",
+   "bookings",
+   "billing",
+   "front",
+   "reports"
+  ]
+ },
+ "A14-copy-of-kind-in-the-middle": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "the total grows with party and nights and is in whole cents"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": false,
+    "failed": [
+     "one reading per use, in order, then done"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings",
+   "meter",
+   "billing",
+   "front"
+  ]
+ },
+ "X01-optional-param-callback": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "X02-opaque-id-digits": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "X03-port-bound-changed": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked",
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "X04-includes-on-literal-list": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "X05-stale-write": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "X06-bound-reworded": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "X07-list-gains-name-lookup-table": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "X08-new-op-name-clash": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "X09-message-channel": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "X10-node-timer": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y01-method-error-kind": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "cancelling an unknown booking says there is no such booking"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Y02-amount-cannot-be-changed": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "open hands back an open booking that find returns",
+     "operations answer as the table says"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": false,
+    "failed": [
+     "one reading per use, in order, then done"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings",
+   "meter",
+   "billing",
+   "front"
+  ]
+ },
+ "Y03-handle-member-optional": {
+  "provider": "door",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an invoice for a cancelled booking is refused"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Y04-row-kind-written-through-helper": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "a booking outside the bounds is refused",
+     "the room menu lists rooms with their seats"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Y05-row-cast-at-write": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y06-channel-line-built-first": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Y07-limit-outside-bound-test": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "Y08-bound-on-number-kind": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "Y09-newer-library-method": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y10-map-has-get-provider-kind": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y11-tests-grouped-with-it": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y12-bound-test-rewritten-same-meaning": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Y13-constructor-accepts-differently": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z01-bound-test-same-values-other-checks": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "a booking outside the bounds is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Z02-limit-read-from-module": {
+  "provider": "money",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "Z03-blank-line-after-each-message": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z04-stream-chosen-into-variable": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z05-amount-built-by-static-factory": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "open hands back an open booking that find returns",
+     "operations answer as the table says"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": false,
+    "failed": [
+     "one reading per use, in order, then done"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings",
+   "meter",
+   "billing",
+   "front"
+  ]
+ },
+ "Z06-wrapping-handler-error-kind": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate for an unknown room is refused with a RangeError"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z07-handle-method-handed-on": {
+  "provider": "rooms",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "every seeded room can be found by its id"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Z08-second-overload-hands-back": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z09-list-parameter-becomes-rest": {
+  "provider": "money",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z10-readonly-list-now-sorted": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "the kinds line names every kind of room"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Z11-request-lines-change-nothing": {
+  "provider": "door",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "cancel names the cancelled booking"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "Z12-returned-text-kind-bound": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": false,
+    "failed": [
+     "add then find hands back the room under its slug"
+    ],
+    "timedOut": false
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "rooms"
+  ]
+ },
+ "Z13-static-method-hands-back": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z14-member-may-be-undefined": {
+  "provider": "door",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an invoice for a cancelled booking is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "Z15-uncommented-module-changed": {
+  "provider": "calendar",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "reports"
+  ]
+ },
+ "Z16-random-booking-ids": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Z17-filter-boolean": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Z18-object-groupby": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Z19-at-sign-in-bound-line": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Z20-test-helper-renamed": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "Z21-throws-explained-in-two-lines": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V01-accepts-more-hides-static": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "V02-bound-values-in-mapped-list": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V03-refusals-through-console-error": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "V04-instance-built-in-a-conditional": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "open hands back an open booking that find returns",
+     "operations answer as the table says"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": false,
+    "failed": [
+     "one reading per use, in order, then done"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "booking with a valid form says what was booked"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it",
+     "an estimate is what the booking then costs, with a deposit of a fifth",
+     "metered use is priced by the meter and added up"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings",
+   "meter",
+   "billing",
+   "front"
+  ]
+ },
+ "V05-error-kind-in-bound-test": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice in more instalments than allowed is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "V06-non-interface-file-renamed": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "front/test/index.test.mjs"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "V07-write-with-callback": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V08-limit-read-from-json": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V09-pop-after-length-check": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V10-checked-cast-to-kind": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V11-door-copy-in-two-steps": {
+  "provider": "door",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V12-destructured-parameter": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V13-states-named": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V14-overload-added": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "V15-bound-test-through-helper": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W01-meter-start-argument": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "W02-meter-ready-line": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "W03-error-stated-on-kind-not-checked": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate for an unknown room is refused with a RangeError"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "W04-bound-on-built-method": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W05-price-list-in-euros": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "the price menu has one line per kind, each with a price"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "W06-old-overload-kept-behind": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an invoice splits the booking total into instalments that add up to it"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "W07-throws-union": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W08-cast-after-has": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W09-row-written-in-place": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W10-json-settings-file": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W11-structured-log-line": {
+  "provider": "door",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W12-error-code": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W13-fields-reordered": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W14-list-kind-named": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W15-export-list": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W16-store-gains-id": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "W17-limit-read-through-namespace": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "U01-table-renamed-mark-forgotten": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U02-table-name-in-constant-rows-compact": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U03-coded-error-through-object-assign": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate for an unknown room is refused with a RangeError"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "U04-messages-encoded-by-named-function": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "U05-start-environment-through-node-process": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "U06-limit-lowered-in-json": {
+  "provider": "money",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "U07-method-now-needs-its-handle": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "reports"
+  ]
+ },
+ "U08-same-kind-parameters-swap-places": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate for a large party is what bookings quotes for it"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "U09-price-sheet-in-euros": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "the price line says what one seat for one night costs"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "U10-handle-renamed-member-changed": {
+  "provider": "rooms",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "every seeded room can be found by its id"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front"
+  ]
+ },
+ "U11-test-uses-notStrictEqual": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U12-worker-path-through-import-meta-resolve": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U13-error-subclass-of-stated-kind": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U14-inline-import-to-at-import": {
+  "provider": "store",
+  "before": {
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "store": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U15-functions-written-as-arrows": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "U16-equal-written-strictEqual": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T01-rooms-handle-built-as-class": {
+  "provider": "rooms",
+  "before": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": false,
+    "failed": [
+     "every seeded room can be found by its id"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "front",
+   "reports"
+  ]
+ },
+ "T02-quote-bound-not-reaching-operation": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate is what the booking then costs, with a deposit of a fifth"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T03-unknown-room-refused-in-helper": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "an estimate for an unknown room is refused with a RangeError"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T04-tally-full-error": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use worth more than an amount can hold is refused with a RangeError"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T05-meter-ready-line-console-log": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T06-weekday-takes-text-after-partial-first-step": {
+  "provider": "calendar",
+  "before": {
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": false,
+    "failed": [
+     "summary counts real bookings by state, kind and weekday"
+    ],
+    "timedOut": false
+   }
+  },
+  "breaks": [
+   "reports"
+  ]
+ },
+ "T07-price-function-parameters-swap": {
+  "provider": "bookings",
+  "before": {
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "a venue that sets its own prices gets estimates in them"
+    ],
+    "timedOut": false
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T08-limit-lowered-in-test-helper": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": false,
+    "failed": [
+     "bound party: whole number, 1 to 200, and no more than the room's seats"
+    ],
+    "timedOut": false
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "bookings"
+  ]
+ },
+ "T09-messages-pretty-printed": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": false,
+    "failed": [
+     "metered use is priced by the meter and added up",
+     "metered use outside the meter's bound is refused"
+    ],
+    "timedOut": false
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": [
+   "billing"
+  ]
+ },
+ "T10-new-operation": {
+  "provider": "bookings",
+  "before": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "after": {
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T11-bound-test-assertion-messages": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T12-list-kind-written-as-Array": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T13-data-file-url-in-a-constant": {
+  "provider": "text-rules",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "text-rules": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "text-rules": {
+    "pass": true
+   },
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T14-write-with-encoding": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T15-message-line-as-template": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T16-errors-made-by-helper": {
+  "provider": "money",
+  "before": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "money": {
+    "pass": true
+   },
+   "calendar": {
+    "pass": true
+   },
+   "store": {
+    "pass": true
+   },
+   "bookings": {
+    "pass": true
+   },
+   "rooms": {
+    "pass": true
+   },
+   "door": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ },
+ "T17-test-shows-meter-output": {
+  "provider": "meter",
+  "before": {
+   "front": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   },
+   "meter": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   }
+  },
+  "after": {
+   "meter": {
+    "pass": true
+   },
+   "front": {
+    "pass": true
+   },
+   "reports": {
+    "pass": true
+   },
+   "billing": {
+    "pass": true
+   }
+  },
+  "breaks": []
+ }
+}

@@ -4,6 +4,9 @@ PROCESS records its research here before it proposes a change (design part 6, se
 text). Research is background, not governing text (design part 5, section 3): PROCESS reads this index in full, and reads
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
+## 26 Nov 2026
+- `precision-26nov/` — who is told, measured on the notice's proof converted to the coding standard (worker): 16 missed users there that only places outside the standard had caught; the precision work (member by member; what changed made exact) measured; the 16 traced (`misses.md`: 11 a started program's output or start-up, 2 swapped same-kind parameters, A14, X03, X01; rule 7 unsound for functions handed on and for objects); the owner's question on properly converted modules answered (15 missed, ~162 without need); options in `README.md`.
+
 ## 25 Nov 2026
 - `arch-compacted-fill-unread-25nov.md` — process fault: civicsmith ARCH #26 compacted at 15:02Z; researched: an idle compaction at 43 percent after 76 idle minutes (not the threshold); the fill is readable after a session's first turn ends ("unreadable" was lore in ARCH's handover); options 0, A (idleCompaction off in the environment), B (correct the claim), C (both, recommended); put to the owner 25 Nov.
 - `uses-metadata-25nov.md` — the owner's proposal (conversation): each module keeps a file of the providers and entries it and its tests use, written by a job that understands the code and kept current by each job; finding users becomes a lookup. PROCESS #14's first analysis and what is left to design (incl. "what changed", F1). Option C is set aside while it is designed.

@@ -1,0 +1,16 @@
+{
+  "name": "rooms",
+  "files": [
+    "rooms/src/"
+  ],
+  "tests": [
+    "rooms/test/"
+  ],
+  "public": [
+    "rooms/src/index.mjs"
+  ],
+  "uses": [
+    "text-rules",
+    "store"
+  ]
+}
