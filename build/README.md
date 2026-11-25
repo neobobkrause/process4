@@ -37,12 +37,12 @@ with each change.
 
 `02b-the-comment-and-the-listing.md`: sections 5 and 6 of build text 2.
 - 5. A structured comment: JSDoc forms, `@bound`, which kind code checks or builds, the operations table, calls by name, the other marks.
-- 6. An interface listing, entries and their names, comparing means, the words a change gets and who each tells.
+- 6. An interface listing, entries and their names (a message's kind with its channel), comparing means, the words a change gets and who each tells.
 
 ## Build text 2c
 
 `02c-the-coding-standard.md`: section 10 of build text 2.
-- 10. The coding standard (a reference; S1 to S13; R1 to R22; order; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form.
+- 10. The coding standard (a reference; S1 to S13; R1 to R22; order; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form (its `mock` uses, `packages` and `takesIn`).
 
 ## Build text 3
 
@@ -71,9 +71,9 @@ with each change.
 - 2. The eight records and their JSON forms (roles with `process`, lanes, wakes, stop, standing notes, round with scope, waiting work, handover with `generation`).
 - 3. What ends each kind of standing note.
 - 4. The process's repository: its three records and the `products` registry.
-- 5. The comments on pull requests: the job block, the job's record, the conversion's report, the meaning declaration, the test record, the notice comments.
-- 6. An item's means and its closure, and who is told.
-- 7. "Reaches": the related test files inside a told module, and losing the thread.
+- 5. The comments on pull requests: the job block, the job's record (a notice that needs no change among it), the conversion's report, the declaration (meaning, and items recorded as the same), the test record and the heads it stands for, the notice comments.
+- 6. How the tool works out the means (the closure's order, the implicit members, a module that keeps no state) and who is told, from the uses files' fields.
+- 7. How the tool makes a told job's related tests.
 - 8. Unproven, and not settled.
 
 ## Build text 6

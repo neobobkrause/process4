@@ -1,4 +1,4 @@
-Length: 125 lines. Last section: "6. An interface listing, and an item's means".
+Length: 124 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
@@ -94,18 +94,18 @@ Listing of pricing
       throws: RangeError
 ```
 
-- An entry is named by its name within its module; the file and line beside it are not compared. Where two of the module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the file as the module list writes it; the same thing exported again from a second file stays one entry. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`).
+- An entry is named by its name within its module; the file and line beside it are not compared. Where two of the module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the file as the module list writes it; the same thing exported again from a second file stays one entry. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`). A message's kind (`@message`, section 5) is a kind whose entry carries its channel.
 - An entry has a sort (function, value, kind, handle kind, method, class, class member, operation table, operation, stored rows) and, as they apply: what it accepts, what it hands back, its bound lines, a message's channel, whether a member may be missing, and the reader's printed declaration of it with comments removed.
-- A kind of plain data is written out in full, fields in name order, with its name kept, in every entry that accepts it or hands it back, and its bound lines go with it. A handle kind is written by name. Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A plain constant's value is content: it is widened to its kind unless its comment states one.
+- A kind of plain data is written out in full, fields in name order, with its name kept, in every entry that accepts it or hands it back, and its bound lines go with it. A handle kind is written by name. Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A constant's value is kept.
 
-**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. Where what it accepts or hands back is written differently, the reader's checker is asked about the two declarations themselves, read in one program: a part it finds identical, and each side assignable to the other, is unchanged (a kind's name given, dropped or changed, a type parameter renamed, a handle kind renamed with the same members); anything the checker can tell apart is a change. With no difference the notice says `No item's means changed. Nobody is told.` Otherwise each item that differs gets one or more of these words:
+**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. Where what it accepts or hands back is written differently, the reader's checker is asked about the two declarations themselves, read in one program: a part it finds identical, and each side assignable to the other, is unchanged (a kind's name given, dropped or changed, a type parameter renamed, a handle kind renamed with the same members); anything the checker can tell apart is a change. With no difference the notice says `No item's means changed.` and tells only the modules that hear of any change to the provider's files (build text 5, section 6). Otherwise each item that differs gets one or more of these words:
 
 | Word | When | Told |
 |---|---|---|
 | `removed` | An item gone, or a name lost from a handle or table. A renamed item is this and a `new item` | Its users |
 | `new item` | An item only after | Nobody |
-| `accepts more` | The type checker, reading the old and new in one program, confirms the new stands in for the old: for a function, method or class with one signature, the old arguments accepted by the new and what it hands back the same; for a generic or overloaded one, only what the written forms show as accepting more, with the new assignable to the old; for what a user hands in, the old to the new. Never where what it accepts holds a method, a class's object or "anything", which the checker relates both ways; nor where a function the user hands in (in what it accepts, or a method of a handle kind or class whose values a user supplies) may now be handed more arguments, which the checker lets through | Nobody |
-| `cannot stand in` | Removed, renamed, newly required or newly refused, or not confirmed as accepting more | Its users |
+| `accepts more` | What it accepts is wider, as the type checker reads the old and new in one program, and what it hands back the same | Its users |
+| `cannot stand in` | What it accepts differs otherwise: removed, renamed, newly required or newly refused | Its users |
 | `hands back differently` | What it hands back, a message's channel, a member that may now be missing | Its users |
 | `bound changed` | A bound line added, removed or reworded | Its users |
 | `errors`, `data or instance`, `this`, `writes arguments`, `channels` | That part worked out from the code differs | Its users |
@@ -120,6 +120,5 @@ Notice for a change to pricing (TypeScript 5.6.3)
       uses pricing PriceArgs (bound changed) at src/orders/lines.mjs:41 addLine
 ```
 
-- **Describing is not changing.** An item's first means, at its conversion, tells no one; nor does a type read as "anything" before and stated after, in the item or in any later item that passes it on (the design, part 2, section 7).
-- A named or declared change of meaning (build text 5, section 5) tells the item's users whatever the means say.
-- **Unproven:** the comparison of means and the checker confirming "accepts more"; not built. The proven tool compared listings alone, with 23 refusals the design does not take (build text 2, section 1).
+- What is not a change (describing among it), a change ARCH named or a pull request declared, and an item a job records as the same (`push --same`, build text 5, section 5) are the design's (part 2, section 7); `notify` applies them to these words.
+- **Unproven:** the comparison of means; not built. The proof compared listings alone (build text 2, section 1).
