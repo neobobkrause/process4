@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 18:45 UTC, by PROCESS #16. The design for who uses what waits for your review and decision, and the choice about idle sessions being compacted. One small step: archive PROCESS #15.</p>
+<p class="updated">Updated 25 Nov 2026, about 19:05 UTC, by PROCESS #16. Your decision C is recorded and being built. Waiting for you: the choice about idle sessions being compacted, and one small step, archive PROCESS #15.</p>
 </header>
 
 
@@ -31,35 +31,17 @@ a{color:var(--accent)}
 <p>PROCESS #16 is running and has picked up from its handover. Open the session named <b>PROCESS #15</b> in your list of sessions at <b>https://claude.ai/code</b>, open its menu, and click <b>Archive</b>. It then shows as archived.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: the corrected design for who uses what</h2>
-<p><b>The full design, to review and comment on</b> (now in four parts, A to D, with "Is it load-bearing?" answered): <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what — the design for your decision</a>. Comment there; give your decision here or in my session. The summary below is the same in short.</p>
-<p><b>Bottom line.</b> I recommend choice C, now corrected. Under the standard, every reference to an earlier module is found by the tool, or sits at a place the tool lists as not yet in the standard; such a place is told of every change until it is converted. Nothing is silently missed.</p>
-<p><b>How the gaps were closed.</b> The helper wrote 27 small test cases and ran each under two versions of the type checker. Under today's settings, each gap hid its reference and the checker said nothing. Under twelve added rules, every gap was found: 50 runs out of 50. Two ordinary cases raised nothing, so the rules do not flag good code. The rules, in plain words:</p>
-<ul>
-<li>Nothing has an unknown type.</li>
-<li>Data that comes from another module, through a file, a message, storage or the environment, is read only through that module's own reader, never relabelled by hand.</li>
-<li>The tool itself checks every conversion between types, so it does not rely on the checker's known blind spots.</li>
-<li>Nothing writes onto another module's values behind the checker's back, and nothing switches the checker off.</li>
-</ul>
-<p>One setting the tool uses today, on caught errors, hides a reference now; it is turned the other way. What the result rests on: the type checker working as documented, the same trust we already place in reading imports at all.</p>
-<p><b>Copies, as you put it: a bug.</b> A module that writes out a value another module owns, such as a limit, a text or a name, has a bug. The rule: every fact is obtained from the module that owns it. A fact fixed in code is imported, which costs nothing at run time; a fact that is set or stored is read from its owner's reader, and any cache sits inside that reader, never as a copy in the module that uses it. Obtained that way, it is a reference, and found. Where obtaining is impossible, as in a test's deliberately written-out expected answer or a data file, it is marked with your naming convention and read as a reference. The tool also lists every literal exactly equal to a value an earlier module offers, to help the job. A breach of the rule is caught like any other bug, by the job, the module's tests and the walks; I do not claim the tool finds every bug, only every reference.</p>
-<p><b>The rest stands as before.</b> Before a job finishes, the tool lists every item that may have changed (it missed none of the 150 recorded changes), and the job marks each one by a short guide; an item left unmarked counts as changed. Who is told is a lookup. Jobs that change no running code run no tests. The first job on each module, run in parallel where order allows, does three things:</p>
+<section class="card">
+<h2>Being built: who uses what, your decision C</h2>
+<p>Your words, recorded exactly (25 Nov, 18:51 UTC): "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."</p>
+<p>The design document is corrected and current: <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what</a>. It now carries the full set of rules, says exactly what "the means" is, and adds that every module job has its uses file rewritten by the tool at each push.</p>
+<p><b>How it lands, as you asked, with no contradictions:</b> every change is made where its rule already lives, and nothing reaches main until the design, your record, the build texts, the job's and ARCH's instructions and the tool all agree and the tool's tests pass. Until then the work sits on one branch, <code>work/decision-c</code>.</p>
 <ol>
-<li>It converts the module's references to the standard, and imports or marks its copies.</li>
-<li>It states the module's types.</li>
-<li>It lets the tool write the module's uses file.</li>
+<li><b>Your record and the design:</b> done on that branch. Five existing entries rewritten in place, and 3B retired with your words kept.</li>
+<li><b>Build texts and the job's and ARCH's instructions:</b> being rewritten.</li>
+<li><b>The tool:</b> being built in two parts at once. One part finds every reference and writes each module's uses file. The other works out what changed and who is told.</li>
+<li>Then the proof's 150 changes re-recorded, the trial on process3-probes, civicsmith's move on your instruction, and the first pass of 8 real modules, which stops for your review.</li>
 </ol>
-<p><b>Choice:</b></p>
-<ul>
-<li><b>0. No change.</b> civicsmith cannot go on.</li>
-<li><b>A. A file each job writes, without a standard.</b> Rests on each job's care.</li>
-<li><b>B. The standard without the rules on types.</b> Certain for direct references only.</li>
-<li><b>C. The full standard, corrected (recommended).</b></li>
-</ul>
-<p><b>Not proven:</b> what it costs to bring civicsmith's code under these rules, above all the types; and how reliably jobs mark changes and copies. The first pass of 8 real modules measures both. Then you decide to go on, change the method, or abandon it, and the files written are kept or corrected accordingly.</p>
-<p><b>Your record.</b> Your decision rewrites in place the existing entries on who is told, how the tool reads the product, how a notice reaches a module, and the merge wait. It retires your earlier rulings on these, 3B among them, and replaces "No list is kept by hand".</p>
-<p>To choose, reply here starting with "Decision:", for example "Decision: C, with the first pass of 8". The full design is in <code>process/research/uses-metadata-25nov/design.md</code>; the proof of the gaps is in <code>every-reference.md</code> beside it.</p>
 </section>
 
 <section class="wait">
