@@ -1,8 +1,8 @@
-Length: 177 lines. Last section: "9. What could not be settled".
+Length: 173 lines. Last section: "9. What could not be settled".
 
 # Process4 build text 2: the forms of the files the design names
 
-Written by Claude on 18 Nov 2026, beside the design (`design/`), not into it. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It answers part 10, section 2, items 6 and 7 of the design; where the two differ, the design rules. It adds no check, gate, review or stop. Reconciled the same day with build texts 1, 3 and 5 and with part 4, section 11. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b) since 19 Nov 2026, to keep each file under 24,000 bytes; the numbers are kept.
+Written by Claude on 18 Nov 2026, beside the design (`design/`), not into it. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It answers part 10, section 2, items 6 and 7 of the design; where the two differ, the design rules. It adds no check, gate, review or stop. Reconciled the same day with build texts 1, 3 and 5 and with part 4, section 11. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b) since 19 Nov 2026, and section 10, the coding standard and the uses file, in `02c-the-coding-standard.md` (build text 2c), to keep each file under 24,000 bytes; the numbers are kept.
 
 Marks: **Decided here:** a choice made in this text, with what it gives and what it costs. **Unproven:** never shown to work in this form. Every example is made up: a product in plain JavaScript with modules `dates`, `pricing` and `orders`.
 
@@ -16,7 +16,7 @@ Read for this text: the seventh draft, parts 0, 2, 4, 5 and 6 in full; `schema/`
 
 **Not proven, in its words:** "The made-up modules are not the real product." "No real job wrote these comments." "What a told job does was not run." "Design 8 was not built or run."
 
-**The form the design takes is design 8** (part 2, section 7): the notice of design 7 without the 23 refusals the owner has not approved, and with the type checker confirming "accepts more". It was described and never built or run; the 133 were measured with the 23 refusals in the tool. Where a form there ran only with one of them, it says so.
+**The form the design takes** (part 2, section 7) keeps the proof's structured comment and listing (sections 5 and 6) and, by the owner's decision C of 25 Nov 2026, finds users from the uses files of section 10 and changes from each item's means (build text 5, section 6), with no refusal the owner has not approved. It has not been built or run; the 133 were measured with the 23 refusals in the tool.
 
 **The process before this one** kept its module list as `build/modules.json` (220 modules) and requirements as `build/requirements/<module>.md`. Sections 2 to 4, 7 and 8 start there.
 
@@ -28,8 +28,9 @@ Read for this text: the seventh draft, parts 0, 2, 4, 5 and 6 in full; `schema/`
 |---|---|---|
 | Process config | `process.json` | ARCH |
 | Module order | `process/modules/order.txt` | ARCH |
-| A module's entry | `process/modules/<name>.json` | ARCH; the module's job, its `uses` only |
+| A module's entry | `process/modules/<name>.json` | ARCH |
 | A module's requirements | `process/modules/<name>.md` | ARCH the text; the job the word `met` |
+| A module's uses file; the facility list | `process/modules/<name>.uses.json`; `process/modules/facilities.json` (section 10) | The tool, at each push; ARCH |
 | Ranking page | `process/ranking.md` | ARCH |
 | The owner's decisions on the product | `process/decisions-owner.md` | The coordinator |
 | ARCH's technical decisions | `process/decisions-arch.md` | ARCH |
@@ -49,15 +50,14 @@ pricing
 orders
 ```
 
-**An entry** is a JSON object with exactly five fields.
+**An entry** is a JSON object with exactly four fields.
 
 ```json
 {
   "name": "orders",
   "files": ["src/orders/"],
   "tests": ["test/orders/"],
-  "public": ["src/orders/index.mjs"],
-  "uses": ["dates", "pricing"]
+  "public": ["src/orders/index.mjs"]
 }
 ```
 
@@ -65,13 +65,10 @@ orders
 - `files`: the paths of the code the module owns. A path ending in `/` is a folder with everything under it. A file belongs to the module with the longest matching path, as in the process before this one.
 - `tests`: the paths of its tests, read the same way. Its walk steps are under these paths too, in `walk/internal/` and `walk/external/`, and the module's test command never runs those two folders (build text 3, section 3).
 - `public`: its interface files, read the same way: the files whose exports, with the further entries named there, make its listing (build text 2b, section 6). The proof's field of the same name (proof: `product/modules.json`). A helper for other modules' tests is one too, as the proof's `product/store/src/testing.mjs` was.
-- `uses`: its declared uses, by name.
-- The requirements file is not named: it is always the `.md` of the same name. The test command is not here either: it is one line of the process config (section 7).
+- The requirements file is not named: it is always the `.md` of the same name, and the uses file the `.uses.json`, which names the module's declared uses (section 10). An entry that still holds `uses` is read without fault; nothing reads that field. The test command is not here either: it is one line of the process config (section 7).
 - A module is identified everywhere by its `name`: in the tool's commands, in a job's branch `job/<name>.<n>` (build text 1b, command 1), and in the records.
 
-**How "a module may use only modules before it" reads:** every name in `uses` stands on an earlier line of the order file than the module's own. `orders` is on line 3, `dates` and `pricing` on lines 1 and 2, so it holds. Had `pricing` listed `orders`, that would be a design error, which ARCH corrects by reshaping code (part 2, section 1). The tool's `check` refuses it in that module's own tests (build text 1b, command 18).
-
-**Decided here:** a job may change the `uses` of its own entry and nothing else in the list. Gives: the job can remove a declared use that no code makes, as part 2, section 7 says, and add one its new code needs. A job adding a use of a later module is refused by `check` in its own module's tests, and takes it to ARCH. Costs: that a job changes nothing else in the list is a rule in its instructions, held by no check.
+**How "a module may use only modules before it" reads:** every provider the module's uses file names stands on an earlier line of the order file than the module's own. `orders` is on line 3, `dates` and `pricing` on lines 1 and 2, so it holds. Had `pricing` used `orders`, that would be an order fault, a design error, which ARCH corrects by reshaping code (part 2, section 1). The tool's `check` refuses it in that module's own tests (build text 1b, command 18). A job changes nothing in the list.
 
 ## 4. A module's requirements file
 
@@ -121,7 +118,7 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
 - `process`: the one fixed version of the process the tranche runs on: the process repository's address, the version's name, and its full commit id on that repository's main branch. Each session, and the required run, fetches a copy of exactly that commit (build text 1, section 2). A move to another version (the design, part 6, section 7) is a change to this field by one pull request; `latest-version` gives the newest commit (build text 1b, command 25). Where the new version's `shims/module-tests.yml` differs from the product's copy, the copy is replaced by a second pull request merged after the first, because the required run judges each pull request with the tool at the version its base names.
 - `tranche_branch`: the name of the one lasting tranche branch, which pull requests go into. The process's repository has no tranche branch: its own `process.json` names `main` here.
 - `node`: the product's Node version, which the required run sets up. A config that still holds `lock_files` is read without fault; nothing uses it, since the required run installs none of the product's dependencies (build text 1, section 5).
-- `test_command`: the command the tool runs over a list of a module's test files. **Decided here:** one command for the product, kept here and not in each entry. Gives: an entry keeps five fields. Costs: a product whose modules need different commands must give one command that tells them apart.
+- `test_command`: the command the tool runs over a list of a module's test files. **Decided here:** one command for the product, kept here and not in each entry. Gives: an entry keeps four fields. Costs: a product whose modules need different commands must give one command that tells them apart.
 - `slots.default`: the account's slot number when the owner has given none. `slots.share`: this product's share of it (part 2, section 5); with one product the two are equal. A number the owner gives later is held in the standing notes, not here.
 - `lanes`: each lane's name and its folder. The UX lane is always there.
 - `hosting`: the provider's name and the development account. The account's id is not a secret. The deploy token is, and is never written here.
@@ -170,8 +167,7 @@ The `Decision` line is the one plain line the coordinator gives the owner. A cha
 
 ## 9. What could not be settled
 
-1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) now give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals; the design takes design 8, which was never built. Which of the 150 recorded answers change without the refusals is not worked out.
+1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals, which compared listings and inferred users; the 150 recorded answers are to be recorded again under decision C (build text 4, stage 4).
 2. **A product in another language.** Sections 5 and 6 (build text 2b) are for plain JavaScript under TypeScript's reader. No other reader has been tried.
 3. **Messages between two separately running parts.** The proof's mark is `@message` (build text 2b, section 5).
-4. **"Cannot follow".** The proof's form is in build text 5, section 6.
-5. **A decision record that outgrows the maximum.** The owner's dated words are never edited, so his record only grows. How it is split is the coordinator's and PROCESS's to settle.
+4. **A decision record that outgrows the maximum.** The owner's dated words are never edited, so his record only grows. How it is split is the coordinator's and PROCESS's to settle.

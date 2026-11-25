@@ -46,7 +46,7 @@ The design fixes what an area is: for the internal walk a screen or a named grou
 
 1. The tool (`walk areas`) lists the round's changed modules: those whose pull request merged in the round, and those a notice was sent to, whether or not they then changed.
 2. For each, the tool lists the screen pages and journeys named in the headers of that module's steps (section 3) and in the endings of its requirement text (build text 2, section 4).
-3. A changed module that names none takes the areas of its users, followed upward until modules that name some are reached.
+3. A changed module that names none takes the areas of its users (the later modules whose uses files name it, build text 2, section 10), and theirs in turn, until modules that name some are reached.
 4. That is the candidate list. ARCH adds an area where it doubts how a change will show (the design, part 3, section 3), and may take one away. Each added or removed area carries one line of reason.
 5. In the round that would end the tranche, ARCH adds the journeys the design's reading of part 3, section 5 calls for.
 6. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
