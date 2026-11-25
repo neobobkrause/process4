@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026 by PROCESS #12. Both your decisions of today are built. Next: the tool's speed, being measured now; you asked to hold civicsmith's move until that is settled.</p>
+<p class="updated">Updated 25 Nov 2026, about 01:35 UTC, by PROCESS #12. One choice waits for you: the tool's speed. You asked to hold civicsmith's move until it is settled.</p>
 </header>
 
 <section class="card">
@@ -36,10 +36,15 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Coming next: after an early module merges, telling the others takes most of an hour</h2>
-<p><b>The bottom line.</b> On civicsmith, when record-grammar (third of 204 modules) merged, the tool's step that works out which other modules must be told of the change ran 38 minutes and used 8 GB without finishing. It was restarted at 00:47 UTC and was still running at 00:57. Meanwhile ARCH holds eight finished jobs that use record-grammar. I am measuring where the time goes on a made-up product of the same shape and will put options to you with numbers.</p>
-<p><b>A correction.</b> I said the hold was ARCH's own choice. You were right that the process drives it: see the item above.</p>
-<p><b>Also, as PROCESS #11 warned:</b> the refactoring tranche is drawing in modules. Flaws that one job finds in another module's older code are always work in the tranche, as you chose, so by 00:44 UTC jobs had opened for ten more modules, and more are queued. Nothing is wrong by the rules; tell me if you want that held, and I will look at it as a fault.</p>
+<h2>Waiting for you: make the tool that tells other modules of a change much faster, and stop it losing notices</h2>
+<p><b>The bottom line.</b> After record-grammar merged, the tool took about 43 minutes and 8 GB to work out who to tell, then could not save most of what it found. I recommend three changes to how it reads, plus keeping its saved list small. Estimated: from 43 minutes to a few minutes. Not yet shown: a helper is building them now and checking each against the 150 answers recorded when the method was first proven. Nothing is merged unless who gets told stays the same.</p>
+<p><b>Why it is slow, from the code.</b> It reads each of about 200 later modules on its own, from scratch, working out record-grammar and the shared lower modules again each time; it reads each one twice, before and after; and for a module it cannot fully follow, which is most of civicsmith's because it is plain JavaScript, it still reads every file to list every use, though such a module is told anyway and its job re-runs all its tests.</p>
+<ul>
+<li><b>A. No change.</b></li>
+<li><b>B. Three changes (recommended).</b> Stop reading a module at the first sign it cannot be fully followed, since it is told anyway. Read the "after" side only when the change adds new names. Read several modules at once, one per processor. And keep the saved list small, so GitHub takes it, and show GitHub's words if it ever refuses. Then run the step once more for record-grammar's merge, to recover the lost notices.</li>
+<li><b>C. B, and two more.</b> Share work across a batch of modules, and remember results for modules whose files did not change. More to build and prove; only if B is not enough.</li>
+</ul>
+<p>To choose, comment on this item, for example <b>Decision: B, as recommended</b>. Nothing reaches civicsmith until you move it.</p>
 </section>
 
 <section class="card">
