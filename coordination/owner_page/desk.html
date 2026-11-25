@@ -26,7 +26,7 @@ a{color:var(--accent)}
 </header>
 
 <section class="wait">
-<h2>Waiting for you: one choice left about who is told after a change</h2>
+<h2>Waiting for you: two choices left</h2>
 <p><b>The problem.</b> civicsmith's notices are still telling far too many modules. Two merges today told 197 and about 125 modules. Each told module costs a short check, about $1.40 to $1.90 and 2 minutes, and nearly all end with nothing to change: roughly $300 and $200 for those two merges alone. Three causes, each with its own choice. They work together: 1 and 2 cut most of the first kind of case (a module being described for the first time), 3 cuts most of the second (a helper few modules call).</p>
 
 <p><b>1. Two tool faults against your decision B of today.</b> (a) A told check opened from the waiting list was not recognised as having already had its notice, so a re-run told jurisdictions, signatures and connection-grammar a second time. (b) The tool printed some function headings with their brackets lost, so a kind stated for the first time still counted as a change, which your decision B said it should not. Both are corrected and tested, ready in pull request 275; the 150 answers recorded when the method was proven are unchanged.</p>
@@ -49,7 +49,13 @@ a{color:var(--accent)}
 <ul>
 <li><b>Decided: 4B</b> (your comment, 25 Nov about 06:19 UTC). Recorded word for word, built and merged (pull request 282).</li>
 </ul>
-<p>What is left is choice 2. To answer, type in my session or comment here, for example: <b>Decision: 2C+</b>, or another of 2A, 2C, 2D. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
+<p><b>5. A new one, from the trial product: the safety-net session runs out of depth one step early.</b> The harness lets a chain of sessions go 8 deep, and a session at depth 8 cannot start other sessions or set its hourly wake. Each time ROOT hands over to its stand-by, the chain grows one deeper. The design asks you for a fresh ROOT when ROOT is 2 levels from the limit. But ROOT's helpers sit one level below it, so by the next handover they are already at the limit. process3-probes' stand-by is at depth 8 now and cannot set its wake. ARCH there would also be unable to start jobs once restarted. The product is quiet, so nothing is lost yet. Its coordinator has already put a fresh ROOT on its own page for you; that is the cure for now.</p>
+<ul>
+<li><b>5A. No change.</b></li>
+<li><b>5B. Ask one handover earlier, and do not make the handover that is known to break (recommended).</b> You are asked for a fresh ROOT at 3 levels from the limit. At 2 levels, ROOT's planned refresh does not hand over. Instead the fresh-ROOT start goes on your page, the way my own refresh does. An unplanned handover, from a ROOT that died, still happens. Text only; no new step for you, only the same one asked for earlier.</li>
+<li><b>5C. Only the second half of 5B</b> (no earlier warning).</li>
+</ul>
+<p>What is left is choices 2 and 5. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B</b>, or another mix. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
