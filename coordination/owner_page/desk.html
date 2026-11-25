@@ -22,28 +22,20 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 13:50 UTC, by PROCESS #14. New at the top: the cleanup you asked about. Choices 2, 5 and 6 still wait below.</p>
+<p class="updated">Updated 25 Nov 2026, about 13:55 UTC, by PROCESS #14. The cleanup is under way; choices 2 and 5 come after it.</p>
 </header>
 
-<section class="wait">
-<h2>Waiting for you, first: clean up Process4 before more improvements?</h2>
-<p><b>Bottom line:</b> your concern is borne out. In the last 36 hours (73 merges) most changes added a new statement beside an old rule instead of rewriting it, so the texts now disagree with each other in places. Nothing was found that adds a test, gate or stop you did not ask for, and the tool still does what its texts say. Five read-only workers audited one area each; their findings, each with its place and a one-line fix, are in <code>process/research/cleanup-audit-25nov/</code>.</p>
-<ul>
-<li><b>Design:</b> of 9 changes, 3 clean. 26 findings: 5 places where two parts now contradict each other (for example, a dropped tranche's pull request runs no tests in part 3 but is tested in part 2), 7 left stale, 3 rules stated two or three times.</li>
-<li><b>Build texts:</b> 34 findings. The command list states the rule for who is told twice, and neither is the current one; the dated "your decision of…" clauses in it went from 11 to 24.</li>
-<li><b>Starting texts:</b> ARCH's and the job's texts grew about a fifth, every change a clause added to a rule; ARCH's rule 6 now covers five subjects. Two acts sessions take are not named in their texts.</li>
-<li><b>Your record of decisions:</b> 13 entries added, none rewritten in place. 64 entries are really 31 subjects; the notice alone has 9 entries in three files. Six still state a rule that a later decision replaced. Your exact words are all there.</li>
-<li><b>The tool:</b> the same rule is often coded in several places. Two of them break the design: one stops a whole notice for size, one holds back a running job's notice when its block is full.</li>
-<li><b>Limits:</b> every single text is within its size limit. My own required reading is about 300,000 bytes, against a maximum of 175,000; that is why I started at 30 percent. A job's reading is 173,749 before the product's own files, so likely over in practice.</li>
-</ul>
-<p><b>Options:</b></p>
-<ul>
-<li><b>A. No change.</b> Keep fixing faults as they come; the disagreements compound.</li>
-<li><b>B. Clean up first (recommended).</b> No rule and no behaviour changes, except where a text or the tool breaks a rule the design already states; each change is named to you. One step per area: your record regrouped by subject (every word of yours kept, about 112,000 bytes down to about 65,000); the design's findings rewritten in place; the build texts; the starting texts; and the tool's duplicate code made one. Choice 6B is rebuilt on the tool's single size rule and goes first, because civicsmith is losing notices meanwhile; choices 2 and 5 are built afterwards onto the clean texts.</li>
-<li><b>C. Texts only.</b> As B, leaving the tool for later.</li>
-</ul>
-<p><b>A separate choice: what PROCESS reads.</b> Even cleaned up, my required reading stays about 255,000. (i) No change. (ii) I read the design and my handover in full, and your record, build text 5 and my research through short indexes, opening an entry when a question touches it; the design already states every decision as it now stands. That brings it to about 168,000 (recommended).</p>
-<p>To answer, type in my session or comment here, for example: <b>Decision: B, (ii), 6B</b>.</p>
+<section class="card">
+<h2>Under way: the cleanup you chose</h2>
+<p><b>Decided: B and (ii)</b> (your words, 25 Nov about 13:45 UTC), recorded word for word. My reading is now the design, my handover and short indexes; the record of your decisions and the build texts are opened when a question touches them (merged, pull request 298).</p>
+<p>The cleanup changes no rule and no behaviour. It runs one area at a time, and each change is listed here when it merges:</p>
+<ol>
+<li>Your record of decisions regrouped by subject, every word of yours kept (in progress).</li>
+<li>The design's 26 findings rewritten in place (in progress).</li>
+<li>The build texts, then the starting texts, once the design has landed.</li>
+<li>The tool's duplicate code made one.</li>
+</ol>
+<p>The findings behind each step are in <code>process/research/cleanup-audit-25nov/</code>.</p>
 </section>
 
 <section class="wait">
@@ -52,21 +44,15 @@ a{color:var(--accent)}
 <p><b>What I recommend, in this order:</b></p>
 <ol>
 <li>In civicsmith's coordinator session, type: <b>Instruction: hold notice-only checks until civicsmith has moved to the latest Process4 version</b>. That stops the spending now. Other work goes on only if ARCH can pass over the held checks; last time it could not, and all work waited.</li>
-<li>Decide choice 2 below (I recommend <b>2C+</b>). It is built and merged within about half an hour of your word, by PROCESS #14 if I have gone.</li>
+<li>Choice 2 below (I recommend <b>2C+</b>) is built after the cleanup, with the correction of who is told; you can decide it now or then.</li>
 <li>Then, in civicsmith's coordinator session: <b>Instruction: move civicsmith to the latest Process4 version</b>, and lift the hold.</li>
 </ol>
-<p>If you would rather not wait for choice 2, move civicsmith now; it then has 3B at once, and 2C+ can follow in a second move.</p>
+<p>If you would rather not wait, move civicsmith now; it then has 3B at once, and the rest follows in a later move.</p>
 </section>
 
-<section class="wait">
-<h2>Also urgent, choice 6: civicsmith's list of waiting work is full, and new notices are being lost</h2>
-<p>The record of work waiting for each module is kept in one comment on GitHub, and GitHub holds at most 65,536 characters in a comment. civicsmith's has grown to 1,937 entries, about 171,000 characters, mostly notices. So each notice still to run can still reach a module with an open job, but cannot be written down for any other module. That part is lost until this is mended. ARCH has stopped running notices meanwhile (67 merges are waiting) and goes on with other work. Nothing already recorded is lost, and running the notices again after the mend puts back what is missing.</p>
-<ul>
-<li><b>6A. No change.</b> Notices for modules with no open job stay lost while the record is full.</li>
-<li><b>Since then:</b> the same limit stopped a job from starting at all. civicsmith's filings module has 22 notices waiting, and starting its job copies all their details into one place, too large for GitHub. Its pull request opened without them and has no job working on it, and while it stays open, every later module that uses filings waits before it can merge. A second module, following, has now done the same; the two also take up two of the eight slots. The tool already shortens those details when a notice reaches a job that is running, but not when a job starts.</li>
-<li><b>6B. The record spreads over as many comments as it needs, and a starting job's details are shortened the same way a running job's are (recommended).</b> Built and tested, waiting only for your word. It also lets filings' and following's open pull requests be given their missing details, so neither needs closing. After it lands and civicsmith moves, ARCH re-runs the waiting notices, which puts back what was lost.</li>
-<li><b>6C. Only shrink the entries.</b> Not enough: the record would still be about 115,000 characters.</li>
-</ul>
+<section class="card">
+<h2>Choice 6 waits, as you suggested</h2>
+<p>Choice 6 (civicsmith's list of waiting work, and a starting job's details, outgrowing one GitHub comment) waits until the way the tool decides which modules to tell is corrected. You think over-telling is why the notices overflow. The evidence agrees: nearly all of civicsmith's 1,937 waiting entries are notices, and most such checks end with nothing to change. The tool audit also found one cause not yet put to you: where a module imports another by the product's own name, the tool treats it as unreadable, so the narrowing you chose (3B) saves nothing for that module. That correction, with choice 2, comes first after the cleanup. Meanwhile civicsmith's notices for modules with no open job are still not written down, and filings and following stay stuck; I have told civicsmith's coordinator.</p>
 </section>
 
 <section class="wait">
@@ -109,7 +95,7 @@ a{color:var(--accent)}
 <li><b>5B. Ask one handover earlier, and do not make the handover that is known to break (recommended).</b> You are asked for a fresh ROOT at 3 levels from the limit. At 2 levels, ROOT's planned refresh does not hand over. Instead the fresh-ROOT start goes on your page, the way my own refresh does. An unplanned handover, from a ROOT that died, still happens. Text only; no new step for you, only the same one asked for earlier.</li>
 <li><b>5C. Only the second half of 5B</b> (no earlier warning).</li>
 </ul>
-<p>What is left is choices 2 and 5. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B, 6B</b>, or another mix. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
+<p>What is left is choices 2 and 5; both are built after the cleanup. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B</b>. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
