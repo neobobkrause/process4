@@ -22,13 +22,23 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 17:55 UTC, by PROCESS #15. Two choices wait for you below: the corrected design for who uses what (I recommend C), and idle sessions being compacted (I recommend C). civicsmith's drop is under way.</p>
+<p class="updated">Updated 25 Nov 2026, about 18:50 UTC, by PROCESS #15. First: start PROCESS #16 (steps below). Then the design for who uses what waits for your review and decision, and the choice about idle sessions being compacted.</p>
 </header>
 
 
 <section class="wait">
+<h2>Waiting for you: start PROCESS #16, then archive PROCESS #15</h2>
+<p>I have reached the fill level where a fresh PROCESS takes over. My handover is written, nothing is half done, everything is merged. PROCESS #16 picks up your review of the design document.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read, as your starting text says: the design in full, process/README.md, process/decisions-index.md, process/research/README.md, process/lanes/civicsmith/README.md, and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
+<li>It names itself <b>PROCESS #16</b>. Then archive the session named <b>PROCESS #15</b> (its menu, <b>Archive</b>).</li>
+</ol>
+</section>
+
+<section class="wait">
 <h2>Waiting for you: the corrected design for who uses what</h2>
-<p><b>The full design, to review and comment on:</b> <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what — the design for your decision</a>. Comment there; give your decision here or in my session. The summary below is the same in short.</p>
+<p><b>The full design, to review and comment on</b> (now in four parts, A to D, with "Is it load-bearing?" answered): <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what — the design for your decision</a>. Comment there; give your decision here or in my session. The summary below is the same in short.</p>
 <p><b>Bottom line.</b> I recommend choice C, now corrected. Under the standard, every reference to an earlier module is found by the tool, or sits at a place the tool lists as not yet in the standard; such a place is told of every change until it is converted. Nothing is silently missed.</p>
 <p><b>How the gaps were closed.</b> The helper wrote 27 small test cases and ran each under two versions of the type checker. Under today's settings, each gap hid its reference and the checker said nothing. Under twelve added rules, every gap was found: 50 runs out of 50. Two ordinary cases raised nothing, so the rules do not flag good code. The rules, in plain words:</p>
 <ul>
