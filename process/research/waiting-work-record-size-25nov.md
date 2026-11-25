@@ -47,3 +47,7 @@ GitHub's 422 refused the job-block comment, not the pull request. So 1669 stands
 An open filings job also makes `merge` wait for it in every later module that uses filings. I leave 1669 as it is until the
 mend; no job is started on it." So the fault also holds merges of filings' users until 6B lands (or ARCH, on its own
 judgment, closes 1669 unmerged; a product matter, not PROCESS's to direct).
+
+A second instance (ARCH #26 via coordinator #9, 13:07Z, unchanged): "`open --module following` (branch job/following.1) failed
+the same way (GitHub 422, body over 65,536 characters); pull request 1674 opened as a draft with no job block. Both filings
+(1669) and following (1674) now stand open with no job, each holding a slot, and their later users' merges wait on them."
