@@ -2,7 +2,7 @@ Length: 89 lines. Last section: "10. The coding standard and the uses file".
 
 # Process4 build text 2c: the coding standard and the uses file
 
-Section 10 of build text 2, kept in its own file so that each stays under 24,000 bytes; sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, 5 and 6 in `02b-the-comment-and-the-listing.md`. Every job and ARCH read it (the design, part 2, section 7). **Status: the owner's decision C of 25 Nov 2026; not built, not run.** From `process/research/uses-metadata-25nov/` (`standard.md`, `every-reference.md`, `study-references.md` section 4). It adds no check, gate, review or stop: a place outside the standard is listed and told, never refused. Where it and the design differ, the design rules.
+Section 10 of build text 2, kept in its own file so that each stays under 24,000 bytes; sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, 5 and 6 in `02b-the-comment-and-the-listing.md`. Every job and ARCH read it (the design, part 2, section 7). **Status: not built, not run.** From `process/research/uses-metadata-25nov/` (`standard.md`, `every-reference.md`, `study-references.md` section 4). It adds no check, gate, review or stop: a place outside the standard is listed and told, never refused. Where it and the design differ, the design rules.
 
 ## 10. The coding standard and the uses file
 

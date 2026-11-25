@@ -210,5 +210,5 @@ Gives: the list errs toward running a test file. Costs: where a module is one la
 
 1. Every form in sections 1 to 5 is built and has not run in a process in force. Not verified from GitHub's own pages: the size a comment holds, that a rewrite notifies no one, and that a locked issue still takes the sessions' writes. On a product, GitHub refused the write of a waiting-work record that repeated a notice's uses for each user, its reason not kept; the tool now keeps the notice comments and a job block under 60,000 characters each.
 2. Whether the owner can read the JSON records well enough on the page.
-3. Sections 5's `uses`, 6 and 7 are the owner's decision C of 25 Nov 2026, not built; the proof's 150 changes are to be recorded again under it (build text 4, stage 4). The proof's own run is in build text 2, section 1: "What a told job does was not run."
+3. Sections 5's `uses`, 6 and 7 are not built; the proof's 150 changes are to be recorded again under them (build text 4, stage 4). The proof's own run is in build text 2, section 1: "What a told job does was not run."
 4. What is read of the shared state to show that an account switch lost no work is not written (build text 4, stage 7).

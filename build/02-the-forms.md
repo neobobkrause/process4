@@ -16,7 +16,7 @@ Read for this text: the seventh draft, parts 0, 2, 4, 5 and 6 in full; `schema/`
 
 **Not proven, in its words:** "The made-up modules are not the real product." "No real job wrote these comments." "What a told job does was not run." "Design 8 was not built or run."
 
-**The form the design takes** (part 2, section 7) keeps the proof's structured comment and listing (sections 5 and 6) and, by the owner's decision C of 25 Nov 2026, finds users from the uses files of section 10 and changes from each item's means (build text 5, section 6), with no refusal the owner has not approved. It has not been built or run; the 133 were measured with the 23 refusals in the tool.
+**The form the design takes** (part 2, section 7) keeps the proof's structured comment and listing (sections 5 and 6) and finds users from the uses files of section 10 and changes from each item's means (build text 5, section 6), with no refusal the owner has not approved. It has not been built or run; the 133 were measured with the 23 refusals in the tool.
 
 **The process before this one** kept its module list as `build/modules.json` (220 modules) and requirements as `build/requirements/<module>.md`. Sections 2 to 4, 7 and 8 start there.
 
@@ -167,7 +167,7 @@ The `Decision` line is the one plain line the coordinator gives the owner. A cha
 
 ## 9. What could not be settled
 
-1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals, which compared listings and inferred users; the 150 recorded answers are to be recorded again under decision C (build text 4, stage 4).
+1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals, which compared listings and inferred users; the 150 recorded answers are to be recorded again under the means and the uses files (build text 4, stage 4).
 2. **A product in another language.** Sections 5 and 6 (build text 2b) are for plain JavaScript under TypeScript's reader. No other reader has been tried.
 3. **Messages between two separately running parts.** The proof's mark is `@message` (build text 2b, section 5).
 4. **A decision record that outgrows the maximum.** The owner's dated words are never edited, so his record only grows. How it is split is the coordinator's and PROCESS's to settle.

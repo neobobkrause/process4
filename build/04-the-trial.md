@@ -85,7 +85,7 @@ Tried:
 
 ### Stage 4. The notice
 
-Needs first: nothing of the owner's. The proof's own forms are now in build texts 2b and 5. Its 150 recorded changes are in its repository; their recorded answers were made with 23 refusals this design does not take and by inferring users, so they are recorded again under the owner's decision C, with the 13 further breaks found, before they can be the tool's tests; the coding standard's 27 cases become tests too (`process/research/uses-metadata-25nov/`).
+Needs first: nothing of the owner's. The proof's own forms are now in build texts 2b and 5. Its 150 recorded changes are in its repository; their recorded answers were made with 23 refusals this design does not take and by inferring users, so they are recorded again under the means and the uses files, with the 13 further breaks found, before they can be the tool's tests; the coding standard's 27 cases become tests too (`process/research/uses-metadata-25nov/`).
 
 Built: `listing` (the means), `uses` and the uses file at `push`, `notify`, `check`, with those as the tool's tests; uses files for the proof's product, written by the tool; then the related scope and `related`.
 
