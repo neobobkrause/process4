@@ -101,6 +101,31 @@ test('p4 test refuses a checkout not at the head, or with changes not committed,
   assert.equal(records(j.gh).length, 0);
 });
 
+test('p4 test first merges in the tranche\'s newer commits, pushes, and records the merged head', () => {
+  const j = job({ 'src/orders/index.mjs': USES, 'test/orders/a.test.mjs': passing });
+  const old = j.pr.head.sha;
+  // Another job's merge moves the tranche on, in a file this branch does not touch.
+  git(['checkout', '-q', '--detach', 'main'], { cwd: j.root });
+  const moved = commit(j.root, { 'README.md': 'moved on\n' });
+  git(['push', '-q', 'origin', `${moved}:refs/heads/tranche`], { cwd: j.root });
+  git(['checkout', '-q', 'job/orders/1'], { cwd: j.root });
+  assert.equal(testCmd(j.ctx, j.pr.number), 0);
+  const head = git(['rev-parse', 'HEAD'], { cwd: j.root });
+  assert.notEqual(head, old);
+  assert.equal(git(['rev-parse', 'HEAD^1'], { cwd: j.root }), old);
+  assert.equal(git(['rev-parse', 'HEAD^2'], { cwd: j.root }), moved);
+  assert.equal(git(['ls-remote', 'origin', 'refs/heads/job/orders/1'], { cwd: j.root }).split('\t')[0], head);
+  const r = recordOf(j.gh);
+  assert.deepEqual([r.commit, r.result], [head, 'pass']);
+  assert.match(j.out.join('\n'), /lacked tranche's newest commit .*: merged it in and pushed/);
+  // Up to date now: a second run merges nothing.
+  j.pr.head.sha = head;
+  j.out.length = 0;
+  assert.equal(testCmd(j.ctx, j.pr.number), 0);
+  assert.equal(git(['rev-parse', 'HEAD'], { cwd: j.root }), head);
+  assert.doesNotMatch(j.out.join('\n'), /merged it in/);
+});
+
 test('ready marks ready where the record stands for the head, and refuses where there is none', () => {
   const j = job({ 'src/orders/index.mjs': USES });
   assert.throws(() => ready(j.ctx, j.pr.number), /not marked ready: no test record; run p4 test/);

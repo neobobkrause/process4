@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { requiredCheck } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
 import { JOB_MARK } from './round.mjs';
+import { pushPace } from './commands.mjs';
 import { decideScope, runModules } from './scope.mjs';
 import { TEST_MARK, noticeSeq, recordStands, testRecordOf } from './testrecord.mjs';
 import { fail, git } from './util.mjs';
@@ -77,8 +78,36 @@ function askRerun(ctx, head) {
 const tail = (text, n = 40) => text.trimEnd().split('\n').slice(-n).join('\n');
 
 /**
- * test [<pr>]: the pull request's tests, in this session's checkout at the pull request's head commit, then the test
- * record. Exit 1 on a fail, after the record is written.
+ * Before the tests run, the branch takes in its base's newest commit (the owner's decision B of 25 Nov 2026): where the
+ * base holds commits the head lacks, the base is merged into the checkout with a plain merge commit, never a rebase,
+ * and pushed, so the tests run on code that holds what the base already holds. Where the two do not merge cleanly,
+ * nothing is changed and nothing runs. A pull request into main, and a drop's, are left as they are. Returns the head.
+ */
+export function bringBaseIn(ctx, pr) {
+  const cwd = ctx.root;
+  const baseRef = pr.base.ref;
+  const branch = pr.head.ref;
+  if (baseRef === 'main' || /^drop\//.test(branch)) return pr.head.sha;
+  git(['fetch', '-q', 'origin', `refs/heads/${baseRef}`], { cwd });
+  const baseTip = git(['rev-parse', 'FETCH_HEAD'], { cwd });
+  if (git(['merge-base', '--is-ancestor', baseTip, 'HEAD'], { cwd, allowFail: true }).code === 0) return pr.head.sha;
+  const who = git(['config', 'user.email'], { cwd, allowFail: true }).stdout?.trim()
+    ? [] : ['-c', 'user.name=Claude', '-c', 'user.email=noreply@anthropic.com'];
+  const m = git([...who, 'merge', '-q', '--no-ff', '--no-edit', '-m', `Merge ${baseRef} into ${branch} before its tests (p4 test)`, baseTip], { cwd, allowFail: true });
+  if (m.code !== 0) {
+    git(['merge', '--abort'], { cwd, allowFail: true });
+    fail(`${branch} does not merge cleanly into ${baseRef}; merge ${baseRef} into the branch first, resolve, push, then run test`);
+  }
+  pushPace(ctx);
+  git(['push', '-q', 'origin', `HEAD:refs/heads/${branch}`], { cwd });
+  const head = git(['rev-parse', 'HEAD'], { cwd });
+  ctx.log(`${branch} lacked ${baseRef}'s newest commit ${short(baseTip)}: merged it in and pushed ${short(head)}; the tests run there`);
+  return head;
+}
+
+/**
+ * test [<pr>]: the pull request's tests, in this session's checkout at the pull request's head commit, brought up to
+ * its base's newest commit first, then the test record. Exit 1 on a fail, after the record is written.
  */
 export function testCmd(ctx, n, { runner = runModules } = {}) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
@@ -86,10 +115,12 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
   if (git(['status', '--porcelain'], { cwd })) fail('the checkout has changes not committed; commit first, push, then run test');
   const here = git(['rev-parse', 'HEAD'], { cwd });
   if (here !== pr.head.sha) fail(`the checkout is at ${short(here)}, but pull request ${n}'s head is ${short(pr.head.sha)}; push first (or check out the head), then run test`);
+  const head = bringBaseIn(ctx, pr);
+  const at = { ...pr, head: { ...pr.head, sha: head } };
   const { jobBlock } = recordsOf(ctx, n);
   const seq = noticeSeq(jobBlock);
-  const scope = scopeForPR(ctx, pr, { jobBlock });
-  ctx.log(`pull request ${n}: ${pr.head.ref} at ${short(here)}${scope.base ? `, merged into ${pr.base.ref} at ${short(scope.base)}` : ` into ${pr.base.ref}`}`);
+  const scope = scopeForPR(ctx, at, { jobBlock });
+  ctx.log(`pull request ${n}: ${pr.head.ref} at ${short(head)}${scope.base ? `, merged into ${pr.base.ref} at ${short(scope.base)}` : ` into ${pr.base.ref}`}`);
   ctx.log(`scope: ${scope.scope}, because ${scope.why}`);
   const results = runner(cwd, scope, {
     onStart: (m) => ctx.log(`${m.name}: started, check then ${m.files.length} test file(s)`),
@@ -101,13 +132,13 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
   const failed = results.filter((r) => !r.ok).reduce((t, r) => t + Math.max(1, (Number(r.failed) || 0) + (r.check.code !== 0 ? 1 : 0)), 0);
   const prev = testRecordOf(ctx.gh.comments(ctx.slug, n))?.data;
   const data = {
-    commit: here, notice_seq: seq, scope: scope.scope, why: scope.why,
+    commit: head, notice_seq: seq, scope: scope.scope, why: scope.why,
     files: scope.modules.flatMap((m) => m.files), passed: sum('passed'), failed,
     result: ok ? 'pass' : 'fail', fails_total: (Number(prev?.fails_total) || 0) + (ok ? 0 : 1),
     written: utc(ctx.nowMs()),
   };
   writeTestRecord(ctx, n, data, `Written by p4 test in the session that ran the tests. GitHub's required run reads it and runs none.`);
-  ctx.log(`test record written on pull request ${n}: ${data.result} at ${short(here)}, ${data.passed} passed, ${data.failed} failed, ${data.fails_total} failed run(s) in all`);
+  ctx.log(`test record written on pull request ${n}: ${data.result} at ${short(head)}, ${data.passed} passed, ${data.failed} failed, ${data.fails_total} failed run(s) in all`);
   if (!ok) {
     for (const r of results.filter((x) => !x.ok)) {
       ctx.log(`== ${r.name} failed; the last lines of its output:`);
@@ -116,7 +147,7 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
     }
     return 1;
   }
-  askRerun(ctx, here);
+  askRerun(ctx, head);
   return 0;
 }
 

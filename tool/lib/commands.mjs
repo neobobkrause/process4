@@ -67,7 +67,7 @@ export function branch(ctx, name, into) {
 }
 
 // Six pushes a minute at most, counted across this machine's runs of the tool.
-function pushPace(ctx) {
+export function pushPace(ctx) {
   const file = ctx.paceFile || join(tmpdir(), 'p4-pushes.json');
   let times = [];
   try { times = JSON.parse(readFileSync(file, 'utf8')); } catch { /* none yet */ }

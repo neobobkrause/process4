@@ -654,4 +654,26 @@ goes on; C only make `notify` faster, still being measured; B and C combine). Re
 This is just wasted time. We need to figure out what the process is telling ARCH that's making it wait and fix that." —
 25 November 2026 (conversation, in PROCESS #12's session). "Decision: B, as recommended" — 25 November 2026 (in PROCESS
 #12's session, right after the options for this item were put to him; PROCESS read it as this item, and asked him
-whether it also answers the other item on his page, the stale-branch test, which also recommends B).
+whether it also answers the other item on his page, the stale-branch test, which also recommends B; he said yes, the entry
+"A job's tests run on its branch brought up to the tranche").
+
+### Subject: A job's tests run on its branch brought up to the tranche
+
+**The rule as it now stands.** Before it runs a pull request's tests, `p4 test` brings the branch up to its base's newest
+commit: where the tranche branch holds commits the head lacks, it merges the tranche into the checkout with a plain merge
+commit (never a rebase), pushes it, and runs the tests there; the test record names that new head. Where the two do not
+merge cleanly, it changes nothing, runs nothing, and says to merge the tranche in first; such a branch could not merge
+into the tranche either. A pull request into main, and a drop's, are left as they are (design part 2, section 3; build
+text 1b, command 27; `bringBaseIn` in `tool/lib/testrun.mjs`, with a test).
+
+It corrected a measured fault: civicsmith provenance #1's first `p4 test` (PR 1346, 25 Nov) failed only in `check`, on a
+field record-grammar's job had already stated and merged into the tranche; the branch lacked that merge. The job merged
+the tranche in by hand and passed (201 tests, about 30 seconds), but the false failure counted toward the failed runs that
+bring a fresh session and a block. The behaviour was PROCESS #11's own choice in the update of 24 Nov (tests at the head
+as pushed; before it, GitHub tested the merged result). It removes wasted and falsely counted runs; it adds no test, gate,
+review or stop. Products receive it with their next move. Option B of three (A no change; B the tool brings the tranche in
+first; C test a temporary merged copy). Researched in `process/research/test-on-stale-branch-25nov.md`.
+
+**The owner's words.** "Decision: B, as recommended" — 25 November 2026 (in PROCESS #12's session). PROCESS first recorded
+those words for the entry "Merging goes on while a notice is worked out" and asked whether they also answered this item;
+his answer, the same day: "Yes, B covered the stale-branch item too" — 25 November 2026.
