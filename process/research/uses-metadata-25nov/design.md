@@ -67,13 +67,16 @@ each expression's kind as documented, the same footing as trusting the parser to
 rule on another module's files misses a path relative to the working directory handed to a file read; one more rule closes
 it (S5).
 
-**Copies are the one dependency without a reference.** Whether text is a copy depends on how it was written, not on the
-text, so no tool can find every copy (proven in `every-reference.md`). They are made findable by the owner's convention:
-a copy is marked as a copy of a named entry (`/** @copyof <module>:<Entry> */` or a name `copyOf_<module>_<Entry>`; in a
-data file, an entry in the module's uses file), read by the tool as a reference, with drift from the provider's value
-reported; and a literal equal to an earlier module's exported value is outside the standard unless marked, so every exact
-copy is found. What no tool can find: an unmarked copy that is also reworded, translated, derived or built at run time.
-The job's duty to mark copies, the user's own tests and the walks are what catch it; judged rare, not measured.
+**A restated fact is a defect, not a reference** (the owner, 25 Nov). A module that writes out a value another module
+owns (a limit, a text, a name) instead of obtaining it has a bug. The standard's rule (S13, reworded): every fact a module
+states is obtained from the module that owns it: an import of its exported constant where the fact is fixed in code (no
+cost at run time), or a call to its reader where the fact is configured or stored; any cache is the owner's, inside its
+reader, never a copy held by the user. Obtained so, every fact is a reference, found as above. A module that breaks the
+rule has a bug like any other, which the job's duty, the module's own tests and the walks catch; the tool helps by listing
+every literal that exactly equals a value an earlier module exports, and every place marked as a copy where obtaining is
+impossible (a test's deliberately literal expected value, a data file), with drift reported. Detecting every such bug with
+certainty is not claimed, as it is not claimed for any other bug; the claim is about references, and for references it
+holds as stated.
 
 **B. Who uses what is computed by the tool, from code that keeps the standard, and recorded.** At a job's push the tool
 writes the module's uses file (`process/modules/<module>.uses.json`, beside its requirements file): each earlier module,
@@ -137,7 +140,7 @@ wait's reading of 24 Nov. It carries out his 24 Nov words "The goal is to bring 
 | **0. No change** | Inferred | Description compared | 116 / 62 / 45 (at least 57 with the 13 found breaks) | civicsmith cannot go on |
 | **A. Job-written file** | The job's word; imports checked | Tool list, job's marks | 187 / 89 / 1 (marks as the oracle) | Rests on each job's care |
 | **B. Standard without the kinds rule (S4)** | Tool-computed for direct references; values through a middle module recorded by the job | Tool list, job's marks | as A | Certain for direct references only |
-| **C. Full standard (recommended)** | Tool-computed for every reference, from the standard | Tool list, job's marks | as A | Every reference found or its place listed; only unmarked, inexact copies unfindable |
+| **C. Full standard (recommended)** | Tool-computed for every reference, from the standard | Tool list, job's marks | as A | Every reference found or its place listed; a restated fact is a defect, by rule obtained from its owner |
 
 With every entry left unmarked (the worst job), A to C give 429 / 330 / 0: more told, nobody missed. Not proven: how
 reliably real jobs mark; the cost of bringing civicsmith's 204 modules into the standard, above all S4's kinds (judged the
@@ -228,3 +231,11 @@ variables. Is that reasonable?"; and, on PROCESS's answer (the tool lists, the j
 file): "Yes, build that into the corrected design". Built in as §2 H. Also: "Every reference means every reference, not
 every reference except a bounch of others" — the claim is withheld until each gap is closed or proven unclosable
 (`every-reference.md`, in progress).
+
+The owner, later (conversation): "You say that every gap except one kind of copy can be found with certainty and converted.
+But what about that one kind of copy? Again, we're looking for a load-bearing solution, not a partial solution that may
+kinda work."; on the example of a screen stating "maximum 10 MB": "Are you saying that the screen hardcoded the 10 MB value
+because that's what it was told earlier? That sounds like a bug. If it's efficient to call the module again each time, then
+do so. If it's not reasonable to call each time, then a cache, perhaps with a timeout, would work. Or am I missing
+something?"; and "In light of that, do we still need the helper?" PROCESS stopped the helper that was to prove detection of
+copies by position: a restated fact is a defect, not a reference; the rule says obtain every fact from its owner (§2 A).
