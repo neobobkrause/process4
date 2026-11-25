@@ -118,3 +118,12 @@ likely had some). civicsmith runs 55db8e4, without 3B (narrowing for not-followe
 not-followed user unless it names a changed function or reaches the provider unreadably, so much of the ~150 would likely go
 (unmeasured on civicsmith). Choice 2C+ would cover a comments-only change on unchanged code. Exposure if unchanged: up to
 ~70 × ~150 × ~$1.5. Put to the owner as urgent: decide 2, move civicsmith now, and (his call) hold notice-only checks until moved.
+
+## A consequence, 10:41Z (civicsmith ARCH #24 via coordinator #9, from extraction #4, PR 1587, unchanged)
+
+"Process fault (a rule that cannot be kept as written): your standing rule #24 ("leave rule 2's comments for a later
+comments-only job") conflicts with my starting text's rule 2 and with design part 2, section 7 ("the first thing its job
+does is add the structured comments"). Extraction has no structured comments. I followed you, as the session that directs
+me, and added none." ARCH defers first comments because a mixed pull request's first comments step tells ~140 modules
+(membership, 06:07Z). Choice 2 (2C+) removes the cause; with it, ARCH's deferral and this conflict can end. No separate
+option: it is the same fault seen from the job's side.
