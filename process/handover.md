@@ -51,7 +51,15 @@ those yourself; bring him only what would change a rule.
    require that any users be notified?" Answer given: a new optional parameter the checker confirms already tells no one
    (his rule); a new field handed back can break only users of the whole value (spread, keys, serialize, whole-value
    comparison), so the tool, not the job, tells only those — add this to B1. B1, B4 fully; B2 very likely (unverified);
-   B5 mostly; B3 only partly. He was told PROCESS would tighten B1–B5 now
+   B5 mostly; B3 only partly. Then (~21:05Z): "Can the coding standard recognize the difference between using a record
+   by fields (and be resilient when a field isn't found in a record), and identify when a user uses a record wholly so
+   that the provider knows who to notify for that reason and who not to?" Answered yes: field reads (`Quote.total`,
+   type read) vs whole-value uses (pass on, spread, keys/values, JSON, clone, whole comparison) are recorded per use
+   and certain under R1 and R17; a field added tells only whole-value users; removed/changed/made-optional tells its
+   readers and whole-value users. Today `notify` matches `X` to `X.*`: build the member-level match first. A further
+   idea, NOT studied and to be put to him before building (it touches "no test of users before a provider's change
+   merges", though it is a type check, not a test run): re-type-check each user's places against the provider's new
+   declarations and tell only users whose uses fail — removes type-level case A, not meaning changes. He was told PROCESS would tighten B1–B5 now
    (changes no rule) and re-measure the proof on a CONVERTED copy of its modules to count A and B apart, unless he says
    otherwise. Do that (workers in worktrees from `work/decision-c`), and get his answer on A.
 2. A fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), then ONE pull
