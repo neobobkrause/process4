@@ -1,8 +1,8 @@
-Length: 179 lines. Last section: "9. What could not be settled".
+Length: 177 lines. Last section: "9. What could not be settled".
 
 # Process4 build text 2: the forms of the files the design names
 
-Written by Claude on 18 Nov 2026, beside the seventh draft (`process4/definition/process4_definition_v7/`), not into it. **Status: proposed. Nothing here has run.** It answers part 10, section 2, items 6 and 7 of that draft. It adds no check, gate, review or stop. Reconciled the same day with build texts 1, 3 and 5 and with part 4, section 11. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b) since 19 Nov 2026, to keep each file under 24,000 bytes; the numbers are kept.
+Written by Claude on 18 Nov 2026, beside the design (`design/`), not into it. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It answers part 10, section 2, items 6 and 7 of the design; where the two differ, the design rules. It adds no check, gate, review or stop. Reconciled the same day with build texts 1, 3 and 5 and with part 4, section 11. Sections 5 and 6 are in `02b-the-comment-and-the-listing.md` (build text 2b) since 19 Nov 2026, to keep each file under 24,000 bytes; the numbers are kept.
 
 Marks: **Decided here:** a choice made in this text, with what it gives and what it costs. **Unproven:** never shown to work in this form. Every example is made up: a product in plain JavaScript with modules `dates`, `pricing` and `orders`.
 
@@ -34,7 +34,7 @@ Read for this text: the seventh draft, parts 0, 2, 4, 5 and 6 in full; `schema/`
 | The owner's decisions on the product | `process/decisions-owner.md` | The coordinator |
 | ARCH's technical decisions | `process/decisions-arch.md` | ARCH |
 | Procedures, release notes, tranche reports | `process/procedures/`, `process/releases/`, `process/reports/` | ARCH |
-| A job's kind and its record | Two comments on the job's own pull request (build text 5, section 5) | The tool: the job block in ARCH's session, the record in the job's |
+| A job's kind, its record and its test record | Three comments on the job's own pull request (build text 5, section 5) | The tool: the job block in ARCH's session, the record and the test record in the job's |
 | The shared state's records | Comments on one issue (build text 5, sections 1 to 4) | One session each |
 
 ## 3. The module list
@@ -106,7 +106,6 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
   "process": { "repository": "https://github.com/<owner>/<process repository>", "version": "4.0.0", "commit": "9f2c…(40 characters)" },
   "tranche_branch": "tranche",
   "node": "22",
-  "lock_files": ["package-lock.json"],
   "test_command": "node --test",
   "slots": { "default": 8, "share": 8 },
   "lanes": [ { "name": "ux", "folder": "lanes/ux/" } ],
@@ -119,9 +118,9 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
 }
 ```
 
-- `process`: the one fixed version of the process the tranche runs on: the process repository's address, the version's name, and its full commit id on that repository's main branch. Each session, and the required run, fetches a copy of exactly that commit (build text 1, section 2).
+- `process`: the one fixed version of the process the tranche runs on: the process repository's address, the version's name, and its full commit id on that repository's main branch. Each session, and the required run, fetches a copy of exactly that commit (build text 1, section 2). A move to another version (the design, part 6, section 7) is a change to this field by one pull request; `latest-version` gives the newest commit (build text 1b, command 25). Where the new version's `shims/module-tests.yml` differs from the product's copy, the copy is replaced by a second pull request merged after the first, because the required run judges each pull request with the tool at the version its base names.
 - `tranche_branch`: the name of the one lasting tranche branch, which pull requests go into. The process's repository has no tranche branch: its own `process.json` names `main` here.
-- `node`, `lock_files`: the Node version, and the lock files the required run installs the product's dependencies from (build text 1, section 5).
+- `node`: the product's Node version, which the required run sets up. A config that still holds `lock_files` is read without fault; nothing uses it, since the required run installs none of the product's dependencies (build text 1, section 5).
 - `test_command`: the command the tool runs over a list of a module's test files. **Decided here:** one command for the product, kept here and not in each entry. Gives: an entry keeps five fields. Costs: a product whose modules need different commands must give one command that tells them apart.
 - `slots.default`: the account's slot number when the owner has given none. `slots.share`: this product's share of it (part 2, section 5); with one product the two are equal. A number the owner gives later is held in the standing notes, not here.
 - `lanes`: each lane's name and its folder. The UX lane is always there.
@@ -129,7 +128,6 @@ Place: `process.json`. ARCH writes it; it changes as the process's named files d
 - `walks_folder`: where the Screens document and the journeys are kept.
 - `walk`: the command that builds and serves the product on one machine; the command that runs named steps against an address; and the most external walkers, which begins at one (build text 3, sections 4 and 5). A walking session reads the two commands here: its starting text names this file, and is filled in with names and addresses only.
 - `deploy`: the product's own commands that deploy, seed and remove a development copy, each run with a copy's name by ARCH's session (build text 3, section 5).
-- **Decided here:** one trial-only line, `"trial": { "mechanical_edit_tests": "none" }`, written only in the trial repository, asks the required run to run no test on a mechanical edit (build text 1, section 5, step 5). Gives: trial item 9's "none run" form can be tried. Costs: a line no product's config may hold.
 - `process_folder`: where the files of sections 3, 4 and 8 are kept.
 - `language_reader`: the reader's name, its exact version, which files are the product's code (`source`), and, optionally, which of them it leaves out (`exclude`, patterns of the same form), such as vendored copies and committed built bundles. A file left out belongs to no module: the reader neither checks nor lists it, and an import of it is an import from outside the product. Without `exclude` nothing is left out. **Decided here:** the version is fixed in the config. Gives: every session and GitHub's machines make the same listing. Costs: a new version is a change to this file.
 
@@ -168,7 +166,7 @@ Decided: 19 Nov 2026.
 
 The `Decision` line is the one plain line the coordinator gives the owner. A changed decision rewrites the entry in place. Each is one pull request, which ARCH opens and merges by the tool.
 
-**A job's kind and its record** are two comments on the job's own pull request, the job block and the job's record. Their forms are in build text 5 (`05-the-records-and-following.md`), section 5, with the shared state's records.
+**A job's kind, its record and its test record** are three comments on the job's own pull request: the job block, the job's record and the test record. Their forms are in build text 5 (`05-the-records-and-following.md`), section 5, with the shared state's records.
 
 ## 9. What could not be settled
 
