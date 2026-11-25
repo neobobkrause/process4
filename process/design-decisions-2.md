@@ -201,7 +201,7 @@ so to him on the same thread).
 **The rule as it now stands.** The notice's rules are in design part 2, section 7; these are the owner's decisions on them.
 
 1. **Who uses what** is worked out by the tool from each module's code and tests, kept to the coding standard (S1 to S13,
-   R1 to R22 and the type checker's settings, build text 2), and recorded in the module's uses file at every push of its
+   R1 to R22 and the type checker's settings, build text 2c), and recorded in the module's uses file at every push of its
    jobs and in every change ARCH makes to it. Who is told is a lookup of the changed items in the later modules' uses
    files, directly or through a middle module that passes the item on. A place outside the standard is told of every
    change of the modules it may refer to until a job converts it; a module with no uses file yet, of every change of an
@@ -343,7 +343,7 @@ to him together).
 
 ### Subject: The walks' five matters
 
-**The rule as it now stands.** (Build text `03-the-walks.md`; design part 3, section 3.)
+**The rule as it now stands.** (Build text `03-the-walks.md`; design part 3, section 3. The labels 9.1 to 9.5 are the items' numbers when put to him; each now lives where its own references say.)
 
 1. **Which list of journeys counts (9.1).** The UX design lane maintains the product's list of journeys; that list is the
    one the walks use, and the owner does not approve it per tranche. The form of the two documents stays as build text 3,
@@ -386,7 +386,7 @@ is broken." — 25 November 2026 (conversation).
 ### Subject: What PROCESS reads in full
 
 **The rule as it now stands.** PROCESS reads in full, before acting, its starting text, the design (parts 00 to 10) and its
-handover record. It reads the record of the owner's decisions, build text 5 and its research through their indexes, one line
+handover record. It reads the record of the owner's decisions, the build texts and its research through their indexes (`decisions-index.md`, `build/README.md`, `research/README.md`), one line
 for each entry or file, and opens an entry or a file, or gives it to a worker, when a question touches it. The design states
 every decision as it now stands, so it is the governing statement; the record keeps the owner's exact dated words and the
 reasons (design part 5, section 3; part 6, section 7; PROCESS's starting text). It brings PROCESS's reading set from about
