@@ -45,7 +45,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 |---|---|
 | `branch` | Making a new branch in the product's repository |
 | `push` | A push to the session's own working branch, carrying the uses files the tool writes first |
-| `open`, `ready`, `close` | Opening a draft pull request; marking it ready; closing it unmerged. `open`, `close` and `push` may also write a comment on it; `open --module` and `walk open` also rewrite a shared-state comment |
+| `open`, `ready`, `close` | Opening a draft pull request; marking it ready; closing it unmerged. `open`, `ready`, `close` and `push` may also write a comment on it; `open --module` and `walk open` also rewrite a shared-state comment |
 | `test` | Running a pull request's module tests in the session's own checkout, writing the test record on the pull request, and asking GitHub to run the required run again; where the base has moved, first merging it in and pushing to the session's own branch |
 | `drop` | Making a branch, putting back the main branch's module files on it, pushing it and opening its pull request into the tranche branch |
 | `merge` | Merging a pull request into the tranche branch (or the tranche's into main) after the required run passed, with no person's review |

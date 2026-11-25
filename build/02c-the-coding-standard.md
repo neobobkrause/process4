@@ -50,13 +50,13 @@ Section 10 of build text 2, kept in its own file so that each stays under 24,000
 
 **The facility list,** `process/modules/facilities.json`, written by ARCH with the module list: the pinned Node and workerd versions (TypeScript is the reader the process config names), the boundary modules, and each facility by its qualified name, `in` the process or reaching `out`: `{ "versions": { "node": "22.12.0", "workerd": "2026-11-01" }, "boundary": ["store"], "facilities": [ { "name": "node:fs.readFileSync", "reach": "out" } ] }`.
 
-**How each is read.** S1 to S3, S5 to S12, R8, R10, R12, R21 and R22 from the syntax; R14 and R15 from the names the checker resolves; the rest from the checker's types and the tool's check of conversions. A place that breaks one is listed with its rule, never refused, and told as the design says (part 2, section 7, rule 2) until a job converts it.
+**How each is read.** S1 to S3, S5 to S12, R8, R10, R12, R21 and R22 from the syntax; R14 and R15 from the names the checker resolves; the rest from the checker's types. A place that breaks one is listed with its rule, never refused, and told (the design, part 2, section 7, rule 2) until converted.
 
 **The conversion** (the design, part 2, section 7):
 
 1. `p4 uses <module>` lists every reference in standard form, by provider and item; every place outside the standard, with its rule and the modules it may refer to (every earlier one where the tool cannot tell); every order fault, which the job reports to ARCH and does not convert; every literal exactly equal to a value an earlier module offers (a candidate restated fact); and what a conversion needs from a provider first.
 2. The job converts each place by the table below, states its exported items' types (S4) and makes its code keep R1 to R22. What waits on a provider it reports to ARCH; that provider's conversion adds the item (a new item tells no one), and the place stays listed until then. It runs `uses` again until nothing it can convert remains.
-3. `push` writes the uses file. Tests run once, only if running code changed (build text 1, section 5). The pull request's description gives the places converted by kind, the restated facts and how each was handled, what waits on a provider, the time and the cost.
+3. `push` writes the uses file. Tests run once, only if running code changed (build text 1, section 5). At `ready` the tool writes the report for the owner's review: places converted by rule, copies, what waits on a provider, time and cost (build text 5, section 5).
 
 | Found | Converted to | Provider first |
 |---|---|---|

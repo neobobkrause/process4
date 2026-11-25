@@ -1,4 +1,4 @@
-Length: 212 lines. Last section: "8. Unproven, and not settled here".
+Length: 214 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -70,7 +70,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 
 **Round.** A module's `state` is `has work`, `open`, `finished` or `blocked`. `finished` and `blocked` are worked out afresh from GitHub at each write: a job's pull request merged, or closed with its nothing-to-change record; a blocked record on an open one. An area's `outcome` is `not yet`, `clean`, `flawed` or `not walked`; a walk's is `not yet`, `without flaws` or `with flaws`, as ARCH writes it. `sessions` are the walking sessions, `live` until ARCH archives each; `copy` is the name and address of an external walker's deployment.
 
-Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` is `{ "tranche": "<this tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While `tranche` names this round's tranche, a requirement not yet met is work only where `holds` names it or its whole module, and every other requirement waits for a later tranche; notices, walk flaws, flaws a job reports and a conversion are always work. ARCH rewrites it with `state write round` as the tranche goes on, and in the same act as a split moves requirement lines to a new module. No `scope`, or one naming another tranche, counts every requirement. `next-job` keeps it when it rewrites the record.
+Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` is `{ "tranche": "<this tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While `tranche` names this round's tranche, a requirement not yet met is work only where `holds` names it or its whole module, and a conversion only where `holds` names the module or one of its requirements; every other requirement and conversion waits for a later tranche; notices, walk flaws and flaws a job reports are always work. ARCH rewrites it with `state write round` as the tranche goes on, and in the same act as a split moves requirement lines to a new module. No `scope`, or one naming another tranche, counts every requirement. `next-job` keeps it when it rewrites the record.
 
 ```json
 { "tranche": "t1", "round": 2, "scope": { "tranche": "t1", "holds": ["orders R3", "dates"] },
@@ -126,7 +126,7 @@ The process's repository has an issue of the same label and form, made by PROCES
 { "changes": [ { "change": "shorter job text", "pull_request": 12, "waits_for": "the owner's choice" } ] }
 ```
 
-## 5. The comments on pull requests: a job's three, a declaration, and the notice's
+## 5. The comments on pull requests: a job's three, a conversion's report, a declaration, and the notice's
 
 Each has a hidden mark on its first line and one JSON block, one writing session, and is written and read only by the tool (the design, part 4, section 11).
 
@@ -143,7 +143,7 @@ The job block, `<!-- process4-job -->`, is written by ARCH's session, first by `
 
 - `work` is the work placed: requirement numbers, notices, and flaws by number and link. The job's starting text carries none of it; it names the pull request.
 - `notice_seq` (absent is 0) counts the notices `notify` has added while the job is open, and `notices` holds each notice the block carries as `{ "from": <provider>, "merged": <pull request> }`, those `open --module` copied from waiting work among them, so a second run for the same merge adds nothing, whatever the job's state. Each notice `notify` adds puts its words in `work` and its reasons in `uses`; the kind stays as it was. A test record made before the latest notice no longer stands. An older block with no `notices` that names a notice in its `work` line counts as holding it.
-- `kind` is `conversion` where the module has no uses file on the tranche branch: its work is the conversion alone (build text 2, section 10), its other work waiting for its next job, since a conversion changes no behaviour. Otherwise it is `told` only when notices are the module's only work, and with other work as well `ordinary`: the block still carries the `uses`, which the job reads, and the whole module's tests run (the design, part 2, section 7). A block with no notice has no `uses`.
+- `kind` is `conversion` where the module's conversion is its work (none merged, within the scope): its work is the conversion alone, its other work waiting for its next job, since a conversion changes no behaviour. Otherwise it is `told` only when notices are the module's only work, and with other work as well `ordinary`: the block still carries the `uses`, which the job reads, and the whole module's tests run (the design, part 2, section 7). A block with no notice has no `uses`.
 - `meaning` holds each item ARCH named in the work placed, from the waiting-work `meaning` entries: `{ "item", "line" }`.
 - Each of `uses` is a reason: the provider; the changed `item`; `found`, `means`, `named` (in ARCH's placed work) or `declared` (on the provider's pull request); `changes`, the parts of the means that differ (build text 2b, section 6); `why`, a named or declared change's line; `route`; `places`, from the told module's uses file, the first six and `and N more`, so a notice is never lost for its size; `before` and `after`, the parts that differ. A place outside the standard gives `outside`, an order fault `orderFault`, each `<rule> <file>:<line>`; a module with no uses file, `noUsesFile`. **Unproven:** the job block and these reasons; not built.
 
@@ -158,6 +158,8 @@ The job's record, `<!-- process4-job-record -->`, is written only by the job's s
 - `blocked` is written by `push --blocked <module> "<why>"`, `unblocked` by `push --unblocked "<why>"` (where ARCH ended the block by its own decision; the job is then open and holds its slot), `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`. A later record rewrites the comment in place.
 - The tool reads `blocked.by` to make the job ready again when that module merges, and reads `nothing_to_change` on a pull request closed unmerged to count the module finished (the design, part 2, section 4). No test runs for that record.
 - **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's.
+
+The conversion's report, `<!-- process4-conversion -->`, is written by `ready` on a conversion job for the owner's review, from the uses file at the head and as `uses` reads the base: places outside the standard gone, by rule; copies; places still outside, with what each waits on; the time from opening to `ready`; the cost where it can be read: `{ "converted": { "S5": 3, "R1": 12 }, "copies": ["<file>:<line> <item>"], "waits": ["S5 <file>:<line>: <waitsOn>"], "time": "2h 10m", "cost": "unmeasured" }`.
 
 The declaration, `<!-- process4-meaning -->`, written by `push --meaning <item> "<was; is now>"` by the session that owns the pull request (the job; ARCH for its own), holds one line for each item whose meaning it changes: `{ "meaning": [ { "item": "priceOf", "line": "<was; is now>" } ] }`. `notify` reads it on the merged pull request.
 
@@ -179,7 +181,7 @@ The notice comments, `<!-- process4-notice -->`, are on a merged provider's pull
 
 **The means** of an item are the design's (part 2, section 7), worked out before and after a merge from the provider's files and its providers' stated types, by the reader the process config names. Its stated types, expanded with their names, and its bound lines are its listing (build text 2b, section 6). The parts worked out from its code (errors that can leave it, its providers' included; plain data or class instance; `this`; arguments it writes into; files, tables, settings, streams and start arguments) are worked out over its closure: those reached through an owner's reader are that reader's stated types. A type error in the item counts as a change.
 
-**The closure** is the rule of `process/research/uses-metadata-25nov/study-changes.md`, section 3.2: the module's pieces reached from the item's by names, by members of the same name anywhere in the module, by members the language calls implicitly and by each file's top-level statements; then, for every place read, each piece that writes it and each piece that reaches a writer, to a fixpoint. It may say "changed" for an equivalent rewrite, never "unchanged" for a different one.
+**The closure** is the rule of `process/research/uses-metadata-25nov/study-changes.md`, section 3.2, which follows both calls and data within the module. It may say "changed" for an equivalent rewrite, never "unchanged" for a different one.
 
 **Who is told.** The changed items of a merged module are those whose means differs, those removed, and those named in its job block's `meaning` or declared in its `process4-meaning` comment; not a new item, an item the checker confirms only accepts more, or an item's first means, at its conversion. `notify` then reads the later modules' uses files and tells, once each: every module whose file names a changed item, or a member of a changed type, by any route; every module with a place outside the standard whose `mayRefer` names the provider; every module with an order fault naming it; and every later module with no uses file yet that imports it. A middle module that passes a value on is told only where its own file names the item. Each gets the reasons of section 5. **Unproven:** all of it; not built.
 
