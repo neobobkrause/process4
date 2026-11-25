@@ -1,6 +1,6 @@
 # Who uses what, and what changed: the design of the owner's proposal, and civicsmith's path (25 Nov 2026, PROCESS #15)
 
-Status: PROCESS #15's design, put to the owner 25 Nov. Nothing is built or decided. Grounds: the four workers' files in
+Status: PROCESS #15's design, put to the owner 25 Nov, reworked the same day on his reply (§6). Nothing is built or decided. Grounds: the four workers' files in
 this folder — `tool-map.md` (the tool), `texts.md` (the governing texts), `means.md` (how JavaScript refers to a
 provider; civicsmith's measured habits), `proof.md` (the proof's 45 explained; the proposal simulated on the proof) — and
 `civicsmith-state.md` (ARCH #27's measurement of civicsmith's refactoring and tranche t2). The owner's words are in
@@ -36,85 +36,92 @@ provider; civicsmith's measured habits), `proof.md` (the proof's 45 explained; t
    helper imports 95 later parts by a computed path; 19 whole-tree walks), which a uses file would bring out as order faults
    for ARCH, not hide.
 
-## 2. The design (option B below)
+## 2. The design, reworked on the owner's points (option C below)
 
-**A. Each module keeps one file of what it uses and what it offers** (`process/modules/<module>.uses.json`, beside its
-requirements file; a process file of the module, so changing it alone runs no tests — written by its jobs only).
-- **Uses:** for each earlier module it uses: each entry used (function, value, kind, class member, operation name, data
-  file, program), the route (direct, or "via Q's entry" for a value of P received through Q), code or tests or both, and the
-  files that use it. The provider list replaces the module list's declared uses.
-- **Offers (non-listing entries only):** data files, programs, operation names, globals or registry keys other modules may
-  use, so a uses record has something on the provider's side to name.
+Grounds added since the first version: `standard.md` (every means of reference, from the language's definitions; a
+standard of permitted forms, S1–S13) and `changes.md` (domain and range in JavaScript; the tool's list of entries that may
+have changed, sound on all 150 proof changes; the job's guide). The first version (a job-written file only) is option A.
 
-**B. Each job that changes code states what it changed.** In its pull request, before `ready`, the tool lists every entry of
-the module whose own code changed, and every entry whose listing changed; the job marks each "changed what it accepts",
-"changed what it hands back", or "unchanged", with one line why. An entry the job leaves unmarked counts as changed (it
-tells; nothing stops). Entries in "offers" the job changed are marked the same way.
+**A. A standard of how a module may refer to an earlier one** (`standard.md` §2.2), kept in the build text on the forms
+and named in the job's text. In short: imports only by a written-out name (S1–S3); run-time loading only of a written-out
+name (S2); another module's files, programs and settings only through that module's own exported functions (S5, S6, S10);
+calls by name only through a declared table, with a gathering module in place of tree walks (S7); no shared changeable
+state across modules (S8); no code built from text (S9); generated files name their source (S11); tests follow the same
+rules (S12); import, never copy (S13). And the rule that makes values passed through a middle module visible (S4): every
+exported item states the kinds it takes and hands back, the type checker runs strictly, and a value of another module's
+kind is never relabelled as one's own. Two of these already stand (design part 2 §7 rules 4 and 5). The standard is
+derived from the language's definitions: the six channels the language itself defines are closed by it; the host's own
+facilities are covered for the Node and workerd versions read; what values flow at run time is undecidable in general,
+which is why the standard requires kinds rather than inferring them.
 
-**C. Who is told is a lookup.** After a merge, the tool reads the merged pull request's statement and every later module's
-uses file, and tells exactly the modules whose file names a changed entry (by any route), with the files concerned. A told
-job's related tests are the test files its uses file lists for those entries. "Accepting more tells no one" stays.
+**B. Who uses what is computed by the tool, from code that keeps the standard, and recorded.** At a job's push the tool
+writes the module's uses file (`process/modules/<module>.uses.json`, beside its requirements file): each earlier module,
+each entry used, by which route, code or tests, and the files. Because every interface then depends only on its own text,
+the result depends only on the module's own code and its providers' stated kinds, so it cannot go stale as the 25 Nov
+cache did. The job adds by hand only what the standard cannot see (a value copied rather than imported, S13); for a
+module that keeps the standard that part is empty. A place that breaks the standard is listed in the file as "not yet in
+the standard", with its rule; for that module the tool tells it of every change to the provider concerned, as today, until
+a job brings it into the standard. Nothing refuses: a refusal by form would be a new refusal (design part 2 §6).
 
-**D. The merge wait** reads the uses files' provider lists instead of following imports.
+**C. What changed is listed by the tool and judged by the job.** Before `ready`, the tool lists every entry of the module
+that may have changed: every entry whose own code or anything it reaches inside the module (helpers, constants, data files,
+programs) changed, comments ignored; every entry whose listing changed; and each kind with the entries that build or accept
+it. On all 150 proof changes this list held every entry the oracle counts as changed (215 of 215). Seven flags the tool
+computes mark the language facts that turn an inward-looking change outward: a class instance handed back, `this` newly
+used, parameters added or moved, an argument changed in place, sync becoming async, timers, process or console use. The
+job marks each listed entry "changes what it accepts", "changes what it hands back", "accepts more only" or "unchanged",
+with one line why, by a guide of about 1,450 bytes in its instructions (`changes.md` §3). A flagged entry starts marked
+changed; an unmarked one counts as changed; nothing stops.
 
-**E. Kept accurate by the job, with the check that already exists.** A job writes its module's uses file as it writes its
-tests (the first act of a module's first job if it has none), and keeps it current in each pull request that changes code
-or tests. The existing check of declared uses against imports reads the file's provider list: an import of a module the
-file does not list, or a listed later module, is refused as today. Nothing new refuses: no entry-level check (that would be
-a new refusal; rule 2 rules it out).
+**D. Who is told is a lookup** of the merged pull request's marks against every later module's uses file: exactly the
+modules that use a changed entry, by any route, with the files. A told job's related tests are the test files its uses
+file lists for those entries. The merge wait reads the uses files' provider lists. "Accepting more tells no one" stays.
 
-**F. Removed** from the tool: the inference of users (`usage.mjs`, `narrow.mjs`, the "not followed fully" fallback, the
-staged reading of users; ~480 lines) and the import-following lookups (~215 lines, replaced by ~60–100 lines of lookup).
-The listing stays, as the aid in B and for the check's two refusals the owner approved. From the texts: design part 2 §7
-rules 1 and 2, "Which tests relate" by call-following, "A declared use that no code makes", the passers' multiplication;
-about thirty sentences in nine texts (`texts.md`), six decision entries rewritten. The job's reading set loses ~5.7 KB and
-gains ~2 KB (it is 170,742 of 175,000 now).
+**E. Jobs that change no code run no tests,** said at the top of their instructions: a job that only writes its module's
+uses file or comments runs nothing. A job that changes code runs its module's tests as now.
 
-**G. Reverses the owner's rule** in design part 2 §7, "For the tool that finds the change", point 1: "Which parts of a
-provider a user uses is worked out by the tool from the user's code and comments. No list is kept by hand." (Not in his
-quotation marks; by the design's convention his ruling. It also refines his "Decision: 3b" of 25 Nov, the third of the told
-job's readings of 20 Nov, and the merge wait's reading under "Decision: the update plan as laid out" of 24 Nov. It carries
-out his 24 Nov words "The goal is to bring declared uses in line with real uses".)
+**F. Removed:** the tool's inference of users (~480 lines), the import-following lookups (~215, replaced by a lookup),
+the "not followed fully" telling for modules that keep the standard; from the texts, design part 2 §7 rules 1 and 2,
+"Which tests relate" by following calls, and the passers' multiplication. The listing stays as one input to C and for the
+check's two refusals. The decisions this replaces are rewritten in place in `design-decisions-2.md` ("Who a change
+tells", "How `notify` reads the product", "How a notice reaches a user", the merge wait in "The round"), the earlier
+rulings retired there with their dates, not added beside.
+
+**G. Reverses** the owner's rule in design part 2 §7, point 1, "No list is kept by hand" (the list is now kept, by the tool
+and the job), and replaces his decision 3B of 25 Nov morning, the third of the told job's readings of 20 Nov and the merge
+wait's reading of 24 Nov. It carries out his 24 Nov words "The goal is to bring declared uses in line with real uses".
 
 ## 3. Options for the fix
 
-- **0. No change.** civicsmith cannot go on: `notify` cannot write its waiting work; 99 merges' users are untold.
-- **A. Uses files only; "what changed" stays the listing comparison** (with the listing faults mended). Removes the
-  over-telling from users the tool cannot follow. On the proof: 108 / 53 / 44 missed. The misses stay.
-- **B. Uses files and the job's statement of what changed (recommended).** On the proof (with an accurate statement):
-  202 / 104 / 1 missed. Fixes both the over-telling (no "tell everyone") and the misses (code changes the listing does
-  not show). Adds no test, gate, review or stop: an unmarked entry tells. Unproven: how reliably a job marks its entries;
-  that a first job per module records civicsmith's uses accurately; the cost per module.
-- Not offered: an entry-level check of uses files against providers, or an independent reading of each change (each a new
-  check or review).
+| | Who uses what | What changed | On the proof (told / without need / missed) | Rigour |
+|---|---|---|---|---|
+| **0. No change** | Inferred | Description compared | 116 / 62 / 45 (at least 57 with the 13 found breaks) | civicsmith cannot go on |
+| **A. Job-written file** | The job's word; imports checked | Tool list, job's marks | 187 / 89 / 1 (marks as the oracle) | Rests on each job's care |
+| **B. Standard without the kinds rule (S4)** | Tool-computed for direct references; values through a middle module recorded by the job | Tool list, job's marks | as A | Certain for direct references only |
+| **C. Full standard (recommended)** | Tool-computed for every reference, from the standard | Tool list, job's marks | as A | Certain except the listed unsound spots |
 
-## 4. civicsmith's path (needs the fix built first; considered with it)
+With every entry left unmarked (the worst job), A to C give 429 / 330 / 0: more told, nobody missed. Not proven: how
+reliably real jobs mark; the cost of bringing civicsmith's 204 modules into the standard, above all S4's kinds (judged the
+largest cost; unmeasured). If the first pass shows S4 too costly, B is the fallback with no rework of what was done.
 
-Facts (`civicsmith-state.md`): the plan's steps 1 and half of 2 are built, 3–8 not started; the plan, ARCH's decisions,
-requirement text and module list live under `process/` on p4-tranche. t2 is round 1, no walk; 324 job pull requests, ~163
-closed with nothing to change; 99 merged pull requests' users never told; 938 notices waiting from the old method; 624
-changed code and test files in 124 modules, mostly comments and notice responses.
+## 4. civicsmith's path
 
-- **0. No change:** hold until the fix, then move and carry on; the 99 untold merges and 938 old notices are worked by the
-  new method from listings that no longer exist as statements — not workable as is.
-- **R1. Keep t2.** After the fix and the move: discard the old waiting work; every module's first job writes its uses file
-  and, because notices owed from 99 untold merges may affect it, runs its module's tests once (the told job it was owed);
-  then continue the plan in t2. Keeps all of t2's work. Costs every module a job with its tests run (204), and carries t2's
-  untold changes until each module's test run.
-- **R2. Drop t2 and restart the refactoring from main (recommended).** The drop (built, 24 Nov) puts back main's code and
-  tests and keeps the plan, ARCH's decisions, requirement text, the module list and the lanes. Then every module's first job
-  writes its uses file from main's consistent code (no tests owed: nothing untold); then a new tranche runs the plan from
-  step 1. Loses steps 1 and half of 2 (small) and t2's comment and notice-response work in 124 modules; the new method does
-  not depend on comments to find users. Starts from a known state.
-- **Effort of the uses pass** (estimate, not measured): 204 jobs; 1,153 source and 3,647 test files, ~1.1 million lines; the
-  large modules need workers (plane's tests 29,654 lines). Perhaps $2–5 a module, $400–1,000 in all, and 6–13 hours at
-  eight slots. A sample of five modules first would measure it.
+The owner chose to drop t2 (decision typed at civicsmith's coordinator, 25 Nov); ARCH is carrying it out. After it,
+civicsmith's code is main's: its imports already keep S1 (6,016, measured); its references that break the standard mostly
+point to later modules (5,350 references, 341 computed, 19 tree walks, a test helper reaching 95 later parts), which the
+refactoring plan was to correct anyway.
+
+**The first pass, as the owner set it:** the finished design, texts and tool, built and proven on the tool's own tests and
+the proof (re-recorded with the 13 found breaks); then civicsmith moved to it; then jobs run in parallel on the first 8
+real modules in the order, each bringing its module into the standard where it refers to earlier modules, writing its
+kinds, and letting the tool write its uses file; then a stop. The owner sees, per module: the effort (time, cost), the
+uses file beside the code, and whether it serves the provider/user requirement. The files are kept once confirmed. Then he
+decides to go on, fix the method, or abandon it (and correct the files written).
 
 ## 5. Order, on the owner's decisions
 
-Record; rewrite the design and texts in place; build the tool (proof re-recorded with the 13 found breaks added to its
-`needs`, and the uses files the worker wrote as its fixture); trial on process3-probes; measure the uses pass on five
-civicsmith modules (read-only brief); then civicsmith's path as chosen.
+Record (rewriting the entries named in F); rewrite the design and texts in place; build the tool; re-record the proof;
+civicsmith's move; the first pass of 8; the owner's review.
 
 ## 6. The owner's reply (25 Nov ~15:45Z, in PROCESS #15's session; conversation, not marked)
 
