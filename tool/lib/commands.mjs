@@ -122,7 +122,10 @@ function pushLines(a, by, meanings, sames) {
   const pending = [];
   let blockedSeen = false;
   let word = 0;
+  // the command's own words (`push`) come first, and are no longer among the words given
+  let skip = order.filter((k) => k === '_').length - a._.length;
   for (const k of order) {
+    if (k === '_' && skip > 0) { skip--; continue; }
     if (k === 'blocked') { if (!blockedSeen) pending.push('blocked'); blockedSeen = true; } else if (k === 'meaning' || k === 'same') pending.push(k);
     else if (k === '_') {
       const line = a._[word++];

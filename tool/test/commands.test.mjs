@@ -532,9 +532,14 @@ test('push --same records, on the pull request, an item whose domain and range a
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
   push(ctx, parseArgs(['--same', 'total', 'an equivalent rewrite of the sum', '--meaning', 'parseDay', 'a day; a day and a time']));
   push(ctx, parseArgs(['--same', 'tax', 'a computed fact wider than the change']));
+  // as p4.mjs hands it on: the command's own word taken off the words given
+  const viaMain = parseArgs(['push', '--same', 'fee', 'the same fee, computed once']);
+  viaMain._ = viaMain._.slice(1);
+  push(ctx, viaMain);
+  assert.equal(push(ctx, Object.assign(parseArgs(['push']), { _: [] })), 0);
   const data = gh.s.comments.map((c) => parseBlock(c.body, MEANING_MARK)).filter(Boolean).map((r) => r.data);
   assert.deepEqual(data, [{ meaning: [{ item: 'parseDay', line: 'a day; a day and a time' }],
-    same: [{ item: 'total', why: 'an equivalent rewrite of the sum' }, { item: 'tax', why: 'a computed fact wider than the change' }] }]);
+    same: [{ item: 'total', why: 'an equivalent rewrite of the sum' }, { item: 'tax', why: 'a computed fact wider than the change' }, { item: 'fee', why: 'the same fee, computed once' }] }]);
   assert.match(out.join('\n'), /recorded on pull request 1: total keeps its domain and range \(an equivalent rewrite of the sum\); it tells no one/);
   assert.throws(() => push(ctx, parseArgs(['--same', 'total'])), /say --same <item> "<why its domain and range are the same>"/);
   assert.throws(() => push(ctx, parseArgs(['--same', 'total', 'why', 'stray'])), /no flag takes/);
