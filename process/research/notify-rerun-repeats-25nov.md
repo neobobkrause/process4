@@ -117,3 +117,15 @@ operation, operation table, stored rows) tells as now.
   widely imported loader with a computed import would keep many told). Seen on the first `notify` after it lands.
 - Adopting re-records the 8 proof answers in `expected.json`, each with its reason; the reason in a notice should name which
   entries told the user.
+
+## The 1339 re-run repeated three notices (civicsmith ARCH #18 via coordinator #9, 25 Nov ~04:29Z)
+
+`notify 1339` re-run on 55db8e45 skipped jobs that carried the notice (civil-time 1405 open; case-checker 1358,
+op-declarations 1396 merged) but not jurisdictions 1404, signatures 1408 (merged during the run) or connection-grammar 1407
+(closed nothing-to-change at 04:12Z, before the run); their blocks held "notice from record-grammar (pull request 1339)";
+`next-job` opened duplicate told jobs 1419–1421. Cause: `open --module` writes a notice into the block's `work` and `uses`
+but not `notices`; the repeat check in `toOpenJobs` reads only `notices` for a merged or closed pull request (the `work`
+line only for an open one). So any told job opened from waiting work is not seen as carrying its notice once it ends. An
+implementation error against decision B of 25 Nov ("a told user whose job pull request of any state ... already names the
+notice ... has it"). Corrected in PR 275 (open writes `notices`; the check reads the `work` line in any state), with tests;
+awaiting the owner's word.
