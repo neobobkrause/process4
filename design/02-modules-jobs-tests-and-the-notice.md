@@ -80,12 +80,12 @@ The tool decides both, because each has one right answer:
 - Three points on what the owner's rule means: a told job's own edits count among "the changed parts"; tests are chosen by whole file; and where the tool cannot follow a told module's code, that module's whole tests run, since the tool cannot say which relate.
 - **Unproven:** that the tool can follow from a use to the tests that reach it inside a module, and can tell when it has lost the thread. It has not been built or run, and the saving is unmeasured.
 - **When the module list changes.** A change to the list sends no notice of itself. Where it moves code between modules or splits a module, the tool makes the interface listings of the modules touched before and after, and the users of any entry whose listing differs are told as for any other change. Where only a provider's name changes for its users, their code is changed by a mechanical edit.
-- **A declared use that no code makes.** The tool cannot follow it, so by decision 2 below it is told whenever that provider's listing changes at all. The check of declared uses calls it "cannot tell", since a use by path is not read; the module's job removes a declaration no code makes.
+- **A declared use that no code makes.** The tool cannot follow it, so by decision 2 below it is told of every change to that provider's listing that tells any user. The check of declared uses calls it "cannot tell", since a use by path is not read; the module's job removes a declaration no code makes.
 
 For the tool that finds the change:
 
 1. Which parts of a provider a user uses is worked out by the tool from the user's code and comments. No list is kept by hand.
-2. A user the tool cannot follow fully counts as using everything of that provider, and is told on any change to that provider's listing.
+2. A user the tool cannot follow fully counts as using everything of that provider, and is told of every change to that provider's listing that tells any user. A change that tells no one, accepting more or a new entry, tells it nothing.
 3. A bound that a kind of value cannot express is written on its own marked line in the comment. A change to those words is a change to the interface. In the owner's words: "If those words are changing, then there must be a reason why. It must be that that interface is changing, right?"
 4. Code that checks or builds what crosses a module's interface says, in a comment, which kind it checks or builds.
 5. Calls made by name are made followable: each provider publishes one table of its operations, the tables are gathered into one list, and each shared piece that carries a call by name has one comment tying the name to that list.
