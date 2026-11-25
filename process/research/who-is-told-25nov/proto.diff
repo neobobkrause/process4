@@ -1,0 +1,320 @@
+diff --git a/tool/lib/notice/check.mjs b/tool/lib/notice/check.mjs
+index acca312..52ce8a4 100644
+--- a/tool/lib/notice/check.mjs
++++ b/tool/lib/notice/check.mjs
+@@ -717,7 +717,7 @@ export const isTestCall = (n) => ts.isCallExpression(n) && (ts.isIdentifier(n.ex
+ const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) ? a0.text : null; };
+ 
+ 
+-function shapeOfNode(root) {
++export function shapeOfNode(root) {
+   const out = [];
+   // A grouping parenthesis writes nothing of its own: only what it holds (its one child).
+   const enter = (n) => {
+diff --git a/tool/lib/notice/listing.mjs b/tool/lib/notice/listing.mjs
+index c75e73e..1ecfdca 100644
+--- a/tool/lib/notice/listing.mjs
++++ b/tool/lib/notice/listing.mjs
+@@ -3,6 +3,29 @@ import fs from 'node:fs';
+ import path from 'node:path';
+ import { ts, tagsOf, tagText, lineOf, docsOf, declarationsOf, forEachNode } from './ts.mjs';
+ import { makeCanon } from './canon.mjs';
++import { createHash } from 'node:crypto';
++import { shapeOfNode } from './check.mjs';
++
++/**
++ * PROTOTYPE (options 2C/2D, research only): an entry's own running code, as a digest of its declaration's tree with
++ * comments (JSDoc) and grouping parentheses left out, as commentsOnly compares a file. The node: a function
++ * declaration; for `const f = ...`, the whole variable statement; a class declaration (all its members); a class
++ * member's own declaration, or for `this.x = ...` the statement that sets it. Callees are not followed.
++ */
++export const CODE_TIME = { ns: 0n, n: 0 };
++export function codeOf(node) {
++  const t0 = process.hrtime.bigint();
++  try { return codeOf1(node); } finally { CODE_TIME.ns += process.hrtime.bigint() - t0; CODE_TIME.n++; }
++}
++function codeOf1(node) {
++  if (!node) return undefined;
++  let host = node;
++  if (ts.isVariableDeclaration(host) && host.parent?.parent && ts.isVariableStatement(host.parent.parent)) host = host.parent.parent;
++  if (ts.isPropertyAccessExpression(host) && host.parent && ts.isBinaryExpression(host.parent) && host.parent.left === host) host = host.parent;
++  if (ts.isBinaryExpression(host) && host.parent && ts.isExpressionStatement(host.parent)) host = host.parent;
++  if (host.getSourceFile?.()?.isDeclarationFile) return undefined;
++  return createHash('sha1').update(shapeOfNode(host)).digest('hex').slice(0, 16);
++}
+ 
+ /** Does the module carry interface comments at all? (Mechanical: any JSDoc tag that states a kind.) */
+ export function hasInterfaceComments(mod) {
+@@ -202,7 +225,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+         if (ctors.length) {
+           // Iteration 3 (rule 17): an exported class lists what its constructor accepts, and what it builds.
+           const c = C.canonSig(ctors[0], a, h);
+-          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where, paramNames: paramNamesOf(ctors[0]) };
++          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where, paramNames: paramNamesOf(ctors[0]), code: codeOf(decl), ownBounds };
+           const throws = tagsOf(ctors[0].declaration ?? decl, 'throws').map((tg) => tg.typeExpression?.type?.getText?.()).filter(Boolean).sort();
+           if (throws.length) entries[name].throws = throws;
+           // Iteration 5 (rule 27): each member of the class, static or not, is an entry of its own.
+@@ -220,6 +243,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+             if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
+             else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: [...memberBounds, ...nestedBounds(mh)], where };
+             const md = p.declarations?.[0];
++            entries[e].code = codeOf(md); entries[e].ownBounds = memberBounds;
+             if (md) ranges.push({ entry: e, ...rangeOf(md) });
+           }
+         } else if (sigs.length && checker.getPropertiesOfType(t).length === 0) {
+@@ -233,6 +257,8 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+             bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)],
+             where,
+             paramNames: paramNamesOf(sigs[0]),
++            code: codeOf(decl),
++            ownBounds,
+           };
+           // Iteration 2: the kinds of error it raises are part of what it hands back.
+           const throws = [...new Set(tagsOf(decl, 'throws').flatMap(throwKinds))].sort();
+@@ -248,7 +274,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+           // kind, a lone literal is widened to its base kind. A list or table marked as constant keeps its names.
+           const stated = ts.getJSDocType(decl) || ts.getJSDocType(host);
+           const vt = !stated && t.flags & ts.TypeFlags.Literal ? checker.getBaseTypeOfLiteralType(t) : t;
+-          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(vt, h), bounds: [...ownBounds, ...nestedBounds(h)], where };
++          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(vt, h), bounds: [...ownBounds, ...nestedBounds(h)], where, code: codeOf(decl), ownBounds };
+         }
+         note('accepts', a, name); note('handsBack', h, name);
+       }
+diff --git a/tool/lib/notice/narrow.mjs b/tool/lib/notice/narrow.mjs
+index 6706372..f3300ba 100644
+--- a/tool/lib/notice/narrow.mjs
++++ b/tool/lib/notice/narrow.mjs
+@@ -13,6 +13,8 @@
+ // a module the user does not reach, and a name built from pieces.
+ import fs from 'node:fs';
+ import { makeReach } from './staged.mjs';
++const PROTO = new Set((process.env.P4_PROTO ?? '').split(',').filter(Boolean));
++
+ 
+ /** The kinds of entry the narrowing applies to; any other tells a user that is not followed fully as before. */
+ export const NARROWED = new Set(['function', 'value', 'method', 'class member']);
+@@ -43,7 +45,14 @@ export function makeNarrow(treeB, treeA, { usesOf = () => undefined, amend = tru
+   function namesIn(user) {
+     if (!tokens.has(user)) {
+       const set = new Set();
+-      for (const { tree } of sides) for (const f of tree.byId.get(user)?.files ?? []) for (const m of read(f).match(IDENT) ?? []) set.add(m);
++      const own = new Set();
++      for (const { tree } of sides) for (const f of tree.byId.get(user)?.files ?? []) {
++        const t = read(f);
++        for (const m of t.match(IDENT) ?? []) set.add(m);
++        if (PROTO.has('names')) for (const d of t.matchAll(/\b(?:const|let|var|function\*?|class)\s+([A-Za-z_$][\w$]*)/g)) own.add(d[1]);
++      }
++      // a name the user itself declares counts only where it also takes it from elsewhere (an import clause naming it)
++      if (PROTO.has('names')) for (const { tree } of sides) for (const f of tree.byId.get(user)?.files ?? []) { const t = read(f); for (const n of own) if (!new RegExp(`import[^;]*\\b${n.replace(/\$/g, '\\$')}\\b[^;]*from`).test(t)) set.delete(n); }
+       tokens.set(user, set);
+     }
+     return tokens.get(user);
+@@ -59,7 +68,9 @@ export function makeNarrow(treeB, treeA, { usesOf = () => undefined, amend = tru
+       if (!mod || why) continue;
+       const isP = (f) => tree.moduleOfFile(f) === provider;
+       const c = reach.closure(mod.files);
+-      if (c.unresolved) { why = 'reaches an import the scan cannot follow'; break; }
++      const pIdx = tree.byId.get(provider)?.index ?? -1;
++      const counts = (f) => { const o = tree.moduleOfFile(f); const oi = o ? tree.byId.get(o)?.index ?? -1 : Infinity; return !PROTO.has("order") || oi > pIdx; };
++      if (c.unresolved && (c.unresolvedAt ?? []).some(counts)) { why = 'reaches an import the scan cannot follow'; break; }
+       for (const f of mod.files) {
+         const text = read(f);
+         for (const re of WHOLE) {
+@@ -86,7 +97,16 @@ export function makeNarrow(treeB, treeA, { usesOf = () => undefined, amend = tru
+   function telling(user, m, entries) {
+     const out = [];
+     for (const e of entries) {
+-      if (!NARROWED.has(kindOf(e))) { out.push(e.entry); continue; }
++      if (!NARROWED.has(kindOf(e))) {
++        if (PROTO.has('kinds') && ['kind', 'handle kind'].includes(kindOf(e))) {
++          // a kind tells a user not followed fully only where its files name the kind or a member of it, or reach it unreadably
++          const fields = new Set(namesOf(e));
++          for (const s of [e.before, e.after]) for (const v of Object.values(s ?? {})) if (typeof v === 'string') for (const m of v.matchAll(/([A-Za-z_$][\w$]*)\??:/g)) fields.add(m[1]);
++          if ([...fields].some((n) => namesIn(user).has(n)) || opaqueWhy(user, m)) out.push(e.entry);
++          continue;
++        }
++        out.push(e.entry); continue;
++      }
+       if (namesOf(e).some((n) => namesIn(user).has(n))) { out.push(e.entry); continue; }
+       if (opaqueWhy(user, m)) { out.push(e.entry); continue; }
+       if (amend && passedOn(user, m, e)) out.push(e.entry);
+diff --git a/tool/lib/notice/notice.mjs b/tool/lib/notice/notice.mjs
+index f36d894..62959d2 100644
+--- a/tool/lib/notice/notice.mjs
++++ b/tool/lib/notice/notice.mjs
+@@ -17,6 +17,7 @@ import { same, standsIn, render } from './canon.mjs';
+ import { commentsOnly } from './check.mjs';
+ import { stagedReader } from './staged.mjs';
+ import { makeNarrow } from './narrow.mjs';
++const PROTO = new Set((process.env.P4_PROTO ?? '').split(',').filter(Boolean));
+ 
+ /** Reads a whole product once: every module's listing and every module's uses, from one program. */
+ export function analyse(root) {
+@@ -100,6 +101,10 @@ export function knownDecl(b, a) {
+   return stretchOk();
+ }
+ 
++/** PROTOTYPE (research): which option of "own running code unchanged" is in force, from P4_OWNCODE. */
++const OWNCODE = process.env.P4_OWNCODE ?? '';
++const PROTO2C = { provider: null };
++
+ /** Compares two listings of one module, entry by entry. */
+ export function diffListings(moduleId, before, after) {
+   const b = before.entries, a = after.entries;
+@@ -159,26 +164,41 @@ export function diffListings(moduleId, before, after) {
+       continue;
+     }
+     const changes = [];
++    // PROTOTYPE (research, options 2C/2D; P4_OWNCODE=2C|2D|2Dp): the entry's own running code unchanged.
++    const codeSame = eb.code !== undefined && eb.code === ea.code;
++    const silenced = [];
++    const firstThrowsOnSameCode = OWNCODE.startsWith('2C') && codeSame && !(eb.throws ?? []).length && (ea.throws ?? []).length > 0;
++    const firstBoundOnSameCode = OWNCODE.startsWith('2C') && codeSame && !(eb.bounds ?? []).length && (ea.bounds ?? []).length > 0;
+     const ba = renameHandles(ek.accepts, handleMap), bh = renameHandles(ek.handsBack, handleMap);
+     if (!same(ba, ea.accepts)) changes.push(standsIn(ba, ea.accepts) ? 'accepts more' : 'cannot stand in');
+     if (!same(bh, ea.handsBack)) changes.push('hands back differently');
+-    if (!same(eb.bounds, ea.bounds)) changes.push('bound changed');
++    if (!same(eb.bounds, ea.bounds)) { if (firstBoundOnSameCode) silenced.push('bound changed'); else changes.push('bound changed'); }
+     // Iteration 2: the kinds of error raised, and a message's channel, are part of what is handed back.
+-    if ((!same(eb.throws ?? [], ea.throws ?? []) || (eb.channel ?? '') !== (ea.channel ?? '')) && !changes.includes('hands back differently')) changes.push('hands back differently');
++    if (!same(eb.throws ?? [], ea.throws ?? []) && firstThrowsOnSameCode && (eb.channel ?? '') === (ea.channel ?? '')) silenced.push('hands back differently (first throws)');
++    else if ((!same(eb.throws ?? [], ea.throws ?? []) || (eb.channel ?? '') !== (ea.channel ?? '')) && !changes.includes('hands back differently')) changes.push('hands back differently');
+     // Iteration 7 (rule 48): a parameter's name found at another place: the parameters have moved.
+     if (eb.paramNames && ea.paramNames && eb.paramNames.some((n, i) => n !== '_' && ea.paramNames.includes(n) && ea.paramNames.indexOf(n) !== i)) changes.push('parameters moved');
+     // Iteration 3 (rule 12): a member that may now be missing hands back differently.
+     if (ea.optional && !eb.optional && !changes.includes('hands back differently')) changes.push('hands back differently');
+     // Iteration 4 (rule 18): silent only when the entry is shown unchanged. A declaration that differs where the tool's
+     // own comparison found nothing tells.
+-    if (!changes.length && eb.decl !== undefined && ea.decl !== undefined) {
++    // PROTOTYPE 2C+: on unchanged own code, the printed-declaration backstop is not consulted.
++    if (!changes.length && eb.decl !== undefined && ea.decl !== undefined && !(OWNCODE === '2C+' && codeSame)) {
+       let bd = eb.decl;
+       for (const [o, n] of renamed) bd = bd.replace(new RegExp(`\\b${o}\\b`, 'g'), n);
+       if (!knownDecl(bd, ea.decl)) changes.push('declaration changed (not classified)');
+     }
+-    if (!changes.length) continue;
++    // PROTOTYPE 2D: any difference in a function, class, class member or value entry whose own running code is
++    // unchanged tells no one (2Dp: only in the provider itself, not in a module changed through it).
++    const twoD = (OWNCODE === '2D' || (OWNCODE === '2Dp' && moduleId === PROTO2C.provider)) && codeSame && ['function', 'class', 'class member', 'value'].includes(ea.kind);
++    if (twoD && changes.length) {
++      out.push({ entry: name, changes, tells: 'nobody', before: describe(eb), after: describe(ea), names: [name, pairedMember.get(name) ?? name], silenced: [...changes, ...silenced], sort: ea.kind, codeSame, ownCode: true });
++      continue;
++    }
++    if (!changes.length) { if (silenced.length) out.push({ entry: name, changes: [], tells: 'nobody', before: describe(eb), after: describe(ea), names: [name, name], silenced, sort: ea.kind, codeSame }); continue; }
++    const extra = silenced.length ? { silenced } : {};
+     const names = [name, pairedMember.get(name) ?? name];
+-    if (pairedMember.has(name)) out.push({ entry: pairedMember.get(name), changes, tells: changes.some((c) => TELLS.has(c)) ? 'users' : 'nobody', before: describe(eb), after: describe(ea), names });
++    if (pairedMember.has(name)) out.push({ entry: pairedMember.get(name), changes, tells: changes.some((c) => TELLS.has(c)) ? 'users' : 'nobody', before: describe(eb), after: describe(ea), names, ...extra, sort: ea.kind, codeSame });
+     out.push({
+       entry: name,
+       changes,
+@@ -186,6 +206,7 @@ export function diffListings(moduleId, before, after) {
+       before: describe(eb),
+       after: describe(ea),
+       names,
++      ...extra, sort: ea.kind, codeSame,
+     });
+   }
+   return out;
+@@ -349,6 +370,7 @@ function noticeWith(R, provider) {
+   const pIndex = order.indexOf(provider);
+   if (pIndex < 0) throw new Error(`no such module: ${provider}`);
+   // usersRead: the later modules whose uses were read (with the whole product read at once, every one).
++  PROTO2C.provider = provider;
+   const report = { provider, reader: `TypeScript ${readerVersion()}`, firstCommentsStep: false, changedModules: [], entries: [], told: [], notTold: [], usersRead: [] };
+ 
+   // The first job on a module without interface comments: a comments-only step sends no notice.
+@@ -371,8 +393,14 @@ function noticeWith(R, provider) {
+     const d = diffListings(id, lbm, lam);
+     // Rule 52: "accepts more" only where the type checker confirms it.
+     for (const e of d) {
++      if (PROTO.has('jsopt') && e.changes.length === 1 && e.changes[0] === 'cannot stand in' && e.before && e.after) {
++        const c0 = R.confirm(id, ...(e.names ?? [e.entry, e.entry]));
++        if (c0.confirmed) { e.changes = ['accepts more']; e.tells = 'nobody'; e.checkerSaidMore = true; continue; }
++      }
+       const k = e.changes.indexOf('accepts more');
+-      if (k < 0) continue;
++      if (k < 0 || e.ownCode) continue;
++      // PROTOTYPE 2C+: on unchanged own code, an "accepts more" is not put to the checker (it stays tells-nobody).
++      if (OWNCODE === '2C+' && e.codeSame) { e.silenced = [...(e.silenced ?? []), 'accepts more (not put to the checker)']; continue; }
+       const c = R.confirm(id, ...(e.names ?? [e.entry, e.entry]));
+       if (c.confirmed) continue;
+       e.changes.splice(k, 1, ...(e.changes.includes('cannot stand in') ? [] : ['cannot stand in']));
+diff --git a/tool/lib/notice/staged.mjs b/tool/lib/notice/staged.mjs
+index 7016768..9561724 100644
+--- a/tool/lib/notice/staged.mjs
++++ b/tool/lib/notice/staged.mjs
+@@ -29,7 +29,9 @@ import { makeUsage } from './usage.mjs';
+ /** How many later modules one program reads at once. */
+ export const BATCH = 20;
+ 
++const PROTO = new Set((process.env.P4_PROTO ?? '').split(',').filter(Boolean));
+ const UNRESOLVED = Symbol('cannot follow');
++const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, (m) => (/@(type|import|param|returns?|typedef|property)\b/.test(m) ? m : '')).replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
+ // Import specifiers written out: static imports and exports from, @import in comments, import("...") in code and in
+ // comment kinds, side-effect imports, require. Read over the whole text, comments too: reading too much only reads more.
+ const SPECS = [/\bfrom\s*(['"])([^'"\n]+)\1/g, /\bimport\s*\(\s*(['"])([^'"\n]+)\1/g, /\bimport\s*(['"])([^'"\n]+)\1/g, /\brequire\s*\(\s*(['"])([^'"\n]+)\1/g];
+@@ -59,7 +61,10 @@ export function makeReach(tree) {
+     }
+     if (spec.startsWith('node:') || BUILTIN.has(spec.split('/')[0])) return null;
+     // the package's own imports map, or the product named by its own package name: not followed here
+-    if (spec.startsWith('#') || (own && (spec === own || spec.startsWith(`${own}/`)))) return UNRESOLVED;
++    if (spec.startsWith('#') || (own && (spec === own || spec.startsWith(`${own}/`)))) {
++      if (PROTO.has('ownname')) { loadReader(); const r = ts.resolveModuleName(spec, from, options(), ts.sys, undefined, undefined, ts.ModuleKind.ESNext).resolvedModule?.resolvedFileName; if (r && !r.endsWith('.d.ts')) return path.resolve(r); }
++      return UNRESOLVED;
++    }
+     return null; // a package from outside the product
+   }
+   const files = new Map(); // file -> { deps, unresolved, carrier, ownsNames, reexport }
+@@ -68,7 +73,8 @@ export function makeReach(tree) {
+     let text = '';
+     try { text = fs.readFileSync(file, 'utf8'); } catch { text = ''; }
+     const deps = new Set();
+-    let unresolved = COMPUTED.test(text);
++    let unresolved = COMPUTED.test(PROTO.has('scan') ? stripComments(text) : text);
++    if (PROTO.has('scan')) text = stripComments(text);
+     if (!file.endsWith('.json')) {
+       for (const re of SPECS) {
+         re.lastIndex = 0;
+@@ -88,15 +94,16 @@ export function makeReach(tree) {
+     const seen = new Set();
+     const todo = [...roots];
+     let unresolved = false;
++    const unresolvedAt = [];
+     while (todo.length) {
+       const f = todo.pop();
+       if (seen.has(f)) continue;
+       seen.add(f);
+       const r = scan(f);
+-      if (r.unresolved) unresolved = true;
++      if (r.unresolved) { unresolved = true; unresolvedAt.push(f); }
+       for (const d of r.deps) if (!seen.has(d)) todo.push(d);
+     }
+-    return { files: seen, unresolved };
++    return { files: seen, unresolved, unresolvedAt };
+   }
+   return { closure, scan, resolve };
+ }
+diff --git a/tool/lib/notice/usage.mjs b/tool/lib/notice/usage.mjs
+index 1d30931..5434ea4 100644
+--- a/tool/lib/notice/usage.mjs
++++ b/tool/lib/notice/usage.mjs
+@@ -3,6 +3,8 @@
+ import path from 'node:path';
+ import { ts, lineOf, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
+ import { carrierOf } from './carriers.mjs';
++const PROTO = new Set((process.env.P4_PROTO ?? '').split(',').filter(Boolean));
++
+ 
+ /**
+  * @param program a program that holds the user's files
+@@ -51,7 +53,8 @@ export function makeUsage(program, tree, listings) {
+     if (!sym) return true; // a name the reader cannot find
+     const d = sym.declarations?.[0];
+     if (!d) return true;
+-    if (d.getSourceFile().fileName === NODE_DESCRIPTION) return true; // Node's own names, as the tool describes them
++    if (d.getSourceFile().fileName === NODE_DESCRIPTION) return true;
++    if (PROTO.has('lib') && program.isSourceFileDefaultLibrary(d.getSourceFile())) return true; // Node's own names, as the tool describes them
+     // Iteration 2: an error caught with catch is not a value of any provider.
+     if (ts.isVariableDeclaration(d) && d.parent && ts.isCatchClause(d.parent)) return true;
+     if (sym.flags & ts.SymbolFlags.Alias) {
