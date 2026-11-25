@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 24 Nov 2026 by PROCESS #11. Your decision D is built: a tranche can now hold only the refactoring. Next, when you choose: the move line for civicsmith, then lift its halt (below). Nothing else waits for you; the read-only count is optional.</p>
+<p class="updated">Updated 25 Nov 2026 by PROCESS #11. You asked for a refresh: start PROCESS #12 (below). civicsmith's refactoring is running. The read-only count on civicsmith stays optional.</p>
 </header>
 
 <section class="card">
@@ -110,14 +110,18 @@ if your approvals allow; otherwise end your turn with it, and the owner passes i
 </section>
 
 <section class="wait">
-<h2>Waiting for you, when you choose: move civicsmith onto the tranche scope, then lift its halt</h2>
-<p>Your decision D is built and merged (pull request 246), your words recorded exactly. ARCH can now write the list of what a tranche holds, and only that is worked; everything else waits for a later tranche. civicsmith gets it by your move line:</p>
+<h2>Waiting for you: start PROCESS #12 (you asked for a refresh), then archive PROCESS #11</h2>
+<p>PROCESS #11 has written its handover; nothing is half done and everything is merged. One question to civicsmith's coordinator is out (whether each job started is inside the refactoring's list); PROCESS #12 asks it again and tells you.</p>
 <ol>
-<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #5</b>.</li>
-<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div>You should see it record your words and tell ARCH, and then tell you when every session is on the new version. This move changes no test check, so it is one change.</li>
-<li>Then give the refactoring's direction to the lane when you like, and lift the halt in the coordinator's session when you are ready: ARCH writes the refactoring's list first, so only that work starts.</li>
+<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md and process/design-decisions-2.md; process/README.md; the index of your research, process/research/README.md; process/lanes/civicsmith/README.md; and process/handover.md — read it last and continue from it. Open a research file only when a question needs it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
+<li>It names itself <b>PROCESS #12</b>. Then archive the session named <b>PROCESS #11</b> (its menu, <b>Archive</b>).</li>
 </ol>
-<p>To confirm the refactoring is stable before anything else starts, keep the halt on after the refactoring tranche merges, and lift it when you are satisfied.</p>
+</section>
+
+<section class="card">
+<h2>Done: civicsmith is on the tranche scope, and its refactoring is running (24–25 Nov)</h2>
+<p>civicsmith moved to the version with your decision D, and its refactoring tranche has started: capture, control-plane, record-grammar and test-support jobs are running.</p>
 </section>
 
 <section class="card">
