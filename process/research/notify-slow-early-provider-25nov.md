@@ -71,3 +71,31 @@ Options to put to the owner, with the record-size fault (`waiting-work-too-large
   Recommended. Estimated, not yet shown: 43 minutes to a few minutes on civicsmith.
 - C. B, and the last two ways (shared work, remembered results). More code and more to prove; worth it only if B is not
   enough.
+
+## The worker's measurement and build (25 Nov ~02:20Z)
+
+A worker in PROCESS #12's session built two synthetic products shaped like civicsmith (200 modules, the provider third,
+121 importing it directly, closures of 74 modules on average; p200 64k lines, h200 119k lines with every source file
+public), changed a required field of the provider's kind (198 listings change, 197 users told), and timed `notify`'s
+reading in a scratch copy of the tool. Scripts and raw timings: the session scratchpad, `notify-prof/` (not kept).
+
+- **The cause:** 97% of h200's time (1,467 of 1,507 s) is declaration emit in `listing.mjs` (`plainEverywhere`): each
+  "through" listing emits declarations for every public file in its program's whole import closure, which forces a full
+  type check of each of those files, again for each candidate. The rest is small (programs 8-10 s, makeUsage 10 s).
+- **Plain-kinds cache:** keep each file's plain kinds per side across programs (exact: a file's declarations depend only
+  on the file and its imports). h200 1,507 s / 3.2 GB to 52 s / 1.1 GB; p200 137 s to 27 s. Replay: all 150 whole
+  reports identical.
+- **With side A read only where needed and one program per side:** h200 36 s / 1.7 GB; p200 20.5 s. Identical.
+- **Early stop:** no measurable gain after the cache; 9 recorded answers' reason text changes. Not taken.
+- **Four parallel readers:** 40 s and 5.9 GB on h200 (each repeats the check of all public files). Not taken.
+- **Per-user cache across runs:** helps a second merge of the same provider only. Not needed.
+- **The owner's uses file (D):** made at the before commit it gives identical answers (0.75 s per module at the job), but
+  any change in a module's import closure makes its file stale, and an early provider's merge changes every later
+  module's closure, so the next such notice reads them all anyway; with the cache `notify` is already about 40 s. Adds
+  little.
+- **Fix B of `not-followed-told-everything-25nov.md`:** 17 of the 150 changes' answers change, one user each, all notices
+  for nothing (5 confirmed accepts-more, 12 new entries); 15 users no longer told, 2 still told for other reasons.
+- **Waiting-work size:** 4.68 million characters for the 197 told users on p200 (median 23.6k per user; 2-3 users pass
+  65,536). Each reason carries the provider's whole kind before and after. Must be fixed separately.
+
+Estimate for civicsmith (heavier, not opened): 43 minutes to about 1-1.5 minutes within about 2 GB.
