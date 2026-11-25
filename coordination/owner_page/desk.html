@@ -22,28 +22,38 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 17:15 UTC, by PROCESS #15. Two choices wait for you below: the reworked design for who uses what (I recommend C), and idle sessions being compacted (I recommend C). civicsmith's drop is under way.</p>
+<p class="updated">Updated 25 Nov 2026, about 17:45 UTC, by PROCESS #15. Two choices wait for you below: the corrected design for who uses what (I recommend C), and idle sessions being compacted (I recommend C). civicsmith's drop is under way.</p>
 </header>
 
 
 <section class="wait">
-<h2>Being corrected before you choose: the reworked design for who uses what</h2>
-<p><b>Hold this choice.</b> You are right that "every reference except some" is not every reference. I am working out the rules that close each listed gap, each shown by running the type checker, or proof of which cannot be closed and why. I will put the corrected design to you then.</p>
-<p><b>Bottom line.</b> I recommend choice C: a standard for how code may refer to an earlier module, so that the tool itself finds every use with certainty, plus each job's marking of what it changed, against a list the tool makes so nothing is left off. Then the first pass on 8 real civicsmith modules, and a stop for you to judge.</p>
-<p><b>Rigour from the language, as you asked.</b> A helper worked from JavaScript's own definitions, not from samples. The language allows references no tool can find with certainty, such as module names built while the program runs, or code built from text. So "find every use in whatever code is written" has no rigorous answer, and "find every use in code written to a standard" does. The standard has 13 rules. Imports name the module in plain text. Another module's files and programs are reached only through that module's own functions. Lookups by name go through a declared table. Every item a module offers states what it takes in and hands back, checked by the type checker; that last rule is what makes a value passed on through a middle module traceable. Two of the 13 rules are already yours. Under the standard the tool writes each module's uses file itself, so it cannot go stale. Code not yet in the standard is listed as such, and is told of every change, as today, until a job brings it in. Nothing new stops a job.</p>
-<p><b>Changes that must be told, from those that need not.</b> Before a job finishes, the tool lists every item of its module that may have changed: its own code, anything it reaches inside the module, or its description. On all 150 recorded changes this list missed none of the items that really changed. The job then marks each item: changes what it takes in, changes what it hands back, accepts more only, or unchanged. A short guide in its instructions covers three facts of JavaScript that turn an inward-looking change outward, and the tool flags those cases. An item left unmarked counts as changed. On the 150: 1 missed, against 45 today. If every job marked nothing, nobody would be missed; more modules would be told.</p>
-<p><b>Jobs that change no code run no tests</b>, said at the top of their instructions.</p>
+<h2>Waiting for you: the corrected design for who uses what</h2>
+<p><b>Bottom line.</b> I recommend choice C, now corrected. Under the standard, every reference to an earlier module is found by the tool, or sits at a place the tool lists as not yet in the standard; such a place is told of every change until it is converted. Nothing is silently missed. The one exception is a copy that nobody marked and that has also been reworded, translated or computed; no tool can find that, and I can show why.</p>
+<p><b>How the gaps were closed.</b> The helper wrote 27 small test cases and ran each under two versions of the type checker. Under today's settings, each gap hid its reference and the checker said nothing. Under twelve added rules, every gap was found: 50 runs out of 50. Two ordinary cases raised nothing, so the rules do not flag good code. The rules, in plain words:</p>
+<ul>
+<li>Nothing has an unknown type.</li>
+<li>Data that comes from another module, through a file, a message, storage or the environment, is read only through that module's own reader, never relabelled by hand.</li>
+<li>The tool itself checks every conversion between types, so it does not rely on the checker's known blind spots.</li>
+<li>Nothing writes onto another module's values behind the checker's back, and nothing switches the checker off.</li>
+</ul>
+<p>One setting the tool uses today, on caught errors, hides a reference now; it is turned the other way. What the result rests on: the type checker working as documented, the same trust we already place in reading imports at all.</p>
+<p><b>Copies, by your convention.</b> A copy is marked with the module and item it copies, by its name or a short marker; in a data file, by an entry in the module's uses file. The tool reads the mark as a reference, and also reports when the copy no longer matches the original. Any literal that exactly matches a value an earlier module exports counts as not in the standard until it is marked or imported, so every exact copy is found. What remains unfindable: an unmarked copy that is also reworded, translated or computed. Whether text is a copy depends on how it was written, not on the text, so no tool can find these. The job's duty to mark copies, the module's own tests and the walks are what catch them. I judge them rare; this is not measured.</p>
+<p><b>The rest stands as before.</b> Before a job finishes, the tool lists every item that may have changed (it missed none of the 150 recorded changes), and the job marks each one by a short guide; an item left unmarked counts as changed. Who is told is a lookup. Jobs that change no running code run no tests. The first job on each module, run in parallel where order allows, does three things:</p>
+<ol>
+<li>It converts the module's references to the standard, and imports or marks its copies.</li>
+<li>It states the module's types.</li>
+<li>It lets the tool write the module's uses file.</li>
+</ol>
 <p><b>Choice:</b></p>
 <ul>
 <li><b>0. No change.</b> civicsmith cannot go on.</li>
 <li><b>A. A file each job writes, without a standard.</b> Rests on each job's care.</li>
-<li><b>B. The standard without the rule that items state their types.</b> The tool is certain for direct references; values passed through a middle module rest on the job.</li>
-<li><b>C. The full standard (recommended).</b> The tool is certain for every reference, except a few unsound corners of the type checker that are listed.</li>
+<li><b>B. The standard without the rules on types.</b> Certain for direct references only.</li>
+<li><b>C. The full standard, corrected (recommended).</b></li>
 </ul>
-<p><b>Not proven:</b> how reliably real jobs mark their changes, and the cost of bringing civicsmith into the standard. Adding stated types to its modules is likely the largest cost, and it is unmeasured. The first pass measures both. If the types prove too costly, B is the fallback, and nothing already done is lost.</p>
-<p><b>The first pass, as you set it.</b> Build the finished design, instructions and tool; prove them on the tool's own tests and the 150 recorded changes, with the 13 newly found breaks added; move civicsmith to it once the drop is done; run jobs in parallel on the first 8 real modules; then stop. For each module you see the time and cost, its uses file, and whether that file serves the provider/user requirement. The files are kept once confirmed. Then you decide to go on, change the method, or abandon it.</p>
-<p><b>Your record.</b> Your decision will rewrite in place the existing entries on who is told, how the tool reads the product, how a notice reaches a module, and the merge wait. The earlier rulings, your choice 3B of this morning among them, are retired there, not left beside. It replaces your rule "No list is kept by hand".</p>
-<p>To choose, reply here starting with "Decision:", for example "Decision: C, with the first pass of 8". You may also set it aside or ask questions first. The full design is in <code>process/research/uses-metadata-25nov/design.md</code>.</p>
+<p><b>Not proven:</b> what it costs to bring civicsmith's code under these rules, above all the types; and how reliably jobs mark changes and copies. The first pass of 8 real modules measures both. Then you decide to go on, change the method, or abandon it, and the files written are kept or corrected accordingly.</p>
+<p><b>Your record.</b> Your decision rewrites in place the existing entries on who is told, how the tool reads the product, how a notice reaches a module, and the merge wait. It retires your earlier rulings on these, 3B among them, and replaces "No list is kept by hand".</p>
+<p>To choose, reply here starting with "Decision:", for example "Decision: C, with the first pass of 8". The full design is in <code>process/research/uses-metadata-25nov/design.md</code>; the proof of the gaps is in <code>every-reference.md</code> beside it.</p>
 </section>
 
 <section class="wait">
