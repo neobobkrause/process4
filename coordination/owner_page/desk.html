@@ -22,11 +22,23 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 01:25 UTC, by PROCESS #12. One choice waits for you now. A second fault, the more pressing one, is being measured and comes to you next.</p>
+<p class="updated">Updated 25 Nov 2026, about 01:25 UTC, by PROCESS #12. Two choices wait for you now. A third, the tool's speed, is being measured and comes to you next.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: a job's tests ran without the tranche's newest changes</h2>
+<h2>Waiting for you, first: finished jobs wait while the tool works out who to tell</h2>
+<p><b>The bottom line.</b> Nine civicsmith jobs have passed their tests and are held, some for most of an hour, because the process tells ARCH that a job must hear of a change to a module it uses before it merges. Working that out after record-grammar's merge takes the tool most of an hour. I recommend letting merges go on while the tool works it out in the background; a job that merges first gets the news afterwards as a small follow-up job.</p>
+<p><b>What makes ARCH wait.</b> The design says a running job hears of such a change "at once", and its earlier pass then no longer counts. Merging it before the tool has finished would skip that, so ARCH holds it. ARCH's text also says to merge, then work out who to tell, in the same turn, and does not say to run that step in the background, so the first try was cut off after 30 minutes.</p>
+<ul>
+<li><b>A. No change.</b> Jobs wait until the tool finishes, most of an hour after an early module merges, until the tool is made faster.</li>
+<li><b>B. Merges go on meanwhile (recommended).</b> ARCH runs that step in the background and keeps merging finished jobs. A job still open when the answer comes hears of it at once, as now. A job that merged first gets the news as a small follow-up job, which re-checks only what the change touches, or closes with nothing to change. This is the path the design already uses for a module with no job open. Text only: ARCH's instructions and two sentences of the design; no tool change.</li>
+<li><b>C. Only make the tool faster</b> (the item below, still being measured). The wait stays but gets shorter.</li>
+</ul>
+<p>B and C go together: B removes the wait now; C later cuts the follow-up jobs B may cause. To choose, comment on this item, for example <b>Decision: B, as recommended</b>. civicsmith gets it by its next move to the latest version.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you, second: a job's tests ran without the tranche's newest changes</h2>
 <p><b>The bottom line.</b> A job runs its tests on its own branch as it last pushed it. If other jobs have merged into the tranche since, the job tests code that lacks them. On civicsmith this failed provenance's first run for nothing, and the failure counted against it. I recommend the tool bring the tranche into the job's branch before each test run.</p>
 <p><b>What happened.</b> record-grammar's job fixed its stated interface and merged. provenance's job, branched earlier, then ran its tests: the check refused a field record-grammar's merged fix already allowed. The job merged the tranche into its branch itself and ran again: 201 tests passed in about 30 seconds. Seen in provenance's own session; nothing worked round.</p>
 <p><b>Why it matters.</b> Each failed run counts: the third brings a fresh session for the job, the fifth sets the module aside. A run lost this way on a module whose tests take most of two hours costs that long. The reverse, a pass on old code that would fail once merged, was not seen but is possible.</p>
@@ -42,7 +54,7 @@ a{color:var(--accent)}
 <section class="wait">
 <h2>Coming next: after an early module merges, telling the others takes most of an hour</h2>
 <p><b>The bottom line.</b> On civicsmith, when record-grammar (third of 204 modules) merged, the tool's step that works out which other modules must be told of the change ran 38 minutes and used 8 GB without finishing. It was restarted at 00:47 UTC and was still running at 00:57. Meanwhile ARCH holds eight finished jobs that use record-grammar. I am measuring where the time goes on a made-up product of the same shape and will put options to you with numbers.</p>
-<p><b>Good to know now.</b> The hold is ARCH's own choice, to avoid extra work. The process does not need it: a job merged before the telling runs is told afterwards, and gets a small follow-up job. Whether to wait or merge is ARCH's call.</p>
+<p><b>A correction.</b> I said the hold was ARCH's own choice. You were right that the process drives it: see the item above.</p>
 <p><b>Also, as PROCESS #11 warned:</b> the refactoring tranche is drawing in modules. Flaws that one job finds in another module's older code are always work in the tranche, as you chose, so by 00:44 UTC jobs had opened for ten more modules, and more are queued. Nothing is wrong by the rules; tell me if you want that held, and I will look at it as a fault.</p>
 </section>
 
