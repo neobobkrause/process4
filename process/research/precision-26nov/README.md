@@ -1,6 +1,6 @@
 # Precision of who is told, measured on a converted proof (25–26 Nov 2026, PROCESS #17)
 
-Length: 45 lines. Last section: "Options put to the owner".
+Length: 62 lines. Last section: "The owner's words on how findings are judged (25 Nov ~22:30Z, conversation, not marked)".
 
 ## Files
 
@@ -43,3 +43,20 @@ program's file followed and `env`/`argv` read (P1); a relabelled copy listed as 
 kind told of any member's change (P2). Rule changes for his decision: the started program's running code in its
 starter's means (P1B); a confirmed "accepts more" still tells users that hand the function on or build their own value
 of the accepted kind (P3), or rule 7 narrowed; parameter names in the means (P4).
+
+## The owner's words on how findings are judged (25 Nov ~22:30Z, conversation, not marked)
+
+"I'm asking whether that's a real world scenario. - Would these 150 changes all be made without a design role being
+involved? Of those changes that you can say would be made without a design role's involvement, are those changes made by
+a tool or by the job? Because the jobs would be instructed to recognize and report changes like that and communicate them
+to the notification tool so that they're not missed, right?"
+
+"When evaluating situations where false positives and false negatives might happen, you need give proper consideration to
+design/development/build context in which those changes are made, and only report false positives or false negatives
+when there are situations when neither roles, jobs, nor tools can recognize the change in a way that the notification
+(and metadata maintenance tool) can be properly informed."
+
+PROCESS asked once whether to record the second as a decision. Under it: corrections 1 (P1B) and 3 (P4) withdrawn (they
+back up what ARCH names and the job declares, design 2 §7, §8); correction 2 (P3) put to him; the 75 of kind A counted
+as retests his rule calls for; the 87 others to be checked one by one for changes the job knows stayed inside its module
+(the design lets a declaration add a notice, never remove one).
