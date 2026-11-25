@@ -11,10 +11,14 @@
 //
 // Who is told (build text 5, section 6): a lookup in the later modules' uses files, with no user's code read. Each
 // module whose uses file names a changed item or a member of a changed type (by its provider and name, whatever the
-// route), or holds a marked copy of one; and, on any change to the provider's files whether or not an item changed,
-// each module with a place outside the standard whose `mayRefer` names the provider, each module with an order fault
-// naming it (an earlier module, whose file is read too), and each later module with no uses file yet that imports it
-// (its files' imports, read as text: usesfile.mjs). Each is told once, with the reasons of build text 5, section 5.
+// route), or holds a marked copy of one; where a kind, handle kind or class changed member by member, only the uses
+// that change reaches (a member added: the whole value's; one removed, changed or made optional: its readers' too), and
+// an item whose means differ only inside such kinds is told through them; a change of meaning alone is not told to a
+// module that only hands the value back to a later module that is told; and, on any change to the provider's files
+// whether or not an item changed, each module with a place outside the standard whose `mayRefer` names the provider,
+// each module with an order fault naming it (an earlier module, whose file is read too), and each later module with no
+// uses file yet that imports it (its files' imports, read as text: usesfile.mjs). Each is told once, with the reasons
+// of build text 5, section 5.
 import fs from 'node:fs';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeStandardProgram, readerVersion, tagsOf, tagText } from './ts.mjs';
@@ -191,6 +195,133 @@ function partsThatDiffer(b, a) {
 /** Whether a used item is reached by a changed one: the same item, or a member or field of it (Amount.cents, Rooms.find of Rooms). */
 const matches = (changed, used) => used === changed || used.startsWith(`${changed}.`) || used.startsWith(`${changed}#`);
 
+/** Uses of an item that call it (by its name, or by an operation's written-out name), take what a call hands back, or only name it. */
+const CALLED = new Set(['call', 'operation by name', 'receive', 'import', 'type named', 're-export']);
+
+/** The items whose change can be member by member: a kind of plain data, a handle kind, a class (its instances). */
+const MEMBERED = new Set(['kind', 'handle kind', 'class']);
+const sameOr = (x, y) => same(x ?? null, y ?? null);
+
+/**
+ * For a changed kind of plain data, handle kind or class, which of its members were added, removed, changed, or made
+ * optional, where the change is member by member; null where it is not: its kind, what it is used for (accepts, hands
+ * back or both), a class's constructor, an index signature, a call signature, its bound lines, or any other part of its
+ * means changed. A handle kind's members are items of their own: here only their names count. A class's members here
+ * are its instances' (its static members are items of their own).
+ */
+export function memberChanges(b, a) {
+  if (!b || !a || b.kind !== a.kind || !MEMBERED.has(a.kind)) return null;
+  for (const k of ['bounds', 'throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || (a.typeErrors?.length && b.code !== a.code)) return null;
+  const out = { added: [], removed: [], changed: [], optional: [] };
+  if (a.kind === 'handle kind') {
+    const nb = b.handsBack?.names ?? [], na = a.handsBack?.names ?? [];
+    if (b.handsBack?.k !== 'names' || a.handsBack?.k !== 'names') return null;
+    out.added = na.filter((x) => !nb.includes(x));
+    out.removed = nb.filter((x) => !na.includes(x));
+    return out.added.length || out.removed.length ? out : null;
+  }
+  let sb, sa;
+  if (a.kind === 'kind') {
+    if ((b.accepts == null) !== (a.accepts == null) || (b.handsBack == null) !== (a.handsBack == null)) return null;
+    sb = b.handsBack != null ? known(b.handsBack, a.handsBack) : known(b.accepts, a.accepts);
+    sa = a.handsBack ?? a.accepts;
+  } else {
+    if (!sameOr(known(b.accepts, a.accepts), a.accepts)) return null;
+    sb = known(b.handsBack, a.handsBack);
+    sa = a.handsBack;
+  }
+  if (sb?.k !== 'obj' || sa?.k !== 'obj' || sb.name !== sa.name || !sameOr(sb.index, sa.index) || !sameOr(sb.calls, sa.calls)) return null;
+  for (const name of [...new Set([...Object.keys(sb.props), ...Object.keys(sa.props)])].sort()) {
+    const pb = sb.props[name], pa = sa.props[name];
+    if (!pb) out.added.push(name);
+    else if (!pa) out.removed.push(name);
+    else if (!same(pb, pa)) (pa.opt && !pb.opt ? out.optional : out.changed).push(name);
+  }
+  // a difference no member shows is the kind's as a whole
+  return out.added.length || out.removed.length || out.changed.length || out.optional.length ? out : null;
+}
+
+/** A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out. */
+function byName(c, names) {
+  if (Array.isArray(c)) return c.map((x) => byName(x, names));
+  if (!c || typeof c !== 'object') return c;
+  if (typeof c.name === 'string' && names.has(c.name) && ['obj', 'union', 'and'].includes(c.k)) return { k: 'named', name: c.name };
+  return Object.fromEntries(Object.entries(c).map(([k, v]) => [k, byName(v, names)]));
+}
+
+/**
+ * Whether an item's means differ only inside kinds of its module that changed member by member (`names`, each
+ * `<module>.<item>`): what it accepts and hands back are the same once each such kind is written by its name, and every
+ * other part is the same. Its users then use those kinds' values, each use judged by the kind's own change.
+ */
+function onlyInside(b, a, names) {
+  if (!names.size || b.kind !== a.kind) return false;
+  for (const k of ['bounds', 'throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || (a.typeErrors?.length && b.code !== a.code)) return false;
+  return same(byName(known(b.accepts, a.accepts) ?? null, names), byName(a.accepts ?? null, names))
+    && same(byName(known(b.handsBack, a.handsBack) ?? null, names), byName(a.handsBack ?? null, names));
+}
+
+/**
+ * Which of a member-level changed item's members a use reaches (build text 5, section 6): a use of the item itself by
+ * its whole value (or a use written before the uses file said, which reads as whole) is reached by any change of a
+ * member; a read of one member, and a use of a member that is an item of its own (`Rooms.find`, a class's `Quote#total`),
+ * only by a change of that member (removed, changed or made optional); a use that only names the item, or holds its
+ * value under a name, by none. A class's static members (`Quote.make`) are items of their own, not its instances'.
+ */
+function reaches(c, u) {
+  const m = c.members;
+  const hit = (name) => m.removed.includes(name) || m.changed.includes(name) || m.optional.includes(name);
+  if (u.item === c.item) {
+    const v = u.value ?? 'whole';
+    if (v === 'none') return false;
+    if (v === 'member') return typeof u.member === 'string' ? hit(u.member) : true;
+    return true;
+  }
+  const sep = u.item[c.item.length], name = u.item.slice(c.item.length + 1).split(/[.#]/)[0];
+  if (c.kind === 'class' && sep !== '#') return false;
+  return hit(name);
+}
+
+/** A member-level change in a reason's form: each list that is not empty. */
+const membersText = (m) => Object.fromEntries(['added', 'removed', 'changed', 'optional', 'through'].filter((k) => m[k]?.length).map((k) => [k, m[k]]));
+
+/**
+ * A change of meaning alone (named by ARCH or declared, its means the same) is not told to a module that only hands the
+ * value on (build text 5, section 6): one whose every use of the item is a name or a value held under a name (`none`)
+ * or the value handed back from an export of its interface code (`handed back`), at least one handed back, with no
+ * marked copy of it; and only where a later module that gets the value through it is itself told of the item. Its own
+ * code and tests then neither read, compare, format, store nor assert the value: each of those is a use of the value.
+ * Decided from the last module to the first: a module whose later receivers are all left untold stays told.
+ */
+function passedOn(report, telling, hitsOf, indexOf) {
+  const meaningOnly = telling.filter((c) => c.found !== 'means' && c.changes.length === 1 && c.changes[0] === 'meaning changed');
+  if (!meaningOnly.length) return;
+  const toldFor = new Map(); // `${module}|${item}` -> Map(user -> reason)
+  for (const t of report.told) for (const r of t.reasons) if (r.item && hitsOf.has(r)) {
+    const k = `${r.module}|${r.item}`;
+    if (!toldFor.has(k)) toldFor.set(k, new Map());
+    toldFor.get(k).set(t.user, r);
+  }
+  const dropped = new Set();
+  for (const c of meaningOnly) {
+    const users = toldFor.get(`${c.module}|${c.item}`);
+    if (!users) continue;
+    for (const user of [...users.keys()].sort((x, y) => indexOf(y) - indexOf(x))) {
+      const h = hitsOf.get(users.get(user));
+      const handsOn = !h.marked && h.hits.length > 0 && h.hits.every((u) => u.value === 'none' || u.value === 'handed back') && h.hits.some((u) => u.value === 'handed back');
+      if (!handsOn) continue;
+      const toldLater = [...users.entries()].some(([v, r]) => v !== user && indexOf(v) > indexOf(user) && !dropped.has(r)
+        && hitsOf.get(r).hits.some((u) => u.route && u.route !== 'direct' && u.route.via === user));
+      if (toldLater) dropped.add(users.get(user));
+    }
+  }
+  if (!dropped.size) return;
+  for (const t of report.told) t.reasons = t.reasons.filter((r) => !dropped.has(r));
+  report.told = report.told.filter((t) => t.reasons.length);
+}
+
 /** A place of a uses file in a reason's form: `<file>:<line>`, then its function or, in a test, its test case's name. */
 export const placeText = (w) => `${w.file}${w.line ? `:${w.line}` : ''}${w.test ? ` ${w.test}` : w.in ? ` ${w.in}` : ''}${w.pointer ? ` ${w.pointer}` : ''}`;
 
@@ -240,6 +371,36 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
       had.tells = true;
     } else out.push({ module: moduleId, item: n.item, found: n.found, changes: ['meaning changed'], tells: true, why: n.line, before: { meaning: n.line.split(';')[0].trim() }, after: { meaning: n.line.split(';').slice(1).join(';').trim() } });
   }
+  // Member by member (build text 5, section 6): a kind, handle kind or class whose change is its members' says which;
+  // a member, or an item of another kind, whose means differ only inside such kinds is told through them.
+  const byMeans = (c) => c.found === 'means' && !c.namedBy && c.tells && !c.changes.includes('removed') && mb.items[c.item] && ma.items[c.item];
+  const level = out.filter((c) => byMeans(c) && memberChanges(mb.items[c.item], ma.items[c.item]));
+  const names = new Set(level.map((c) => `${moduleId}.${c.item}`));
+  for (const c of level) {
+    const b = mb.items[c.item], a = ma.items[c.item];
+    const m = memberChanges(b, a);
+    const others = new Set([...names].filter((x) => x !== `${moduleId}.${c.item}`));
+    const shape = (it) => (it.kind === 'handle kind' ? null : it.kind === 'kind' ? (it.handsBack ?? it.accepts) : it.handsBack);
+    const sb = shape(b) && known(shape(b), shape(a)), sa = shape(a);
+    m.through = m.changed.filter((x) => others.size && same(byName(sb.props[x], others), byName(sa.props[x], others)));
+    m.changed = m.changed.filter((x) => !m.through.includes(x));
+    c.kind = a.kind;
+    c.members = m;
+  }
+  // A handle kind is written by its name only: a change to one of its methods, an item of its own, is a change of that
+  // member of the handle, which its whole value's users hear of too.
+  for (const c of out) {
+    const h = /^([^.#]+)\.(.+)$/.exec(c.item);
+    if (h && c.tells && c.found === 'means' && (ma.items[h[1]] ?? mb.items[h[1]])?.kind === 'handle kind') c.handle = { item: h[1], member: h[2] };
+  }
+  for (const c of out) {
+    if (!byMeans(c) || c.members) continue;
+    const b = mb.items[c.item], a = ma.items[c.item];
+    if (onlyInside(b, a, names)) {
+      const text = JSON.stringify([b.accepts, b.handsBack, a.accepts, a.handsBack]);
+      c.through = [...names].filter((x) => text.includes(JSON.stringify(x))).map((x) => x.slice(moduleId.length + 1));
+    }
+  }
   return { module: moduleId, changed: out, fresh, conversion };
 }
 
@@ -282,6 +443,7 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   const indexOf = (id) => A.byId.get(id)?.index ?? B.byId.get(id)?.index ?? -1;
   const itemsOf = (m) => byModule.get(m).map((c) => c.item);
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
+  const hitsOf = new Map();
   for (const user of order) {
     const before = [...byModule.keys()].filter((m) => indexOf(m) < indexOf(user));
     // An order fault is a use of a later module: the module that holds it may come before the changed one.
@@ -304,15 +466,25 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
       const copies = once(files.flatMap((f) => f.copies));
       const outside = once(files.flatMap((f) => f.outside));
       const faults = once(files.flatMap((f) => f.orderFaults));
+      // A file written with what each use does with a value (build text 2c, `value`); an older one reads as whole.
+      const marks = uses.some((u) => typeof u.value === 'string');
       for (const m of before) {
         for (const c of byModule.get(m)) {
-          const hits = uses.filter((u) => u.provider === m && matches(c.item, u.item));
+          // An item whose means differ only inside kinds that changed member by member is told through those kinds where
+          // the user only calls it or names it: the values a call hands back or takes are of a stated kind, each use of
+          // them listed where it stands. Any other use of it (its value read, handed on, converted, called through a
+          // table) still tells, and so does a file older than those marks.
+          const hits = uses.filter((u) => u.provider === m && ((matches(c.item, u.item) && (!c.members || reaches(c, u)) && !(c.through && marks && CALLED.has(u.type)))
+            || (c.handle && u.item === c.handle.item && (u.value === 'member' ? u.member === c.handle.member : u.value !== 'none'))));
           const marked = copies.filter((x) => x.provider === m && typeof x.item === 'string' && matches(c.item, x.item));
           if (!hits.length && !marked.length) continue;
           const route = hits.some((h) => h.route === 'direct' || !h.route) || !hits.length ? 'direct' : hits[0].route;
-          reasons.push({ module: m, item: c.item, found: c.found, ...(c.namedBy ? { namedBy: c.namedBy } : {}), changes: [...c.changes], why: c.why ?? null, route,
+          const reason = { module: m, item: c.item, found: c.found, ...(c.namedBy ? { namedBy: c.namedBy } : {}), changes: [...c.changes], why: c.why ?? null, route,
+            ...(c.members ? { members: membersText(c.members) } : {}),
             places: firstPlaces([...hits.flatMap((h) => h.where), ...marked.map((x) => ({ file: x.file, line: x.line, pointer: x.pointer }))]),
-            ...(c.before !== undefined ? { before: c.before, after: c.after } : {}) });
+            ...(c.before !== undefined ? { before: c.before, after: c.after } : {}) };
+          hitsOf.set(reason, { hits, marked: marked.length, user });
+          reasons.push(reason);
         }
         // A place outside the standard hears of any change to the files of a module it may refer to, until a job
         // converts it; where it cannot say which (`*`, or no `mayRefer`), of every earlier module (design part 2, section
@@ -341,6 +513,7 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
     }
     if (reasons.length) report.told.push({ user, reasons });
   }
+  passedOn(report, telling, hitsOf, indexOf);
   report.summary = telling.length ? `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`
     : `${conversion ? `${provider}'s conversion: its first means tell no one` : report.changed.length ? 'No changed item tells anyone (each only accepts more, as the type checker confirms)' : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`;
   return report;
@@ -350,8 +523,9 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
 export function noticeText(r) {
   const L = [`Notice for a change to ${r.provider} (${r.reader})`, r.summary];
   for (const c of r.changed) {
-    L.push(`  ${c.module} ${c.item}: ${c.changes.join(', ')} [found by ${[c.found, ...(c.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}] -> tells ${c.tells ? 'its users' : 'no one'}`);
+    L.push(`  ${c.module} ${c.item}: ${c.changes.join(', ')} [found by ${[c.found, ...(c.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}] -> tells ${!c.tells ? 'no one' : c.through ? `its users through ${c.through.join(', ')}` : c.members ? 'the users its members reach' : 'its users'}`);
     if (c.words) L.push(`      means: ${c.words}`);
+    if (c.members) L.push(`      members: ${Object.entries(membersText(c.members)).map(([k, v]) => `${k} ${v.join(', ')}`).join('; ')}`);
     if (c.why) L.push(`      meaning: ${c.why}`);
     if (c.notConfirmed) L.push(`      accepts more, not confirmed: ${c.notConfirmed}`);
   }

@@ -985,3 +985,139 @@ test('a reason names its first six places and how many more, so the notice keeps
   assert.deepEqual(p.places, ['src/orders/index.mjs:1 (top level)', 'src/orders/index.mjs:6 orderDay', 'src/orders/index.mjs:7 v0', 'src/orders/index.mjs:8 v1', 'src/orders/index.mjs:9 v2', 'src/orders/index.mjs:10 v3', 'and 5 more']);
   assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:1 \(top level\), [^\n]*src\/orders\/index\.mjs:10 v3, and 5 more/);
 });
+
+// ---- who is told, member by member (build text 5, section 6) ----
+
+const KIND_P = ({ quote = '@property {number} total\n * @property {string} note', bound = '', counter = 'get(): number', box = '', total = '1', got = '1' } = {}) => `/**
+ * @typedef {Object} Quote
+ * ${quote}${bound ? `\n * @bound ${bound}` : ''}
+ */
+/** @returns {Quote} */
+export function quote() { return /** @type {Quote} */ ({ total: ${total}, note: 'n' }); }
+/** @typedef {{ ${counter} }} Counter */
+/** @returns {Counter} */
+export function counter() { return /** @type {Counter} */ ({ get: () => ${got} }); }
+export class Box {
+  constructor() { /** @type {number} */ this.w = 1; }
+  /** @returns {number} */
+  area() { return this.w; }${box}
+}
+`;
+const KIND_USERS = {
+  rd: "import { quote } from '../p/index.mjs';\n/** @returns {number} */\nexport const t = () => quote().total;\n",
+  nt: "import { quote } from '../p/index.mjs';\n/** @returns {string} */\nexport const n = () => quote().note;\n",
+  wh: "import { quote } from '../p/index.mjs';\n/** @returns {string} */\nexport const j = () => JSON.stringify(quote());\n",
+  rf: "import { quote } from '../p/index.mjs';\n/** @returns {() => import('../p/index.mjs').Quote} */\nexport const f = () => quote;\n",
+  c1: "import { counter } from '../p/index.mjs';\n/** @returns {number} */\nexport const g = () => counter().get();\n",
+  c2: "import { counter } from '../p/index.mjs';\n/** @param {object} x @returns {object} */\nconst keep = (x) => x;\n/** @returns {string} */\nexport const k = () => typeof keep(counter());\n",
+  b1: "import { Box } from '../p/index.mjs';\n/** @returns {number} */\nexport const a = () => new Box().area();\n",
+  b2: "import { Box } from '../p/index.mjs';\n/** @returns {string} */\nexport const s = () => JSON.stringify(new Box());\n",
+};
+const kindProduct = (p = KIND_P()) => ({
+  'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+  'process/modules/order.txt': `p\n${Object.keys(KIND_USERS).join('\n')}\n`,
+  'process/modules/p.json': entry('p'),
+  ...Object.fromEntries(Object.keys(KIND_USERS).map((m) => [`process/modules/${m}.json`, entry(m, ['p'])])),
+  'src/p/index.mjs': p,
+  ...Object.fromEntries(Object.entries(KIND_USERS).map(([m, text]) => [`src/${m}/index.mjs`, text])),
+});
+/** The notice for p's change to `after`, each told user with its reasons that name an item. */
+function kindNotice(after, { files = withUsesFiles(kindProduct()), named = [] } = {}) {
+  const b = mkdtempSync(join(tmpdir(), 'p4-member-')), a = mkdtempSync(join(tmpdir(), 'p4-member-'));
+  write(b, files);
+  write(a, { ...files, 'src/p/index.mjs': after });
+  const r = notice(b, a, 'p', { named });
+  return { r, told: Object.fromEntries(r.told.map((t) => [t.user, t.reasons.filter((x) => x.item).map((x) => x.item)]).filter(([, x]) => x.length)) };
+}
+
+test('a member added to a kind tells only its whole-value users; one removed, changed or made optional, its readers too; a change to the kind as a whole, every user', () => {
+  // added: wh writes the whole value as text; rd and nt read one member each, which is as it was
+  let n = kindNotice(KIND_P({ quote: '@property {number} total\n * @property {string} note\n * @property {number} extra' }));
+  const q = n.r.changed.find((c) => c.item === 'Quote');
+  assert.deepEqual(q.members, { added: ['extra'], removed: [], changed: [], optional: [], through: [] });
+  // quote hands back Quote, and differs only inside it: its callers are told through Quote
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'quote').through, ['Quote']);
+  assert.match(noticeText(n.r), /p quote: hands back differently \[found by its means\] -> tells its users through Quote/);
+  assert.match(noticeText(n.r), /p Quote: [^\n]*-> tells the users its members reach\n[^\n]*\n {6}members: added extra/);
+  // rf hands quote itself on: what it hands back is not listed where it is used, so rf hears of quote, and of Quote whole
+  assert.deepEqual(n.told, { wh: ['Quote'], rf: ['Quote', 'quote'] });
+  assert.deepEqual(n.r.told.find((t) => t.user === 'wh').reasons[0].members, { added: ['extra'] });
+  // removed: its readers, and the whole value's users
+  n = kindNotice(KIND_P({ quote: '@property {number} total' }));
+  assert.deepEqual(n.told, { nt: ['Quote'], wh: ['Quote'], rf: ['Quote', 'quote'] });
+  // made optional
+  n = kindNotice(KIND_P({ quote: '@property {number} total\n * @property {string} [note]' }));
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'Quote').members.optional, ['note']);
+  assert.deepEqual(n.told, { nt: ['Quote'], wh: ['Quote'], rf: ['Quote', 'quote'] });
+  // changed
+  n = kindNotice(KIND_P({ quote: '@property {string} total\n * @property {string} note', total: "'1'" }));
+  assert.deepEqual(n.told, { rd: ['Quote'], wh: ['Quote'], rf: ['Quote', 'quote'] });
+  // a bound line of the kind: not member by member, so every user of it and of quote, as before
+  n = kindNotice(KIND_P({ bound: 'total: whole cents, 0 or more' }));
+  assert.equal(n.r.changed.find((c) => c.item === 'Quote').members, undefined);
+  assert.deepEqual(n.told, { rd: ['Quote', 'quote'], nt: ['Quote', 'quote'], wh: ['Quote', 'quote'], rf: ['Quote', 'quote'] });
+});
+
+test('a method added to a handle kind, or to a class, tells only the users of the whole value', () => {
+  let n = kindNotice(KIND_P({ counter: 'get(): number, reset(): void' }));
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'Counter').members.added, ['reset']);
+  assert.deepEqual(n.told, { c2: ['Counter'] });
+  n = kindNotice(KIND_P({ box: '\n  /** @returns {number} */\n  scale() { return 2; }' }));
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'Box').members.added, ['scale']);
+  assert.deepEqual(n.told, { b2: ['Box'] });
+  // a method changed (an item of its own): its callers, and the users of the handle's whole value
+  n = kindNotice(KIND_P({ counter: 'get(): string', got: "'1'" }));
+  assert.deepEqual(n.told, { c1: ['Counter.get'], c2: ['Counter.get'] });
+});
+
+test('a uses file written before it said what each use does with the value reads as whole: its module is told as before', () => {
+  const files = withUsesFiles(kindProduct());
+  const old = { ...files['process/modules/rd.uses.json'] };
+  old.uses = old.uses.map(({ value, member, ...u }) => u);
+  const n = kindNotice(KIND_P({ quote: '@property {number} total\n * @property {string} note\n * @property {number} extra' }), { files: { ...files, 'process/modules/rd.uses.json': old } });
+  assert.deepEqual(n.told, { rd: ['Quote', 'quote'], wh: ['Quote'], rf: ['Quote', 'quote'] });
+});
+
+test('a member of a kind that changed only inside another kind that changed member by member reaches only the whole value\'s uses', () => {
+  const P = (extra) => `/** @typedef {{ total: number${extra} }} Quote */
+/** @typedef {{ quote: Quote, n: number }} Order */
+/** @returns {Order} */
+export function order() { return { quote: /** @type {Quote} */ ({ total: 1 }), n: 1 }; }
+`;
+  const files = withUsesFiles({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\no1\no2\n',
+    'process/modules/p.json': entry('p'), 'process/modules/o1.json': entry('o1', ['p']), 'process/modules/o2.json': entry('o2', ['p']),
+    'src/p/index.mjs': P(''),
+    'src/o1/index.mjs': "import { order } from '../p/index.mjs';\n/** @returns {number} */\nexport const t = () => order().quote.total;\n",
+    'src/o2/index.mjs': "import { order } from '../p/index.mjs';\n/** @returns {string} */\nexport const j = () => JSON.stringify(order());\n",
+  });
+  const n = kindNotice(P(', extra?: number'), { files });
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'Order').members, { added: [], removed: [], changed: [], optional: [], through: ['quote'] });
+  assert.deepEqual(n.r.changed.find((c) => c.item === 'order').through, ['Order', 'Quote']);
+  // o1 reads Order's quote and Quote's total, neither changed; o2 writes the whole Order as text
+  assert.deepEqual(n.told, { o2: ['Order'] });
+});
+
+test('a change of meaning alone is not told to a module that only hands the value back to a later module that is told', () => {
+  const base = {
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nmid\nlast\n',
+    'process/modules/p.json': entry('p'), 'process/modules/mid.json': entry('mid', ['p']), 'process/modules/last.json': entry('last', ['mid', 'p']),
+    'src/p/index.mjs': '/** @typedef {{ cents: number }} Price */\n/** @returns {Price} */\nexport function price() { return { cents: 1 }; }\n',
+    'src/mid/index.mjs': "import { price } from '../p/index.mjs';\n/** @returns {import('../p/index.mjs').Price} */\nexport function cost() { const p = price(); if (!p) throw new Error('none'); return p; }\n",
+    'src/last/index.mjs': "import { cost } from '../mid/index.mjs';\n/** @returns {number} */\nexport const c = () => cost().cents;\n",
+  };
+  const named = [{ item: 'Price', line: 'in cents; in euros', found: 'named' }];
+  const told = (files) => kindNotice(files['src/p/index.mjs'], { files: withUsesFiles(files), named }).told;
+  // mid only hands Price back from its export; last, which gets it through mid, reads it and is told
+  assert.deepEqual(told(base), { last: ['Price'] });
+  // no later module told of it through mid: mid is told
+  assert.deepEqual(told({ ...base, 'src/last/index.mjs': 'export const c = 1;\n' }), { mid: ['Price'] });
+  // mid reads it, or its tests assert it: told
+  assert.deepEqual(told({ ...base, 'src/mid/index.mjs': `${base['src/mid/index.mjs']}/** @returns {string} */\nexport const show = () => String(price().cents);\n` }), { mid: ['Price'], last: ['Price'] });
+  assert.deepEqual(told({ ...base, 'test/mid/index.test.mjs': "import assert from 'node:assert/strict';\nimport { cost } from '../../src/mid/index.mjs';\nassert.deepEqual(cost(), { cents: 1 });\n" }), { mid: ['Price'], last: ['Price'] });
+  // a change of its means as well as its meaning is told to every user of it, as before
+  const n = kindNotice('/** @typedef {{ cents: number, euros: number }} Price */\n/** @returns {Price} */\nexport function price() { return { cents: 1, euros: 0 }; }\n', { files: withUsesFiles(base), named });
+  assert.deepEqual(Object.keys(n.told), ['mid', 'last']);
+});

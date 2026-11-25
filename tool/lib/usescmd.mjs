@@ -181,7 +181,8 @@ export function printedUses(r) {
   L.push(`providers: ${r.providers.join(', ') || 'none'}`);
   L.push(`references in standard form (${r.uses.length}):`);
   for (const u of r.uses) {
-    L.push(`  ${u.provider} ${u.item} (${u.itemKind}): ${u.type}, ${routeText(u.route)}${u.standard ? '' : ', not by a standard form'}`);
+    const value = u.value === 'member' ? `, member ${u.member}` : u.value === 'none' ? ', no member used' : u.value ? `, ${u.value === 'whole' ? 'the whole value' : 'the whole value handed back'}` : '';
+    L.push(`  ${u.provider} ${u.item} (${u.itemKind}): ${u.type}${value}, ${routeText(u.route)}${u.standard ? '' : ', not by a standard form'}`);
     for (const w of u.where) L.push(`      ${placeText(w)}`);
   }
   const byRule = new Map();

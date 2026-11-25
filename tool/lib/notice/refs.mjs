@@ -12,6 +12,10 @@
 //     a stated kind, a cast, a field of an object written in place), a value handed to a reflective read, and the
 //     members the language calls by itself (toString, valueOf, then, toJSON, Symbol.iterator, Symbol.hasInstance).
 // Each is named by the provider's listing (listing.mjs) and attributed to the item that holds its declaration.
+// A use of a kind, a handle kind or a class also says what it does with the value (`value`): wherever a value of such a
+// kind stands, in code or tests, the place is a read of one named member of it, the whole value, or neither (the value
+// goes on under a name of the module's own, or into an expression judged where it stands); anything the walk cannot
+// prove to be a member or neither is the whole value.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -76,6 +80,16 @@ const PROGRAMS = /^"node:child_process"\.(spawn|spawnSync|execFile|execFileSync|
 const WILD = '\u0000';
 /** An item's kind in the uses file's words (build text 2c): the listing's kinds of plain data are types. */
 const itemKind = (k) => (k === 'kind' ? 'type' : k === 'handle kind' ? 'handle type' : k ?? 'item');
+/** The items whose uses say what of the value they use (build text 2c, the uses file's `value`): kinds of plain data,
+ * handle kinds and classes. */
+const KIND_ITEMS = new Set(['type', 'handle type', 'class']);
+/** Uses of such an item that name it or hold its value under a name, using no member of it: each use of the value is
+ * listed apart, where the value stands (the value's walk below). */
+const NAMING = new Set(['import', 'type named', 're-export', 'receive', 'construct']);
+/** Members of a list, a map, a set or a promise that hand on its contents, without using them, to where they are
+ * read apart: the result of the access, or a function written in place whose parameters take them. */
+const HOLDER_MEMBERS = new Set(['length', 'size', 'at', 'get', 'has', 'keys', 'values', 'entries', 'slice', 'pop', 'shift', 'reverse', 'toReversed']);
+const CALLBACK_MEMBERS = new Set(['map', 'filter', 'find', 'findLast', 'findIndex', 'findLastIndex', 'some', 'every', 'forEach', 'flatMap', 'reduce', 'reduceRight', 'then', 'catch', 'finally', 'sort', 'toSorted']);
 
 /**
  * @param tree the product (model.mjs)
@@ -236,15 +250,20 @@ export function readReferences(tree, moduleId, opts = {}) {
   const copies = new Map();
   const inventory = new Set();
   const routeKey = (r) => (r === 'direct' ? 'direct' : `${r.via}:${r.item}`);
-  function addUse(e, node, type, route = 'direct') {
+  /**
+   * @param mark for a use of a kind, a handle kind or a class (KIND_ITEMS): `{ value: 'member', member }` (it reads or
+   *   writes that one member), `{ value: 'whole' }` or `{ value: 'handed back' }` (the value itself), `{ value: 'none' }`
+   *   (it names the kind or holds the value under a name whose every use is listed apart); by default by its type
+   */
+  function addUse(e, node, type, route = 'direct', mark = undefined) {
     if (!e || e.module === mod.id) return;
     if (!e.listed && e.kind === 'not in the interface') {
       place('S5', node, { what: `refers to ${e.item}, which is not in ${e.module}'s interface files`, mayRefer: [e.module], waitsOn: `${e.module}: the item in its interface files` });
     }
-    for (const w of wheres(node)) addUseAt(e, w, type, route);
+    for (const w of wheres(node)) addUseAt(e, w, type, route, mark);
   }
   /** One use at one place; a use of a later module is an order fault (design part 2, section 1). */
-  function addUseAt(e, w, type, route = 'direct') {
+  function addUseAt(e, w, type, route = 'direct', mark = undefined) {
     if (!e || e.module === mod.id) return;
     if (route !== 'direct' && (route.via === e.module || route.via === mod.id)) route = 'direct';
     if (indexOf(e.module) > mod.index) {
@@ -252,8 +271,9 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (!orderFaults.has(k)) orderFaults.set(k, { provider: e.module, item: e.item, itemKind: e.kind, type, ...w });
       return;
     }
-    const k = `${e.module}|${e.item}|${type}|${routeKey(route)}`;
-    if (!uses.has(k)) uses.set(k, { provider: e.module, item: e.item, itemKind: e.kind, type, route, standard: e.listed, where: new Map() });
+    const m = KIND_ITEMS.has(e.kind) && e.listed ? mark ?? { value: NAMING.has(type) ? 'none' : 'whole' } : null;
+    const k = `${e.module}|${e.item}|${type}|${routeKey(route)}|${m ? `${m.value}|${m.member ?? ''}` : ''}`;
+    if (!uses.has(k)) uses.set(k, { provider: e.module, item: e.item, itemKind: e.kind, type, route, standard: e.listed, ...(m ? { value: m.value, ...(m.member !== undefined ? { member: m.member } : {}) } : {}), where: new Map() });
     uses.get(k).where.set(`${w.file}|${w.line}|${w.test ?? w.in}`, w);
   }
   /** A place outside the standard. mayRefer: the modules it may refer to ([] none, [ANY] every earlier module). */
@@ -584,8 +604,9 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (!involved) return;
     // R11: both sides of the conversion
     const route = viaOf(e, null);
-    for (const d of sd) addUse(entryOf(d), node, source, route.via === entryOf(d).module ? 'direct' : route);
-    for (const d of td) addUse(entryOf(d), node, 'conversion');
+    const mark = fnMark(S, T, e);
+    for (const d of sd) addUse(entryOf(d), node, source, route.via === entryOf(d).module ? 'direct' : route, mark(entryOf(d)));
+    for (const d of td) addUse(entryOf(d), node, 'conversion', 'direct', mark(entryOf(d)));
     // a value handed to a slot of kind unknown, object, {} or any: every member it has is read
     if (T.flags & (ts.TypeFlags.Unknown | ts.TypeFlags.Any) || (isObj(T) && !checker.getPropertiesOfType(T).length && !T.getCallSignatures().length)) {
       for (const p of isObj(S) ? checker.getPropertiesOfType(S) : []) for (const d of p.declarations ?? []) addUse(entryOf(d), node, 'read', route);
@@ -674,6 +695,105 @@ export function readReferences(tree, moduleId, opts = {}) {
         for (const d of p.declarations ?? []) addUse(entryOf(d), node, names.includes('__@iterator') ? 'iterate' : 'implicit member');
       }
     }
+  }
+
+  // ---- kinds held by a value: what of the value a place uses (a member, the whole value, or neither) ----
+  const callableOnly = (t) => isObj(t) && (t.getCallSignatures().length > 0 || t.getConstructSignatures().length > 0) && !checker.getPropertiesOfType(t).some((p) => p.name !== 'prototype');
+  /** The top of a kind's own declaration: a typedef, a type alias, a class, or the kind written in place as its whole body. */
+  const isKindDecl = (d) => ts.isJSDocTypedefTag(d) || ts.isTypeAliasDeclaration(d) || ts.isClassDeclaration(d) || ts.isClassExpression(d) || ts.isInterfaceDeclaration(d)
+    || (ts.isJSDocTypeLiteral(d) && !!d.parent && ts.isJSDocTypedefTag(d.parent))
+    || (ts.isTypeLiteralNode(d) && !!d.parent && (ts.isTypeAliasDeclaration(d.parent) || (ts.isJSDocTypeExpression(d.parent) && !!d.parent.parent && ts.isJSDocTypedefTag(d.parent.parent))));
+  /** The listed kind, handle kind or class of another module that a type is itself, or null. */
+  function kindOfType(t) {
+    if (!t || !(t.flags & (ts.TypeFlags.Object | ts.TypeFlags.Intersection)) || (isObj(t) && callableOnly(t))) return null;
+    for (const s of [t.aliasSymbol, t.symbol]) for (const d of s?.declarations ?? []) {
+      if (!isKindDecl(d)) continue;
+      const e = entryOf(d);
+      if (e && e.listed && KIND_ITEMS.has(e.kind)) return e;
+    }
+    return null;
+  }
+  /**
+   * The listed kinds of other modules a value of type t holds: each as the value itself (`self`, with its types: a
+   * union's or an intersection's part, or a read-only or other mapped form of it, whose members are the value's), or
+   * inside it (`inner`: in a list, a map, a promise, or a member of an object of no listed kind). A listed kind's own
+   * members are its own (a change to a kind inside it changes it).
+   */
+  function heldKinds(t, out = new Map(), self = true, depth = 0, seen = new Map()) {
+    const bit = self ? 1 : 2;
+    if (!t || depth > 6 || (seen.get(t) ?? 0) & bit) return out;
+    seen.set(t, (seen.get(t) ?? 0) | bit);
+    const k = kindOfType(t);
+    if (k) {
+      const key = `${k.module}|${k.item}`;
+      if (!out.has(key)) out.set(key, { e: k, self: false, inner: false, types: [] });
+      const o = out.get(key);
+      if (self) { o.self = true; o.types.push(t); } else o.inner = true;
+      // the kinds a generic kind is given (Box<Quote>) are inside it, not among its own members
+      for (const a of [...(t.aliasTypeArguments ?? []), ...(isObj(t) && t.objectFlags & ts.ObjectFlags.Reference ? checker.getTypeArguments(t) ?? [] : [])]) heldKinds(a, out, false, depth + 1, seen);
+      return out;
+    }
+    if (t.flags & ts.TypeFlags.UnionOrIntersection) { for (const u of t.types) heldKinds(u, out, self, depth + 1, seen); return out; }
+    if (!isObj(t) || callableOnly(t)) return out;
+    // Readonly<K>, Partial<K>, Pick<K, …>: K's own members; Record<…, K>: K inside
+    const mapped = !!(t.objectFlags & ts.ObjectFlags.Mapped) && t.aliasSymbol?.name !== 'Record';
+    for (const a of t.aliasTypeArguments ?? []) heldKinds(a, out, self && mapped, depth + 1, seen);
+    if (t.objectFlags & ts.ObjectFlags.Reference) for (const a of checker.getTypeArguments(t) ?? []) heldKinds(a, out, false, depth + 1, seen);
+    if (!hostDeclared(t) && !mapped) for (const p of checker.getPropertiesOfType(t)) heldKinds(checker.getTypeOfSymbol(p), out, false, depth + 1, seen);
+    for (const i of checker.getIndexInfosOfType(t)) heldKinds(i.type, out, false, depth + 1, seen);
+    return out;
+  }
+  /** Is `name` a member of the kind as held (one of its own types)? */
+  const memberOf = (h, name) => h.types.some((t) => !!checker.getPropertyOfType(t, name));
+  /**
+   * The use of a kind's member named on a value (`v.name`, `{ name } = v`): for each listed kind the value is itself, a
+   * read of that member where it is one of the kind's, the whole value where it is not (a member the kind may come to
+   * have). A member of a kind written inside a kind's member (`v.lines[0].price`) is a use of the whole kind.
+   */
+  function memberMark(baseType, name, e) {
+    for (const h of heldKinds(baseType).values()) if (h.self && h.e.module === e.module && h.e.item === e.item) return memberOf(h, name) ? { value: 'member', member: name } : { value: 'whole' };
+    return { value: 'whole' };
+  }
+
+  /** A function of the module's own, written in place or named, whose parameters are all it reads of what it is handed. */
+  function isOwnFunction(e) {
+    while (e && ts.isParenthesizedExpression(e)) e = e.expression;
+    if (!e) return false;
+    let d = e;
+    if (ts.isIdentifier(e) || ts.isPropertyAccessExpression(e)) {
+      const s = resolve(checker.getSymbolAtLocation(ts.isPropertyAccessExpression(e) ? e.name : e));
+      d = s?.valueDeclaration;
+      if (d && ts.isVariableDeclaration(d)) d = d.initializer;
+      while (d && ts.isParenthesizedExpression(d)) d = d.expression;
+    }
+    if (!d || !(ts.isArrowFunction(d) || ts.isFunctionExpression(d) || ts.isMethodDeclaration(d) || ts.isFunctionDeclaration(d)) || !mod.files.includes(d.getSourceFile().fileName)) return false;
+    let args = false;
+    forEachNode(d, (x) => { if (ts.isIdentifier(x) && x.text === 'arguments') args = true; });
+    return !args;
+  }
+  /**
+   * A function of the module's own given where a function is expected (a callback written in place, a method of an
+   * object written in place, a function of its own named): what it is handed lands in its parameters, each use of them
+   * judged where it stands, and what it hands back is judged at its returns; so a kind its parameters take as expected
+   * is not used whole here (`none`). A parameter stated wider than what it is handed, or any other function handed on,
+   * uses the kind whole (the default).
+   */
+  function fnMark(S, T, e) {
+    if (!e || !isObj(S) || !isObj(T) || !callableOnly(S) || !callableOnly(T) || !isOwnFunction(e)) return () => undefined;
+    const ss = S.getCallSignatures()[0], tsig = T.getCallSignatures()[0];
+    if (!ss || !tsig) return () => undefined;
+    const sp = ss.getParameters(), tp = tsig.getParameters();
+    const rest = sp.length && sp[sp.length - 1].valueDeclaration && ts.isParameter(sp[sp.length - 1].valueDeclaration) && sp[sp.length - 1].valueDeclaration.dotDotDotToken;
+    return (en) => {
+      if (!en || !KIND_ITEMS.has(en.kind)) return undefined;
+      const key = `${en.module}|${en.item}`;
+      for (let i = 0; i < tp.length; i++) {
+        if (!heldKinds(checker.getTypeOfSymbol(tp[i])).has(key)) continue;
+        const own = i < sp.length ? sp[i] : rest ? sp[sp.length - 1] : null;
+        if (own && !heldKinds(checker.getTypeOfSymbol(own)).has(key)) return { value: 'whole' };
+      }
+      return { value: 'none' };
+    };
   }
 
   // ---- the walk ----
@@ -772,7 +892,10 @@ export function readReferences(tree, moduleId, opts = {}) {
         if (!e) continue;
         if (d.getSourceFile().isDeclarationFile) place('R10', n, { what: `refers to ${e.item}, declared in a declaration file the checker does not check`, mayRefer: [e.module] });
         const base = ts.isPropertyAccessExpression(n.parent) && n.parent.name === n ? n.parent.expression : null;
-        addUse(e, n, kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module));
+        // a member of a kind of plain data is the kind's item: named on a value of the kind, a read of that member
+        const holder = base ?? (n.parent && ts.isBindingElement(n.parent) && n.parent.propertyName === n ? n.parent.parent : null);
+        const mark = e.kind === 'type' && !isKindDecl(d) ? (holder ? memberMark(typeAt(holder), n.text, e) : { value: 'whole' }) : undefined;
+        addUse(e, n, kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module), mark);
       }
     };
 
@@ -806,7 +929,7 @@ export function readReferences(tree, moduleId, opts = {}) {
           const nm = el.propertyName ?? el.name;
           if (!t || !ts.isIdentifier(nm)) continue;
           const p = checker.getPropertyOfType(t, nm.text);
-          for (const d of p?.declarations ?? []) { const e = entryOf(d); if (e) addUse(e, nm, 'read', h && ts.isVariableDeclaration(h) ? viaOf(h.initializer, e.module) : 'direct'); }
+          for (const d of p?.declarations ?? []) { const e = entryOf(d); if (e) addUse(e, nm, 'read', h && ts.isVariableDeclaration(h) ? viaOf(h.initializer, e.module) : 'direct', e.kind === 'type' ? memberMark(t, nm.text, e) : undefined); }
           if (t && ts.isIdentifier(nm) && p && (p.declarations ?? []).every((d) => isHostFile(d.getSourceFile()))) facility(nm, p);
         }
       }
@@ -919,6 +1042,184 @@ export function readReferences(tree, moduleId, opts = {}) {
 
     // ---- S4 (i), R3, R4: what this module's own interface files state ----
     if (mod.public.includes(fileName)) ownInterface(sf);
+    // ---- what each value of another module's kind is used for ----
+    forEachNode(sf, (n) => { if (isValueAt(n)) valueUse(n); if (ts.isObjectBindingPattern(n) || ts.isObjectLiteralExpression(n)) restUse(n); if (ts.isIdentifier(n) && n.text === 'arguments') argumentsUse(n); });
+  }
+
+  /**
+   * Is this node a value whose use the walk below judges: a name read as a value, or an expression a value comes out of
+   * (a member, an element, a call, a construction, an await, brackets, a choice, an assignment or logical expression)?
+   */
+  function isValueAt(n) {
+    if (inType(n)) return false;
+    if (ts.isIdentifier(n)) {
+      const p = n.parent;
+      if (!p) return false;
+      if (ts.isShorthandPropertyAssignment(p) && p.name === n) return !isPatternTarget(p.parent);
+      if (isDeclName(n) || isAssignTarget(n)) return false;
+      if ((ts.isPropertyAccessExpression(p) || ts.isQualifiedName(p)) && p.name === n) return false;
+      if ((ts.isPropertyAssignment(p) || ts.isMethodDeclaration(p) || ts.isPropertyDeclaration(p) || ts.isGetAccessor(p) || ts.isSetAccessor(p) || ts.isEnumMember(p)) && p.name === n) return false;
+      if (ts.isBindingElement(p) && p.propertyName === n) return false;
+      if (ts.isLabeledStatement(p) || ts.isBreakOrContinueStatement(p) || ts.isMetaProperty(p)) return false;
+      if ((ts.isForOfStatement(p) || ts.isForInStatement(p)) && p.initializer === n) return false;
+      for (let q = p; q; q = q.parent) { if (ts.isImportDeclaration(q) || ts.isImportEqualsDeclaration(q)) return false; if (ts.isStatement(q)) break; }
+      return !isPatternTarget(p);
+    }
+    if (ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n)) return !isAssignTarget(n) && !isPatternTarget(n.parent);
+    return ts.isCallExpression(n) || ts.isNewExpression(n) || ts.isTaggedTemplateExpression(n) || ts.isAwaitExpression(n) || ts.isParenthesizedExpression(n)
+      || ts.isNonNullExpression(n) || ts.isConditionalExpression(n) || ts.isBinaryExpression(n) || ts.isAsExpression?.(n) || ts.isSatisfiesExpression?.(n);
+  }
+  /** Is this node inside the left side of an assignment that takes a value apart ({ a, b } = v, [a, b] = v)? */
+  function isPatternTarget(n) {
+    for (let x = n; x; x = x.parent) {
+      const p = x.parent;
+      if (!p) return false;
+      if (ts.isBinaryExpression(p) && p.left === x && (ts.isObjectLiteralExpression(x) || ts.isArrayLiteralExpression(x)) && p.operatorToken.kind === ts.SyntaxKind.EqualsToken) return true;
+      if ((ts.isForOfStatement(p) || ts.isForInStatement(p)) && p.initializer === x && (ts.isObjectLiteralExpression(x) || ts.isArrayLiteralExpression(x))) return true;
+      if (!(ts.isObjectLiteralExpression(p) || ts.isArrayLiteralExpression(p) || ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p) || ts.isSpreadAssignment(p) || ts.isSpreadElement(p) || (ts.isBinaryExpression(p) && p.left === x))) return false;
+    }
+    return false;
+  }
+  /** A name of the module's own that holds a value under a type holding every kind of `held`, and hands it nowhere else. */
+  function ownName(id, held) {
+    if (!ts.isIdentifier(id)) return false;
+    const s = checker.getSymbolAtLocation(id);
+    const d = s?.valueDeclaration;
+    if (!d || d.getSourceFile() !== id.getSourceFile() || !(ts.isVariableDeclaration(d) || ts.isParameter(d) || ts.isBindingElement(d))) return false;
+    let st = d; while (st && !ts.isVariableStatement(st) && !ts.isStatement(st)) st = st.parent;
+    if (st && ts.isVariableStatement(st) && st.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) return false;
+    const has = heldKinds(checker.getTypeOfSymbol(s));
+    return [...held.keys()].every((k) => has.has(k));
+  }
+  function nullish(x) { while (ts.isParenthesizedExpression(x)) x = x.expression; return x.kind === ts.SyntaxKind.NullKeyword || (ts.isIdentifier(x) && x.text === 'undefined') || ts.isVoidExpression(x); }
+  function inPlaceFn(x) { return ts.isArrowFunction(x) || ts.isFunctionExpression(x); }
+  /** The function a return or a body hands its value back from, where it is an export of this module's interface code. */
+  function exportedFn(fn) {
+    if (!fn || !mod.public.includes(fn.getSourceFile().fileName) || mod.tests.includes(fn.getSourceFile().fileName)) return false;
+    return (ts.isFunctionDeclaration(fn) || inPlaceFn(fn)) && isExported(fn);
+  }
+  function enclosingFn(n) { for (let p = n.parent; p; p = p.parent) if (ts.isFunctionLike(p)) return p; return null; }
+
+  /**
+   * What a place does with a value of another module's kind (B1): a read or write of one named member of the kind it
+   * is (`member`); nothing that depends on its members, the value going on to where it is judged apart (`none`: a name of
+   * the module's own, brackets, an await, a choice, a test of it, an element taken out of a list); or the value as a
+   * whole: handed to a function, handed back, stored, spread, compared, iterated, written into text, thrown, and every
+   * place the walk cannot prove is one of the others. The walk writes `member` and `whole` (`none` needs no entry: the
+   * value's other places are its uses; a use that names the kind or takes its value is `none` by its type, NAMING); a
+   * value handed back from an export of the module's interface code is `handed back`, which is whole.
+   */
+  function valueUse(n) {
+    const t = typeAt(n);
+    if (!t) return;
+    const held = heldKinds(t);
+    if (!held.size) return;
+    const p = n.parent;
+    if (!p) return;
+    const whole = (type, value = 'whole') => { for (const h of held.values()) addUse(h.e, n, type, viaOf(n, h.e.module), { value }); };
+    const passOn = (into) => {
+      const holdsAll = (x) => { const ph = heldKinds(typeAt(x)); return [...held.keys()].every((k) => ph.has(k)); };
+      return holdsAll(into) ? undefined : whole('read');
+    };
+    // brackets, an await, a choice, a fallback: the value goes on as the expression around it, judged there
+    if ((ts.isParenthesizedExpression(p) && !ts.getJSDocTypeTag(p)) || ts.isNonNullExpression(p) || ts.isAwaitExpression(p) || ts.isSatisfiesExpression?.(p)) return passOn(p);
+    if (ts.isConditionalExpression(p)) return p.condition === n ? undefined : passOn(p);
+    if (ts.isBinaryExpression(p)) {
+      const op = p.operatorToken.kind;
+      if (op === ts.SyntaxKind.AmpersandAmpersandToken) return p.left === n ? undefined : passOn(p);
+      if (op === ts.SyntaxKind.BarBarToken || op === ts.SyntaxKind.QuestionQuestionToken) return passOn(p);
+      if (op === ts.SyntaxKind.CommaToken) return p.left === n ? undefined : passOn(p);
+      if ([ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken, ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken].includes(op)) return nullish(p.left === n ? p.right : p.left) ? undefined : whole('read');
+      if (p.right === n && [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken, ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken].includes(op)) {
+        if (ownName(p.left, held)) return undefined;
+        // taken apart by plain names into names (takenApart reads each member); a rest, a computed or quoted name, or a
+        // pattern inside the pattern is the whole value
+        const plain = (x) => ts.isShorthandPropertyAssignment(x) || (ts.isPropertyAssignment(x) && ts.isIdentifier(x.name) && !ts.isObjectLiteralExpression(x.initializer) && !ts.isArrayLiteralExpression(x.initializer));
+        if (ts.isObjectLiteralExpression(p.left) && p.left.properties.every(plain)) return [...held.values()].some((h) => !h.self) ? whole('read') : undefined;
+        if (ts.isArrayLiteralExpression(p.left) && [...held.values()].every((h) => !h.self)) return undefined;
+        return whole('store');
+      }
+      if (op === ts.SyntaxKind.InKeyword && p.right === n && ts.isStringLiteral(p.left)) {
+        for (const h of held.values()) addUse(h.e, n, 'read', viaOf(n, h.e.module), h.self && !h.inner && memberOf(h, p.left.text) ? { value: 'member', member: p.left.text } : { value: 'whole' });
+        return undefined;
+      }
+      return whole('read');
+    }
+    // a test of it
+    if ((ts.isPrefixUnaryExpression(p) && p.operator === ts.SyntaxKind.ExclamationToken) || ts.isTypeOfExpression(p) || ts.isVoidExpression(p) || ts.isExpressionStatement(p)) return undefined;
+    if ((ts.isIfStatement(p) || ts.isWhileStatement(p) || ts.isDoStatement(p)) && p.expression === n) return undefined;
+    if (ts.isForStatement(p) && p.condition === n) return undefined;
+    // a member of it
+    if (ts.isPropertyAccessExpression(p) && p.expression === n) {
+      const name = p.name.text;
+      const type = isAssignTarget(p) ? 'write' : ts.isCallExpression(p.parent) && p.parent.expression === p ? 'call' : 'read';
+      // inside the value: a member of an object of no listed kind, or a member of a list, a map or a promise that hands
+      // its contents on, leaves them to where the result, or the parameter of a function written in place, is judged
+      const prop = checker.getPropertyOfType(checker.getApparentType(t), name);
+      const productMember = !!prop && (prop.declarations ?? []).length > 0 && (prop.declarations ?? []).every((d) => !isHostFile(d.getSourceFile()));
+      const call = ts.isCallExpression(p.parent) && p.parent.expression === p ? p.parent : null;
+      const fns = call ? call.arguments.filter((a) => { const at = typeAt(a); return !!at && isObj(at) && at.getCallSignatures().length > 0; }) : [];
+      const handsOn = productMember || HOLDER_MEMBERS.has(name) || (CALLBACK_MEMBERS.has(name) && !!call && fns.length > 0 && fns.every(inPlaceFn));
+      for (const h of held.values()) {
+        const member = h.self && memberOf(h, name);
+        if (member) addUse(h.e, n, type, viaOf(n, h.e.module), { value: 'member', member: name });
+        if ((h.self && !member) || (h.inner && !handsOn)) addUse(h.e, n, 'read', viaOf(n, h.e.module), { value: 'whole' });
+      }
+      return undefined;
+    }
+    if (ts.isElementAccessExpression(p) && p.expression === n) {
+      const key = ts.isStringLiteral(p.argumentExpression) || ts.isNoSubstitutionTemplateLiteral(p.argumentExpression) ? p.argumentExpression.text : null;
+      for (const h of held.values()) {
+        if (h.self && key !== null && memberOf(h, key) && !h.inner) addUse(h.e, n, isAssignTarget(p) ? 'write' : 'read', viaOf(n, h.e.module), { value: 'member', member: key });
+        else if (h.self) addUse(h.e, n, 'read', viaOf(n, h.e.module), { value: 'whole' });
+      }
+      return undefined;
+    }
+    // held under a name of the module's own, or taken apart: each use of the name is judged where it stands
+    if (ts.isVariableDeclaration(p) && p.initializer === n) {
+      if (ts.isIdentifier(p.name)) return ownName(p.name, held) ? undefined : whole('store');
+      if (ts.isObjectBindingPattern(p.name)) return undefined; // its members are read where taken apart; a rest is the whole (restUse)
+      if (ts.isArrayBindingPattern(p.name) && [...held.values()].every((h) => !h.self)) return undefined;
+      return whole('read');
+    }
+    if ((ts.isForOfStatement(p)) && p.expression === n) {
+      if ([...held.values()].some((h) => h.self)) return whole('iterate');
+      const init = p.initializer;
+      if (ts.isVariableDeclarationList(init) && init.declarations.length === 1) {
+        const nm = init.declarations[0].name;
+        if (ts.isIdentifier(nm) || ts.isObjectBindingPattern(nm) || ts.isArrayBindingPattern(nm)) return undefined;
+      }
+      if (ts.isIdentifier(init) && ownName(init, held)) return undefined;
+      return whole('iterate');
+    }
+    // handed back from a function: from an export of the module's interface code, to the later modules that call it
+    if ((ts.isReturnStatement(p) && p.expression === n) || (ts.isArrowFunction(p) && p.body === n)) {
+      return whole('pass on', exportedFn(ts.isArrowFunction(p) ? p : enclosingFn(p)) ? 'handed back' : 'whole');
+    }
+    if ((ts.isCallExpression(p) || ts.isNewExpression(p)) && (p.arguments ?? []).includes(n)) return whole('pass on');
+    if (ts.isTaggedTemplateExpression(p) || ts.isTemplateSpan(p) || ts.isYieldExpression(p) || ts.isExportAssignment(p) || ts.isExportSpecifier(p)) return whole('pass on');
+    if (ts.isThrowStatement(p)) return whole('throw');
+    if (ts.isSpreadElement(p) || ts.isForInStatement(p)) return whole('iterate');
+    if (ts.isSpreadAssignment(p) || ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p) || ts.isArrayLiteralExpression(p) || ts.isPropertyDeclaration(p) || ts.isParameter(p) || ts.isBindingElement(p)) return whole('store');
+    return whole('read');
+  }
+  /** A rest taken apart from a value ({ a, ...rest } = v): every other member of it, those it may come to have too. */
+  function restUse(n) {
+    // a rest, or a member named by a computed or quoted name (the members read are those taken by plain names)
+    const rest = ts.isObjectBindingPattern(n) ? n.elements.find((e) => e.dotDotDotToken || !ts.isIdentifier(e.propertyName ?? e.name)) : isPatternTarget(n) ? n.properties.find((x) => ts.isSpreadAssignment(x)) : null;
+    if (!rest) return;
+    let source;
+    if (ts.isObjectBindingPattern(n)) source = typeAt(n);
+    else { let x = n; while (x.parent && !(ts.isBinaryExpression(x.parent) && x.parent.left === x)) x = x.parent; source = x.parent ? typeAt(x.parent.right) : undefined; }
+    for (const h of heldKinds(source).values()) addUse(h.e, rest, 'read', 'direct', { value: 'whole' });
+  }
+  /** `arguments` in a function: every value handed to it, as a whole. */
+  function argumentsUse(n) {
+    if (!inType(n) && !isDeclName(n) && !(n.parent && ts.isPropertyAccessExpression(n.parent) && n.parent.name === n)) {
+      let fn = enclosingFn(n);
+      while (fn && ts.isArrowFunction(fn)) fn = enclosingFn(fn);
+      for (const prm of fn?.parameters ?? []) for (const h of heldKinds(typeAt(prm)).values()) addUse(h.e, n, 'read', 'direct', { value: 'whole' });
+    }
   }
 
   /** The type of the parameter that takes argument i of a call (the element of a rest parameter). */
@@ -1015,7 +1316,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       const target = ts.isShorthandPropertyAssignment(p) ? p.name : p.initializer;
       const ts_ = ts.isShorthandPropertyAssignment(p) ? checker.getShorthandAssignmentValueSymbol(p) : checker.getSymbolAtLocation(target);
       const T = ts_ ? checker.getTypeOfSymbol(ts_) : typeAt(target);
-      for (const d of m.declarations ?? []) addUse(entryOf(d), p, 'read');
+      for (const d of m.declarations ?? []) { const e = entryOf(d); addUse(e, p, 'read', 'direct', e?.kind === 'type' ? memberMark(S, name, e) : undefined); }
       relate(checker.getTypeOfSymbol(m), T, null, p, `member ${name} taken apart`, { source: 'store' });
     }
     else pattern.elements.forEach((el) => {
@@ -1286,7 +1587,8 @@ export function readReferences(tree, moduleId, opts = {}) {
   }
 
   // ---- the result ----
-  const order = (a, b) => indexOf(a.provider) - indexOf(b.provider) || (a.item < b.item ? -1 : a.item > b.item ? 1 : 0) || (a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
+  const cmp = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
+  const order = (a, b) => indexOf(a.provider) - indexOf(b.provider) || cmp(a.item, b.item) || cmp(a.type, b.type) || cmp(a.value ?? '', b.value ?? '') || cmp(a.member ?? '', b.member ?? '');
   const byPlace = (a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0) || a.line - b.line || String(a.test ?? a.in ?? '').localeCompare(String(b.test ?? b.in ?? ''));
   const usesOut = [...uses.values()].map((u) => ({ ...u, where: [...u.where.values()].sort(byPlace) })).sort(order);
   const providers = [...new Set(usesOut.map((u) => u.provider))].sort((a, b) => indexOf(a) - indexOf(b));

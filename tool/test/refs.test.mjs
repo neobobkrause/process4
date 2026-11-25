@@ -987,3 +987,138 @@ export function day() { return new Date('2026-11-25T00:00:00Z').getUTCDate(); }
   const t = read(product("import { test } from 'node:test';\n/** @returns {void} */\nexport function x() { test('a', () => {}); }\n"), 'u');
   assert.ok(t.outside.some((o) => o.rule === 'R14' && /the test runner's, outside the module's tests/.test(o.what)), JSON.stringify(t.outside));
 });
+
+// ---- what a use does with a value of another module's kind (build text 2c, the uses file's `value`) ----
+
+const KINDS = `/** @typedef {{ id: number, name: string, tags: { label: string }[] }} Row */
+/** @typedef {{ get(id: number): Row, size(): number }} Rows */
+/** @returns {Row} */
+export function one() { return { id: 1, name: 'one', tags: [] }; }
+/** @returns {Row[]} */
+export function all() { return [one()]; }
+/** @returns {Rows} */
+export function rows() { return { get: () => one(), size: () => 1 }; }
+/**
+ * @param {Row} r
+ * @returns {string}
+ */
+export function show(r) { return r.name; }
+export class Box {
+  constructor() { /** @type {number} */ this.w = 1; }
+  /** @returns {number} */
+  area() { return this.w; }
+}
+/** @typedef {Row & { extra: number }} Wide */
+/** @returns {Wide} */
+export function wide() { return { ...one(), extra: 1 }; }
+`;
+/** Each use of p's kinds, as "<item> <value>[ <member>] @<function>", once. */
+const valueMarks = (r) => [...new Set(r.uses.filter((u) => u.provider === 'p' && u.value).flatMap((u) => u.where.map((w) => `${u.item} ${u.value}${u.member ? ` ${u.member}` : ''} @${w.in ?? w.test}`)))].sort();
+const marksIn = (r) => { const m = valueMarks(r); return (fn) => m.filter((x) => x.endsWith(` @${fn}`)).map((x) => x.slice(0, -fn.length - 2)); };
+
+test('the uses file says what each use does with a value of another module\'s kind: a member it reads, the whole value, or neither', () => {
+  const root = caseProduct({ ...BASE, 'src/p/index.mjs': KINDS, 'src/u/index.mjs': `import { one, all, rows, show, Box } from '../p/index.mjs';
+/** @param {unknown} x @returns {unknown} */
+function keep(x) { return x; }
+/** @returns {number} */
+export function fieldRead() { const r = one(); if (!r) return 0; return r.id; }
+/** @returns {string} */
+export function taken() { const { name, id: n } = one(); return name + n; }
+/** @returns {number} */
+export function nullTest() { const r = one(); return r === null || r === undefined ? 0 : r.id; }
+/** @returns {string} */
+export function list() { return all().map((r) => r.name).join(','); }
+/** @returns {number} */
+export function handle() { const h = rows(); return h.size(); }
+/** @returns {number} */
+export function cls() { const b = new Box(); return b.area() + b.w; }
+/** @returns {string} */
+export function nested() { return one().tags[0]?.label ?? ''; }
+/** @returns {import('../p/index.mjs').Row} */
+export function handed() { return one(); }
+/** @returns {import('../p/index.mjs').Row} */
+function inner() { return one(); }
+/** @returns {string} */
+export function passOn() { return show(inner()); }
+/** @returns {object} */
+export function spread() { return { ...one() }; }
+/** @returns {number} */
+export function keys() { return Object.keys(one()).length; }
+/** @returns {string} */
+export function text() { return JSON.stringify(one()); }
+/** @returns {boolean} */
+export function same() { return one() === one(); }
+/** @returns {string} */
+export function forIn() { const r = one(); let k = ''; for (const x in r) k += x; return k; }
+/** @returns {number} */
+export function rest() { const { id, ...others } = one(); return id + Object.keys(others).length; }
+/** @returns {string[]} */
+export function listWhole() { return all().map(show); }
+/** @returns {unknown} */
+export function stored() { const box = { r: one() }; return box; }
+/** @returns {unknown} */
+export function copied() { return structuredClone(one()); }
+/** @returns {unknown} */
+export function handleOn() { return keep(rows()); }
+/** @returns {boolean} */
+export function clsWhole() { const b = new Box(); return b instanceof Box; }
+` });
+  const r = read(root, 'u');
+  const at = marksIn(r);
+  // a read of one named member, by name, taken apart or renamed; a test of the value itself uses none of it
+  assert.deepEqual(at('fieldRead'), ['Row member id', 'Row none']);
+  assert.deepEqual(at('taken'), ['Row member id', 'Row member name', 'Row none']);
+  assert.deepEqual(at('nullTest'), ['Row member id', 'Row none']);
+  // a list's elements handed to a function written in place: each is judged where it stands in it
+  assert.deepEqual(at('list'), ['Row member name', 'Row none']);
+  // a handle's method and a class instance's members are members too
+  assert.deepEqual(at('handle'), ['Rows member size', 'Rows none']);
+  assert.deepEqual(at('cls'), ['Box member area', 'Box member w', 'Box none']);
+  // a member of a kind written inside the kind's member is the whole kind's
+  assert.ok(at('nested').includes('Row whole'), at('nested').join('; '));
+  // handed back from an export of the interface code; from any other function it is the whole value
+  assert.deepEqual(at('handed'), ['Row handed back', 'Row none']);
+  assert.ok(at('inner').includes('Row whole'), at('inner').join('; '));
+  // handed to a function, spread, its members listed, written as text, compared, iterated, its rest taken apart,
+  // handed to a function not written in place, stored, copied: the whole value
+  for (const fn of ['passOn', 'spread', 'keys', 'text', 'same', 'forIn', 'rest', 'listWhole', 'stored', 'copied']) assert.ok(at(fn).includes('Row whole'), `${fn}: ${at(fn).join('; ')}`);
+  assert.ok(at('handleOn').includes('Rows whole'), at('handleOn').join('; '));
+  assert.ok(at('clsWhole').includes('Box whole'), at('clsWhole').join('; '));
+  // only the uses of kinds, handle kinds and classes say what they do with the value
+  assert.ok(r.uses.filter((u) => u.provider === 'p' && !['Row', 'Rows', 'Box'].includes(u.item)).every((u) => u.value === undefined));
+  assert.ok(r.uses.some((u) => u.item === 'Rows.size' && u.type === 'call' && u.value === undefined));
+});
+
+test('a value of another module\'s kind is judged wherever it goes: under a wider stated kind, to a callback stated wider, through arguments, exported', () => {
+  const root = caseProduct({ ...BASE, 'src/p/index.mjs': KINDS, 'src/u/index.mjs': `import { one, all, wide } from '../p/index.mjs';
+/** @returns {string} */
+export function quoted() { const { 'name': nm } = one(); return nm; }
+/** @returns {number} */
+export function computed() { const k = 'id'; const { [k]: v } = one(); return v; }
+/** @returns {number} */
+export function nestedPattern() { let t = ''; ({ tags: [{ label: t }] } = one()); return t.length; }
+/** @returns {string} */
+export function wideWhole() { return JSON.stringify(wide()); }
+/** @returns {number} */
+export function wideRead() { return wide().extra; }
+/** @returns {string} */
+export function wider() { /** @type {object} */ const o = one(); return JSON.stringify(o); }
+/** @returns {string[]} */
+export function cbWider() { return all().map((/** @type {object} */ o) => JSON.stringify(o)); }
+/**
+ * @param {...unknown} xs
+ * @returns {number}
+ */
+function count(...xs) { return xs.length; }
+/** @returns {number} */
+export function counted() { return count(one()); }
+/** @returns {number} */
+export function listed() { return [one()].length; }
+export const kept = one();
+` });
+  const at = marksIn(read(root, 'u'));
+  for (const fn of ['quoted', 'computed', 'nestedPattern', 'wider', 'cbWider', 'counted', 'listed', '(top level)']) assert.ok(at(fn).includes('Row whole'), `${fn}: ${at(fn).join('; ')}`);
+  // a kind joined to another with &: its values are its own, the whole value used whole, a member read a member
+  assert.ok(at('wideWhole').includes('Wide whole'), at('wideWhole').join('; '));
+  assert.deepEqual(at('wideRead').filter((x) => x.startsWith('Wide')), ['Wide member extra', 'Wide none']);
+});

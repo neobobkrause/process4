@@ -3,10 +3,16 @@
 // uses; usescmd.mjs). Its form:
 //   { "module", "written": { "commit", "tool": <the tool's commit> }, "providers": [earlier modules used, in order],
 //     "uses": [ { provider, item, itemKind, type, route: "direct" | { via, item }, standard,
+//                 value: "member" | "whole" | "handed back" | "none", member,
 //                 where: [ { file, side: "code", line, in } | { file, side: "test", line, test } ] } ],
 //     "outside": [ { rule, file, side, line, mayRefer: [modules] | ["*"], waitsOn, tests: [names] } ],
 //     "orderFaults": [ { provider, item, itemKind, type, file, side, line, in | test } ],
 //     "copies": [ { provider, item, file, pointer } ] }
+// `value`, on a use of a kind, a handle kind or a class only, says what its places do with the value: read or write the
+// one `member` named; use it whole ("whole": hand it to a function, store, spread, compare, iterate, copy, write it as
+// text, or anything not proved to be one of the others; "handed back": returned from an export of the module's
+// interface code); or none of it ("none": name the kind, or hold the value under a name whose uses are listed apart).
+// A use without `value` (a file written before it) reads as "whole".
 // "*" in mayRefer stands for every module earlier than this one at the time it is read (the order can change). A place
 // in a test that no test case reaches gives `in` in place of `test`. The only hand-written part is a copy in a JSON file,
 // a `copies` entry, which the tool keeps when it rewrites the file. Also here: declared uses, imports read from the text
