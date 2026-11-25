@@ -40,11 +40,17 @@ export function makeGitHub(gh = realGh) {
       if (!pr?.number) fail('GitHub did not return a pull request');
       return pr;
     },
-    // GitHub's REST interface has no ready-for-review call, and `gh pr ready` uses GraphQL,
-    // which sessions cannot reach. Sessions reach it by their proxy's own route first.
+    // GitHub's REST interface has no ready-for-review call, and `gh pr ready` uses GraphQL, which sessions cannot
+    // reach (HTTP 403), so it is not tried: sessions reach it by their proxy's own route only, and a refusal there ends
+    // with GitHub's words (the owner's decision of 25 Nov 2026, "Mark-ready: as recommended").
     markReady: (slug, n) => {
       const r = gh(['api', '-X', 'POST', `repos/${slug}/pulls/${n}/ccr/ready_for_review`], { allowFail: true });
-      if (r === null) gh(['pr', 'ready', String(n), '-R', slug]);
+      if (r === null) fail(`GitHub would not mark pull request ${n} ready${gh.refused ? `: ${gh.refused}` : ''}`);
+    },
+    // The newest pull request of a branch in any state, or null: for a branch whose pull request has merged or closed.
+    lastPRForBranch: (slug, branch) => {
+      const owner = slug.split('/')[0];
+      return (api(`repos/${slug}/pulls?state=all&head=${owner}:${encodeURIComponent(branch)}&sort=created&direction=desc&per_page=10`) || [])[0] || null;
     },
     mergePR: (slug, n, sha, title) => send('PUT', `repos/${slug}/pulls/${n}/merge`, { sha, merge_method: 'merge', commit_title: title }),
     comments: (slug, n) => pages(`repos/${slug}/issues/${n}/comments?per_page=100`),

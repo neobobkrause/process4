@@ -2,7 +2,7 @@
 
 PROCESS is the only writer of this record (design part 5, section 5). It continues
 `design-decisions.md`, which says how the record works; both files are read. This file holds the
-later subjects and takes each new one. It was split off on 22 November 2026, when the record reached
+later subjects; `design-decisions-3.md` takes each new one since 25 November 2026. It was split off on 22 November 2026, when the record reached
 the single-text maximum; no entry was changed by the split.
 
 ## Entries

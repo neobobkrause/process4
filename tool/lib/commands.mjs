@@ -255,6 +255,10 @@ export function open(ctx, a) {
 // marks nothing and says why. In the process repository every pull request is into main: its scope is nothing.
 export function ready(ctx, n) {
   const before = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
+  // Nothing to mark: said plainly (the owner's decision of 25 Nov 2026, "Mark-ready: as recommended").
+  if (before.merged_at) { ctx.log(`pull request ${n} is merged; there is nothing to mark ready`); return 0; }
+  if (before.state === 'closed') { ctx.log(`pull request ${n} is closed; there is nothing to mark ready`); return 0; }
+  if (before.draft === false) { ctx.log(`pull request ${n} is ready already; nothing marked`); return 0; }
   const { jobBlock, record } = recordsOf(ctx, n);
   const st = recordStands(record?.data, before.head.sha, jobBlock);
   if (st.ok) ctx.log(st.why);

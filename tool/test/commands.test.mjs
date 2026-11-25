@@ -188,6 +188,23 @@ test('ready marks ready and reads it back', () => {
   assert.throws(() => ready(ctxFor(makeRepo(), stuck).ctx, 1), /still a draft/);
 });
 
+test('ready says plainly where there is nothing to mark: already ready, merged or closed', () => {
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(makeRepo(), gh);
+  gh.createPR('o/product', { head: 'work/a', base: 'tranche', draft: false });
+  const merged = gh.createPR('o/product', { head: 'work/b', base: 'tranche', draft: false });
+  merged.state = 'closed'; merged.merged_at = '2026-11-25T02:40:00Z';
+  const closed = gh.createPR('o/product', { head: 'work/c', base: 'tranche', draft: true });
+  closed.state = 'closed';
+  assert.equal(ready(ctx, 1), 0);
+  assert.equal(ready(ctx, 2), 0);
+  assert.equal(ready(ctx, 3), 0);
+  const text = out.join('\n');
+  assert.match(text, /pull request 1 is ready already; nothing marked/);
+  assert.match(text, /pull request 2 is merged; there is nothing to mark ready/);
+  assert.match(text, /pull request 3 is closed; there is nothing to mark ready/);
+});
+
 test('results reads the required run on the head commit', () => {
   const gh = fakeGitHub();
   const { ctx, out } = ctxFor(makeRepo(), gh);
