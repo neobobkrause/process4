@@ -98,7 +98,7 @@ export function makeReach(tree) {
     }
     return { files: seen, unresolved };
   }
-  return { closure, scan };
+  return { closure, scan, resolve };
 }
 
 /** Programs that share the files they have parsed, for one side; the lib files are shared by both sides. */

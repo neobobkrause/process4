@@ -72,3 +72,35 @@ did not print them). By the reproduction above, the "anything → stated" differ
 is essentially the whole of 1356's 197, and option C (a first `@throws` or `@bound` on an entry whose own running code is
 unchanged tells no one) would have told none of them; cause 2 (the brackets) was not among 1356's printed reasons.
 The printout now shows the kinds of error raised, the channel and "may now be missing" where they differ (PR 275).
+
+## A module's first comments (membership, PR 1457) and options 2C, 2C+, 2D, measured (a worker of PROCESS #13, ~06:30Z)
+
+The fault (civicsmith ARCH #19 via coordinator #9, 06:07Z, from membership #1): a module's first comments cannot be a step
+of their own, because once a module has comments `check` reads its inferred kinds as stated and its own tests disagree (a
+test indexing a nullable answer unguarded), so code changes in the same pull request and the first-comments exemption
+(whole pull request comments-only) is lost; even comments alone told 140 users on civicsmith. ARCH #19 lands membership's
+real fix and holds its comments meanwhile.
+
+"Own running code unchanged" as built: a digest of the entry's declaration node with comments and grouping brackets left
+out (`shapeOfNode` in `check.mjs`): a function declaration; a `const` statement; a class whole; a class member's own
+declaration or its `this.x = ...` statement. It misses what the entry calls (a helper in the same module or another), state
+it reads, what an import resolves to, a base class, patches made elsewhere. So "own code unchanged" is not "behaviour
+unchanged".
+
+- **Proof replay (150):** 2C changes 1 answer (Z19: `front` not told of a first `@bound` on `isEmail`, code unchanged; needs
+  []); 2C+ the same 1; 2D changes 5 (P09, P12, X06, Y08, Z19), dropping 2 users, no hole by the proof's reading, but P09 is
+  a real "newly refused" reached through a helper (`seededStore`'s own body unchanged, its helper `put` now throws). Of 175
+  `bound changed` entries, 162 are on comment-only sorts (untouched by any option); of the 13 on code-bearing entries with
+  code unchanged, 2C and 2C+ silence 1, 2D all 13 (decision 3 overridden for code-bearing entries).
+- **A membership-shaped product (20 plain-JS users; a class with delegating statics, a `#private` field, inferred
+  nullable kinds; first comments plus a one-line test fix):** told now 19; 2C 15; **2C+ 0**; 2D 0. What 2C leaves: two
+  "accepts more, not confirmed" (a class with a `#private` field is nominal, so the checker never confirms it), and three
+  `declaration changed (not classified)` (`this` → `Membership`; an inferred `{…} | null` → `Member | null`).
+- **2C+** = 2C, and on an entry whose own code is unchanged, no declaration backstop and an "accepts more" not put to the
+  checker. A helper change with a new `@throws` on the unchanged caller still tells (2D loses it). Caveat: an "accepts
+  more" the checker would refuse, on unchanged code, is caught by the user's own check later, not by a notice.
+- Cost: the digest is under 1% of a replay.
+- Found along the way: rule 52 cannot confirm a class with a `#private` field; `unbracket` mangled an optional constructor parameter
+  (`constructor_?:`; the worker ran before the 1B correction merged; to check against it); class members never list `@throws`.
+
+Prototype (switch `P4_OWNCODE`): `first-comments-2c-25nov/prototype.diff`.
