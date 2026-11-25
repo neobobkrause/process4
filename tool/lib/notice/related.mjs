@@ -84,7 +84,7 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
   // no uses file, a notice too large for the job block), or a reason names no item the tool can look up.
   const usesFile = readUsesFile(tree, module);
   const whole = !hasUsesFile(usesFile) ? [`${module} has no uses file${usesFile?.unreadable ? ` that can be read (${usesFile.unreadable})` : ' yet'}`]
-    : uses.filter((u) => u.whole || !(u.item || u.outside || u.items)).map((u) => (u.whole ? String(u.whole) : `a reason from ${u.module ?? 'a provider'} that names no item`));
+    : uses.filter((u) => u.noUsesFile || u.whole || !(u.item || u.outside || u.orderFault)).map((u) => (u.noUsesFile || u.whole ? String(u.noUsesFile || u.whole) : `a reason from ${u.module ?? 'a provider'} that names no item`));
   if (whole.length) {
     for (const t of tests) for (const w of whole) give(t, `${RULES.step3}: ${w}`);
     return result();
@@ -191,7 +191,11 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     const items = u.item ? [u.item] : [];
     const now = items.length ? usesFile.uses.filter((x) => x.provider === u.module && items.some((c) => named(c, x.item))).flatMap((x) => x.where) : [];
     if (now.length) { for (const w of now) target(w.file, Number(w.line) || 1); continue; }
-    for (const w of u.places ?? []) target(w.file, mapLine(diff.get(w.file) ?? [], Number(w.line) || 1));
+    // a place of a reason, `<file>:<line> <function or test>`
+    for (const at of u.places ?? []) {
+      const m = /^(\S+?):(\d+)(?:\s|$)/.exec(String(at));
+      if (m) target(m[1], mapLine(diff.get(m[1]) ?? [], Number(m[2])));
+    }
   }
   // A changed test file is in the list for itself; its own changed lines are not counted again.
   for (const [f, hs] of diff) if (own.has(f) && !tests.includes(f)) for (const line of changedLines(hs)) { const p = pieceAt(f, line); if (p) changedTargets.add(p); }

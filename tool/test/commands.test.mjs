@@ -7,6 +7,7 @@ import { block, parseBlock } from '../lib/github.mjs';
 import { writeNotice } from '../lib/noticecomments.mjs';
 import { mark } from '../lib/state.mjs';
 import { TEST_MARK } from '../lib/testrecord.mjs';
+import { MEANING_MARK } from '../lib/round.mjs';
 import { git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
@@ -75,21 +76,21 @@ test('push --blocked writes the job\'s record on its pull request, rewritten in 
   assert.throws(() => push(ctx, { _: [], blocked: true }), /--blocked <module>/);
 });
 
-test('push --meaning declares a change of meaning in the job\'s record, kept when the record is rewritten; a later line for the item takes its place', () => {
+test('push --meaning declares a change of meaning in the pull request\'s meaning comment; a later line for the item takes its place', () => {
   const root = product();
   const gh = fakeGitHub();
   const { ctx, out } = ctxFor(root, gh);
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
-  push(ctx, { _: [], meaning: ['total | the whole stay | one night', 'dates parseDay | a day | a day and a time'] });
-  assert.match(out.join('\n'), /a change of meaning of total \(was: the whole stay; is now: one night\)/);
-  push(ctx, { _: ['dates refuses a leap day'], blocked: 'dates' });
-  push(ctx, { _: [], meaning: 'total | the whole stay | two nights' });
+  push(ctx, { _: ['the whole stay; one night', 'a day; a day and a time'], meaning: ['total', 'parseDay'] });
+  assert.match(out.join('\n'), /declared on pull request 1: a change of meaning of total \(the whole stay; one night\)/);
+  push(ctx, { _: ['dates refuses a leap day', 'the whole stay; two nights'], blocked: 'dates', meaning: 'total' });
+  const meaning = gh.s.comments.map((c) => parseBlock(c.body, MEANING_MARK)).filter(Boolean);
+  assert.deepEqual(meaning.map((r) => r.data), [{ meaning: [{ item: 'parseDay', line: 'a day; a day and a time' }, { item: 'total', line: 'the whole stay; two nights' }] }]);
   const recs = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).filter(Boolean);
-  assert.deepEqual(recs.map((r) => r.data), [{ blocked: { by: 'dates', why: 'dates refuses a leap day' },
-    meaning: [{ module: 'dates', item: 'parseDay', was: 'a day', is: 'a day and a time' }, { item: 'total', was: 'the whole stay', is: 'two nights' }] }]);
-  assert.throws(() => push(ctx, { _: [], meaning: 'total, the whole stay' }), /say a change of meaning as/);
-  assert.throws(() => push(ctx, { _: [], meaning: true }), /say --meaning/);
+  assert.deepEqual(recs.map((r) => r.data), [{ blocked: { by: 'dates', why: 'dates refuses a leap day' } }]);
+  assert.throws(() => push(ctx, { _: [], meaning: 'total' }), /say --meaning <item> "<what it was; what it is now>"/);
+  assert.throws(() => push(ctx, { _: ['x'], meaning: true }), /say --meaning/);
 });
 
 test('open --module writes the job block from the requirements and waiting work, and prints the job text', () => {
@@ -121,17 +122,21 @@ test('open --module writes the job block from the requirements and waiting work,
   assert.match(out.join('\n'), /job block:[\s\S]*"walk flaw t1-1-I-1-1 L"/);
 });
 
-test('open --module names in the job block each item whose meaning the placed work changes: given with --meaning, or on a waiting-work entry', () => {
+test('open --module copies the module\'s meaning entries from waiting work into the job block\'s meaning', () => {
   const root = product();
   const gh = fakeGitHub();
   const { ctx } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
-  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'walk-flaw', flaw: 't1-1-I-1-1', link: 'L', meaning: [{ item: 'total', was: 'the whole stay', is: 'one night' }] }] }));
+  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'meaning', item: 'total', line: 'the whole stay; one night' },
+    { module: 'dates', kind: 'meaning', item: 'parseDay', line: 'a day; a day and a time' }] }));
   stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
   branch(ctx, 'job/orders/1');
-  assert.equal(open(ctx, { _: [], module: 'orders', meaning: 'Order.price | in cents | in euros' }), 0);
+  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
   const job = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
-  assert.deepEqual(job.meaning, [{ item: 'total', was: 'the whole stay', is: 'one night' }, { item: 'Order.price', was: 'in cents', is: 'in euros' }]);
+  assert.deepEqual(job.meaning, [{ item: 'total', line: 'the whole stay; one night' }]);
+  assert.ok(job.work.includes('change of meaning of total: the whole stay; one night'));
+  const ww = parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data;
+  assert.deepEqual(ww.work.map((w) => w.module), ['dates']);
 });
 
 test('a job whose only work is notices is told; with other work it is ordinary and keeps the uses', () => {

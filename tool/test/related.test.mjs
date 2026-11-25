@@ -78,8 +78,8 @@ function merged(files, branch = 'job/orders/2') {
 const list = (root, base, uses) => relatedList({ dir: root, gitRoot: root, base, after: 'HEAD', module: 'orders', uses });
 const files = (r) => Object.fromEntries(r.files.map((f) => [f.file, f.reasons]));
 // A notice's reason: the changed item and the first places the notice named.
-const place = (...at) => [{ module: 'dates', item: 'parseDay', found: ['its means'], changes: ['bound changed'], why: 'w',
-  places: at.map((x) => { const [file, line] = x.split(':'); return { file, line: Number(line), side: file.startsWith('test/') ? 'test' : 'code' }; }) }];
+const place = (...at) => [{ module: 'dates', item: 'parseDay', found: 'means', changes: ['bound changed'], why: null,
+  route: 'direct', places: at }];
 const HOLDS = 'holds a place its uses file names for a changed item';
 const REACHES = 'reaches a piece that holds a place its uses file names for a changed item';
 
@@ -147,7 +147,7 @@ test('step 2: a test file with an import the reader cannot resolve is related', 
 test('the whole module: a reason that says so, or a module with no uses file yet; walk folders are never in the list', () => {
   const { root, base } = merged({ 'README.md': 'x\n' });
   const all = ['test/orders/apply.test.mjs', 'test/orders/bill.test.mjs', 'test/orders/day.test.mjs', 'test/orders/plain.test.mjs'];
-  const r = list(root, base, [{ module: 'dates', items: ['parseDay'], found: ['no uses file'], why: 'w', whole: 'orders has no uses file yet: its whole tests run' }]);
+  const r = list(root, base, [{ module: 'dates', items: ['parseDay'], found: 'any change', changes: [], why: 'w', noUsesFile: 'orders has no uses file yet: its whole tests run' }]);
   assert.equal(r.whole, true);
   assert.deepEqual(r.files.map((f) => f.file), all);
   assert.deepEqual(r.files[0].reasons, ['the whole module: orders has no uses file yet: its whole tests run']);

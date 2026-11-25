@@ -4,17 +4,17 @@
 // What changed: each item's means (means.mjs), worked out on both sides with the same tool and settings, and compared;
 // every item whose means differs, or that is removed, is a changed item. Where only what it accepts differs, and the
 // type checker confirms that the new item accepts more (rule 52, rule 7 for the tool), it tells no one. A new item tells
-// no one. An item's first means, at the module's conversion (no uses file before, one after), tells no one. An unknown
-// kind becoming known tells no one (the owner's decision 2 of 25 November and its union case, decision 1B). Added to
-// these: the items whose meaning ARCH names in the work it placed, and the job declares in its pull request (`named`):
-// a name or a declaration may add a changed item, never remove one.
+// no one. An item's first means, at the module's conversion (a merged job whose block's kind is `conversion`), tells
+// no one. An unknown kind becoming known tells no one (the owner's decision 2 of 25 November and its union case,
+// decision 1B). Added to these: the items whose meaning ARCH names in the work it placed, and the pull request declares
+// (`named`): a name or a declaration may add a changed item, never remove one.
 //
-// Who is told: a lookup in the later modules' uses files, with no user's code read. Each module whose uses file names a
-// changed item (by its provider and name, whatever the route through a middle module), each module with a place
-// outside the standard that may refer to the changed module, and each module with an order fault naming it; a module
-// with no uses file yet, of every change of an earlier module it imports (the import scan, imports.mjs). Each is told
-// once, with one reason for each changed item it uses: the item, how it was found, the one-line why, and the places
-// from its uses file (its first six and how many more).
+// Who is told (build text 5, section 6): a lookup in the later modules' uses files, with no user's code read. Each
+// module whose uses file names a changed item or a member of a changed type (by its provider and name, whatever the
+// route), or holds a marked copy of one; each module with an order fault naming the changed module; and, on any change
+// to the provider's files whether or not an item changed, each module with a place outside the standard whose `mayRefer`
+// names the provider and each later module with no uses file yet that imports it (the import scan, imports.mjs). Each
+// is told once, with the reasons of build text 5, section 5.
 import fs from 'node:fs';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, readerVersion, standardOptions, tagsOf, tagText } from './ts.mjs';
@@ -27,8 +27,8 @@ import { hasUsesFile, readUsesFile } from '../usesfile.mjs';
 /** A reason keeps the first six places it names, and says how many more there are, so a notice keeps a size. */
 export const PLACES_SHOWN = 6;
 
-/** How each changed item was found (design part 2, section 7). */
-export const FOUND = { means: 'its means', named: "ARCH's placed work", declared: "the job's declaration" };
+/** How each changed item was found (design part 2, section 7), in words. */
+export const FOUND = { means: 'its means', named: "ARCH's placed work", declared: "the pull request's declaration" };
 
 /**
  * An unknown kind becoming known tells no one (design part 2, section 7, "What counts as a change"): where the reader
@@ -181,32 +181,32 @@ function partsThatDiffer(b, a) {
 /** Whether a used item is reached by a changed one: the same item, or a member or field of it (Amount.cents, Rooms.find of Rooms). */
 const matches = (changed, used) => used === changed || used.startsWith(`${changed}.`) || used.startsWith(`${changed}#`);
 
-/** A place of a uses file in its printed form: file:line, and for a test its case's name. */
-export const placeText = (w) => `${w.file}${w.line ? `:${w.line}` : ''}${w.test ? ` (test "${w.test}")` : ''}`;
+/** A place of a uses file in a reason's form: `<file>:<line>`, then its function or, in a test, its test case's name. */
+export const placeText = (w) => `${w.file}${w.line ? `:${w.line}` : ''}${w.test ? ` ${w.test}` : w.in ? ` ${w.in}` : ''}${w.pointer ? ` ${w.pointer}` : ''}`;
 
-/** The first places of a reason, and how many more. */
+/** A reason's places: the first six, then `and N more`, so a notice is never lost for its size (build text 5, section 5). */
 function firstPlaces(where) {
   const seen = new Map();
-  for (const w of where) seen.set(`${w.file}|${w.line}|${w.test ?? ''}`, w);
+  for (const w of where) seen.set(`${w.file}|${w.line ?? ''}|${w.test ?? ''}|${w.pointer ?? ''}`, w);
   const all = [...seen.values()].sort((x, y) => (x.file < y.file ? -1 : x.file > y.file ? 1 : (x.line ?? 0) - (y.line ?? 0)));
-  return { places: all.slice(0, PLACES_SHOWN), ...(all.length > PLACES_SHOWN ? { more: all.length - PLACES_SHOWN } : {}) };
+  return [...all.slice(0, PLACES_SHOWN).map(placeText), ...(all.length > PLACES_SHOWN ? [`and ${all.length - PLACES_SHOWN} more`] : [])];
 }
 
 /**
  * The changed items of one module between two sides.
- * @param named [{ item, was, is, found: 'named' | 'declared' }] the items whose meaning ARCH named or the job declared
+ * @param named [{ module?, item, line, found: 'named' | 'declared' }]: the items whose meaning ARCH named or the pull
+ *   request declared; one with no module (a pull request that is not a job's) belongs to this module where it has the item
+ * @param conversion true where the merged pull request is the module's conversion: its first means tell no one
  */
-export function changedItems(treeB, treeA, moduleId, named = []) {
+export function changedItems(treeB, treeA, moduleId, { named = [], conversion = false } = {}) {
   const mb = treeB.byId.has(moduleId) ? moduleMeans(treeB, moduleId) : { items: {} };
   const ma = treeA.byId.has(moduleId) ? moduleMeans(treeA, moduleId) : { items: {} };
-  // The first means, at the module's conversion: no uses file before, one after.
-  const firstMeans = treeB.byId.has(moduleId) && !hasUsesFile(readUsesFile(treeB, moduleId)) && hasUsesFile(readUsesFile(treeA, moduleId));
   const confirm = makeConfirm(treeB, treeA, moduleId);
   const out = [];
   const fresh = [];
   for (const item of [...new Set([...Object.keys(mb.items), ...Object.keys(ma.items)])].sort()) {
     const b = mb.items[item], a = ma.items[item];
-    if (!a) { out.push({ module: moduleId, item, found: ['means'], changes: ['removed'], tells: true, why: `removed (was ${b.kind})`, before: describe(b), after: null }); continue; }
+    if (!a) { out.push({ module: moduleId, item, found: 'means', changes: ['removed'], tells: !conversion, why: null, before: describe(b), after: null }); continue; }
     if (!b) { fresh.push(item); continue; }
     const c = compareItem(b, a);
     if (!c) continue;
@@ -217,20 +217,20 @@ export function changedItems(treeB, treeA, moduleId, named = []) {
       if (r.confirmed) tells = false;
       else { c.parts = ['cannot stand in']; notConfirmed = r.why; }
     }
-    if (firstMeans) tells = false;
-    out.push({ module: moduleId, item, found: ['means'], changes: c.parts, tells, why: c.why, ...(notConfirmed ? { notConfirmed } : {}), ...partsThatDiffer(b, a) });
+    if (conversion) tells = false;
+    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells, why: null, words: c.why, ...(notConfirmed ? { notConfirmed } : {}), ...partsThatDiffer(b, a) });
   }
-  for (const n of named) {
+  const mine = named.filter((n) => (n.module ? n.module === moduleId : !!(ma.items[n.item] ?? mb.items[n.item])));
+  for (const n of mine) {
     const had = out.find((x) => x.item === n.item);
-    const words = `meaning: ${n.was || '(not said)'} -> ${n.is || '(not said)'}`;
     if (had) {
-      if (!had.found.includes(n.found)) had.found.push(n.found);
       if (!had.changes.includes('meaning changed')) had.changes.push('meaning changed');
-      had.why = `${had.why}; ${words}`;
+      had.why = had.why ? `${had.why}; ${n.line}` : n.line;
+      had.namedBy = [...new Set([...(had.namedBy ?? []), n.found])];
       had.tells = true;
-    } else out.push({ module: moduleId, item: n.item, found: [n.found], changes: ['meaning changed'], tells: true, why: words, before: { meaning: n.was ?? null }, after: { meaning: n.is ?? null } });
+    } else out.push({ module: moduleId, item: n.item, found: n.found, changes: ['meaning changed'], tells: true, why: n.line, before: { meaning: n.line.split(';')[0].trim() }, after: { meaning: n.line.split(';').slice(1).join(';').trim() } });
   }
-  return { module: moduleId, changed: out, fresh, firstMeans, meansAfter: ma };
+  return { module: moduleId, changed: out, fresh, conversion };
 }
 
 /**
@@ -238,89 +238,101 @@ export function changedItems(treeB, treeA, moduleId, named = []) {
  * @param before the product before the change (a folder, or loadTree's product)
  * @param after the product after it
  * @param provider the module that changed
- * @param named the items whose meaning ARCH named or the job declared: [{ module?, item, was, is, found }]
+ * @param o.named the items whose meaning ARCH named or the pull request declared
+ * @param o.filesChanged whether the merge changed the provider's files (a change that only names an item's meaning does not)
+ * @param o.conversion whether the merged pull request is the provider's conversion
  */
-export function notice(before, after, provider, { named = [] } = {}) {
+export function notice(before, after, provider, { named = [], filesChanged = true, conversion = false } = {}) {
   loadReader();
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const B = treeOf(before), A = treeOf(after);
   if (!A.byId.has(provider)) throw new Error(`no such module: ${provider}`);
-  const report = { provider, reader: `TypeScript ${readerVersion()}`, firstMeans: false, changed: [], fresh: [], told: [], summary: '' };
-  const mine = changedItems(B, A, provider, named.filter((n) => (n.module ?? provider) === provider));
-  report.firstMeans = mine.firstMeans;
+  const report = { provider, reader: `TypeScript ${readerVersion()}`, conversion, changed: [], fresh: [], told: [], summary: '' };
+  const mine = changedItems(B, A, provider, { named, conversion });
   report.fresh = mine.fresh;
   report.changed.push(...mine.changed);
   // A new operation whose name another module already answers: that module's operation now answers differently
   // (iteration 2 of the proof), so its users are told.
   const newOps = mine.fresh.filter((n) => n.startsWith('op:'));
-  if (newOps.length) {
+  if (newOps.length && !conversion) {
     // only a module whose own code marks a table of operations can answer one (build text 2b, section 5)
     const answers = (m) => m.src.some((f) => { try { return /@optable\b/.test(fs.readFileSync(f, 'utf8')); } catch { return false; } });
     for (const m of A.modules) {
       if (m.id === provider || !answers(m)) continue;
       const l = makeLister(makeProgram(m.src, undefined, standardOptions()), A).list(m);
-      for (const op of newOps) if (l.entries[op]) report.changed.push({ module: m.id, item: op, found: ['means'], changes: [`${provider} now answers the same name`], tells: true, why: `${provider} now answers the operation ${op.slice(3)} too` });
+      for (const op of newOps) if (l.entries[op]) report.changed.push({ module: m.id, item: op, found: 'means', changes: [`${provider} now answers the same name`], tells: true, why: null, words: `${provider} now answers the operation ${op.slice(3)} too` });
     }
   }
   const telling = report.changed.filter((c) => c.tells);
-  if (!telling.length) {
-    report.summary = report.firstMeans ? `${provider}'s first means (its conversion): no item tells anyone.`
-      : report.changed.length ? 'No changed item tells anyone (each only accepts more, as the type checker confirms).' : 'No item\'s means changed. Nobody is told.';
-    return report;
-  }
-  // Who is told: the later modules' uses files, before and after the change, read as one.
+  // The modules whose changed items are told; and the provider, whose files changed, for those that hear of any change.
   const byModule = new Map();
   for (const c of telling) { if (!byModule.has(c.module)) byModule.set(c.module, []); byModule.get(c.module).push(c); }
+  if (filesChanged && !byModule.has(provider)) byModule.set(provider, []);
   const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
   const indexOf = (id) => A.byId.get(id)?.index ?? B.byId.get(id)?.index ?? -1;
   const follows = { A: null, B: null };
+  const itemsOf = (m) => byModule.get(m).map((c) => c.item);
+  const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   for (const user of order) {
-    const changedBefore = [...byModule.keys()].filter((m) => indexOf(m) < indexOf(user));
-    if (!changedBefore.length) continue;
+    const before = [...byModule.keys()].filter((m) => indexOf(m) < indexOf(user));
+    if (!before.length) continue;
     const ub = readUsesFile(B, user), ua = readUsesFile(A, user);
     const files = [ub, ua].filter(hasUsesFile);
     const reasons = [];
     if (!files.length) {
-      // No uses file yet (before the module's conversion): told of every change of an earlier module it imports.
+      // No uses file yet (before the module's conversion): told of any change to the files of an earlier module it
+      // imports, whether or not an item changed.
       follows.A ??= makeFollow(A); follows.B ??= makeFollow(B);
       const imported = new Set([...follows.A.importedModules(user), ...follows.B.importedModules(user)]);
-      for (const m of changedBefore.filter((x) => imported.has(x))) {
-        const items = byModule.get(m).map((c) => c.item);
-        reasons.push({ module: m, items, found: ['no uses file'], why: `${user} has no uses file yet${[ub, ua].find((u) => u?.unreadable) ? ` (it cannot be read: ${[ub, ua].find((u) => u?.unreadable).unreadable})` : ''} and imports ${m}: told of every change of it`, whole: `${user} has no uses file yet: its whole tests run` });
+      const unreadable = [ub, ua].find((u) => u?.unreadable)?.unreadable;
+      for (const m of before.filter((x) => imported.has(x) && (x === provider ? filesChanged : true))) {
+        reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${user} has no uses file${unreadable ? ` that can be read (${unreadable})` : ' yet'} and imports ${m}`,
+          noUsesFile: `${user} has no uses file yet: its whole tests run` });
       }
     } else {
       // The file before and after the change, read as one: each entry once.
       const once = (list) => [...new Map(list.map((x) => [JSON.stringify(x), x])).values()];
       const uses = files.flatMap((f) => f.uses);
+      const copies = once(files.flatMap((f) => (Array.isArray(f.copies) ? f.copies : [])));
       const outside = once(files.flatMap((f) => f.outside));
       const faults = once(files.flatMap((f) => f.orderFaults));
-      for (const m of changedBefore) {
+      for (const m of before) {
         for (const c of byModule.get(m)) {
           const hits = uses.filter((u) => u.provider === m && matches(c.item, u.item));
-          if (!hits.length) continue;
-          reasons.push({ module: m, item: c.item, found: c.found.map((f) => FOUND[f] ?? f), changes: [...c.changes], why: c.why, ...firstPlaces(hits.flatMap((h) => h.where)), ...(c.before !== undefined ? { before: c.before, after: c.after } : {}) });
+          const marked = copies.filter((x) => x.provider === m && typeof x.item === 'string' && matches(c.item, x.item));
+          if (!hits.length && !marked.length) continue;
+          const route = hits.some((h) => h.route === 'direct' || !h.route) || !hits.length ? 'direct' : hits[0].route;
+          reasons.push({ module: m, item: c.item, found: c.found, ...(c.namedBy ? { namedBy: c.namedBy } : {}), changes: [...c.changes], why: c.why ?? null, route,
+            places: firstPlaces([...hits.flatMap((h) => h.where), ...marked.map((x) => ({ file: x.file, line: x.line, pointer: x.pointer }))]),
+            ...(c.before !== undefined ? { before: c.before, after: c.after } : {}) });
         }
-        // A place outside the standard is told of every change of the modules it may refer to; where it cannot say
-        // which, of every earlier module (design part 2, section 7, rule 2 for the tool).
-        for (const o of outside) {
-          const may = Array.isArray(o.mayRefer) ? o.mayRefer.map(String) : [];
-          if (may.length && !may.includes('*') && !may.includes(m)) continue;
-          const items = byModule.get(m).map((c) => c.item);
-          reasons.push({ module: m, items, found: ['a place outside the standard'], outside: `${o.rule ?? 'outside the standard'} at ${placeText(o)}`,
-            why: `a place outside the coding standard (${o.rule ?? 'no rule named'}) that may refer to ${may.length && !may.includes('*') ? may.join(', ') : 'any earlier module'}: told of every change of ${m}`,
-            ...firstPlaces([{ file: o.file, line: o.line, side: o.side, ...(o.tests?.length ? { test: o.tests.join('; ') } : {}) }]) });
+        // A place outside the standard hears of any change to the files of a module it may refer to, until a job
+        // converts it; where it cannot say which (`*`, or no `mayRefer`), of every earlier module (design part 2, section
+        // 7, rule 2 for the tool). One whose `mayRefer` is empty refers to no other module.
+        if (m === provider ? filesChanged : true) {
+          for (const o of outside) {
+            const may = Array.isArray(o.mayRefer) ? o.mayRefer.map(String) : ['*'];
+            if (!may.includes('*') && !may.includes(m)) continue;
+            reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], outside: `${o.rule ?? 'outside'} ${o.file}:${o.line ?? ''}`,
+              why: `${anyChange(m)}; a place outside the coding standard that may refer to ${may.includes('*') ? 'any earlier module' : may.join(', ')}`,
+              places: firstPlaces([{ file: o.file, line: o.line, ...(o.tests?.length ? { test: o.tests.join('; ') } : {}) }]) });
+          }
         }
         // An order fault naming the changed module.
-        for (const f of faults) {
-          const names = typeof f === 'string' ? [f] : [f.provider, f.module, f.uses, ...(Array.isArray(f.mayRefer) ? f.mayRefer : [])].filter(Boolean);
-          if (!names.includes(m)) continue;
-          reasons.push({ module: m, items: byModule.get(m).map((c) => c.item), found: ['an order fault'], why: `an order fault names ${m}: told of every change of it`, ...(f.file ? firstPlaces([{ file: f.file, line: f.line, side: f.side }]) : { places: [] }) });
+        if (byModule.get(m).length) {
+          for (const f of faults) {
+            const names = typeof f === 'string' ? [f] : [f.provider, f.module, ...(Array.isArray(f.mayRefer) ? f.mayRefer : [])].filter(Boolean);
+            if (!names.includes(m)) continue;
+            reasons.push({ module: m, items: itemsOf(m), found: 'order fault', changes: [], orderFault: `${f.rule ?? 'order'} ${f.file ?? ''}:${f.line ?? ''}`,
+              why: `${anyChange(m)}; an order fault names ${m}`, places: f.file ? firstPlaces([{ file: f.file, line: f.line }]) : [] });
+          }
         }
       }
     }
     if (reasons.length) report.told.push({ user, reasons });
   }
-  report.summary = `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`;
+  report.summary = telling.length ? `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`
+    : `${conversion ? `${provider}'s conversion: its first means tell no one` : report.changed.length ? 'No changed item tells anyone (each only accepts more, as the type checker confirms)' : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`;
   return report;
 }
 
@@ -328,18 +340,17 @@ export function notice(before, after, provider, { named = [] } = {}) {
 export function noticeText(r) {
   const L = [`Notice for a change to ${r.provider} (${r.reader})`, r.summary];
   for (const c of r.changed) {
-    L.push(`  ${c.module} ${c.item}: ${c.changes.join(', ')} [found by ${c.found.map((f) => FOUND[f] ?? f).join(', ')}] -> tells ${c.tells ? 'its users' : 'no one'}`);
-    if (c.why) L.push(`      why: ${c.why}`);
+    L.push(`  ${c.module} ${c.item}: ${c.changes.join(', ')} [found by ${[c.found, ...(c.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}] -> tells ${c.tells ? 'its users' : 'no one'}`);
+    if (c.words) L.push(`      means: ${c.words}`);
+    if (c.why) L.push(`      meaning: ${c.why}`);
     if (c.notConfirmed) L.push(`      accepts more, not confirmed: ${c.notConfirmed}`);
   }
   for (const t of r.told) {
     L.push(`  TOLD ${t.user}`);
     for (const x of t.reasons) {
-      const at = [...(x.places ?? []).map(placeText), ...(x.more ? [`and ${x.more} more`] : [])].join(', ');
-      if (x.whole) L.push(`      ${x.module} ${x.items.join(', ')}: ${x.why}`);
-      else if (x.outside) L.push(`      ${x.module} ${x.items.join(', ')}: ${x.why}, at ${at}`);
-      else if (x.items) L.push(`      ${x.module} ${x.items.join(', ')}: ${x.why}${at ? `, at ${at}` : ''}`);
-      else L.push(`      uses ${x.module} ${x.item} (${x.changes.join(', ')}; found by ${x.found.join(', ')}) at ${at || 'no place named'}`);
+      const at = (x.places ?? []).join(', ');
+      if (x.item) L.push(`      uses ${x.module} ${x.item} (${x.changes.join(', ')}; found by ${[x.found, ...(x.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}) at ${at || 'no place named'}`);
+      else L.push(`      ${x.outside ? `outside the standard, ${x.outside}` : x.orderFault ? `order fault, ${x.orderFault}` : 'no uses file'}: ${x.why}`);
     }
   }
   return L.join('\n');

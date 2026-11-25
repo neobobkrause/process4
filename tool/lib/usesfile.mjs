@@ -41,13 +41,14 @@ export const hasUsesFile = (u) => !!u && !u.unreadable;
 
 /**
  * The modules a uses file says the module may use: the providers it names, those its uses name, and those a place
- * outside the standard may refer to (`mayRefer`; where it names none, or `*`, every earlier module, given as '*').
+ * outside the standard may refer to (`mayRefer`; `*`, or no `mayRefer`, is every earlier module, given as '*'; an empty
+ * `mayRefer` refers to no other module).
  */
 export function providersOf(u) {
   const out = new Set([...(u.providers ?? []), ...(u.uses ?? []).map((x) => x.provider)]);
   for (const o of u.outside ?? []) {
-    const may = Array.isArray(o.mayRefer) ? o.mayRefer : [];
-    if (!may.length || may.includes('*')) out.add('*');
+    const may = Array.isArray(o.mayRefer) ? o.mayRefer : ['*'];
+    if (may.includes('*')) out.add('*');
     for (const m of may) if (m !== '*') out.add(String(m));
   }
   return out;

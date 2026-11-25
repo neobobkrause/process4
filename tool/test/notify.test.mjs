@@ -6,12 +6,12 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
-import { notice, noticeText, placeText } from '../lib/notice/notice.mjs';
+import { notice, noticeText } from '../lib/notice/notice.mjs';
 import { moduleMeans } from '../lib/notice/means.mjs';
 import { check } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
 import { NOTICE_LIMIT, NOTICE_MARK, cutReason, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
-import { JOB_MARK, RECORD_MARK } from '../lib/round.mjs';
+import { JOB_MARK, MEANING_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
@@ -137,8 +137,8 @@ test('notify tells the users of a changed item, found in their uses files: their
   const text = out.join('\n');
   assert.match(text, new RegExp(`before ${git(['rev-parse', `${sha}^1`], { cwd: root }).slice(0, 10)} \\(first parent\\), after ${sha.slice(0, 10)}`));
   assert.match(text, /Notice for a change to dates \(TypeScript 5\.6\.3\)\n3 items changed in a way that tells; 2 module\(s\) told\./);
-  assert.match(text, /dates parseDay: bound changed \[found by its means\] -> tells its users\n {6}why: bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30/);
-  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed; found by its means\) at src\/orders\/index\.mjs:6\n {6}uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6\n/);
+  assert.match(text, /dates parseDay: bound changed \[found by its means\] -> tells its users\n {6}means: bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30/);
+  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay\n {6}uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay\n/);
   assert.match(text, /TOLD report\n {6}uses dates Day \(bound changed; found by its means\) at src\/report\/index\.mjs:3\n {6}uses dates formatDay \(bound changed; found by its means\) at src\/report\/index\.mjs:3/);
   const work = waitingWork(gh).work;
   assert.equal(work.length, 3);
@@ -151,8 +151,9 @@ test('notify tells the users of a changed item, found in their uses files: their
   assert.match(text, /the notice from dates is written on pull request 7 \(1 comment\(s\)\)/);
   const uses = noticeReasons(gh, 'o/product', orders);
   const day = uses.find((u) => u.item === 'Day');
-  assert.deepEqual(day, { module: 'dates', item: 'Day', found: ['its means'], changes: ['bound changed'], why: 'bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30',
-    places: [{ file: 'src/orders/index.mjs', side: 'code', line: 6, in: 'orderDay' }], before: { bounds: ['n: whole number, 1 to 31'] }, after: { bounds: ['n: whole number, 1 to 30'] } });
+  // The reason of build text 5, section 5.
+  assert.deepEqual(day, { module: 'dates', item: 'Day', found: 'means', changes: ['bound changed'], why: null, route: 'direct',
+    places: ['src/orders/index.mjs:6 orderDay'], before: { bounds: ['n: whole number, 1 to 31'] }, after: { bounds: ['n: whole number, 1 to 30'] } });
   assert.deepEqual(uses.map((u) => u.item).sort(), ['Day', 'parseDay']);
   // Run again for the same merge: its own entries and its own comments are rewritten, not doubled.
   const count = gh.s.comments.length;
@@ -327,7 +328,7 @@ test('notify on a merge that changes no item\'s means tells nobody, reads no use
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
-  assert.match(out.join('\n'), /Notice for a change to dates[^\n]*\nNo item's means changed\. Nobody is told\./);
+  assert.match(out.join('\n'), /Notice for a change to dates[^\n]*\nNo item's means changed; nobody is told\./);
   assert.doesNotMatch(out.join('\n'), /TOLD/);
   assert.equal(gh.s.comments.length, 0);
   gh.s.prs.push({ number: 9, state: 'closed', merged_at: null, head: { ref: 'x' }, base: { ref: 'main' } });
@@ -347,7 +348,7 @@ test('who is told is a lookup in the later modules\' uses files: a module whose 
   write(after, { ...withUses, 'src/dates/index.mjs': DATES('1 to 31').replace('return String(d.n);', "if (d.n < 0) throw new RangeError('n'); return String(d.n);") });
   const r = notice(before, after, 'dates');
   assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes}`), ['formatDay: errors that can leave it changed']);
-  assert.match(r.changed[0].why, /^errors that can leave it changed: none -> RangeError$/);
+  assert.match(r.changed[0].words, /^errors that can leave it changed: none -> RangeError$/);
   assert.deepEqual(r.told.map((t) => t.user), ['report']);
 });
 
@@ -369,15 +370,20 @@ test('a module named through a middle module is told; a place outside the standa
   const r = notice(before, after, 'dates');
   assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report', 'far', 'loose', 'late']);
   const far = r.told.find((t) => t.user === 'far').reasons;
-  assert.deepEqual(far.map((x) => [x.item, x.places]), [['Day', [{ file: 'test/far/index.test.mjs', side: 'test', line: 9, test: 'far > reads a day' }]]]);
-  assert.match(noticeText(r), /TOLD far\n {6}uses dates Day \(bound changed; found by its means\) at test\/far\/index\.test\.mjs:9 \(test "far > reads a day"\)/);
+  assert.deepEqual(far.map((x) => [x.item, x.places, x.route]), [['Day', ['test/far/index.test.mjs:9 far > reads a day'], { via: 'orders', item: 'orderDay' }]]);
+  assert.match(noticeText(r), /TOLD far\n {6}uses dates Day \(bound changed; found by its means\) at test\/far\/index\.test\.mjs:9 far > reads a day/);
   const loose = r.told.find((t) => t.user === 'loose').reasons;
-  assert.deepEqual(loose.map((x) => [x.module, x.items, x.found, x.outside]), [['dates', ['Day', 'formatDay', 'parseDay'], ['a place outside the standard'], 'R1 at src/loose/index.mjs:1']]);
-  assert.deepEqual(r.told.find((t) => t.user === 'late').reasons.map((x) => x.found), [['an order fault']]);
-  // A change that tells no one tells none of them either.
+  assert.deepEqual(loose.map((x) => [x.module, x.items, x.found, x.outside]), [['dates', ['Day', 'formatDay', 'parseDay'], 'any change', 'R1 src/loose/index.mjs:1']]);
+  assert.deepEqual(r.told.find((t) => t.user === 'late').reasons.map((x) => [x.found, x.orderFault]), [['order fault', 'order src/late/index.mjs:1']]);
+  // A change to dates' files that changes no item's means (a new item) tells only the place outside the standard, which
+  // hears of any change until converted.
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
   const n = notice(before, after, 'dates');
-  assert.deepEqual([n.changed, n.fresh, n.told], [[], ['today'], []]);
+  assert.deepEqual([n.changed, n.fresh, n.told.map((t) => t.user)], [[], ['today'], ['loose']]);
+  assert.match(n.told[0].reasons[0].why, /^its files changed, though no item's means did; a place outside the coding standard that may refer to any earlier module$/);
+  // A change that only names an item's meaning, with no file changed, tells no place outside the standard of it.
+  const m = notice(before, before, 'dates', { filesChanged: false, named: [{ item: 'parseDay', line: 'a; b', found: 'named' }] });
+  assert.deepEqual(m.told.map((t) => t.user), ['orders', 'late']);
 });
 
 test('a module with no uses file yet is told of every change of an earlier module it imports, and its whole tests run', () => {
@@ -393,22 +399,24 @@ test('a module with no uses file yet is told of every change of an earlier modul
   write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(before, after, 'dates');
   assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report', 'old']);
-  assert.deepEqual(r.told.find((t) => t.user === 'old').reasons, [{ module: 'dates', items: ['Day', 'formatDay', 'parseDay'], found: ['no uses file'],
-    why: 'old has no uses file yet and imports dates: told of every change of it', whole: 'old has no uses file yet: its whole tests run' }]);
+  assert.deepEqual(r.told.find((t) => t.user === 'old').reasons, [{ module: 'dates', items: ['Day', 'formatDay', 'parseDay'], found: 'any change', changes: [],
+    why: 'Day, formatDay, parseDay changed; old has no uses file yet and imports dates', noUsesFile: 'old has no uses file yet: its whole tests run' }]);
+  // Any change to dates' files tells it, whether or not an item changed.
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
+  assert.deepEqual(notice(before, after, 'dates').told.map((t) => t.user), ['old']);
 });
 
-test('a module\'s first means, at its conversion (no uses file before, one after), tells no one', () => {
-  const files = productFiles();
-  const before = mkdtempSync(join(tmpdir(), 'p4-conv-')), after = mkdtempSync(join(tmpdir(), 'p4-conv-'));
-  const { 'process/modules/dates.uses.json': datesUses, ...without } = files;
-  write(before, without);
-  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
-  assert.ok(datesUses);
-  const r = notice(before, after, 'dates');
-  assert.equal(r.firstMeans, true);
-  assert.ok(r.changed.length && r.changed.every((c) => !c.tells));
-  assert.deepEqual(r.told, []);
-  assert.match(r.summary, /first means \(its conversion\): no item tells anyone/);
+test('a module\'s conversion (its job block\'s kind) tells no one of its own items: its first means describe them', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  assert.match(out.join('\n'), /dates's conversion: its first means tell no one; nobody is told\./);
+  assert.match(out.join('\n'), /dates parseDay: bound changed \[found by its means\] -> tells no one/);
+  assert.equal(waitingWork(gh).work, undefined);
 });
 
 test('the means worked out from the code: errors, a class instance, this, arguments written into, channels, and a type error', () => {
@@ -454,25 +462,25 @@ export function createBoxes() {
   assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { return n > 0 ? 'yes' : false; }")), { 'Boxes.ok': 'type error in its code' });
 });
 
-test('a change of meaning ARCH names in the job block, or the job declares in its record, is a changed item; it adds, never removes', () => {
+test('a change of meaning ARCH names in the job block, or the pull request declares in its meaning comment, is a changed item; it adds, never removes', () => {
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   // Its code changes formatDay in no way the means show.
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
-  // The merged job is dates': ARCH named formatDay in its block; the job declared parseDay in its record.
-  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['R1'], kind: 'ordinary', meaning: [{ item: 'formatDay', was: 'the day of the month', is: 'the day of the year' }] }));
-  gh.addComment('o/product', 7, block(RECORD_MARK, { meaning: [{ item: 'parseDay', was: 'a day of the month', is: 'a day of the year' }] }));
+  // The merged job is dates': ARCH named formatDay in its block; the job declared parseDay in its meaning comment.
+  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['R1'], kind: 'ordinary', meaning: [{ item: 'formatDay', line: 'the day of the month; the day of the year' }] }));
+  gh.addComment('o/product', 7, block(MEANING_MARK, { meaning: [{ item: 'parseDay', line: 'a day of the month; a day of the year' }] }));
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
   const text = out.join('\n');
-  assert.match(text, /ARCH's placed work names a change of meaning: dates formatDay \(was: the day of the month; is now: the day of the year\)/);
-  assert.match(text, /the job declares a change of meaning: dates parseDay/);
-  assert.match(text, /dates formatDay: meaning changed \[found by ARCH's placed work\] -> tells its users\n {6}why: meaning: the day of the month -> the day of the year/);
-  assert.match(text, /dates parseDay: meaning changed \[found by the job's declaration\]/);
+  assert.match(text, /ARCH's placed work names a change of meaning: dates formatDay \(the day of the month; the day of the year\)/);
+  assert.match(text, /the pull request declares a change of meaning: dates parseDay/);
+  assert.match(text, /dates formatDay: meaning changed \[found by ARCH's placed work\] -> tells its users\n {6}meaning: the day of the month; the day of the year/);
+  assert.match(text, /dates parseDay: meaning changed \[found by the pull request's declaration\]/);
   assert.deepEqual(waitingWork(gh).work.map((w) => w.module), ['orders', 'report']);
   const r = noticeReasons(gh, 'o/product', { module: 'report', kind: 'notice', from: 'dates', merged: 7 });
-  assert.deepEqual(r.map((x) => [x.item, x.found]), [['formatDay', ["ARCH's placed work"]]]);
+  assert.deepEqual(r.map((x) => [x.item, x.found, x.why]), [['formatDay', 'named', 'the day of the month; the day of the year']]);
 });
 
 test('notify that runs out of memory reading the product says so plainly, tells nobody, and fails', () => {
@@ -571,7 +579,7 @@ test('notify runs once for each module the merge changed, in module order', () =
   notifyCmd(ctx, 7);
   const text = out.join('\n');
   assert.ok(text.indexOf('Notice for a change to dates') < text.indexOf('Notice for a change to orders'));
-  assert.match(text, /Notice for a change to orders[^\n]*\nNo item's means changed\. Nobody is told\./);
+  assert.match(text, /Notice for a change to orders[^\n]*\nNo item's means changed; nobody is told\./);
 });
 
 test('rule 52: accepting more tells nobody only where the type checker confirms it', () => {
@@ -652,7 +660,7 @@ test('a comment alone is not a change: an error the code already raised, newly s
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw Object.assign(new TypeError('x'), { code: 'EMPTY' }); return x; }\n` });
   const r = notice(root, after, 'dates');
   assert.deepEqual(r.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: errors that can leave it changed']);
-  assert.match(noticeText(r), /why: errors that can leave it changed: TypeError -> TypeError code EMPTY/);
+  assert.match(noticeText(r), /means: errors that can leave it changed: TypeError -> TypeError code EMPTY/);
   assert.deepEqual(r.told.map((t) => t.user), ['orders']);
 });
 
@@ -952,7 +960,6 @@ test('a reason names its first six places and how many more, so the notice keeps
   write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(root, after, 'dates');
   const p = r.told.find((t) => t.user === 'orders').reasons.find((x) => x.item === 'parseDay');
-  assert.deepEqual(p.places.map(placeText), ['src/orders/index.mjs:6', 'src/orders/index.mjs:7', 'src/orders/index.mjs:8', 'src/orders/index.mjs:9', 'src/orders/index.mjs:10', 'src/orders/index.mjs:11']);
-  assert.equal(p.more, 4);
-  assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6, [^\n]*src\/orders\/index\.mjs:11, and 4 more/);
+  assert.deepEqual(p.places, ['src/orders/index.mjs:6 orderDay', 'src/orders/index.mjs:7', 'src/orders/index.mjs:8', 'src/orders/index.mjs:9', 'src/orders/index.mjs:10', 'src/orders/index.mjs:11', 'and 4 more']);
+  assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay, [^\n]*src\/orders\/index\.mjs:11, and 4 more/);
 });

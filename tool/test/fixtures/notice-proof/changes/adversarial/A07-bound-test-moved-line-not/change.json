@@ -7,13 +7,11 @@
   "meaning": [
     {
       "item": "Bookings.open",
-      "was": "a party of 1 to 200",
-      "is": "a party of 1 to 100"
+      "line": "a party of 1 to 200; a party of 1 to 100"
     },
     {
       "item": "op:bookopen",
-      "was": "a party of 1 to 200",
-      "is": "a party of 1 to 100"
+      "line": "a party of 1 to 200; a party of 1 to 100"
     }
   ]
 }

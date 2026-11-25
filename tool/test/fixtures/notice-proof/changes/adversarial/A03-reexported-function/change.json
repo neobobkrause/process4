@@ -10,8 +10,7 @@
   "meaning": [
     {
       "item": "slugify",
-      "was": "words joined with hyphens",
-      "is": "words joined with underscores"
+      "line": "words joined with hyphens; words joined with underscores"
     }
   ]
 }

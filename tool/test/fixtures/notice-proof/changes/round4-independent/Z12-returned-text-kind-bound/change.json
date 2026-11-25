@@ -12,13 +12,11 @@
   "meaning": [
     {
       "item": "Slug",
-      "was": "a-z, 0-9 and single hyphens",
-      "is": "a-z, 0-9 and single underscores"
+      "line": "a-z, 0-9 and single hyphens; a-z, 0-9 and single underscores"
     },
     {
       "item": "slugify",
-      "was": "words joined with hyphens",
-      "is": "words joined with underscores"
+      "line": "words joined with hyphens; words joined with underscores"
     }
   ]
 }

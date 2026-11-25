@@ -12,13 +12,11 @@
   "meaning": [
     {
       "item": "Bookings.open",
-      "was": "a note of any length",
-      "is": "a note of at most 140 characters"
+      "line": "a note of any length; a note of at most 140 characters"
     },
     {
       "item": "op:bookopen",
-      "was": "a note of any length",
-      "is": "a note of at most 140 characters"
+      "line": "a note of any length; a note of at most 140 characters"
     }
   ]
 }

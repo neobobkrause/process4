@@ -10,13 +10,11 @@
   "meaning": [
     {
       "item": "Bookings.quote",
-      "was": "a stay of 1 to 14 nights",
-      "is": "a stay of 1 to 3 nights"
+      "line": "a stay of 1 to 14 nights; a stay of 1 to 3 nights"
     },
     {
       "item": "op:bookquote",
-      "was": "a stay of 1 to 14 nights",
-      "is": "a stay of 1 to 3 nights"
+      "line": "a stay of 1 to 14 nights; a stay of 1 to 3 nights"
     }
   ]
 }

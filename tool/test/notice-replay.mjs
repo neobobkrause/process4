@@ -2,7 +2,7 @@
 // fixtures/notice-proof/: the product, and each change as an overlay of the files it writes (proof: proof/trees.mjs).
 // Each module's uses file is written for the product before the change by the stand-in writer (usesfile-standin.mjs),
 // as each module's last job would have left it; a merge rewrites no other module's uses file, so the product after the
-// change holds the same ones. A change's `meaning` stands for the items ARCH names in the work it placed.
+// change holds the same ones. A change's `meaning` ({ item, line }) stands for the items ARCH names in the work it placed.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -79,8 +79,9 @@ export function buildTrees(change, base = fs.mkdtempSync(path.join(os.tmpdir(), 
   return { base, before, after };
 }
 
-/** A told module's reason, briefly: provider, item and words; or provider and how it was found, for a reason with no item. */
-export const brief = (r) => (r.item ? `${r.module} ${r.item}: ${r.changes.join(', ')}${r.found.some((f) => f !== 'its means') ? ` (${r.found.join(', ')})` : ''}` : `${r.module}: ${r.found.join(', ')}`);
+/** A told module's reason, briefly: provider, item and words, and how it was found where not by its means; or provider and why, for a reason with no item. */
+export const brief = (r) => (r.item ? `${r.module} ${r.item}: ${r.changes.join(', ')}${[r.found, ...(r.namedBy ?? [])].some((f) => f !== 'means') ? ` (${[r.found, ...(r.namedBy ?? [])].join(', ')})` : ''}`
+  : `${r.module}: ${r.outside ? 'a place outside the standard' : r.orderFault ? 'an order fault' : 'no uses file'}`);
 
 /**
  * The tool's answer to one change: who is told and, briefly, why; the changed items' words; whose check refuses after it.

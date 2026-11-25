@@ -13,7 +13,7 @@ import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { block, parseBlock } from './github.mjs';
 import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
-import { JOB, JOB_MARK, RECORD_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
+import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
 import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
@@ -203,14 +203,18 @@ export function notifyCmd(ctx, n) {
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     tranche = treeA.cfg.tranche_branch;
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
-    // The items whose meaning ARCH named in the work it placed (the job block), and the job declared (its record).
+    // The items whose meaning ARCH named in the work it placed (the job block's `meaning`), and the pull request's
+    // declaration (its `process4-meaning` comment); and whether it is a conversion (its first means tell no one).
     const comments = ctx.gh.comments(ctx.slug, n);
     const jobModule = pr.head?.ref?.match(JOB)?.[1] ?? null;
+    const job = jobBlockOf(comments)?.data ?? null;
+    const declared = comments.map((c) => parseBlock(c.body, MEANING_MARK)?.data).find(Boolean);
     const named = [
-      ...meaningsOf(jobBlockOf(comments)?.data?.meaning, jobModule).map((x) => ({ ...x, found: 'named' })),
-      ...meaningsOf(comments.map((c) => parseBlock(c.body, RECORD_MARK)?.data).find(Boolean)?.meaning, jobModule).map((x) => ({ ...x, found: 'declared' })),
+      ...meaningsOf(job?.meaning).map((x) => ({ ...x, module: jobModule, found: 'named' })),
+      ...meaningsOf(declared?.meaning).map((x) => ({ ...x, module: jobModule, found: 'declared' })),
     ];
-    for (const x of named) ctx.log(`${x.found === 'named' ? "ARCH's placed work names" : 'the job declares'} a change of meaning: ${x.module} ${x.item} (was: ${x.was || '-'}; is now: ${x.is || '-'})`);
+    for (const x of named) ctx.log(`${x.found === 'named' ? "ARCH's placed work names" : 'the pull request declares'} a change of meaning: ${x.module ? `${x.module} ` : ''}${x.item} (${x.line || '-'})`);
+    const conversion = job?.kind === 'conversion' ? jobModule : null;
     const changed = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
     const mods = treeA.modules.map((m) => m.id).filter((id) => changed.includes(id) || named.some((x) => x.module === id));
     if (!mods.length) {
@@ -220,7 +224,7 @@ export function notifyCmd(ctx, n) {
     }
     readerNote(ctx, treeA);
     const read = mods.filter((m) => treeB.byId.has(m));
-    const reports = new Map(read.length ? readNotices(dirB, dirA, read, n, named).map((r) => [r.provider, r]) : []);
+    const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named).map((r) => [r.provider, r]) : []);
     for (const m of mods) {
       if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
       const r = reports.get(m);

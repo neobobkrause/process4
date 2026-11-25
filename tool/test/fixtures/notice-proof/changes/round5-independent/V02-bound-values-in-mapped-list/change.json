@@ -9,8 +9,7 @@
   "meaning": [
     {
       "item": "MeterInput",
-      "was": "minutes: 1 to 1440",
-      "is": "minutes: 1 to 600"
+      "line": "minutes: 1 to 1440; minutes: 1 to 600"
     }
   ]
 }

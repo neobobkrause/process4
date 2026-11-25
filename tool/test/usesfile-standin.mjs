@@ -5,9 +5,13 @@
 //   to a declaration in an interface file of an earlier module, recorded as the listing's item that holds it; an
 //   operation or table named through a carrier (build text 2b, section 5) as `op:<name>` or `table:<name>` of the
 //   module that lists it;
-// - a place outside the standard (with its rule): a file of another module that is not one of its interface files (S5);
-//   a program of another module started, or a file of another module named by a literal path (S6, S5); a value of
-//   unknown kind (`any`) used as an object or called (R1), which may refer to any earlier module; an import of a
+// - a place outside the standard (with its rule and the modules it may refer to): a call by a name the tool cannot read
+//   (S7), which may refer to each earlier module answering operations or owning tables; a file of another module that
+//   is not one of its interface files (S5); a program of another module started, or a file of another module named by
+//   a literal path (S6, S5); a value of
+//   unknown kind (`any`) used as an object or called (R1), which may refer to the modules its value can come from (a
+//   parameter of the module's own function: any earlier module, `*`; a value a call of Node's own hands back: the
+//   modules its arguments name; a module's own channel decoded: none, `[]`); an import of a
 //   computed name (S2), likewise;
 // - an order fault: a use of a later module.
 // Places name the file, its side (code or test), the line, the function it is in, and for a test its case's name.
@@ -135,6 +139,61 @@ export function writeUsesFiles(root) {
         return;
       }
     };
+    /**
+     * The modules a value of unknown kind can come from: `*` for a parameter of the module's own function (its callers
+     * may hand it any earlier module's value); for a value a call hands back, the callee's module where it is another
+     * module's, and where it is Node's own, the modules its arguments name; a callback's parameter, where its call's
+     * receiver comes from. A set of module names, or '*'.
+     */
+    const originOf = (x, depth) => {
+      if (!x || depth > 6) return '*';
+      if (ts.isParameter(x) || ts.isBindingElement(x)) {
+        let fn = x.parent;
+        while (fn && !ts.isFunctionLike(fn)) fn = fn.parent;
+        const call = fn?.parent && (ts.isCallExpression(fn.parent) || ts.isNewExpression(fn.parent)) && fn.parent.arguments?.includes(fn) ? fn.parent : null;
+        if (!call) return '*';
+        return ts.isPropertyAccessExpression(call.expression) ? originOf(call.expression.expression, depth + 1) : originOf(call, depth + 1);
+      }
+      if (ts.isVariableDeclaration(x)) return x.initializer ? originOf(x.initializer, depth + 1) : '*';
+      while (ts.isParenthesizedExpression(x) || ts.isAwaitExpression(x) || ts.isAsExpression?.(x)) x = x.expression;
+      if (ts.isIdentifier(x)) {
+        const sym = checker.getSymbolAtLocation(x);
+        const r = resolve(sym)?.declarations?.[0];
+        const owner = r && !r.getSourceFile().isDeclarationFile ? tree.moduleOfFile(r.getSourceFile().fileName) : null;
+        if (owner && owner !== mod.id) return new Set([owner]);
+        const d = sym?.declarations?.[0];
+        return d && (ts.isVariableDeclaration(d) || ts.isParameter(d) || ts.isBindingElement(d)) && tree.moduleOfFile(d.getSourceFile().fileName) === mod.id ? originOf(d, depth + 1) : new Set();
+      }
+      if (ts.isPropertyAccessExpression(x) || ts.isElementAccessExpression(x)) return originOf(x.expression, depth + 1);
+      if (ts.isCallExpression(x) || ts.isNewExpression(x)) {
+        const callee = x.expression;
+        const sym = resolve(checker.getSymbolAtLocation(ts.isPropertyAccessExpression(callee) ? callee.name : callee));
+        const d = sym?.declarations?.[0];
+        const owner = d && !d.getSourceFile().isDeclarationFile ? tree.moduleOfFile(d.getSourceFile().fileName) : null;
+        if (owner && owner !== mod.id) return new Set([owner]);
+        if (owner === mod.id) return '*';
+        // Node's own or the language's: what its receiver and its arguments come from
+        const out = new Set();
+        const parts = [...(ts.isPropertyAccessExpression(callee) ? [callee.expression] : []), ...(x.arguments ?? [])];
+        for (const a of parts) {
+          let star = false;
+          forEachNode(a, (y) => {
+            if (!ts.isIdentifier(y)) return true;
+            const r = resolve(checker.getSymbolAtLocation(y))?.declarations?.[0];
+            const o = r && !r.getSourceFile().isDeclarationFile ? tree.moduleOfFile(r.getSourceFile().fileName) : null;
+            if (o && o !== mod.id) out.add(o);
+            else if (o === mod.id && (ts.isParameter(r) || ts.isVariableDeclaration(r) || ts.isBindingElement(r)) && !(ts.isPropertyAccessExpression(y.parent) && y.parent.name === y)) {
+              const inner = originOf(r, depth + 1);
+              if (inner === '*') star = true; else for (const m of inner) out.add(m);
+            }
+            return true;
+          });
+          if (star) return '*';
+        }
+        return out;
+      }
+      return new Set();
+    };
     const ownerOfPath = (sf, text) => {
       if (!/^\.\.?\//.test(text)) return null;
       const abs = path.resolve(path.dirname(sf.fileName), text);
@@ -181,7 +240,8 @@ export function writeUsesFiles(root) {
           let c;
           try { c = carrierOf(checker, n); } catch { c = undefined; }
           if (c) {
-            if (c.names === null) addOutside('S7', placeOf(sf, n), ['*']);
+            // a name the tool cannot read: it may be any operation or table an earlier module answers or owns
+            if (c.names === null) addOutside('S7', placeOf(sf, n), tree.modules.filter((m) => m.index < mod.index && Object.keys(listings.get(m.id).entries).some((k) => k.startsWith(c.kind === 'op' ? 'op:' : 'table:'))).map((m) => m.id));
             for (const name of c.names ?? []) {
               const key = `${c.kind === 'op' ? 'op' : 'table'}:${name}`;
               for (const m of tree.modules) if (m.index < mod.index && listings.get(m.id).entries[key]) addUse(m.id, key, listings.get(m.id).entries[key].kind, 'by-name', placeOf(sf, n));
@@ -218,7 +278,10 @@ export function writeUsesFiles(root) {
         if ((ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n)) && ts.isIdentifier(n.expression)) {
           const t = checker.getTypeAtLocation(n.expression);
           const d = checker.getSymbolAtLocation(n.expression)?.declarations?.[0];
-          if (t.flags & ts.TypeFlags.Any && d && tree.moduleOfFile(d.getSourceFile().fileName) === mod.id && (ts.isParameter(d) || ts.isVariableDeclaration(d))) addOutside('R1', placeOf(sf, n), ['*']);
+          if (t.flags & ts.TypeFlags.Any && d && tree.moduleOfFile(d.getSourceFile().fileName) === mod.id && (ts.isParameter(d) || ts.isVariableDeclaration(d))) {
+            const o = originOf(d, 0);
+            addOutside('R1', placeOf(sf, n), o === '*' ? ['*'] : [...o].sort());
+          }
         }
         return true;
       }, { jsDoc: true });

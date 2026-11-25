@@ -5,7 +5,7 @@
 import { loadModules, needConfig, notYetMet, readAt, requirementsFile } from './config.mjs';
 import { parseBlock } from './github.mjs';
 import { liveNotes } from './state.mjs';
-import { fail, git } from './util.mjs';
+import { git } from './util.mjs';
 
 export const JOB_MARK = 'process4-job';
 export const RECORD_MARK = 'process4-job-record';
@@ -29,28 +29,13 @@ const jobOf = (pr) => {
   return m ? { module: m[1], n: Number(m[2]) } : null;
 };
 
-/**
- * A change of meaning under the same means (design part 2, section 7), as ARCH names it in the work it places and the
- * job declares it in its pull request: one line `[<module> ]<item> | <what it was> | <what it is now>`, the module
- * left out where it is the job's own. Returns { module, item, was, is }.
- */
-export function parseMeaning(text, defaultModule = null) {
-  const parts = String(text ?? '').split('|').map((x) => x.trim());
-  if (parts.length !== 3 || !parts[0]) fail(`say a change of meaning as "[<module> ]<item> | <what it was> | <what it is now>": ${text}`);
-  const head = parts[0].split(/\s+/);
-  if (head.length > 2) fail(`a change of meaning names one item: ${parts[0]}`);
-  const [module, item] = head.length === 2 ? head : [defaultModule, head[0]];
-  if (!module) fail(`name the module of ${item}: "<module> ${item} | <what it was> | <what it is now>"`);
-  return { module, item, was: parts[1], is: parts[2] };
-}
+export const MEANING_MARK = 'process4-meaning';
 
-/** The changes of meaning a job block or a job's record holds ({ module?, item, was, is } each), the job's module where none is named. */
-export const meaningsOf = (list, defaultModule = null) => (Array.isArray(list) ? list : [])
-  .filter((x) => x && typeof x.item === 'string' && (x.module || defaultModule))
-  .map((x) => ({ module: x.module || defaultModule, item: x.item, was: x.was ?? '', is: x.is ?? '' }));
+/** The changes of meaning a job block or a declaration holds: each { item, line }. */
+export const meaningsOf = (list) => (Array.isArray(list) ? list : []).filter((x) => x && typeof x.item === 'string' && x.item).map((x) => ({ item: x.item, line: String(x.line ?? '') }));
 
 export const describe = (w) => (w.kind === 'notice' ? `notice from ${w.from} (pull request ${w.merged})`
-  : w.kind === 'walk-flaw' ? `walk flaw ${w.flaw} ${w.link}` : `flaw from ${w.from}: ${w.words}`);
+  : w.kind === 'walk-flaw' ? `walk flaw ${w.flaw} ${w.link}` : w.kind === 'meaning' ? `change of meaning of ${w.item}: ${w.line}` : `flaw from ${w.from}: ${w.words}`);
 
 // The tranche's scope (design part 2, section 3, point 1; build text 5, section 2): ARCH writes in the round record
 // `"scope": { "tranche": "<the round's tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While the round record
