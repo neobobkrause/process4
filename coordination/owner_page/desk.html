@@ -22,21 +22,13 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:00 UTC, by PROCESS #14. The cleanup is done. One choice waits: who is told after a change.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:00 UTC, by PROCESS #14. The cleanup is done. Next, PROCESS #15 designs your proposal for recording which providers each module uses.</p>
 </header>
 
-<section class="wait">
-<h2>Waiting for you: who is told after a change</h2>
-<p><b>Bottom line:</b> as you suspected, the way the tool decides which modules to tell is broken, and this is why civicsmith's notices overflow. It compares written descriptions of a module, not what really passes between modules, so describing unchanged code counts as a change. And when it cannot follow a module's plain JavaScript, it tells that module of nearly everything. Several coding faults make both worse. The research is in <code>process/research/who-is-told-25nov.md</code>.</p>
-<ul>
-<li><b>0. No change.</b> Each early merge keeps telling about 120 to 200 civicsmith modules, at about $1.40 to $1.90 each, nearly all ending with nothing to change.</li>
-<li><b>A. Describing unchanged code tells no one</b> (this is choice 2, 2C+). On a made-up product shaped like civicsmith: 192 modules told over seven changes become 114.</li>
-<li><b>B. Mend the coding faults</b>, so your narrowing (3B) works for every module, including those that import the product by its own name; one sentence added on module order. 192 become 126.</li>
-<li><b>C. A and B together (recommended).</b> 192 become 78, and every one of the 78 really uses what changed. On the 150 recorded answers of the proof, 2 change, neither a module that needed telling.</li>
-<li><b>D. C, and also narrow what a hard-to-follow module is told.</b> 54, but a higher risk of missing a module that needed telling; decide only after a measurement on civicsmith.</li>
-</ul>
-<p><b>Not yet known:</b> how far C goes on civicsmith itself; a read-only session there, which you would start, measures it before civicsmith moves. And one number to be explained before anything is built: the proof's records show 45 modules that needed a change and were not told, under today's tool and every option. I will find out whether any are real misses and tell you.</p>
-<p>To answer, type in PROCESS's session or comment here, for example: <b>Decision: C</b>.</p>
+<section class="card">
+<h2>Next: your proposal that each module records the providers it uses</h2>
+<p>You proposed that every module keep a file of the providers, and the items of each, that its code and tests use. A job that understands the code writes it first; every later job keeps it current. Finding a provider's users then becomes a lookup taking seconds, instead of the tool guessing from plain JavaScript, which is the main cause of the over-telling. I agree it addresses the root problem rather than patching it. Option C is set aside while it is designed.</p>
+<p>PROCESS #15 designs it in full and puts it to you with options. Two things the design must settle besides the file: whether an item really changed (describing unchanged code must not count), and that it replaces your earlier rule "No list is kept by hand". Your words and my first analysis are in <code>process/research/uses-metadata-25nov.md</code>. Nothing is built before your decision.</p>
 </section>
 
 <section class="wait">
