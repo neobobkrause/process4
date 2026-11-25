@@ -2,13 +2,14 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { CONVERSION_MARK, JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
+import { CONVERSION_MARK, JOB_MARK, RECORD_MARK, branch, close, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
 import { writeNotice } from '../lib/noticecomments.mjs';
 import { mark } from '../lib/state.mjs';
-import { TEST_MARK } from '../lib/testrecord.mjs';
+import { TEST_MARK, noticeAfterTests, recordNeed, recordStands } from '../lib/testrecord.mjs';
+import { usesOnly } from '../lib/testrun.mjs';
 import { MEANING_MARK } from '../lib/round.mjs';
-import { git } from '../lib/util.mjs';
+import { git, parseArgs } from '../lib/util.mjs';
 import { commit, config, converted, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
 function product() {
@@ -520,4 +521,96 @@ test('latest-version prints the newest main commit of the process repository', (
   const second = ctxFor(root, fakeGitHub());
   assert.equal(latestVersion(second.ctx), 0);
   assert.equal(second.out[1], 'already the pinned version');
+});
+
+test('push --same records, on the pull request, an item whose domain and range are the same, with its line; --meaning and --same pair with their own lines', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  const { ctx, out } = ctxFor(root, gh);
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  push(ctx, parseArgs(['--same', 'total', 'an equivalent rewrite of the sum', '--meaning', 'parseDay', 'a day; a day and a time']));
+  push(ctx, parseArgs(['--same', 'tax', 'a computed fact wider than the change']));
+  const data = gh.s.comments.map((c) => parseBlock(c.body, MEANING_MARK)).filter(Boolean).map((r) => r.data);
+  assert.deepEqual(data, [{ meaning: [{ item: 'parseDay', line: 'a day; a day and a time' }],
+    same: [{ item: 'total', why: 'an equivalent rewrite of the sum' }, { item: 'tax', why: 'a computed fact wider than the change' }] }]);
+  assert.match(out.join('\n'), /recorded on pull request 1: total keeps its domain and range \(an equivalent rewrite of the sum\); it tells no one/);
+  assert.throws(() => push(ctx, parseArgs(['--same', 'total'])), /say --same <item> "<why its domain and range are the same>"/);
+  assert.throws(() => push(ctx, parseArgs(['--same', 'total', 'why', 'stray'])), /no flag takes/);
+});
+
+test('push --notice-nothing records that the notices that reached an open job need no change: its pass stands for them', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  const { ctx, out } = ctxFor(root, gh);
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['notice from dates (pull request 4)'], kind: 'ordinary', notice_seq: 1 }));
+  push(ctx, parseArgs(['--blocked', 'dates', 'dates refuses a leap day']));
+  push(ctx, parseArgs(['--notice-nothing', 'orders reads no day the notice names']));
+  const rec = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).find(Boolean).data;
+  assert.deepEqual(rec, { blocked: { by: 'dates', why: 'dates refuses a leap day' }, notice_needs_no_change: { notice_seq: 1, why: 'orders reads no day the notice names' } });
+  // a later flag keeps it
+  push(ctx, parseArgs(['--unblocked', 'ARCH ended the block']));
+  assert.deepEqual(gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).find(Boolean).data, { notice_needs_no_change: { notice_seq: 1, why: 'orders reads no day the notice names' }, unblocked: 'ARCH ended the block' });
+  const jb = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
+  assert.deepEqual(jb.notice_needs_no_change, { notice_seq: 1, why: 'orders reads no day the notice names' });
+  // the pass recorded before the notice stands for it; a later notice does not
+  const record = { commit: 'a'.repeat(40), notice_seq: 0, result: 'pass', passed: 1, scope: 'whole module' };
+  assert.equal(recordStands(record, 'a'.repeat(40), jb).ok, true);
+  assert.equal(recordStands(record, 'a'.repeat(40), { ...jb, notice_seq: 2 }).ok, false);
+  assert.match(out.join('\n'), /need no change \(orders reads no day the notice names\); its recorded pass stands for them/);
+  assert.throws(() => push(ctx, parseArgs(['--notice-nothing'])), /say --notice-nothing "<why>"/);
+});
+
+test('a test record stands for a later head that differs from its commit only in the module\'s uses file; scope nothing needs none once the notices need no change', () => {
+  const root = product();
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  const tested = git(['rev-parse', 'HEAD'], { cwd: root });
+  commit(root, { 'process/modules/orders.uses.json': { module: 'orders', providers: [], uses: [] } }, 'uses file');
+  const usesHead = git(['rev-parse', 'HEAD'], { cwd: root });
+  commit(root, { 'src/orders/index.mjs': 'export const o = 2;\n' }, 'code');
+  const codeHead = git(['rev-parse', 'HEAD'], { cwd: root });
+  const record = { commit: tested, notice_seq: 0, result: 'pass', passed: 1, scope: 'whole module' };
+  const only = usesOnly(root, 'job/orders/1');
+  assert.equal(only(tested, usesHead), true);
+  assert.equal(only(tested, codeHead), false);
+  assert.equal(usesOnly(root, 'job/dates/1')(tested, usesHead), false);
+  assert.match(recordStands(record, usesHead, null, { usesOnly: only }).why, /differs only in the module's uses file/);
+  assert.equal(recordStands(record, codeHead, null, { usesOnly: only }).ok, false);
+  const nothing = { scope: 'nothing', why: "no changed file is under a module's code or tests" };
+  assert.equal(recordNeed(nothing, { notice_seq: 1 }).needed, true);
+  assert.equal(recordNeed(nothing, { notice_seq: 1, notice_needs_no_change: { notice_seq: 1, why: 'x' } }).needed, false);
+  assert.equal(noticeAfterTests({ notice_seq: 0 }, { notice_seq: 2, notice_needs_no_change: { notice_seq: 1 } }), true);
+});
+
+test('close --nothing-to-change: where the tool rewrites the module\'s uses file, it pushes it and marks the pull request ready with no test; otherwise it closes unmerged', () => {
+  const root = product();
+  git(['checkout', '-q', '-b', 'job/orders/2', 'origin/tranche'], { cwd: root });
+  git(['push', '-q', 'origin', 'job/orders/2'], { cwd: root });
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  const { ctx, out } = ctxFor(root, gh);
+  const pr = gh.createPR('o/product', { head: 'job/orders/2', base: 'tranche', draft: true });
+  pr.head.sha = git(['rev-parse', 'HEAD'], { cwd: root });
+  gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['notice from dates (pull request 4)'], kind: 'told', notice_seq: 1 }));
+  assert.equal(close(ctx, pr.number, { _: [], 'nothing-to-change': 'orders uses nothing the notice names' }), 0);
+  const text = out.join('\n');
+  assert.match(text, /wrote process\/modules\/orders\.uses\.json/);
+  assert.match(text, /the uses file of orders differs from tranche's: pull request 1 merges, with no test/);
+  assert.match(text, /no test record needed: scope nothing/);
+  assert.equal(pr.state, 'open');
+  assert.equal(pr.draft, false);
+  assert.notEqual(remote(root, 'job/orders/2'), pr.head.sha);
+  const rec = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).find(Boolean).data;
+  assert.deepEqual(rec, { nothing_to_change: 'orders uses nothing the notice names', notice_needs_no_change: { notice_seq: 1, why: 'orders uses nothing the notice names' } });
+  // a job whose branch holds no change to its uses file is closed unmerged
+  git(['checkout', '-q', 'main'], { cwd: root });
+  git(['push', '-q', 'origin', 'origin/tranche:refs/heads/job/dates/3'], { cwd: root });
+  const other = gh.createPR('o/product', { head: 'job/dates/3', base: 'tranche', draft: true });
+  close(ctx, other.number, { _: [], 'nothing-to-change': 'nothing reaches dates' });
+  assert.equal(other.state, 'closed');
+  assert.match(out.join('\n'), /closed pull request 2 unmerged/);
 });

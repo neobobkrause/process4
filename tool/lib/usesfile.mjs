@@ -7,7 +7,14 @@
 //                 where: [ { file, side: "code", line, in } | { file, side: "test", line, test } ] } ],
 //     "outside": [ { rule, file, side, line, item, relabels: { provider, item }, mayRefer: [modules] | ["*"], waitsOn, tests: [names] } ],
 //     "orderFaults": [ { provider, item, itemKind, type, file, side, line, in | test } ],
-//     "copies": [ { provider, item, file, pointer } ] }
+//     "copies": [ { provider, item, file, pointer } ],
+//     "packages": [ { package, facility } ],
+//     "takesIn": [ { item, provider, providerItem, part: "errors" | "channels" } ] }
+// A use's `type` is how it uses the item (call, read, write, construct, ...); `mock` where a test replaces or mocks the
+// provider's member (mock.method, mock.module, an assignment over it). `packages` names each facility of a package or
+// of the host the module's code and tests use, with its package (the host's: `node`). `takesIn` names, for each of the
+// module's own items, the providers' items whose errors can pass through it or whose channels it reaches, so that a
+// provider's change to one of those parts tells the item's users by a lookup (design part 2, section 7).
 // `value`, on a use of a kind, a handle kind or a class only, says what its places do with the value: read or write the
 // one `member` named; use it whole ("whole": hand it to a function, store, spread, compare, iterate, copy, write it as
 // text, or anything not proved to be one of the others; "handed back": returned from an export of the module's
@@ -45,7 +52,7 @@ function configOf(root, ref) {
 
 /** The file's text: its keys in a fixed order, each listed item on a line of its own, so that a change reads as lines. */
 export function usesText(data) {
-  const KEYS = ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies'];
+  const KEYS = ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies', 'packages', 'takesIn'];
   const keys = [...KEYS.filter((k) => k in data), ...Object.keys(data).filter((k) => !KEYS.includes(k))];
   const lines = keys.map((k) => {
     const v = data[k];
@@ -175,6 +182,47 @@ export function importedModules(tree, mod, { only = null } = {}) {
     }
   }
   return { imported, cannot };
+}
+
+// Calls that read a file or start a program by a path (fs, child_process, worker_threads), read from the text.
+const BY_PATH = /(?<![\w$])(readFileSync|readFile|createReadStream|readdirSync|readdir|writeFileSync|writeFile|appendFileSync|appendFile|spawnSync|spawn|fork|execFileSync|execFile|execSync|Worker)\s*\(\s*/g;
+const LITERAL = /(['"`])((?:(?!\1)[^\n\\$])*)\1/g;
+
+/**
+ * For a module with no uses file yet (design part 2, section 7, point 3): the other modules its files (code and tests)
+ * import, read by path or whose program they start, each with how (`imports`, `names a path into`); and the places where
+ * the tool cannot tell which (an import of a name it cannot read; a call that reads a file or starts a program by a path
+ * that is not written out). A path is a written-out text in the file that names a file or folder of another module,
+ * from the file's own folder or from the product's top. Reads each file's text only: no reader is loaded.
+ */
+export function reachedModules(tree, mod) {
+  const { imported, cannot } = importedModules(tree, mod);
+  const reached = new Map([...imported.keys()].map((m) => [m, ['imports']]));
+  const out = [...cannot];
+  const rel = (f) => path.relative(tree.root, f).split(path.sep).join('/');
+  for (const f of mod.files) {
+    let text;
+    try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    const lineAt = (i) => text.slice(0, i).split('\n').length;
+    const specs = new Set(importsOf(text).specs.map((x) => x.spec));
+    for (const m of text.matchAll(LITERAL)) {
+      const lit = m[2];
+      if (!lit || specs.has(lit) || !/[/.]/.test(lit) || /^[a-z]+:\/\//i.test(lit)) continue;
+      for (const at of [path.resolve(path.dirname(f), lit), path.resolve(tree.root, lit)]) {
+        if (path.relative(tree.root, at).startsWith('..')) continue;
+        const other = tree.moduleOfFile(at);
+        if (!other || other === mod.id) continue;
+        if (!reached.has(other)) reached.set(other, []);
+        if (!reached.get(other).includes('names a path into')) reached.get(other).push('names a path into');
+      }
+    }
+    for (const m of text.matchAll(BY_PATH)) {
+      const rest = text.slice(m.index + m[0].length, m.index + m[0].length + 80);
+      if (/^(['"`])[^'"`$\n]*\1/.test(rest) || /^new URL\(\s*(['"`])[^'"`$\n]*\1/.test(rest)) continue;
+      out.push({ at: `${rel(f)}:${lineAt(m.index)}`, why: `${m[1]} by a path the tool cannot read`, text: text.slice(m.index, m.index + 60).split('\n')[0] });
+    }
+  }
+  return { reached, cannot: out };
 }
 
 /**

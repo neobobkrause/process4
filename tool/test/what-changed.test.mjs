@@ -1,13 +1,14 @@
 // What counts as a change (design part 2, section 7; build text 5, section 6): an item whose type is written differently
-// but means the same is unchanged, as the type checker finds it; accepting more is confirmed wherever the checker proves
-// it, and never where it does not; and the facts worked out from the code are exact where the language decides them.
+// but means the same is unchanged, as the type checker finds it; accepting more is a change, which tells its users; a
+// constant's value is in its means; describing is no change only where the item's code is unchanged; and the facts
+// worked out from the code are exact where the language decides them.
 import assert from 'node:assert/strict';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { loadTree } from '../lib/notice/model.mjs';
-import { changedItems, makeConfirm } from '../lib/notice/notice.mjs';
+import { changedItems } from '../lib/notice/notice.mjs';
 import { moduleMeans } from '../lib/notice/means.mjs';
 import { loadReader } from '../lib/notice/ts.mjs';
 import { config, write } from './helpers.mjs';
@@ -32,15 +33,6 @@ function changes(before, after, { others = {}, extraB = {}, extraA = extraB } = 
   const r = changedItems(product({ ...others, p: before }, extraB), product({ ...others, p: after }, extraA), 'p');
   return r.changed.map((c) => `${c.item}: ${c.changes.join(', ')}${c.tells ? '' : ' (tells no one)'}`);
 }
-/** Why the type checker does not confirm that an item accepts more (makeConfirm). */
-const why = (before, after, item) => {
-  loadReader();
-  const b = product({ p: before }), a = product({ p: after });
-  moduleMeans(b, 'p');
-  moduleMeans(a, 'p');
-  const r = makeConfirm(b, a, 'p')(item);
-  return r.confirmed ? null : r.why;
-};
 const fn = (params, ret, body = 'return /** @type {any} */ (0);', args = 'x') => `/**\n${params.map((p) => ` * @param ${p}\n`).join('')} * @returns {${ret}}\n */\nexport function f(${args}) { ${body} }\n`;
 const generic = (extra = '', constraint = '') => `/**\n * @template ${constraint}T\n * @param {T} x\n${extra} * @returns {T}\n */\nexport function f(x) { return x; }\n`;
 
@@ -89,74 +81,22 @@ test('a type written differently that the checker can tell apart is a change', (
   for (const [b, a, want] of cases) assert.deepEqual(changes(b, a), want, a);
 });
 
-test('accepting more is confirmed wherever the type checker proves it', () => {
+test('accepting more tells its users: the word only says, as the written forms show it, whether the old stands in', () => {
   const cases = [
-    [fn(['{string} x'], 'number'), `/**\n * @param {string} x\n * @param {number} [y]\n * @returns {number}\n */\nexport function f(x, y = 1) { return y; }\n`],
-    [fn(['{string} x'], 'number'), `/**\n * @param {string} x\n * @param {...number} more\n * @returns {number}\n */\nexport function f(x, ...more) { return more.length; }\n`],
-    [fn(["{'a'} x"], 'number'), fn(["{'a' | 'b'} x"], 'number')],
-    [fn(['{{a: string}} x'], 'number'), fn(['{{a: string, b?: number}} x'], 'number')],
-    // a function handed in that is now handed fewer or narrower arguments: the old written form cannot show these; the
-    // checker proves them
-    [fn(['{(s: string | number) => void} x'], 'number'), fn(['{(s: string) => void} x'], 'number')],
-    [fn(['{(s: string, n?: number) => void} x'], 'number'), fn(['{(s: string) => void} x'], 'number')],
-    [fn(['{{each: (s: string | number) => void}} x'], 'number'), fn(['{{each: (s: string) => void}} x'], 'number')],
-    // generic: a parameter added
-    [generic(), generic(' * @param {number} [n]\n').replace('f(x)', 'f(x, n)')],
-    // a class member, a class's constructor (what it builds the same), a handle's member
-    [`export class C {\n  /** @param {string} x @returns {number} */\n  m(x) { return 1; }\n}\n`, `export class C {\n  /** @param {string} x @param {number} [y] @returns {number} */\n  m(x, y = 0) { return y; }\n}\n`, ['C: hands back differently', 'C#m: accepts more (tells no one)']],
-    [`export class C {\n  /** @param {string} x */\n  constructor(x) { this.x = x; }\n}\n`, `export class C {\n  /** @param {string} [x] */\n  constructor(x = 'a') { this.x = x; }\n}\n`, ['C: accepts more (tells no one)']],
-    [`/**\n * @typedef {Object} H\n * @property {(s: string) => number} m\n */\n${fn(['{string} x'], 'H', 'return { m: () => 1 };')}`, `/**\n * @typedef {Object} H\n * @property {(s: string | number) => number} m\n */\n${fn(['{string} x'], 'H', 'return { m: () => 1 };')}`, ['H.m: accepts more (tells no one)']],
+    [fn(['{string} x'], 'number'), `/**\n * @param {string} x\n * @param {number} [y]\n * @returns {number}\n */\nexport function f(x, y = 1) { return y; }\n`, ['f: accepts more']],
+    [fn(['{string} x'], 'number'), `/**\n * @param {string} x\n * @param {...number} more\n * @returns {number}\n */\nexport function f(x, ...more) { return more.length; }\n`, ['f: accepts more']],
+    [fn(["{'a'} x"], 'number'), fn(["{'a' | 'b'} x"], 'number'), ['f: accepts more']],
+    [fn(['{{a: string}} x'], 'number'), fn(['{{a: string, b?: number}} x'], 'number'), ['f: accepts more']],
+    // a function handed in that is now handed fewer or narrower arguments: the written form cannot show the old stands in
+    [fn(['{(s: string | number) => void} x'], 'number'), fn(['{(s: string) => void} x'], 'number'), ['f: cannot stand in']],
+    // a function handed in that will be handed more than it took
+    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n?: number) => void} x'], 'number'), ['f: cannot stand in']],
+    // a class member, a class's constructor, a handle's member
+    [`export class C {\n  /** @param {string} x @returns {number} */\n  m(x) { return 1; }\n}\n`, `export class C {\n  /** @param {string} x @param {number} [y] @returns {number} */\n  m(x, y = 0) { return y; }\n}\n`, ['C: hands back differently', 'C#m: accepts more']],
+    [`export class C {\n  /** @param {string} x */\n  constructor(x) { this.x = x; }\n}\n`, `export class C {\n  /** @param {string} [x] */\n  constructor(x = 'a') { this.x = x; }\n}\n`, ['C: accepts more']],
+    [`/**\n * @typedef {Object} H\n * @property {(s: string) => number} m\n */\n${fn(['{string} x'], 'H', 'return { m: () => 1 };')}`, `/**\n * @typedef {Object} H\n * @property {(s: string | number) => number} m\n */\n${fn(['{string} x'], 'H', 'return { m: () => 1 };')}`, ['H.m: accepts more']],
   ];
-  for (const [b, a, want = ['f: accepts more (tells no one)']] of cases) assert.deepEqual(changes(b, a), want, a);
-});
-
-test('accepting more is never confirmed where the checker does not prove it', () => {
-  // a function handed in that will be handed more than it took
-  assert.deepEqual(changes(fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string | number) => void} x'], 'number')), ['f: cannot stand in']);
-  // a function handed in whose parameter list grows: the provider will hand it another argument, which breaks a user's
-  // function whose further parameter is optional, of another kind (misses.md, section 5, "the reverse"); the checker
-  // lets a function of fewer parameters stand where more are expected, so it would confirm each of these
-  const handedMore = [
-    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n: number) => void} x'], 'number')],
-    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n?: number) => void} x'], 'number')],
-    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, ...n: number[]) => void} x'], 'number')],
-    [fn(['{{each: (s: string) => void}} x'], 'number'), fn(['{{each: (s: string, n: number) => void}} x'], 'number')],
-    [fn(['{Array<(s: string) => void>} x'], 'number'), fn(['{Array<(s: string, n: number) => void>} x'], 'number')],
-    [fn(['{((s: string) => void) | string} x'], 'number'), fn(['{((s: string, n: number) => void) | string} x'], 'number')],
-    // handed back a function that takes one of the user's: the user's is still handed in
-    [fn(['{string} x'], '(cb: (s: string) => void) => void', 'return () => {};'), fn(['{string} x'], '(cb: (s: string, n: number) => void) => void', 'return () => {};')],
-  ];
-  for (const [b, a] of handedMore) {
-    const got = changes(b, a);
-    assert.ok(got.length && got.every((x) => !x.includes('accepts more') && !x.includes('tells no one')), `${a}: ${got}`);
-    assert.ok(got.some((x) => x.includes('cannot stand in') || x.includes('hands back differently')), `${a}: ${got}`);
-  }
-  assert.deepEqual(changes(...handedMore[0]), ['f: cannot stand in']);
-  assert.match(why(...handedMore[1], 'f'), /handed more arguments/);
-  // a kind on the accepting side with a function member (a handle kind), whose method grows
-  const opts = (ps) => `/** @typedef {{label: string, onDone: (${ps}) => void}} Opts */\n/** @param {Opts} o @returns {void} */\nexport function g(o) {}\n`;
-  assert.deepEqual(changes(opts('s: string'), opts('s: string, n?: number')), ['Opts.onDone: cannot stand in']);
-  // a handle kind the user hands in (it implements it): a method of it that now takes another argument is called with
-  // one; a handle only handed out, whose method the user calls, accepts more
-  const handle = (ps, dir) => `/**\n * @typedef {Object} Clock\n * @property {(${ps}) => string} now\n */\n${dir === 'in' ? '/** @param {Clock} c @returns {string} */\nexport function stamp(c) { return c.now(); }\n' : '/** @returns {Clock} */\nexport function clock() { return { now: () => \'t\' }; }\n'}`;
-  assert.deepEqual(changes(handle('', 'in'), handle('zone?: string', 'in')), ['Clock.now: cannot stand in']);
-  assert.deepEqual(changes(handle('', 'out'), handle('zone?: string', 'out')), ['Clock.now: accepts more (tells no one)']);
-  // a generic item, handed to the old as a whole, may hand back otherwise for some calls: only what the written forms
-  // show as accepting more is confirmed
-  assert.deepEqual(changes(generic('', '{string} '), generic('', '{string | number} ')), ['f: cannot stand in']);
-  const two = (t) => `/**\n * @template ${t}\n * @param {T} x\n * @param {${t.includes('U') ? 'U' : 'T'}} y\n * @returns {T}\n */\nexport function f(x, y) { return x; }\n`;
-  assert.deepEqual(changes(two('T'), two('T, U')), ['f: cannot stand in']);
-  const method = (t) => `export class C {\n  /**\n   * @template ${t}\n   * @param {T} x\n   * @param {${t.includes('U') ? 'U' : 'T'}} y\n   * @returns {T}\n   */\n  m(x, y) { return x; }\n}\n`;
-  assert.deepEqual(changes(method('T'), method('T, U')), ['C: hands back differently', 'C#m: cannot stand in']);
-  // a member written as a method: the checker relates its parameters both ways
-  assert.deepEqual(changes(fn(['{{m(s: string): void}} x'], 'number'), fn(['{{m(s: string | number): void}} x'], 'number')), ['f: cannot stand in']);
-  assert.deepEqual(changes(fn(['{{m(s: string | number): void}} x'], 'number'), fn(['{{m(s: string): void}} x'], 'number')), ['f: cannot stand in']);
-  assert.match(why(fn(['{{m(s: string | number): void}} x'], 'number'), fn(['{{m(s: string): void}} x'], 'number'), 'f'), /method, a class's object or "anything"/);
-  // "anything" in what it accepted: the checker lets it through, so nothing is proven
-  assert.deepEqual(changes(fn(['{{a: any}} x'], 'number'), fn(['{{a: string, b?: number}} x'], 'number')), ['f: cannot stand in']);
-  // what it hands back changed although the written form, a handle by name, did not
-  const thing = (opt, ret) => `/**\n * @typedef {Object} Thing\n * @property {() => ${ret}} size\n */\n${fn([`{{ name: string${opt} }} o`], 'Thing', `return { size: () => /** @type {any} */ (1) };`, 'o')}`;
-  assert.deepEqual(changes(thing('', 'number'), thing('; size?: number', 'string')), ['Thing.size: hands back differently', 'f: cannot stand in']);
+  for (const [b, a, want] of cases) assert.deepEqual(changes(b, a), want, a);
 });
 
 test('errors that can leave an item: one raised inside a try whose catch never names it is caught', () => {

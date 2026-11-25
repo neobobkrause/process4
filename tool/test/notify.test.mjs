@@ -349,7 +349,8 @@ test('who is told is a lookup in the later modules\' uses files: a module whose 
   // only formatDay changes: its code may now throw
   write(after, { ...withUses, 'src/dates/index.mjs': DATES('1 to 31').replace('return String(d.n);', "if (d.n < 0) throw new RangeError('n'); return String(d.n);") });
   const r = notice(before, after, 'dates');
-  assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes}`), ['formatDay: errors that can leave it changed']);
+  // report's show takes in formatDay's errors (its uses file's takesIn): a changed item of report too, which no one uses
+  assert.deepEqual(r.changed.map((c) => `${c.module} ${c.item}: ${c.changes}`), ['dates formatDay: errors that can leave it changed', 'report show: errors that can leave it changed']);
   assert.match(r.changed[0].words, /^errors that can leave it changed: none -> RangeError$/);
   assert.deepEqual(r.told.map((t) => t.user), ['report']);
 });
@@ -465,7 +466,7 @@ export function createBoxes() {
   write(before, files);
   const changed = (body) => {
     write(after, { ...files, 'src/dates/index.mjs': `${DATES()}${P(body)}` });
-    return Object.fromEntries(notice(before, after, 'dates').changed.map((c) => [c.item, c.changes.join(', ')]));
+    return Object.fromEntries(notice(before, after, 'dates').changed.filter((c) => c.module === 'dates').map((c) => [c.item, c.changes.join(', ')]));
   };
   assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { if (n > 99) throw new RangeError('big'); return n > 0; }")), { 'Boxes.ok': 'errors that can leave it changed' });
   assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', 'ok(n) { return this.make(n).v > 0; }')), { 'Boxes.ok': 'now needs its object as this' });
@@ -599,7 +600,7 @@ test('notify runs once for each module the merge changed, in module order', () =
   assert.match(text, /Notice for a change to orders[^\n]*\nNo item's means changed; nobody is told\./);
 });
 
-test('rule 52: accepting more tells nobody only where the type checker confirms it', () => {
+test('accepting more tells its users (the owner\'s decision, "Who a change tells", item 3)', () => {
   const p = (opt, ret) => `/**
  * @typedef {Object} Thing
  * @property {() => ${ret}} size
@@ -625,16 +626,13 @@ export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }
   write(more, { ...files('', 'number'), 'src/p/index.mjs': p('; size?: number', 'number') });
   write(hidden, { ...files('', 'number'), 'src/p/index.mjs': p('; size?: number', 'string') });
   const a = notice(before, more, 'p');
-  assert.deepEqual(a.changed.map((e) => `${e.item}: ${e.changes}: ${e.tells}`), ['make: accepts more: false']);
-  assert.deepEqual(a.told, []);
-  // The comparison sees only "accepts more" for make (Thing is a kind of handle, written by name); the checker does
-  // not confirm it, since what make hands back changed: it is "cannot stand in", and u, which calls make, is told.
+  assert.deepEqual(a.changed.map((e) => `${e.item}: ${e.changes}: ${e.tells}`), ['make: accepts more: true']);
+  assert.deepEqual(a.told.map((t) => t.user), ['u']);
+  assert.deepEqual(a.told[0].reasons.map((r) => `${r.item}: ${r.changes}`), ['make: accepts more']);
+  // What make hands back changed too, though its written form (a handle kind, by name) did not: Thing.size tells its own users.
   const b = notice(before, hidden, 'p');
-  const mk = b.changed.find((e) => e.item === 'make');
-  assert.deepEqual(mk.changes, ['cannot stand in']);
-  assert.match(mk.notConfirmed, /not find the new item assignable to the old/);
+  assert.deepEqual(b.changed.map((e) => `${e.item}: ${e.changes}: ${e.tells}`), ['Thing.size: hands back differently: true', 'make: accepts more: true']);
   assert.deepEqual(b.told.map((t) => t.user), ['u']);
-  assert.deepEqual(b.told[0].reasons.map((r) => `${r.item}: ${r.changes}`), ['make: cannot stand in']);
 });
 
 test('an unknown kind becoming known tells no one; any other difference in the same item still tells', () => {
@@ -666,7 +664,8 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   // With another change in the same item (a parameter newly required), that change still tells its users.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED.replace(' * @returns', ' * @param {number} y\n * @returns').replace('raw(x)', 'raw(x, y)') });
   const m = notice(root, after, 'dates');
-  assert.deepEqual(m.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: cannot stand in']);
+  // Its code changed too, so what was "anything" and is now stated is no longer only described: it is a change as well.
+  assert.deepEqual(m.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: cannot stand in,hands back differently']);
   assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.item === 'raw')));
 });
 
@@ -681,7 +680,8 @@ test('a comment alone is not a change: an error the code already raised, newly s
   assert.deepEqual(notice(root, after, 'dates').changed, []);
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw Object.assign(new TypeError('x'), { code: 'EMPTY' }); return x; }\n` });
   const r = notice(root, after, 'dates');
-  assert.deepEqual(r.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: errors that can leave it changed']);
+  // orders' shown takes in raw's errors: a changed item of orders too
+  assert.deepEqual(r.changed.map((e) => `${e.module} ${e.item}: ${e.changes}`), ['dates raw: errors that can leave it changed', 'orders shown: errors that can leave it changed']);
   assert.match(noticeText(r), /means: errors that can leave it changed: TypeError -> TypeError code EMPTY/);
   assert.deepEqual(r.told.map((t) => t.user), ['orders']);
 });

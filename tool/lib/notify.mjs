@@ -8,13 +8,13 @@ import { fileURLToPath } from 'node:url';
 import { loadTree } from './notice/model.mjs';
 import { loadReader, readerVersion } from './notice/ts.mjs';
 import { moduleMeans } from './notice/means.mjs';
-import { describe, noticeText } from './notice/notice.mjs';
+import { describe, noticeText, versionNotices } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { block, parseBlock } from './github.mjs';
 import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
 import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
-import { noticeSeq } from './testrecord.mjs';
+import { noticeSeq, testRecordOf } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
 
@@ -53,6 +53,7 @@ export function listingText(l) {
     L.push(`  ${e.kind} ${name}   [${e.where}]`);
     if (e.accepts) L.push(`      accepts: ${e.accepts}`);
     if (e.handsBack) L.push(`      hands back: ${e.handsBack}`);
+    if (e.value !== undefined) L.push(`      value: ${e.value}`);
     for (const b of e.bounds ?? []) L.push(`      bound: ${b}`);
     if (e.optional) L.push('      may be missing');
     if (e.throws) L.push(`      errors that can leave it: ${e.throws.join(', ')}`);
@@ -104,11 +105,11 @@ function changedModules(root, before, after, B, A) {
  * one: notify then says so plainly.
  * P4_READ_HEAP_MB, where set, is that process's heap in megabytes (for a test of running out).
  */
-function readNotices(dirB, dirA, mods, n, named) {
+function readNotices(dirB, dirA, mods, n, named, sameAs) {
   const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
   const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
   if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
-  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named }), encoding: 'utf8', maxBuffer: 1 << 30 });
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs }), encoding: 'utf8', maxBuffer: 1 << 30 });
   if (r.status === 0) return JSON.parse(r.stdout);
   const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
   if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
@@ -214,22 +215,43 @@ export function notifyCmd(ctx, n) {
       ...meaningsOf(declared?.meaning).map((x) => ({ ...x, module: jobModule, found: 'declared' })),
     ];
     for (const x of named) ctx.log(`${x.found === 'named' ? "ARCH's placed work names" : 'the pull request declares'} a change of meaning: ${x.module ? `${x.module} ` : ''}${x.item} (${x.line || '-'})`);
+    // The items the pull request records as keeping their domain and range (push --same): each tells no one.
+    const sameAs = (Array.isArray(declared?.same) ? declared.same : []).filter((x) => x && typeof x.item === 'string').map((x) => ({ item: x.item, why: String(x.why ?? ''), module: jobModule }));
+    for (const x of sameAs) ctx.log(`the pull request records that ${x.module ? `${x.module} ` : ''}${x.item} keeps its domain and range: ${x.why}`);
     const conversion = job?.kind === 'conversion' ? jobModule : null;
+    // A package's or the host's version changed (design part 2, section 7, point 4): the modules that use it, by their
+    // uses files.
+    for (const v of versionNotices(treeB, treeA)) {
+      ctx.log(`Notice for a change to the version of ${v.package}: ${v.was ?? 'none'} -> ${v.now ?? 'none'}; ${v.told.length} module(s) told.`);
+      for (const t of v.told) {
+        ctx.log(`  TOLD ${t.user}\n      package ${v.package}: ${t.reasons[0].why}`);
+        told.push({ module: t.user, kind: 'notice', from: `package ${v.package}`, merged: n, uses: t.reasons });
+      }
+    }
     const changed = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
     const mods = treeA.modules.map((m) => m.id).filter((id) => changed.includes(id) || named.some((x) => x.module === id));
     if (!mods.length) {
       ctx.log('The merge changed no module\'s files.');
-      ctx.log('No item changed. Nobody is told.');
-      return 0;
+      if (!told.length) ctx.log('No item changed. Nobody is told.');
+    } else {
+      readerNote(ctx, treeA);
+      const read = mods.filter((m) => treeB.byId.has(m));
+      const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named, sameAs).map((r) => [r.provider, r]) : []);
+      for (const m of mods) {
+        if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
+        const r = reports.get(m);
+        ctx.log(noticeText(r));
+        for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
+      }
     }
-    readerNote(ctx, treeA);
-    const read = mods.filter((m) => treeB.byId.has(m));
-    const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named).map((r) => [r.provider, r]) : []);
-    for (const m of mods) {
-      if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
-      const r = reports.get(m);
-      ctx.log(noticeText(r));
-      for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
+    // The mechanical edit (design part 2, section 7): a module whose code or tests the merged pull request changed, and
+    // whose tests its test record ran whole, already ran on the change; it is not told.
+    const record = testRecordOf(comments)?.data;
+    const ranWhole = new Set(record?.result === 'pass' && record.scope === 'whole module' && Array.isArray(record.modules) ? record.modules : []);
+    const spared = [...new Set(told.filter((t) => ranWhole.has(t.module) && changed.includes(t.module)).map((t) => t.module))];
+    if (spared.length) {
+      ctx.log(`not told, as the pull request changed their files and its test record ran their whole tests: ${spared.join(', ')}`);
+      told = told.filter((t) => !spared.includes(t.module));
     }
   } finally {
     rmSync(base, { recursive: true, force: true });

@@ -17,8 +17,10 @@
 //   errors), since only code that runs during the call can throw out of it or touch its arguments; what it hands back
 //   and what it reads (M5 plain data or a class instance, M8 channels, settings, files and streams) over the whole
 //   closure, since a value can be built, and a setting read, by code that wrote state the item reads. A provider's
-//   own errors are not composed into its users' means: a provider's change tells its users, and theirs tell theirs
-//   when their own means change (the study's middle-module case, section 3.3).
+//   own errors and channels are not written into its users' means: each item records instead which providers' items
+//   it takes in (`takesIn`: an error that can pass through it, a channel it reaches), which the uses file keeps, so
+//   that a provider's change to one of those parts is a change of the item too, found by a lookup (design part 2,
+//   section 7, "What changes"; notice.mjs).
 //   Exact where the language decides it (build text 5, section 6): an error raised inside a try block whose catch never
 //   names it, or by code that block calls to run at once, does not leave the item (throwsOf); a stream written out of
 //   the program by code outside the call does not reach it (SINKS); what the item's own code reads of what its caller
@@ -122,7 +124,7 @@ function makeCode(program, checker, tree, mod) {
   const add = (node, top = false) => {
     if (byNode.has(node)) return byNode.get(node);
     const p = { i: pieces.length, node, file: node.getSourceFile().fileName, top, member: memberNameOf(node), edges: new Set(), kinds: new Map(), contains: new Set(), reads: new Set(), paramReads: new Set(), writes: new Set(), rejects: new Set(),
-      thisUse: false, throws: new Set(), instances: new Set(), channels: new Set(), names: new Set(), news: [], params: [], errors: [] };
+      thisUse: false, throws: new Set(), instances: new Set(), channels: new Set(), names: new Set(), news: [], params: [], errors: [], takes: new Map() };
     pieces.push(p);
     byNode.set(node, p);
     return p;
@@ -244,6 +246,37 @@ function makeCode(program, checker, tree, mod) {
   const inOwn = (d) => d && own.has(d.getSourceFile().fileName);
   const stateless = new Map(); // module -> proven to keep no state (statelessModule)
   const fromProduct = (d) => d && !d.getSourceFile().isDeclarationFile && tree.moduleOfFile(d.getSourceFile().fileName);
+  // The providers' items a piece refers to (design part 2, section 7: each part of an item's means takes in the
+  // providers'): the item of the provider's listing that holds the declaration, for an item with code of its own; and
+  // how the piece refers to it, the least sure way: a call inside a catching block (`guarded`), a call, or a reference
+  // (`ref`: handed on, or a call whose answer is a promise, whose rejection can leave later).
+  const lister = makeLister(program, tree);
+  const listings = new Map();
+  const providerItem = (d) => {
+    const m = fromProduct(d);
+    if (!m || m === mod.id || inOwn(d)) return null;
+    if (!listings.has(m)) { let l = null; try { l = lister.list(tree.byId.get(m)); } catch { l = null; } listings.set(m, l); }
+    const l = listings.get(m);
+    const sf = d.getSourceFile(), at = d.name ? d.name.end - 1 : d.getStart(sf);
+    let best = null;
+    for (const r of l?.ranges ?? []) if (r.file === sf.fileName && r.start <= at && at < r.end && (!best || r.end - r.start < best.end - best.start)) best = r;
+    const e = best && l.entries[best.entry];
+    return e && !NO_CODE.has(e.kind) ? `${m}\u0000${best.entry}` : null;
+  };
+  const noteTake = (n, p, sym) => {
+    for (const d of sym?.declarations ?? []) {
+      const k = providerItem(d);
+      if (!k) continue;
+      let kind = useKind(n, p);
+      if (kind !== 'ref') {
+        let promise = false;
+        try { promise = checker.getTypeAtLocation(n).getCallSignatures().some((s) => /^Promise(Like)?$/.test(s.getReturnType()?.symbol?.name ?? '')); } catch { promise = true; }
+        if (promise) kind = 'ref';
+      }
+      const had = p.takes.get(k);
+      if (!had || RANK[kind] > RANK[had]) p.takes.set(k, kind);
+    }
+  };
   /** The pieces a declaration's name leads to when it is named: the function, the class and its constructor. */
   const targetsOf = (d) => {
     const out = [];
@@ -597,12 +630,15 @@ function makeCode(program, checker, tree, mod) {
       } else if (fromProduct(d) && sym.flags & ts.SymbolFlags.Value) {
         // another module's value: state outside this module's code, unless that module is proven to keep none
         if (isWriteTarget(n) || !statelessModule(fromProduct(d))) { p.reads.add('ext'); p.writes.add('ext'); }
+        noteTake(n, p, { declarations: [d] });
       }
     }
   }
 
   function noteMember(e, name, p) {
     const kind = useKind(e, p);
+    // a member of a provider's value (a method of its handle kind, a class's member): that item of the provider
+    if (ts.isPropertyAccessExpression(e)) { let s; try { s = resolve(checker.getSymbolAtLocation(e.name)); } catch { s = undefined; } if (s) noteTake(e, p, s); }
     for (const q of members.get(name) ?? []) if (q !== p) link(p, q, kind);
     const w = isWriteTarget(e);
     p[w ? 'writes' : fromParam(e.expression, p) ? 'paramReads' : 'reads'].add(`f:${name}`);
@@ -782,7 +818,7 @@ function makeCode(program, checker, tree, mod) {
    * caught too; whatever is only referenced, or runs later (async, a generator), is not. A caught piece's own errors do
    * not leave the item; a rejected promise it makes does.
    */
-  const throwsOf = (seeds) => {
+  const modesOf = (seeds) => {
     const mode = new Map();
     const todo = [...seeds, ...(seeds.length ? implicit : [])].map((p) => [p, 'once']);
     while (todo.length) {
@@ -797,8 +833,9 @@ function makeCode(program, checker, tree, mod) {
         todo.push([q, caught ? 'caught' : 'once']);
       }
     }
-    return [...mode].flatMap(([p, m]) => [...(m === 'once' ? p.throws : []), ...p.rejects]);
+    return mode;
   };
+  const throwsOf = (mode) => [...mode].flatMap(([p, m]) => [...(m === 'once' ? p.throws : []), ...p.rejects]);
   // The files that run in the same program as an item: those its interface files and its own file import, followed
   // file to file within the module. A file of the module that only runs as a program of its own (started by path) is
   // not among them: its code runs elsewhere, and writes nothing an item reads. It is in the closure as a file named by
@@ -880,8 +917,16 @@ function makeCode(program, checker, tree, mod) {
     const own = new Set(seeds);
     const todo = [...seeds];
     while (todo.length) for (const q of todo.pop().edges) if (ts.isArrowFunction(q.node) && !own.has(q)) { own.add(q); todo.push(q); }
+    const modes = modesOf(seeds);
+    // The providers' parts the item takes in: an error of a provider's item that can leave it (a call of the item made
+    // where its errors are not caught, or a reference that may run later), and the channels of every provider's item
+    // its whole closure reaches.
+    const takes = new Map();
+    const put = (k, part) => { if (!takes.has(k)) takes.set(k, new Set()); takes.get(k).add(part); };
+    for (const [p, m] of modes) for (const [k, kind] of p.takes) if (kind === 'ref' || (m === 'once' && kind === 'call')) put(k, 'errors');
+    for (const p of all) for (const k of p.takes.keys()) put(k, 'channels');
     return {
-      throws: [...new Set(throwsOf(seeds))].sort(),
+      throws: [...new Set(throwsOf(modes))].sort(),
       instances: sortedOf(all, (p) => [...p.instances]),
       needsThis: [...own].some((p) => p.thisUse && !p.top),
       writesArguments: sortedOf(seeds.filter((p) => isFunctionPiece(p.node)), (p) => [...written.get(p)].map((i) => `argument ${i + 1}`)),
@@ -892,6 +937,7 @@ function makeCode(program, checker, tree, mod) {
       typeErrors: sortedOf(fc, (p) => p.errors),
       code: digestOf(fc),
       ...(whole_ ? { wholeModule: true } : {}),
+      takes,
     };
   }
 
@@ -967,12 +1013,14 @@ export function moduleMeans(tree, moduleId) {
   }
   code.setItemPieces(memberSeeds);
   const items = {};
+  const takesIn = [];
   for (const [name, e] of Object.entries(listing.entries)) {
     const it = { kind: e.kind };
     if (e.accepts !== undefined && e.accepts !== null) it.accepts = e.accepts;
     if (e.handsBack !== undefined && e.handsBack !== null) it.handsBack = e.handsBack;
     if (e.side) it.side = e.side;
     if (e.optional) it.optional = true;
+    if (e.value !== undefined) it.value = e.value;
     it.bounds = e.bounds ?? [];
     it.where = e.where;
     if (!NO_CODE.has(e.kind)) {
@@ -1002,7 +1050,12 @@ export function moduleMeans(tree, moduleId) {
       }
       const whole = !seeds.size;
       if (whole) seeds = new Set(code.pieces);
-      Object.assign(it, code.factsOf([...seeds], whole));
+      const { takes, ...facts } = code.factsOf([...seeds], whole);
+      Object.assign(it, facts);
+      for (const [k, parts] of takes) {
+        const [provider, providerItem] = k.split('\u0000');
+        for (const part of parts) takesIn.push({ item: name, provider, providerItem, part });
+      }
     }
     items[name] = it;
   }
@@ -1015,7 +1068,7 @@ export function moduleMeans(tree, moduleId) {
     it.instances = [...new Set(by.flatMap((x) => x.instances))].sort();
   }
   // Where each item was read from, kept out of sight (a symbol, not enumerable: no form or comparison shows it), so that
-  // comparing two items can ask the checker about the declarations themselves (notice.mjs, compareItem and makeConfirm).
+  // comparing two items can ask the checker about the declarations themselves (notice.mjs, compareItem and makeSame).
   const meta = {};
   for (const [name, e] of Object.entries(listing.entries)) {
     meta[name] = { kind: e.kind, ...(e.rowKind ? { rowKind: e.rowKind } : {}) };
@@ -1029,5 +1082,8 @@ export function moduleMeans(tree, moduleId) {
   if (!SIDES.has(tree)) SIDES.set(tree, new Map());
   SIDES.get(tree).set(moduleId, side);
   for (const [name, it] of Object.entries(items)) Object.defineProperty(it, MEANS_SIDE, { value: { side, name } });
-  return { module: moduleId, items, listing };
+  const cmp = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
+  const at = (m) => tree.byId.get(m)?.index ?? 0;
+  takesIn.sort((x, y) => cmp(x.item, y.item) || at(x.provider) - at(y.provider) || cmp(x.providerItem, y.providerItem) || cmp(x.part, y.part));
+  return { module: moduleId, items, listing, takesIn };
 }

@@ -64,7 +64,7 @@ export function makeStandardProgram(files, oldProgram = undefined, virtual = nul
   const o = standardOptions();
   let host;
   if (virtual?.size) {
-    // Files the tool writes only in memory (the questions makeConfirm puts to the checker), served beside the real ones.
+    // Files the tool writes only in memory (the questions makeSame puts to the checker), served beside the real ones.
     host = ts.createCompilerHost(o);
     const { getSourceFile, fileExists, readFile } = host;
     host.getSourceFile = (f, lang, ...rest) => (virtual.has(f) ? ts.createSourceFile(f, virtual.get(f), lang, true) : getSourceFile.call(host, f, lang, ...rest));

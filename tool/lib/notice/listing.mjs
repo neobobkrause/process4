@@ -192,11 +192,11 @@ export function makeLister(program, tree) {
             entries[name].handsBack = { k: 'overloads', of: all.map((c2) => c2.ret) };
           }
         } else {
-          // A plain constant's single value (a price, a limit) is content, not a kind: unless its comment states a
-          // kind, a lone literal is widened to its base kind. A list or table marked as constant keeps its names.
-          const stated = ts.getJSDocType(decl) || ts.getJSDocType(host);
-          const vt = !stated && t.flags & ts.TypeFlags.Literal ? checker.getBaseTypeOfLiteralType(t) : t;
-          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(vt, h), bounds: [...ownBounds, ...nestedBounds(h)], where };
+          // A constant's value is in its range (design part 2, section 7): its kind is kept as the reader reads it, a
+          // lone literal as that literal, and its value as written (its code decides a change: notice.mjs, compareItem).
+          const init = ts.isVariableDeclaration(decl) ? decl.initializer : null;
+          const value = init ? init.getText().replace(/\s+/g, ' ').slice(0, 120) : undefined;
+          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(t, h), bounds: [...ownBounds, ...nestedBounds(h)], where, ...(value !== undefined ? { value } : {}) };
         }
         note('accepts', a, name); note('handsBack', h, name);
       }

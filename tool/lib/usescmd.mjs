@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig, loadModules } from './config.mjs';
 import { loadTree } from './notice/model.mjs';
 import { readReferences, ANY } from './notice/refs.mjs';
+import { moduleMeans } from './notice/means.mjs';
 import { readerVersion } from './notice/ts.mjs';
 import { facilitiesPath, readUses, sameUses, usesPath, writeUses } from './usesfile.mjs';
 import { writeOut } from './notify.mjs';
@@ -63,8 +64,10 @@ export function usesReading(tree, moduleId, commit) {
     outside: r.outside.map(({ rule, file, side, line, mayRefer, waitsOn, tests, item, relabels }) => ({ rule, file, side, line, ...(relabels ? { item, relabels } : {}), mayRefer, waitsOn, tests })),
     orderFaults: r.orderFaults,
     copies: r.copies,
+    packages: r.packages,
+    takesIn: moduleMeans(tree, moduleId).takesIn,
   };
-  return { data, reading: r };
+  return { data, reading: { ...r, takesIn: data.takesIn } };
 }
 /** The uses file of one module, as the tool writes it. */
 export const usesData = (tree, moduleId, commit) => usesReading(tree, moduleId, commit).data;
@@ -205,6 +208,11 @@ export function printedUses(r) {
   L.push(`what the conversion needs first (${waits.length}):`);
   for (const w of waits) L.push(`  ${w}`);
   L.push(`host facilities used (${r.facilities.length}): ${r.facilities.join(', ') || 'none'}`);
+  const byPackage = new Map();
+  for (const x of r.packages ?? []) byPackage.set(x.package, [...(byPackage.get(x.package) ?? []), x.facility]);
+  L.push(`packages used (${byPackage.size}): ${[...byPackage].map(([p, f]) => `${p} (${f.length})`).join(', ') || 'none'}`);
+  L.push(`what its items take in of their providers (${r.takesIn?.length ?? 0}):`);
+  for (const t of r.takesIn ?? []) L.push(`  ${t.item}: the ${t.part} of ${t.provider} ${t.providerItem}`);
   return L.join('\n');
 }
 

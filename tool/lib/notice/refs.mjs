@@ -36,6 +36,30 @@ export function hostFacilities() {
   return HOST_FACILITIES;
 }
 
+/** The host whose facilities the tool describes (notice/facilities.json pins Node): the package of a host facility. */
+export const HOST = 'node';
+const TOOL_ROOT = fileURLToPath(new URL('../../', import.meta.url));
+/** The package a specifier names (`pg`, `@scope/x` from `@scope/x/sub`); a name of Node's own modules is the host's. */
+export function packageName(spec) {
+  if (/^node:/.test(spec)) return HOST;
+  const parts = spec.split('/');
+  return spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
+}
+/**
+ * The package that gives a facility, by where its declaration is: under a node_modules folder of the product, that
+ * package (its @types package for one without its own types; @types/node is the host's); anything else, the language's
+ * library and the tool's own description of the host among them, the host's.
+ */
+export function packageOf(sym) {
+  const f = (sym?.declarations?.[0]?.getSourceFile().fileName ?? '').split(path.sep).join('/');
+  if (!f || f.startsWith(TOOL_ROOT.split(path.sep).join('/'))) return HOST;
+  const at = f.lastIndexOf('/node_modules/');
+  if (at < 0) return HOST;
+  let name = packageName(f.slice(at + '/node_modules/'.length));
+  if (name.startsWith('@types/')) { name = name.slice(7); name = name.includes('__') ? `@${name.replace('__', '/')}` : name; }
+  return name === 'node' ? HOST : name;
+}
+
 /** Every module earlier than the one read: "may refer to any of them". */
 export const ANY = '*';
 
@@ -248,7 +272,7 @@ export function readReferences(tree, moduleId, opts = {}) {
   const orderFaults = new Map();
   const outside = new Map();
   const copies = new Map();
-  const inventory = new Set();
+  const inventory = new Map(); // facility -> the package that gives it (the host: node)
   const routeKey = (r) => (r === 'direct' ? 'direct' : `${r.via}:${r.item}`);
   /**
    * @param mark for a use of a kind, a handle kind or a class (KIND_ITEMS): `{ value: 'member', member }` (it reads or
@@ -349,7 +373,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const par = node.parent;
     if (name === 'Date' && par && par.expression === node && (ts.isCallExpression(par) || (ts.isNewExpression(par) && !(par.arguments?.length)))) name = 'Date()';
     const shown = listName(name);
-    inventory.add(shown);
+    inventory.set(shown, packageOf(sym));
     const never = neverRule(name);
     if (never) place(never, node, { what: `uses ${shown}, which no product may use`, waitsOn: 'this module' });
     else if (write) place('R14', node, { what: `writes ${shown}, a member the host declares` });
@@ -864,7 +888,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (d.code === 2307 || d.code === 7016) {
         const m = /'([^']+)'/.exec(msg)?.[1] ?? '';
         if (m.startsWith('.') || resolver.isOwn(m)) place('S1', node, { what: `an import the tool cannot resolve: ${m}`, mayRefer: modulesOfSpec(m, fileName) });
-        else { inventory.add(m); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list' }); }
+        else { inventory.set(m, packageName(m)); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list' }); }
         continue;
       }
       let stmt = node; while (stmt.parent && !ts.isStatement(stmt) && !ts.isSourceFile(stmt.parent)) stmt = stmt.parent;
@@ -904,7 +928,8 @@ export function readReferences(tree, moduleId, opts = {}) {
         // a member of a kind of plain data is the kind's item: named on a value of the kind, a read of that member
         const holder = base ?? (n.parent && ts.isBindingElement(n.parent) && n.parent.propertyName === n ? n.parent.parent : null);
         const mark = e.kind === 'type' && !isKindDecl(d) ? (holder ? memberMark(typeAt(holder), n.text, e) : { value: 'whole' }) : undefined;
-        addUse(e, n, kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module), mark);
+        // a test that writes over a provider's member (not a field of a value of its kind of plain data) replaces it: a mock
+        addUse(e, n, isTest && kind === 'write' && e.kind !== 'type' ? 'mock' : kind, base ? viaOf(base, e.module) : kind === 'import' || kind === 'type' ? 'direct' : viaOf(n, e.module), mark);
       }
     };
 
@@ -1462,12 +1487,14 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (which === 'module') {
         const a0 = args[0];
         if (!a0 || !ts.isStringLiteral(a0)) place('S12', n, { what: 'mock.module of a name the tool cannot read' });
-        else loadOf(a0.text, n, 'import');
+        else loadOf(a0.text, n, 'mock');
       }
       if (which === 'method') {
         const a0 = args[0], a1 = args[1];
         const bound = a0 && ts.isIdentifier(a0) && (checker.getSymbolAtLocation(a0)?.flags ?? 0) & ts.SymbolFlags.Alias;
         if (!bound || !a1 || !ts.isStringLiteral(a1)) place('S12', n, { what: 'mock.method other than on an import, by a written-out name' });
+        // the provider's member it replaces: a use of type mock (design part 2, section 7, point 3 of who is told)
+        else { const t = typeAt(a0); const prop = t && checker.getPropertyOfType(t, a1.text); for (const d of prop?.declarations ?? []) { const en = entryOf(d); if (en) addUse(en, n, 'mock'); } }
       }
     }
   }
@@ -1612,7 +1639,8 @@ export function readReferences(tree, moduleId, opts = {}) {
     copies: [...copies].filter(([k]) => k.startsWith('hand|')).map(([, v]) => v),
     marked: [...copies].filter(([k, v]) => !k.startsWith('hand|') && v.marked).map(([, v]) => v).sort((a, b) => byPlace(a, b) || String(a.provider).localeCompare(String(b.provider))),
     candidates: [...copies].filter(([k, v]) => !k.startsWith('hand|') && !v.marked).map(([, v]) => v).sort((a, b) => byPlace(a, b) || String(a.provider).localeCompare(String(b.provider))),
-    facilities: [...inventory].sort(),
+    facilities: [...inventory.keys()].sort(),
+    packages: [...inventory].map(([facility, p]) => ({ package: p, facility })).sort((a, b) => a.package.localeCompare(b.package) || a.facility.localeCompare(b.facility)),
   };
 }
 

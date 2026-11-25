@@ -2,32 +2,38 @@
 // before and after a change to one module, which of its items changed, and who is told and why.
 //
 // What changed: each item's means (means.mjs), worked out on both sides with the same tool and settings, and compared;
-// every item whose means differs, or that is removed, is a changed item. Where only what it accepts differs, and the
-// type checker confirms that the new item accepts more (rule 52, rule 7 for the tool), it tells no one. A new item tells
-// no one. An item's first means, at the module's conversion (a merged job whose block's kind is `conversion`), tells
-// no one. An unknown kind becoming known tells no one (the owner's decision 2 of 25 November and its union case,
-// decision 1B). Added to these: the items whose meaning ARCH names in the work it placed, and the pull request declares
-// (`named`): a name or a declaration may add a changed item, never remove one.
+// every item whose means differs, or that is removed, is a changed item. Any difference in what it accepts tells,
+// accepting more included (the owner's decision of 25 November, "Who a change tells", item 3); the words `accepts more`
+// and `cannot stand in` only say which. A constant's value is in its means. A new item tells no one. Describing an item
+// (a part read as "anything" now stated) is no change where the item's code is unchanged or the merge is the module's
+// conversion (a merged job whose block's kind is `conversion`), whose first means tell no one. Added to these: the items
+// whose meaning ARCH names in the work it placed, and the pull request declares (`named`): a name or a declaration may
+// add a changed item, never remove one; and taken off: an item the tool found changed that the pull request records as
+// keeping its domain and range (`sameAs`, push --same). A later module's item whose means take in a changed error or
+// channel of a provider's item, as its uses file's `takesIn` records, is a changed item of that module too, and so on
+// through the modules after it (takenIn).
 //
-// Who is told (build text 5, section 6): a lookup in the later modules' uses files, with no user's code read. Each
-// module whose uses file names a changed item or a member of a changed type (by its provider and name, whatever the
-// route), or holds a marked copy of one, or reads a kind an earlier module relabelled as its own from a changed kind
-// (an S4 place that lists what it `relabels`); where a kind, handle kind or class changed member by member, only the uses
-// that change reaches (a member added: the whole value's; one removed, changed or made optional: its readers' too), and
-// an item whose means differ only inside such kinds is told through them; a change of meaning alone is not told to a
-// module that only hands the value back to a later module that is told; and, on any change to the provider's files
-// whether or not an item changed, each module with a place outside the standard whose `mayRefer` names the provider,
-// each module with an order fault naming it (an earlier module, whose file is read too), and each later module with no
-// uses file yet that imports it (its files' imports, read as text: usesfile.mjs). Each is told once, with the reasons
-// of build text 5, section 5.
+// Who is told (design part 2, section 7, "Who is told"): a lookup in the later modules' uses files, with no user's code
+// read. Each module whose uses file names a changed item or a member of a changed type (by its provider and name,
+// whatever the route), or holds a marked copy of one, or reads a kind an earlier module relabelled as its own from a
+// changed kind (an S4 place that lists what it `relabels`); where a kind, handle kind or class changed member by member,
+// only the uses that change reaches (a member added: the whole value's; one removed, changed or made optional: its
+// readers' too), and an item whose means differ only inside such kinds is told through them; a change of meaning alone
+// is not told to a module that only hands the value back to a later module that is told; and, on any change to the
+// provider's files whether or not an item changed, each module with a place outside the standard whose `mayRefer` names
+// the provider, or a test that replaces or mocks one of its members (a use of type `mock`), each module with an order
+// fault naming it (an earlier module, whose file is read too), and each later module with no uses file yet that imports
+// it, names a path into it, or whose files the tool cannot follow (read as text: usesfile.mjs, reachedModules). Each is
+// told once, with the reasons of build text 5, section 5. A package's or the host's version change tells the modules
+// whose uses files name it (versionNotices).
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadTree } from './model.mjs';
-import { ts, loadReader, makeStandardProgram, readerVersion } from './ts.mjs';
+import { loadReader, makeStandardProgram, readerVersion } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { moduleMeans, meansSideOf, MEANS_SIDE } from './means.mjs';
-import { same, standsIn, render, handsMoreArguments, handlesHandedIn } from './canon.mjs';
-import { importedModules, readUses } from '../usesfile.mjs';
+import { same, standsIn, render } from './canon.mjs';
+import { reachedModules, readFacilities, readUses } from '../usesfile.mjs';
 
 /** A module's uses file on one side, its lists made lists (build text 2c), or null where it has none (or none that reads). */
 function usesOf(tree, module) {
@@ -37,6 +43,8 @@ function usesOf(tree, module) {
   return {
     uses: list(d.uses).filter((u) => typeof u.provider === 'string' && typeof u.item === 'string').map((u) => ({ ...u, where: list(u.where) })),
     outside: list(d.outside), orderFaults: list(d.orderFaults), copies: list(d.copies),
+    takesIn: list(d.takesIn).filter((t) => ['item', 'provider', 'providerItem', 'part'].every((k) => typeof t[k] === 'string')),
+    packages: list(d.packages).filter((x) => typeof x.package === 'string'),
   };
 }
 
@@ -47,9 +55,9 @@ export const PLACES_SHOWN = 6;
 export const FOUND = { means: 'its means', named: "ARCH's placed work", declared: "the pull request's declaration" };
 
 /**
- * An unknown kind becoming known tells no one (design part 2, section 7, "What counts as a change"): where the reader
- * read "anything" before and a kind is stated after, the running code is the same; only what the reader knows changed.
- * `known(before, after)` is the canonical form before with each "anything" replaced by the kind stated at the same place
+ * Describing an item is not a change (design part 2, section 7, "Not a change"): where the reader read "anything" before
+ * and a kind is stated after, and the item's code is unchanged or the change is its module's conversion, only what the
+ * reader knows changed (describedBy). `known(before, after)` is the canonical form before with each "anything" replaced by the kind stated at the same place
  * after, so that only the other differences are judged. Places are matched by field name, and lists item by item (the
  * members of a union only where both have as many).
  */
@@ -64,61 +72,35 @@ export function known(b, a) {
 }
 
 /**
- * Rule 52, and what counts as a change (design part 2, section 7): the questions put to the type checker about one item,
- * before and after. One program reads the module's interface files on both sides and, written only in memory, a file
- * that names each item's declaration on each side and asks:
- * - **the same**: whether its two declarations, or the same part of each (what it accepts, what it hands back), are
- *   identical by the checker's own identity relation (TypeScript's "subsequent variable declarations must have the same
- *   type"). A kind's name given or dropped, a type parameter renamed, a handle kind renamed with the same members, are
- *   the same; anything the checker can tell apart is not.
- * - **accepts more**: whether everything the old accepted, the new accepts, and what it hands back is the same. For a
- *   function, method, class member or class with one signature and no type parameter, the old argument list is assigned
- *   to the new (`Parameters`, `ConstructorParameters`), and what it hands back (`ReturnType`, `InstanceType`) is asked
- *   to be the same; for an operation, its request and its answer the same way; for a kind on the accepting side, the
- *   old kind is assigned to the new; for a generic or overloaded item, the new is assigned to the old as a whole, which
- *   only confirms what the written forms already show as accepting more.
- *   The checker relates a method's parameters both ways and lets "anything" through (its documented unsound points):
- *   where either side's accepted part holds a method, a class's object or "anything", nothing is confirmed. Nor where a
- *   function the user hands in may now be handed more arguments (handedMore), which the checker lets through.
- * Never confirmed: what the checker does not prove. Asked once per pair of sides and module, for every item whose
- * written forms differ, in one program.
+ * How an item's parts before are read against its parts after: through `known` where the change describes it (its code,
+ * comments left out, unchanged, as `code` of means.mjs says; an item with no code of its own, a kind, has none to
+ * change; or the change is the module's conversion), else as they are, so that a part stated after where the code also
+ * changed is a change.
  */
-const CONFIRMS = new WeakMap();
-let confirmFiles = 0;
-export function makeConfirm(treeB, treeA, moduleId) {
-  if (!CONFIRMS.has(treeB)) CONFIRMS.set(treeB, new WeakMap());
-  const byA = CONFIRMS.get(treeB);
+export const describedBy = (b, a, conversion = false) => (conversion || b.code === a.code ? known : (x) => x);
+
+/**
+ * What counts as a change (design part 2, section 7): whether an item's two declarations, before and after, or the same
+ * part of each (what it accepts, what it hands back), are identical by the type checker's own identity relation
+ * (TypeScript's "subsequent variable declarations must have the same type"), each assignable to the other. A kind's name
+ * given or dropped, a type parameter renamed, a handle kind renamed with the same members, are the same; anything the
+ * checker can tell apart is not. One program reads the module's interface files on both sides and, written only in
+ * memory, a file that names each item's declaration on each side. Asked once per pair of sides and module, for every
+ * item whose written forms differ.
+ */
+const SAMES = new WeakMap();
+let sameFiles = 0;
+export function makeSame(treeB, treeA, moduleId) {
+  if (!SAMES.has(treeB)) SAMES.set(treeB, new WeakMap());
+  const byA = SAMES.get(treeB);
   if (!byA.has(treeA)) byA.set(treeA, new Map());
   const byM = byA.get(treeA);
-  if (!byM.has(moduleId)) byM.set(moduleId, buildConfirm(treeB, treeA, moduleId));
+  if (!byM.has(moduleId)) byM.set(moduleId, buildSame(treeB, treeA, moduleId));
   return byM.get(moduleId);
 }
 
-const NOT_FOUND = 'the item cannot be found to ask the type checker';
-const HANDED_MORE = 'a function the user hands in may now be handed more arguments: the type checker lets one with fewer parameters stand where more are expected, but a user\'s function whose further parameter is optional, of another kind, was accepted before and is not now';
-
-/**
- * Whether a function the user hands in may now be handed more arguments (canon.mjs, handsMoreArguments): one stated in
- * what the item accepts, or the item itself where it is a method of a handle kind or class whose values a user may
- * supply, which the provider calls. The checker would confirm either as accepting more; it is not.
- */
-function handedMore(item, sb, sa) {
-  const ib = sb?.items[item], ia = sa?.items[item];
-  if (!ib || !ia) return false;
-  if (handsMoreArguments(ib.accepts, ia.accepts)) return true;
-  const owner = /^([^.#:]+)[.#]/.exec(item)?.[1];
-  if (!owner || ib.accepts?.k !== 'params' || ia.accepts?.k !== 'params') return false;
-  const moduleId = sa.moduleId ?? sb.moduleId;
-  const handedIn = (s) => { if (!s.handedIn) s.handedIn = handlesHandedIn(s.items, moduleId); return s.handedIn; };
-  if (![sb, sa].some((s) => handedIn(s).has(`${moduleId}.${owner}`))) return false;
-  return handsMoreArguments({ k: 'fn', params: ib.accepts.items, ret: null }, { k: 'fn', params: ia.accepts.items, ret: null });
-}
-const UNSOUND = "what it accepts holds a method, a class's object or \"anything\", which the type checker relates both ways: it cannot prove it";
-
-function buildConfirm(treeB, treeA, moduleId) {
+function buildSame(treeB, treeA, moduleId) {
   const answers = new Map();
-  const asked = new Map(); // item -> the way it was asked
-  const ways = (item) => asked.get(item);
   const sides = () => [meansSideOf(treeB, moduleId) ?? (treeB.byId.has(moduleId) ? (moduleMeans(treeB, moduleId), meansSideOf(treeB, moduleId)) : null),
     meansSideOf(treeA, moduleId) ?? (treeA.byId.has(moduleId) ? (moduleMeans(treeA, moduleId), meansSideOf(treeA, moduleId)) : null)];
   const q = (s) => JSON.stringify(s);
@@ -137,32 +119,30 @@ function buildConfirm(treeB, treeA, moduleId) {
       else whole = `${S}.${owner}[${q(member)}]`;
     } else whole = ['function', 'value', 'class'].includes(meta.kind) ? `typeof ${S}.${name}` : `${S}.${name}`;
     if (!whole) return null;
-    if (meta.kind === 'operation') return { whole, accepts: `${whole}['req']`, handsBack: `${whole}['res']`, way: 'parts' };
-    if (meta.kind === 'class' && simple) return { whole, accepts: `ConstructorParameters<${whole}>`, handsBack: `InstanceType<${whole}>`, way: 'parts' };
+    if (meta.kind === 'operation') return { accepts: `${whole}['req']`, handsBack: `${whole}['res']`, way: 'parts' };
+    if (meta.kind === 'class' && simple) return { accepts: `ConstructorParameters<${whole}>`, handsBack: `InstanceType<${whole}>`, way: 'parts' };
     if (['function', 'method', 'class member'].includes(meta.kind) && simple) {
-      return { whole, accepts: `Parameters<NonNullable<${whole}>>`, handsBack: `ReturnType<NonNullable<${whole}>>`, way: 'parts' };
+      return { accepts: `Parameters<NonNullable<${whole}>>`, handsBack: `ReturnType<NonNullable<${whole}>>`, way: 'parts' };
     }
     const isKind = ['kind', 'handle kind', 'operation table', 'stored rows'].includes(meta.kind);
-    return { whole, accepts: whole, handsBack: whole, way: isKind ? 'in' : 'out' };
+    return { accepts: whole, handsBack: whole, way: isKind ? 'in' : 'out' };
   }
   /** Asks the checker about the given items, in one program. */
   function ask(names) {
     const [sb, sa] = sides();
-    const n = `${process.pid}-${confirmFiles++}`;
-    let text = `import type * as B from './.p4-confirm-${n}-b.mjs';\nimport type * as A from './.p4-confirm-${n}-a.mjs';\n`;
+    const n = `${process.pid}-${sameFiles++}`;
+    let text = `import type * as B from './.p4-same-${n}-b.mjs';\nimport type * as A from './.p4-same-${n}-a.mjs';\n`;
     const questions = [];
     const add = (item, what, body) => { questions.push({ item, what, start: text.length, end: text.length + body.length }); text += `${body}\n`; };
-    const ways = new Map();
+    let k = 0;
     for (const name of names) {
       const ib = sb?.items[name], ia = sa?.items[name];
       // asked part by part only where both sides have one signature and no type parameter
       const simple = [ib, ia].every((it) => it?.accepts?.k === 'params' && !generic(it.accepts) && !generic(it.handsBack) && it.handsBack?.k !== 'overloads');
       const eb = ib && exprsOf(name, sb.meta[name] ?? {}, simple, 'B'), ea = ia && exprsOf(name, sa.meta[name] ?? {}, simple, 'A');
-      answers.set(name, { same: { accepts: false, handsBack: false }, more: { confirmed: false, why: NOT_FOUND } });
+      answers.set(name, { accepts: false, handsBack: false });
       if (!eb || !ea || eb.way !== ea.way) continue;
-      const k = ways.size;
-      ways.set(name, { k, way: eb.way });
-      asked.set(name, eb.way);
+      k++;
       // the same: identical, and each assignable to the other (the identity relation takes a stated undefined and the
       // mark of an optional member for one; assignability under exactOptionalPropertyTypes does not)
       for (const part of ['accepts', 'handsBack']) {
@@ -170,84 +150,29 @@ function buildConfirm(treeB, treeA, moduleId) {
           + `declare const q${k}_${part}_b: ${eb[part]};\nconst q${k}_${part}_ba: ${ea[part]} = q${k}_${part}_b;\n`
           + `declare const q${k}_${part}_a: ${ea[part]};\nconst q${k}_${part}_ab: ${eb[part]} = q${k}_${part}_a;`);
       }
-      // the old accepted part handed to the new; for a generic or overloaded item, the new item handed to the old
-      if (eb.way === 'out') add(name, 'more', `declare const q${k}_o: ${ea.whole};\nconst q${k}_n: ${eb.whole} = q${k}_o;`);
-      else add(name, 'more', `declare const q${k}_o: ${eb.accepts};\nconst q${k}_n: ${ea.accepts} = q${k}_o;`);
     }
     if (!questions.length) return;
     text += 'export {};\n';
     const dir = treeA.root;
     const barrel = (tree) => (tree.byId.get(moduleId)?.public ?? []).map((f) => `export * from ${q(f)};`).join('\n') || 'export {};';
-    const file = path.join(dir, `.p4-confirm-${n}.mts`);
-    const virtual = new Map([[path.join(dir, `.p4-confirm-${n}-b.mts`), barrel(treeB)], [path.join(dir, `.p4-confirm-${n}-a.mts`), barrel(treeA)], [file, text]]);
+    const file = path.join(dir, `.p4-same-${n}.mts`);
+    const virtual = new Map([[path.join(dir, `.p4-same-${n}-b.mts`), barrel(treeB)], [path.join(dir, `.p4-same-${n}-a.mts`), barrel(treeA)], [file, text]]);
     const program = makeStandardProgram([...(treeB.byId.get(moduleId)?.public ?? []), ...(treeA.byId.get(moduleId)?.public ?? [])], undefined, virtual);
-    const checker = program.getTypeChecker();
     const sf = program.getSourceFile(file);
     const diags = [...program.getSyntacticDiagnostics(sf), ...program.getSemanticDiagnostics(sf)];
     const failed = (x) => diags.some((d) => d.start !== undefined && d.start >= x.start && d.start < x.end);
-    const declared = new Map();
-    for (const st of sf.statements) {
-      if (!ts.isVariableStatement(st)) continue;
-      for (const d of st.declarationList.declarations) if (ts.isIdentifier(d.name)) declared.set(d.name.text, checker.getTypeAtLocation(d.name));
-    }
-    for (const x of questions) if (x.what !== 'more') answers.get(x.item).same[x.what] = !failed(x);
-    for (const x of questions.filter((y) => y.what === 'more')) {
-      const r = answers.get(x.item);
-      const { k, way } = ways.get(x.item);
-      const no = failed(x);
-      if (no || [declared.get(`q${k}_o`), declared.get(`q${k}_n`)].some((t) => !t || unproven(checker, t))) {
-        r.more = { confirmed: false, why: !no ? UNSOUND : way === 'out' ? 'the type checker does not find the new item assignable to the old'
-          : way === 'in' ? 'the type checker does not find the old kind assignable to the new' : 'the type checker does not find that the new item accepts everything the old did' };
-      } else if (way === 'parts' && !r.same.handsBack) r.more = { confirmed: false, why: 'the type checker does not find the new item assignable to the old: what it hands back is not the same' };
-      else if (handedMore(x.item, sb, sa)) r.more = { confirmed: false, why: HANDED_MORE };
-      else r.more = { confirmed: true };
-    }
+    for (const x of questions) answers.get(x.item)[x.what] = !failed(x);
   }
-  const answer = (item) => {
+  return (item, part) => {
     if (!answers.has(item)) {
       const [sb, sa] = sides();
       // every item on both sides whose written forms differ, asked at once
       const differ = sb && sa ? Object.keys(sa.items).filter((n) => sb.items[n] && !answers.has(n)
-        && (!same(known(sb.items[n].accepts, sa.items[n].accepts) ?? null, sa.items[n].accepts ?? null) || !same(known(sb.items[n].handsBack, sa.items[n].handsBack) ?? null, sa.items[n].handsBack ?? null))) : [];
+        && (!same(sb.items[n].accepts ?? null, sa.items[n].accepts ?? null) || !same(sb.items[n].handsBack ?? null, sa.items[n].handsBack ?? null))) : [];
       ask([...new Set([item, ...differ])]);
     }
-    return answers.get(item) ?? { same: { accepts: false, handsBack: false }, more: { confirmed: false, why: NOT_FOUND } };
+    return answers.get(item)?.[part] ?? false;
   };
-  const confirm = (item) => answer(item).more;
-  confirm.same = (item, part) => answer(item).same[part];
-  // Where the written forms cannot show that an item accepts more, only a question part by part, or about a kind handed
-  // in, says so: a generic or overloaded item handed to the old as a whole may hand back otherwise for some calls.
-  confirm.acceptsMore = (item) => answer(item).more.confirmed && ways(item) !== 'out';
-  return confirm;
-}
-
-/**
- * Whether the checker's answer about a type cannot be relied on: it holds "anything", a member written as a method, or a
- * class's object (whose methods are methods), each of which the checker relates both ways.
- */
-function unproven(checker, t, seen = new Set(), depth = 0) {
-  if (!t || seen.has(t) || depth > 12) return false;
-  seen.add(t);
-  const f = t.flags;
-  if (f & ts.TypeFlags.Any) return true;
-  if (f & (ts.TypeFlags.Union | ts.TypeFlags.Intersection)) return t.types.some((m) => unproven(checker, m, seen, depth + 1));
-  if (!(f & ts.TypeFlags.Object)) return false;
-  if (((t.objectFlags & ts.ObjectFlags.Reference ? t.target?.objectFlags : 0) | t.objectFlags) & ts.ObjectFlags.Class) return true;
-  for (const a of t.objectFlags & ts.ObjectFlags.Reference ? checker.getTypeArguments(t) : []) if (unproven(checker, a, seen, depth + 1)) return true;
-  // a list, or a kind of the language's own library (Promise, Map...): its arguments only, not the library's own methods
-  const lib = (t.symbol?.declarations ?? []).some((d) => d.getSourceFile().isDeclarationFile);
-  if (checker.isArrayType(t) || checker.isTupleType(t) || (lib && !t.symbol?.name?.startsWith('__'))) return false;
-  for (const s of [...t.getCallSignatures(), ...t.getConstructSignatures()]) {
-    if (s.declaration && (ts.isMethodSignature(s.declaration) || ts.isMethodDeclaration(s.declaration))) return true;
-    for (const p of s.getParameters()) if (unproven(checker, checker.getTypeOfSymbol(p), seen, depth + 1)) return true;
-    if (unproven(checker, s.getReturnType(), seen, depth + 1)) return true;
-  }
-  for (const p of checker.getPropertiesOfType(t)) {
-    if ((p.declarations ?? []).some((d) => ts.isMethodSignature(d) || ts.isMethodDeclaration(d))) return true;
-    if (unproven(checker, checker.getTypeOfSymbol(p), seen, depth + 1)) return true;
-  }
-  for (const i of checker.getIndexInfosOfType(t)) if (unproven(checker, i.type, seen, depth + 1)) return true;
-  return false;
 }
 
 /** The means of an item for people: each part, its kinds written out. */
@@ -260,41 +185,45 @@ export function describe(it) {
   if (it.bounds?.length) d.bounds = it.bounds;
   for (const k of ['throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (it[k]?.length) d[k] = it[k];
   if (it.needsThis) d.needsThis = true;
+  if (it.value !== undefined) d.value = it.value;
   return d;
 }
 
 const show = (x) => (Array.isArray(x) ? (x.length ? x.join(', ') : 'none') : x === undefined || x === null ? 'nothing' : typeof x === 'boolean' ? (x ? 'yes' : 'no') : String(x));
 
-/** The checker's questions about one item, where both sides' means say where they were read from (moduleMeans). */
+/** The checker's question about one item, where both sides' means say where they were read from (moduleMeans). */
 function askerOf(b, a) {
   const sb = b?.[MEANS_SIDE], sa = a?.[MEANS_SIDE];
   if (!sb || !sa || sb.name !== sa.name || sb.side.moduleId !== sa.side.moduleId || sb.side.tree === sa.side.tree) return null;
-  const confirm = makeConfirm(sb.side.tree, sa.side.tree, sb.side.moduleId);
-  return { same: (part) => confirm.same(sb.name, part), acceptsMore: () => confirm.acceptsMore(sb.name) };
+  const isSame = makeSame(sb.side.tree, sa.side.tree, sb.side.moduleId);
+  return (part) => isSame(sb.name, part);
 }
 
 /**
  * Compares the means of one item before and after: the parts that differ, each with its word, and the one-line why.
- * Returns null where nothing differs.
+ * Any difference tells, accepting more included (the owner's decision, "Who a change tells", item 3); the words
+ * `accepts more` and `cannot stand in` only say which, as the written forms show it. Returns null where nothing differs.
+ * @param conversion whether the change is the module's conversion (describedBy)
  */
-export function compareItem(b, a) {
+export function compareItem(b, a, { conversion = false } = {}) {
   const parts = [];
   const whys = [];
   const differ = (word, x, y, text = (u) => show(u)) => { parts.push(word); whys.push(`${word}: ${text(x)} -> ${text(y)}`); };
   if (b.kind !== a.kind) differ('kind changed', b.kind, a.kind);
-  // What it accepts and hands back before, with each "anything" that is a stated kind after read as that kind.
-  const ba = known(b.accepts, a.accepts), bh = known(b.handsBack, a.handsBack);
-  // Iteration 5 (rule 33): an added overload that keeps every old signature only accepts more.
+  // What it accepts and hands back before, with each "anything" that is a stated kind after read as that kind, where
+  // that only describes it.
+  const k = describedBy(b, a, conversion);
+  const ba = k(b.accepts, a.accepts), bh = k(b.handsBack, a.handsBack);
+  // Iteration 5 (rule 33): an added overload that keeps every old signature accepts more.
   const sigPairs = (accepts, handsBack) => (accepts?.k === 'overloads' ? accepts.of.map((p, i) => JSON.stringify([p, handsBack?.of?.[i]])) : accepts?.k === 'params' ? [JSON.stringify([accepts, handsBack])] : null);
   const pb = sigPairs(ba, bh), pa = sigPairs(a.accepts, a.handsBack);
-  // Where the written forms differ, the type checker is asked about the declarations themselves (makeConfirm): a part
-  // it finds the same is unchanged (a kind's name given or dropped, a type parameter renamed); one it confirms accepts
-  // more, where the written forms cannot show it (a function handed in that is handed less), accepts more.
-  const ask = askerOf(b, a);
+  // Where the written forms differ, the type checker is asked about the declarations themselves (makeSame): a part it
+  // finds the same is unchanged (a kind's name given or dropped, a type parameter renamed).
+  const isSame = askerOf(b, a);
   if (pb && pa && (ba?.k === 'overloads' || a.accepts?.k === 'overloads') && pb.length < pa.length && pb.every((x, i) => pa[i] === x)) differ('accepts more', render(ba), render(a.accepts));
   else {
-    if (!same(ba ?? null, a.accepts ?? null) && !ask?.same('accepts')) differ(standsIn(ba ?? null, a.accepts ?? null) || ask?.acceptsMore() ? 'accepts more' : 'cannot stand in', ba, a.accepts, (u) => (u ? render(u) : 'nothing'));
-    if (!same(bh ?? null, a.handsBack ?? null) && !ask?.same('handsBack')) differ('hands back differently', bh, a.handsBack, (u) => (u ? render(u) : 'nothing'));
+    if (!same(ba ?? null, a.accepts ?? null) && !isSame?.('accepts')) differ(standsIn(ba ?? null, a.accepts ?? null) ? 'accepts more' : 'cannot stand in', ba, a.accepts, (u) => (u ? render(u) : 'nothing'));
+    if (!same(bh ?? null, a.handsBack ?? null) && !isSame?.('handsBack')) differ('hands back differently', bh, a.handsBack, (u) => (u ? render(u) : 'nothing'));
   }
   if (!!a.optional && !b.optional) differ('may now be missing', false, true);
   if (!same(b.bounds ?? [], a.bounds ?? [])) differ('bound changed', b.bounds ?? [], a.bounds ?? []);
@@ -303,6 +232,9 @@ export function compareItem(b, a) {
   if (!!b.needsThis !== !!a.needsThis) differ(a.needsThis ? 'now needs its object as this' : 'no longer needs its object as this', !!b.needsThis, !!a.needsThis);
   if (!same(b.writesArguments ?? [], a.writesArguments ?? [])) differ('arguments written into changed', b.writesArguments ?? [], a.writesArguments ?? []);
   if (!same(b.channels ?? [], a.channels ?? [])) differ('channels, settings or files changed', b.channels ?? [], a.channels ?? []);
+  // A constant's value is in its range: where what its type shows is the same, its code (its value and what makes it)
+  // decides.
+  if (a.kind === 'value' && b.kind === 'value' && b.code !== a.code && same(bh ?? null, a.handsBack ?? null)) differ('value changed', b.value, a.value);
   // A type error in the item's code counts as a change: a new one, or, while it has one, any change to its code (the
   // stated kinds then do not bind the code).
   if (a.typeErrors?.length && (!same(b.typeErrors ?? [], a.typeErrors) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
@@ -351,6 +283,7 @@ export function memberChanges(b, a) {
     return out.added.length || out.removed.length ? out : null;
   }
   let sb, sa;
+  const known = describedBy(b, a);
   if (a.kind === 'kind') {
     if ((b.accepts == null) !== (a.accepts == null) || (b.handsBack == null) !== (a.handsBack == null)) return null;
     sb = b.handsBack != null ? known(b.handsBack, a.handsBack) : known(b.accepts, a.accepts);
@@ -388,6 +321,8 @@ function onlyInside(b, a, names) {
   if (!names.size || b.kind !== a.kind) return false;
   for (const k of ['bounds', 'throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
   if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || (a.typeErrors?.length && b.code !== a.code)) return false;
+  if (a.kind === 'value' && b.code !== a.code) return false;
+  const known = describedBy(b, a);
   return same(byName(known(b.accepts, a.accepts) ?? null, names), byName(a.accepts ?? null, names))
     && same(byName(known(b.handsBack, a.handsBack) ?? null, names), byName(a.handsBack ?? null, names));
 }
@@ -467,28 +402,21 @@ function firstPlaces(where) {
  * @param named [{ module?, item, line, found: 'named' | 'declared' }]: the items whose meaning ARCH named or the pull
  *   request declared; one with no module (a pull request that is not a job's) belongs to this module where it has the item
  * @param conversion true where the merged pull request is the module's conversion: its first means tell no one
+ * @param sameAs [{ module?, item, why }]: the items the pull request records as keeping their domain and range (push
+ *   --same); each, where the tool found it changed by its means alone, tells no one
  */
-export function changedItems(treeB, treeA, moduleId, { named = [], conversion = false } = {}) {
+export function changedItems(treeB, treeA, moduleId, { named = [], conversion = false, sameAs = [] } = {}) {
   const mb = treeB.byId.has(moduleId) ? moduleMeans(treeB, moduleId) : { items: {} };
   const ma = treeA.byId.has(moduleId) ? moduleMeans(treeA, moduleId) : { items: {} };
-  const confirm = makeConfirm(treeB, treeA, moduleId);
   const out = [];
   const fresh = [];
   for (const item of [...new Set([...Object.keys(mb.items), ...Object.keys(ma.items)])].sort()) {
     const b = mb.items[item], a = ma.items[item];
     if (!a) { out.push({ module: moduleId, item, found: 'means', changes: ['removed'], tells: !conversion, why: null, before: describe(b), after: null }); continue; }
     if (!b) { fresh.push(item); continue; }
-    const c = compareItem(b, a);
+    const c = compareItem(b, a, { conversion });
     if (!c) continue;
-    let tells = true, notConfirmed;
-    // Accepting more tells no one, where the type checker confirms it (rule 52).
-    if (c.parts.every((p) => p === 'accepts more')) {
-      const r = confirm(item);
-      if (r.confirmed) tells = false;
-      else { c.parts = ['cannot stand in']; notConfirmed = r.why; }
-    }
-    if (conversion) tells = false;
-    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells, why: null, words: c.why, ...(notConfirmed ? { notConfirmed } : {}), ...partsThatDiffer(b, a) });
+    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: !conversion, why: null, words: c.why, ...partsThatDiffer(b, a) });
   }
   const mine = named.filter((n) => (n.module ? n.module === moduleId : !!(ma.items[n.item] ?? mb.items[n.item])));
   for (const n of mine) {
@@ -500,6 +428,12 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
       had.tells = true;
     } else out.push({ module: moduleId, item: n.item, found: n.found, changes: ['meaning changed'], tells: true, why: n.line, before: { meaning: n.line.split(';')[0].trim() }, after: { meaning: n.line.split(';').slice(1).join(';').trim() } });
   }
+  // The insides only (design part 2, section 7): an item the tool found changed whose domain and range the job records
+  // as the same tells no one; one ARCH named or the pull request declared still tells.
+  for (const x of sameAs.filter((y) => !y.module || y.module === moduleId)) {
+    const c = out.find((y) => y.item === x.item && y.found === 'means' && !y.namedBy);
+    if (c) { c.tells = false; c.same = x.why; }
+  }
   // Member by member (build text 5, section 6): a kind, handle kind or class whose change is its members' says which;
   // a member, or an item of another kind, whose means differ only inside such kinds is told through them.
   const byMeans = (c) => c.found === 'means' && !c.namedBy && c.tells && !c.changes.includes('removed') && mb.items[c.item] && ma.items[c.item];
@@ -510,7 +444,7 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
     const m = memberChanges(b, a);
     const others = new Set([...names].filter((x) => x !== `${moduleId}.${c.item}`));
     const shape = (it) => (it.kind === 'handle kind' ? null : it.kind === 'kind' ? (it.handsBack ?? it.accepts) : it.handsBack);
-    const sb = shape(b) && known(shape(b), shape(a)), sa = shape(a);
+    const sb = shape(b) && describedBy(b, a)(shape(b), shape(a)), sa = shape(a);
     m.through = m.changed.filter((x) => others.size && same(byName(sb.props[x], others), byName(sa.props[x], others)));
     m.changed = m.changed.filter((x) => !m.through.includes(x));
     c.kind = a.kind;
@@ -533,6 +467,47 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
   return { module: moduleId, changed: out, fresh, conversion };
 }
 
+/** The parts of an item's means that a later module's item takes in (its uses file's `takesIn`), by the words of a change. */
+const TAKEN = { 'errors that can leave it changed': 'errors', 'channels, settings or files changed': 'channels' };
+
+/**
+ * Through a middle module (design part 2, section 7, "What changes"): where a later module's item takes in a changed part
+ * of a provider's item (an error that can pass through it, a channel it reaches), as that module's uses file records,
+ * that item is a changed item of that module too, and so on through the modules after it. A lookup: no code is read.
+ * @param changed the changed items that tell
+ * @param files [{ id, files: [its uses file before and after, as read] }] in module order
+ * @returns the changed items found so, each { module, item, found: 'means', changes, tells, takesIn: [{ module, item, part }] }
+ */
+export function takenIn(changed, files, indexOf) {
+  const out = new Map(); // `${module}|${item}` -> changed item
+  const queue = changed.filter((c) => c.changes.some((w) => TAKEN[w]));
+  const seen = new Set(queue.map((c) => `${c.module}|${c.item}`));
+  while (queue.length) {
+    const c = queue.shift();
+    const parts = c.changes.map((w) => TAKEN[w]).filter(Boolean);
+    for (const { id, files: fs2 } of files) {
+      if (indexOf(id) <= indexOf(c.module)) continue;
+      for (const t of fs2.flatMap((f) => f.takesIn)) {
+        if (t.provider !== c.module || t.providerItem !== c.item || !parts.includes(t.part)) continue;
+        const k = `${id}|${t.item}`;
+        const word = Object.keys(TAKEN).find((w) => TAKEN[w] === t.part);
+        let d = out.get(k);
+        if (!d) {
+          if (seen.has(k)) continue;
+          d = { module: id, item: t.item, found: 'means', changes: [], tells: true, why: null, takesIn: [] };
+          out.set(k, d);
+          seen.add(k);
+          queue.push(d);
+        }
+        if (!d.changes.includes(word)) { d.changes.push(word); if (!queue.includes(d)) queue.push(d); }
+        if (!d.takesIn.some((x) => x.module === c.module && x.item === c.item && x.part === t.part)) d.takesIn.push({ module: c.module, item: c.item, part: t.part });
+        d.words = d.takesIn.map((x) => `takes in the ${x.part} of ${x.module} ${x.item}, which changed`).join('; ');
+      }
+    }
+  }
+  return [...out.values()];
+}
+
 /**
  * The notice for one change.
  * @param before the product before the change (a folder, or loadTree's product)
@@ -541,14 +516,15 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
  * @param o.named the items whose meaning ARCH named or the pull request declared
  * @param o.filesChanged whether the merge changed the provider's files (a change that only names an item's meaning does not)
  * @param o.conversion whether the merged pull request is the provider's conversion
+ * @param o.sameAs the items the pull request records as keeping their domain and range (changedItems)
  */
-export function notice(before, after, provider, { named = [], filesChanged = true, conversion = false } = {}) {
+export function notice(before, after, provider, { named = [], filesChanged = true, conversion = false, sameAs = [] } = {}) {
   loadReader();
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const B = treeOf(before), A = treeOf(after);
   if (!A.byId.has(provider)) throw new Error(`no such module: ${provider}`);
   const report = { provider, reader: `TypeScript ${readerVersion()}`, conversion, changed: [], fresh: [], told: [], summary: '' };
-  const mine = changedItems(B, A, provider, { named, conversion });
+  const mine = changedItems(B, A, provider, { named, conversion, sameAs });
   report.fresh = mine.fresh;
   report.changed.push(...mine.changed);
   // A new operation whose name another module already answers: that module's operation now answers differently
@@ -563,13 +539,14 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
       for (const op of newOps) if (l.entries[op]) report.changed.push({ module: m.id, item: op, found: 'means', changes: [`${provider} now answers the same name`], tells: true, why: null, words: `${provider} now answers the operation ${op.slice(3)} too` });
     }
   }
+  const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
+  const indexOf = (id) => A.byId.get(id)?.index ?? B.byId.get(id)?.index ?? -1;
+  report.changed.push(...takenIn(report.changed.filter((c) => c.tells), order.map((id) => ({ id, files: [usesOf(B, id), usesOf(A, id)].filter(Boolean) })), indexOf));
   const telling = report.changed.filter((c) => c.tells);
   // The modules whose changed items are told; and the provider, whose files changed, for those that hear of any change.
   const byModule = new Map();
   for (const c of telling) { if (!byModule.has(c.module)) byModule.set(c.module, []); byModule.get(c.module).push(c); }
   if (filesChanged && !byModule.has(provider)) byModule.set(provider, []);
-  const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
-  const indexOf = (id) => A.byId.get(id)?.index ?? B.byId.get(id)?.index ?? -1;
   const itemsOf = (m) => byModule.get(m).map((c) => c.item);
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   const hitsOf = new Map();
@@ -596,10 +573,14 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
     const reasons = [];
     if (!files.length) {
       // No uses file yet (before the module's conversion): told of any change to the files of an earlier module it
-      // imports, whether or not an item changed.
-      const imported = new Set([A, B].flatMap((t) => (t.byId.has(user) ? [...importedModules(t, t.byId.get(user)).imported.keys()] : [])));
-      for (const m of before.filter((x) => imported.has(x) && (x === provider ? filesChanged : true))) {
-        reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${user} has no uses file yet and imports ${m}`,
+      // imports, reads by path or whose program it starts, whether or not an item changed; and, where the tool cannot
+      // tell which modules its files reach, of any change to every earlier module (design part 2, section 7, point 3).
+      const reached = [A, B].filter((t) => t.byId.has(user)).map((t) => reachedModules(t, t.byId.get(user)));
+      const how = (m) => [...new Set(reached.flatMap((r) => r.reached.get(m) ?? []))];
+      const cannot = reached.flatMap((r) => r.cannot);
+      for (const m of before.filter((x) => (x === provider ? filesChanged : true) && (how(x).length || cannot.length))) {
+        const why = how(m).length ? `${user} has no uses file yet and ${how(m).join(' and ')} ${m}` : `${user} has no uses file yet, and the tool cannot tell which modules it reaches (${cannot[0].why} at ${cannot[0].at})`;
+        reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${why}`,
           noUsesFile: `${user} has no uses file yet: its whole tests run` });
       }
     } else {
@@ -609,6 +590,16 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
       const copies = once(files.flatMap((f) => f.copies));
       const outside = once(files.flatMap((f) => f.outside));
       const faults = once(files.flatMap((f) => f.orderFaults));
+      // A test that replaces or mocks a member of the provider hears of any change to the provider's files, whether or
+      // not an item changed (design part 2, section 7, point 3).
+      if (filesChanged && before.includes(provider)) {
+        const mocks = uses.filter((u) => u.provider === provider && u.type === 'mock');
+        if (mocks.length) {
+          reasons.push({ module: provider, items: itemsOf(provider), found: 'any change', changes: [], mock: [...new Set(mocks.map((u) => u.item))].join(', '),
+            why: `${anyChange(provider)}; a test of ${user} replaces or mocks ${[...new Set(mocks.map((u) => u.item))].join(', ')} of ${provider}`,
+            places: firstPlaces(mocks.flatMap((u) => u.where)) });
+        }
+      }
       // A file written with what each use does with a value (build text 2c, `value`); an older one reads as whole.
       const marks = uses.some((u) => typeof u.value === 'string');
       for (const m of before) {
@@ -669,8 +660,63 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   }
   passedOn(report, telling, hitsOf, indexOf);
   report.summary = telling.length ? `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`
-    : `${conversion ? `${provider}'s conversion: its first means tell no one` : report.changed.length ? 'No changed item tells anyone (each only accepts more, as the type checker confirms)' : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`;
+    : `${conversion ? `${provider}'s conversion: its first means tell no one` : report.changed.length ? 'No changed item tells anyone (each one the pull request records as keeping its domain and range)' : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`;
   return report;
+}
+
+const DEPENDENCY_LISTS = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
+/**
+ * The version of each package a product names, read from its files: every package.json's dependency lists and every
+ * package-lock.json's packages (outside node_modules); and the host's, from the facility list's `versions`.
+ * Returns Map(package -> its versions, as one text).
+ */
+export function packageVersions(tree) {
+  const seen = new Map();
+  const add = (name, where, v) => { if (!seen.has(name)) seen.set(name, []); seen.get(name).push(`${where} ${JSON.stringify(v)}`); };
+  const walk = (dir) => {
+    let entries = [];
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries.sort((x, y) => (x.name < y.name ? -1 : 1))) {
+      if (e.name === 'node_modules' || e.name === '.git') continue;
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) { walk(f); continue; }
+      if (e.name !== 'package.json' && e.name !== 'package-lock.json') continue;
+      let d;
+      try { d = JSON.parse(fs.readFileSync(f, 'utf8')); } catch { continue; }
+      const where = path.relative(tree.root, f).split(path.sep).join('/');
+      if (e.name === 'package.json') for (const k of DEPENDENCY_LISTS) for (const [n, v] of Object.entries(d?.[k] ?? {})) add(n, `${where} ${k}`, v);
+      else for (const [k, v] of Object.entries(d?.packages ?? {})) { const at = k.lastIndexOf('node_modules/'); if (at >= 0) add(k.slice(at + 13), `${where} ${k}`, v?.version ?? null); }
+    }
+  };
+  walk(tree.root);
+  const out = new Map([...seen].map(([n, v]) => [n, v.sort().join('; ')]));
+  for (const [host, v] of Object.entries(readFacilities(tree)?.versions ?? {})) out.set(host, `the facility list's versions ${JSON.stringify(v)}`);
+  return out;
+}
+
+/**
+ * Point 4 of who is told (design part 2, section 7): on a change to a package's version, each module whose uses file
+ * names the package; on a change to the host's version (the facility list's `versions`), each module that uses a
+ * facility of it. One notice for each package that changed. A lookup in the uses files: no code is read.
+ * @returns [{ package, was, now, told: [{ user, reasons }] }]
+ */
+export function versionNotices(before, after) {
+  const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
+  const B = treeOf(before), A = treeOf(after);
+  const vb = packageVersions(B), va = packageVersions(A);
+  const changed = [...new Set([...vb.keys(), ...va.keys()])].filter((p) => vb.get(p) !== va.get(p)).sort();
+  if (!changed.length) return [];
+  const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
+  const files = new Map(order.map((id) => [id, [usesOf(B, id), usesOf(A, id)].filter(Boolean)]));
+  return changed.map((p) => {
+    const told = [];
+    for (const user of order) {
+      const facilities = [...new Set(files.get(user).flatMap((f) => f.packages).filter((x) => x.package === p).map((x) => x.facility))].sort();
+      if (!facilities.length) continue;
+      told.push({ user, reasons: [{ module: `package ${p}`, package: p, found: 'any change', changes: [], why: `${p}'s version changed (${vb.get(p) ?? 'none'} -> ${va.get(p) ?? 'none'}); ${user} uses ${facilities.slice(0, PLACES_SHOWN).join(', ')}${facilities.length > PLACES_SHOWN ? ` and ${facilities.length - PLACES_SHOWN} more` : ''}`, places: [] }] });
+    }
+    return { package: p, was: vb.get(p) ?? null, now: va.get(p) ?? null, told };
+  });
 }
 
 /** Writes a notice for people (build text 2b, section 6). */
@@ -681,14 +727,14 @@ export function noticeText(r) {
     if (c.words) L.push(`      means: ${c.words}`);
     if (c.members) L.push(`      members: ${Object.entries(membersText(c.members)).map(([k, v]) => `${k} ${v.join(', ')}`).join('; ')}`);
     if (c.why) L.push(`      meaning: ${c.why}`);
-    if (c.notConfirmed) L.push(`      accepts more, not confirmed: ${c.notConfirmed}`);
+    if (c.same) L.push(`      the same domain and range, as the pull request records: ${c.same}`);
   }
   for (const t of r.told) {
     L.push(`  TOLD ${t.user}`);
     for (const x of t.reasons) {
       const at = (x.places ?? []).join(', ');
       if (x.item) L.push(`      uses ${x.module} ${x.item}${x.copy ? ` through ${x.copy}, a copy of it` : ''} (${x.changes.join(', ')}; found by ${[x.found, ...(x.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}) at ${at || 'no place named'}`);
-      else L.push(`      ${x.outside ? `outside the standard, ${x.outside}` : x.orderFault ? `order fault, ${x.orderFault}` : 'no uses file'}: ${x.why}`);
+      else L.push(`      ${x.outside ? `outside the standard, ${x.outside}` : x.orderFault ? `order fault, ${x.orderFault}` : x.mock ? `a mock of ${x.mock}` : x.package ? `package ${x.package}` : 'no uses file'}: ${x.why}`);
     }
   }
   return L.join('\n');

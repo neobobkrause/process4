@@ -47,7 +47,7 @@ test('p4 test runs the module\'s check and tests at the head, writes a pass reco
   assert.equal(testCmd(j.ctx, j.pr.number), 0);
   assert.deepEqual(recordOf(j.gh), {
     commit: sha, notice_seq: 0, scope: 'whole module', why: 'job branch for orders; its job block says ordinary',
-    files: ['test/orders/a.test.mjs'], passed: 1, failed: 0, result: 'pass', fails_total: 0, written: '2026-11-20T10:00Z',
+    modules: ['orders'], files: ['test/orders/a.test.mjs'], passed: 1, failed: 0, result: 'pass', fails_total: 0, written: '2026-11-20T10:00Z',
   });
   assert.deepEqual(j.gh.s.calls.filter((c) => c[0] === 'rerun'), [['rerun', 7]]);
   const text = j.out.join('\n');

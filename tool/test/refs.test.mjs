@@ -882,7 +882,7 @@ test('u > names', () => { names(); });
 ` });
   const tree = loadTree(root);
   const d = usesData(tree, 'u', 'a'.repeat(40));
-  assert.deepEqual(Object.keys(d), ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies']);
+  assert.deepEqual(Object.keys(d), ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies', 'packages', 'takesIn']);
   assert.deepEqual(d.written.commit, 'a'.repeat(40));
   // the tool's commit: the commit of the copy it runs from
   assert.equal(d.written.tool, git(['rev-parse', 'HEAD'], { cwd: new URL('..', import.meta.url).pathname }));
