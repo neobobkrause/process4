@@ -1,17 +1,16 @@
 # Part 10. What is open, what is unproven, and the trial
 
-Length: 104 lines. Last section: "6. Risks with no trial".
+Length: 103 lines. Last section: "6. Risks with no trial".
 
 Most items are also marked where they belong in parts 1 to 9. This part gathers them and adds what belongs to no one part.
 
 ## 1. Open with the owner
 
-Four items remain open with the owner, to be put to him in full before the design can be called settled.
+Three items remain open with the owner, to be put to him in full before the design can be called settled.
 
 1. **His approvals and forbidden commands for Process4** (part 6, section 2): the wording of his approvals, which only he decides, and his word on the forbidden commands as they stand. What is in force is his committed `CLAUDE.md` standing-approvals block and the `.claude/settings.json` deny list; what is open is his word confirming the wording as settled, or his revision of it.
-2. **Accepting more** (part 2, section 7): the design counts any change to what an item accepts, accepting more included, as a change of its domain that tells its users. His record of decisions, under "Who a change tells", says that an item that only accepts more tells no one; his marked decision settles which stands.
-3. **A job's record that a changed item's domain and range are the same** (part 2, section 7): whether it may take that item off the notice, where the tool found only a computed fact or an equivalent rewrite.
-4. **A told job that finds nothing to change** (part 2, section 7): whether his rule's "retested" asks it to run its related tests before it closes.
+2. **A job's record that a changed item's domain and range are the same** (part 2, section 7): whether it may take that item off the notice, where the tool found only a computed fact or an equivalent rewrite.
+3. **A told job that finds nothing to change** (part 2, section 7): whether his rule's "retested" asks it to run its related tests before it closes.
 
 ## 2. Open design work
 

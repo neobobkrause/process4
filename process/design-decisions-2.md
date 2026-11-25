@@ -217,9 +217,9 @@ so to him on the same thread).
    as a change. So does an item whose meaning ARCH names in the work it places, or the job declares in its pull request,
    and a changed marked bound line. Whether an item still gives the same answers is not asked; an accidental change of
    meaning is a bug in the provider, caught first by its own tests.
-3. **Describing is not changing.** An item's first means, at its conversion, tells no one; nor does a new item, or an item
-   that only accepts more, as the type checker confirms. This carries decision 2 of 25 November (an unknown kind becoming
-   known tells no one) and its union case (decision 1B).
+3. **Describing is not changing; accepting more is.** An item's first means, at its conversion, tells no one; nor does a
+   new item. This carries decision 2 of 25 November (an unknown kind becoming known tells no one) and its union case
+   (decision 1B). Any change to what an item accepts, accepting more included, changes its domain and tells its users.
 4. **An item's name.** An item is named by its name within its module. Where two of a module's interface files export one
    name for two different things, each is an item of its own named `<file>:<name>`, the file as the module list writes it;
    the same thing exported again from a second file stays one item (decision 4B; build text 2b, section 6).
@@ -261,6 +261,9 @@ PROCESS #16's session, on the design document above).
 On who classifies host facilities: "Decision: use the simplification: the tool carries Node's and workerd's facility
 classification; ARCH names the boundary modules and classifies the packages its product uses." — 25 November 2026, 20:26
 UTC (in PROCESS #16's session, on the options: no change, ARCH keeps the whole list per product; or this simplification).
+On accepting more: "Decision: remove the rule that accepting more tells no one; any change to what a provider accepts tells
+its users." — 25 November 2026, 23:07 UTC (in PROCESS #17's session; researched in `process/research/precision-26nov/`,
+`misses.md` §3).
 
 ### Subject: How `notify` reads the product
 
