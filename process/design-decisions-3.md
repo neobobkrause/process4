@@ -116,3 +116,34 @@ an import the tool cannot read. Option 3B of two (3A no change; 3B the narrower 
 with their next move.
 
 **The owner's words.** "Decision: 3b" — 25 November 2026 (a comment on his standing page, on option 3B).
+
+### Subject: Cleaning up Process4 before further improvements
+
+**The rule as it now stands.** Before any further improvement, Process4's texts and tool are cleaned up, changing no rule and
+no behaviour, except where a text or the tool breaks a rule the design already states. Each area is done in place: the
+record of decisions regrouped by subject, one entry per subject with every one of the owner's dated words kept beneath it;
+the design's findings rewritten each in its home section, tool detail moved to the build texts; the build texts rewritten
+in place, their dated clauses left to this record; the starting texts re-split by subject, every act a session takes named,
+each under 8,192 bytes and ten rules; and the tool's duplicate code made one. Each change is named to the owner. It adds no
+test, gate, review or stop. Option B of three (A no change; B clean up first; C the texts only). Researched in
+`process/research/cleanup-audit-25nov/`.
+
+Choice 6 (the waiting-work record and a starting job's block outgrowing one comment) waits, on the owner's suggestion, until
+the way the tool decides which modules are told of a change is corrected: "I think that the reason that the length of
+notices are overflowing is because the process for determining which modules need to be told when an earlier module changes
+is broken." — 25 November 2026 (conversation).
+
+**The owner's words.** "Decision: B, (ii)" — 25 November 2026 (in PROCESS #14's session; B of the cleanup options).
+
+### Subject: What PROCESS reads in full
+
+**The rule as it now stands.** PROCESS reads in full, before acting, its starting text, the design (parts 00 to 10) and its
+handover record. It reads the record of the owner's decisions, build text 5 and its research through their indexes, one line
+for each entry or file, and opens an entry or a file, or gives it to a worker, when a question touches it. The design states
+every decision as it now stands, so it is the governing statement; the record keeps the owner's exact dated words and the
+reasons (design part 5, section 3; part 6, section 7; PROCESS's starting text). It brings PROCESS's reading set from about
+300,000 bytes to under the 175,000-byte set maximum. It removes reading; it adds no test, gate, review or stop. Option (ii)
+of two ((i) no change). Researched in `process/research/cleanup-audit-25nov/README.md`.
+
+**The owner's words.** "Decision: B, (ii)" — 25 November 2026 (in PROCESS #14's session; (ii) of the choice on what PROCESS
+reads).
