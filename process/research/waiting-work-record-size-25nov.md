@@ -28,3 +28,16 @@ the reasons. 3B and (if chosen) 2C+ would shrink how many entries arise, not the
   and an entry no longer carries `uses` where its merged pull request holds the reasons. After it lands and civicsmith
   moves, ARCH re-runs the queued notifies, which place what was lost. Recommended.
 - C. Only drop the old `uses` and group entries by module: smaller, but still past the limit on civicsmith.
+
+## The same limit at `open` (civicsmith ARCH #26 via coordinator #9, 12:55Z, unchanged)
+
+"`p4 open --module filings --branch job/filings.1` exits 1 with "p4 open: GitHub refused: gh: Validation Failed (HTTP 422);
+GitHub said: Validation Failed; Body is too long (maximum is 65536 characters)". The job block that `open` writes ... carries
+each waiting notice's uses (filings has 22 notices placed against it) ... so no pull request opens and the job cannot start.
+The branch job/filings.1 exists with no pull request, and the round record shows filings open with pull_request null. ...
+Other work goes on: filings waits, later modules' jobs continue."
+
+Reading: decision B of 25 Nov (second group) keeps a job block under 60,000 characters when `notify` adds a notice to an open
+job (reasons lose before/after, then one reason that runs the whole module); `open --module` copies every notice's reasons
+whole and applies no such cut (`open` in `tool/lib/commands.mjs`). Folded into choice 6: 6B also makes `open` apply the same
+cut, and its block never exceeds what a comment holds.
