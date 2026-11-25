@@ -46,7 +46,12 @@ those yourself; bring him only what would change a rule.
    his own rule "any change to either a provider's domain or range necessitates that its users be retested" calls for
    telling it), asked whether he accepts A; B1–B5, tool imprecision: member-level granularity (a type's or class's
    change matched to uses of its other members, `X.*`), equivalent type rewrites, over-approximated computed facts,
-   ARCH-named meanings telling pass-through users, unconfirmed accepts-more. He was told PROCESS would tighten B1–B5 now
+   ARCH-named meanings telling pass-through users, unconfirmed accepts-more. His later question (~20:58Z): "Why can't a
+   job that adds a new field or parameter that doesn't break existing calls recognize that that kind of change doesn't
+   require that any users be notified?" Answer given: a new optional parameter the checker confirms already tells no one
+   (his rule); a new field handed back can break only users of the whole value (spread, keys, serialize, whole-value
+   comparison), so the tool, not the job, tells only those — add this to B1. B1, B4 fully; B2 very likely (unverified);
+   B5 mostly; B3 only partly. He was told PROCESS would tighten B1–B5 now
    (changes no rule) and re-measure the proof on a CONVERTED copy of its modules to count A and B apart, unless he says
    otherwise. Do that (workers in worktrees from `work/decision-c`), and get his answer on A.
 2. A fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), then ONE pull
