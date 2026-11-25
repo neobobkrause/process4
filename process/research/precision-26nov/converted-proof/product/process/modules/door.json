@@ -1,0 +1,16 @@
+{
+  "name": "door",
+  "files": [
+    "door/src/"
+  ],
+  "tests": [
+    "door/test/"
+  ],
+  "public": [
+    "door/src/index.mjs"
+  ],
+  "uses": [
+    "rooms",
+    "bookings"
+  ]
+}
