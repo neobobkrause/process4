@@ -28,3 +28,20 @@ parameter can change an inferred return kind). Asked ARCH #17 for the notice's b
 waiting work again and a new told job would start for nothing. Correction: also skip a told user whose job pull request
 of any state, opened after the merge, already names that notice in its block. Small tool change with a test; adds no
 test, gate, review or stop.
+
+## The answer to 1 (03:11Z, from ARCH #17's diff of bio-plane/test/declared-ops.mjs, e60165a757..5b70828de0)
+
+`registerDeclared(root, ...registrations)` became `registerDeclared(root, ...rest)`: a leading string is now taken as
+`upTo`, every other argument must be a function, and it now raises `TypeError` ("a registration must be a function") and
+a new `Error` (an `upTo` not on the order file). Its comment adds `@throws {TypeError}`. The kinds of error an entry raises
+are part of what it hands back (the proof's iteration 2, `notice.mjs`), so "hands back differently" is the rules' answer,
+not a misreading; the printed "accepts" lines (anything to anything | string) are only the visible part. So the tool is
+right by the rules, and the 125 are told by decision 2: the handful followed fully because they call `registerDeclared`
+(e.g. `interface-shell/register.mjs:6`), the rest because they are not followed fully and so count as using everything of
+test-support.
+
+What remains is the cost of decision 2 on a plain-JavaScript product: about 113 told checks at about $1.75 each for a
+change that a module can only meet by calling `registerDeclared`. A narrowing to research, if the owner wants it: a user
+the tool cannot follow fully is told of a changed function only where its code names that function, or reaches the
+provider in a way the scan cannot read (a computed import, a namespace import); a changed kind still tells it as now.
+Not built, not measured on the replay; it changes the owner's decision 2.
