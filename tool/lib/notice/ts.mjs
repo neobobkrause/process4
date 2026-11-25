@@ -17,11 +17,8 @@ export function loadReader() {
 export const options = () => (loadReader(), {
   allowJs: true,
   checkJs: true,
-  // Iteration 4: declarations are written out (to memory only, never to disk) for the backstop of rule 18.
-  noEmit: false,
+  noEmit: true,
   resolveJsonModule: true, // iteration 5: the reader reads JSON modules
-  declaration: true,
-  emitDeclarationOnly: true,
   strict: true,
   // On, so that the reader reads the comment kinds Object and object as written (with it off, it reads them as
   // "anything": found by the proof's change P09). Its complaints about unstated kinds are "I cannot tell", never
@@ -43,76 +40,21 @@ export const options = () => (loadReader(), {
 /** Reads the given files (and whatever they import) as one program. */
 export const NODE_DESCRIPTION = fileURLToPath(new URL('./node.d.ts', import.meta.url));
 
-export function makeProgram(files, host = undefined) {
-  const o = options();
+export function makeProgram(files, host = undefined, o = options()) {
   return ts.createProgram([...files, NODE_DESCRIPTION], o, host);
 }
 
 /**
- * Iteration 4 (rule 18): a file's declared interface as TypeScript itself prints it, per exported name, with comments
- * removed and a plain constant's single value widened to its kind. "Kind.member" holds each member of a kind written as
- * an object type. Written to memory only.
+ * The settings the means are read with (design part 2, section 7: the coding standard's type checker settings): strict,
+ * with a caught error read as unknown, an index read as possibly missing, and an optional field that may be left out but
+ * not set to undefined. Both sides of a comparison are read with these, by the same version (rule 6 for the tool).
  */
-export function declarationsOf(program, file, plainElsewhere = new Map()) {
-  const sf = program.getSourceFile(file);
-  if (!sf) return {};
-  let text = '';
-  program.emit(sf, (name, t) => { if (/\.d\.[mc]?ts$/.test(name)) text = t; }, undefined, true);
-  const parsed = ts.createSourceFile('decl.d.ts', text, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
-  // Iteration 5: a parameter's name or written shape ({ store } or deps) is not part of the interface.
-  const unname = (ctx) => (root) => {
-    const memberName = (m) => (m.name && (ts.isIdentifier(m.name) || ts.isStringLiteral(m.name)) ? m.name.text : '');
-    const visit = (n) => {
-      if (ts.isParameter(n)) return ts.factory.updateParameterDeclaration(n, n.modifiers, n.dotDotDotToken, ts.factory.createIdentifier('_'), n.questionToken, n.type ? ts.visitNode(n.type, visit) : n.type, undefined);
-      // Iteration 6: an object kind's fields in a fixed order
-      if (ts.isTypeLiteralNode(n)) { const v = ts.visitEachChild(n, visit, ctx); return ts.factory.updateTypeLiteralNode(v, ts.factory.createNodeArray([...v.members].sort((a, b) => (memberName(a) < memberName(b) ? -1 : memberName(a) > memberName(b) ? 1 : 0)))); }
-      return ts.visitEachChild(n, visit, ctx);
-    };
-    return ts.visitNode(root, visit);
-  };
-  const d = ts.transform(parsed, [unname]).transformed[0];
-  const printer = ts.createPrinter({ removeComments: true });
-  const print = (n) => printer.printNode(ts.EmitHint.Unspecified, n, d).replace(/\s+/g, ' ').trim();
-  // Iteration 5: kinds of this module that are unions or plain kinds are written out where they are used.
-  const plainKinds = new Map();
-  for (const st of d.statements) if (ts.isTypeAliasDeclaration(st) && !ts.isTypeLiteralNode(st.type) && !ts.isMappedTypeNode(st.type) && !st.typeParameters) plainKinds.set(st.name.text, printer.printNode(ts.EmitHint.Unspecified, st.type, d).replace(/\s+/g, ' ').trim());
-  const out = {};
-  const add = (name, t) => { out[name] = out[name] ? `${out[name]} ${t}` : t; };
-  for (const st of d.statements) {
-    if ((ts.isFunctionDeclaration(st) || ts.isClassDeclaration(st) || ts.isInterfaceDeclaration(st) || ts.isTypeAliasDeclaration(st)) && st.name) {
-      add(st.name.text, print(st));
-      if (ts.isClassDeclaration(st)) for (const m of st.members) if (m.name && (ts.isIdentifier(m.name) || ts.isPrivateIdentifier(m.name))) {
-        const isStatic = (ts.getCombinedModifierFlags(m) & ts.ModifierFlags.Static) !== 0;
-        add(`${st.name.text}${isStatic ? '.' : '#'}${m.name.text}`, print(m));
-      }
-      const lit = ts.isTypeAliasDeclaration(st) && ts.isTypeLiteralNode(st.type) ? st.type.members : ts.isInterfaceDeclaration(st) ? st.members : null;
-      for (const m of lit ?? []) if (m.name && (ts.isIdentifier(m.name) || ts.isStringLiteral(m.name))) add(`${st.name.text}.${m.name.text}`, print(m));
-    } else if (ts.isVariableStatement(st)) {
-      for (const v of st.declarationList.declarations) {
-        if (!ts.isIdentifier(v.name)) continue;
-        let t = print(v);
-        // a plain constant's single value is content, not a kind
-        t = t.replace(/:\s*-?\d[\d_.eE+-]*$/, ': number').replace(/:\s*"[^"]*"$/, ': string').replace(/:\s*'[^']*'$/, ': string');
-        add(v.name.text, t);
-      }
-    } else if (ts.isExportDeclaration(st) && st.exportClause && ts.isNamedExports(st.exportClause)) {
-      for (const e of st.exportClause.elements) add(e.name.text, print(st));
-    }
-  }
-  // Brackets round a union are dropped, as the reader prints them only where they matter; a parameter list's are kept
-  // (a group with a ':' outside any inner brace or bracket), else `f(k: A | B): C` printed as `f k: A | B: C`.
-  const topColon = (g) => { let d = 0; for (const ch of g.replace(/=>/g, '  ')) { if ('{[<'.includes(ch)) d++; else if ('}]>'.includes(ch)) d--; else if (ch === ':' && d === 0) return true; } return false; };
-  const unbracket = (t) => { let prev; do { prev = t; t = t.replace(/\(([^()]*\|[^()]*)\)/g, (m, g) => (topColon(g) ? m : g)); } while (t !== prev); return t; };
-  for (const k of Object.keys(out)) {
-    // a plain kind of another module, named through import("..."), is written out too
-    const wrap = (rhs) => (/[|&]|=>/.test(rhs) ? `(${rhs})` : rhs); // iteration 6: brackets only where they matter
-    out[k] = out[k].replace(/import\("[^"]+"\)\.([A-Za-z_$][\w$]*)/g, (m, name) => (plainElsewhere.has(name) ? wrap(plainElsewhere.get(name)) : name)); // iteration 7: by its name alone, as @import writes it
-    for (const [name, rhs] of plainKinds) if (k !== name) out[k] = out[k].replace(new RegExp(`\\b${name}\\b`, 'g'), wrap(rhs));
-    out[k] = unbracket(out[k]);
-  }
-  Object.defineProperty(out, '__plain', { value: plainKinds, enumerable: false });
-  return out;
-}
+export const standardOptions = () => ({
+  ...options(),
+  useUnknownInCatchVariables: true,
+  noUncheckedIndexedAccess: true,
+  exactOptionalPropertyTypes: true,
+});
 
 export const readerVersion = () => loadReader().version;
 

@@ -6,14 +6,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadTree } from './notice/model.mjs';
-import { loadReader, makeProgram, readerVersion } from './notice/ts.mjs';
-import { makeLister } from './notice/listing.mjs';
+import { loadReader, readerVersion } from './notice/ts.mjs';
+import { moduleMeans } from './notice/means.mjs';
 import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
-import { block } from './github.mjs';
+import { block, parseBlock } from './github.mjs';
 import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
-import { JOB, JOB_MARK, describe as workLine, jobBlockOf } from './round.mjs';
+import { JOB, JOB_MARK, RECORD_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
 import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
@@ -46,7 +46,7 @@ function readerNote(ctx, tree) {
   if (want?.version && want.version !== readerVersion()) ctx.log(`note: process.json names ${want.name ?? 'typescript'} ${want.version}; this copy of the tool reads with TypeScript ${readerVersion()}`);
 }
 
-/** A listing in build text 2b, section 6's printed form. */
+/** A listing in build text 2b, section 6's printed form: each item, its stated kinds and bounds, and the rest of its means. */
 export function listingText(l) {
   const L = [`Listing of ${l.module}${l.hasInterfaceComments ? '' : ' (no interface comments)'}`];
   for (const [name, e] of Object.entries(l.entries)) {
@@ -54,19 +54,23 @@ export function listingText(l) {
     if (e.accepts) L.push(`      accepts: ${e.accepts}`);
     if (e.handsBack) L.push(`      hands back: ${e.handsBack}`);
     for (const b of e.bounds ?? []) L.push(`      bound: ${b}`);
-    if (e.throws) L.push(`      throws: ${e.throws.join(', ')}`);
-    if (e.channel) L.push(`      message on: ${e.channel}`);
     if (e.optional) L.push('      may be missing');
+    if (e.throws) L.push(`      errors that can leave it: ${e.throws.join(', ')}`);
+    if (e.instances) L.push(`      hands back or builds: ${e.instances.join(', ')}`);
+    if (e.needsThis) L.push('      needs its object as this');
+    if (e.writesArguments) L.push(`      writes into: ${e.writesArguments.join(', ')}`);
+    if (e.channels) L.push(`      channels, settings and files: ${e.channels.join('; ')}`);
+    if (e.typeErrors) L.push(`      type errors: ${e.typeErrors.join('; ')}`);
   }
   return L.join('\n');
 }
 
-/** One module's listing in a product folder: made with the reader's checker from its interface files. */
+/** One module's listing in a product folder: each item's means (notice/means.mjs). */
 export function listingOf(tree, moduleId) {
   loadReader();
-  const mod = tree.byId.get(moduleId) || fail(`no module is named ${moduleId}`);
-  const l = makeLister(makeProgram(mod.public), tree).list(mod);
-  return { module: l.module, hasInterfaceComments: l.hasInterfaceComments, entries: Object.fromEntries(Object.entries(l.entries).map(([k, e]) => [k, { ...describe(e), where: e.where }])) };
+  if (!tree.byId.has(moduleId)) fail(`no module is named ${moduleId}`);
+  const m = moduleMeans(tree, moduleId);
+  return { module: moduleId, hasInterfaceComments: m.listing.hasInterfaceComments, entries: Object.fromEntries(Object.entries(m.items).map(([k, e]) => [k, { ...describe(e), where: e.where }])) };
 }
 
 // 10. listing <module> [--at <commit>]: reads only; writes nothing to GitHub.
@@ -95,15 +99,16 @@ function changedModules(root, before, after, B, A) {
 }
 
 /**
- * The notices of a merge, read in a process of its own (notice/notices.mjs), one changed module after another, each in
- * stages (notice/staged.mjs). Running out of memory there ends that process, not this one: notify then says so plainly.
+ * The notices of a merge, read in a process of its own (notice/notices.mjs), one changed module after another: its items'
+ * means before and after, then the later modules' uses files. Running out of memory there ends that process, not this
+ * one: notify then says so plainly.
  * P4_READ_HEAP_MB, where set, is that process's heap in megabytes (for a test of running out).
  */
-function readNotices(dirB, dirA, mods, n) {
+function readNotices(dirB, dirA, mods, n, named) {
   const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
   const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
   if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
-  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods }), encoding: 'utf8', maxBuffer: 1 << 30 });
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named }), encoding: 'utf8', maxBuffer: 1 << 30 });
   if (r.status === 0) return JSON.parse(r.stdout);
   const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
   if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
@@ -155,7 +160,7 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
     const bodyWith = (uses) => block(JOB_MARK, { ...data, work: [...(data.work || []), workLine(t)], uses, notice_seq: noticeSeq(data) + 1, notices: [...(data.notices || []), { from: t.from, merged: n }] }, words);
     const held = data.uses || [];
     const reasons = t.uses || [];
-    const whole = (dropped) => ({ module: t.from, notFollowed: [`the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block${dropped ? `, which is full: its ${dropped} earlier reason(s) are left out` : ''}; the whole module's tests run`], through: null });
+    const whole = (dropped) => ({ module: t.from, whole: `the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block${dropped ? `, which is full: its ${dropped} earlier reason(s) are left out` : ''}; the whole module's tests run` });
     const body = bodyWith(fitReasons({ held, reasons, fits: (uses) => bodyWith(uses).length < NOTICE_LIMIT, whole }));
     const was = c.body;
     ctx.gh.editComment(ctx.slug, c.id, body);
@@ -190,25 +195,34 @@ export function notifyCmd(ctx, n) {
   let tranche = null;
   try {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
-    // changed file names alone; only when one changed is the code read, by one tool and one reader, in stages: the
-    // changed module's listing before and after, and only where it changed, the later modules that can use it, one
-    // at a time, since a whole product read twice needs much memory (build text 1b, command 11, "How it reads").
+    // changed file names alone; only when one changed, or an item's meaning was named or declared, is the code read: the
+    // changed module's items' means before and after, and only where one changed, the later modules' uses files (build
+    // text 1b, command 11).
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     tranche = treeA.cfg.tranche_branch;
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
-    const mods = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
+    // The items whose meaning ARCH named in the work it placed (the job block), and the job declared (its record).
+    const comments = ctx.gh.comments(ctx.slug, n);
+    const jobModule = pr.head?.ref?.match(JOB)?.[1] ?? null;
+    const named = [
+      ...meaningsOf(jobBlockOf(comments)?.data?.meaning, jobModule).map((x) => ({ ...x, found: 'named' })),
+      ...meaningsOf(comments.map((c) => parseBlock(c.body, RECORD_MARK)?.data).find(Boolean)?.meaning, jobModule).map((x) => ({ ...x, found: 'declared' })),
+    ];
+    for (const x of named) ctx.log(`${x.found === 'named' ? "ARCH's placed work names" : 'the job declares'} a change of meaning: ${x.module} ${x.item} (was: ${x.was || '-'}; is now: ${x.is || '-'})`);
+    const changed = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
+    const mods = treeA.modules.map((m) => m.id).filter((id) => changed.includes(id) || named.some((x) => x.module === id));
     if (!mods.length) {
       ctx.log('The merge changed no module\'s files.');
-      ctx.log('The listing before and after is the same. Nobody is told.');
+      ctx.log('No item changed. Nobody is told.');
       return 0;
     }
     readerNote(ctx, treeA);
     const read = mods.filter((m) => treeB.byId.has(m));
-    const reports = new Map(read.length ? readNotices(dirB, dirA, read, n).map((r) => [r.provider, r]) : []);
+    const reports = new Map(read.length ? readNotices(dirB, dirA, read, n, named).map((r) => [r.provider, r]) : []);
     for (const m of mods) {
-      if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: it had no listing before, and nobody is told.`); continue; }
+      if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
       const r = reports.get(m);
       ctx.log(noticeText(r));
       for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });

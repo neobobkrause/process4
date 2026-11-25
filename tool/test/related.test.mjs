@@ -44,12 +44,16 @@ export function half(x) {
 }
 export const run2 = () => apply(half, 4);
 `;
+// orders' uses file, as its last job left it: parseDay used in dayOf, line 5 (and any more places given).
+const usesFile = (...more) => ({ module: 'orders', written: { commit: 'x', tool: 'test' }, providers: ['dates'], outside: [], orderFaults: [], copies: [],
+  uses: [{ provider: 'dates', item: 'parseDay', itemKind: 'function', type: 'call', route: 'direct', standard: true, where: [{ file: 'src/orders/index.mjs', side: 'code', line: 5, in: 'dayOf' }, ...more] }] });
 const t = (imp, body) => `import { test } from 'node:test';\nimport { ${imp} } from '../../src/orders/${imp === 'run2' ? 'apply' : 'index'}.mjs';\ntest('it', () => { ${body}; });\n`;
 const product = () => ({
   'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
   'process/modules/order.txt': 'dates\norders\n',
   'process/modules/dates.json': entry('dates'),
   'process/modules/orders.json': entry('orders', ['dates']),
+  'process/modules/orders.uses.json': usesFile(),
   'src/dates/index.mjs': '/** @param {string} s */\nexport function parseDay(s) { return { n: Number(s) }; }\n',
   'src/orders/index.mjs': INDEX,
   'src/orders/sum.mjs': SUM,
@@ -73,25 +77,36 @@ function merged(files, branch = 'job/orders/2') {
 }
 const list = (root, base, uses) => relatedList({ dir: root, gitRoot: root, base, after: 'HEAD', module: 'orders', uses });
 const files = (r) => Object.fromEntries(r.files.map((f) => [f.file, f.reasons]));
-const place = (...lines) => [{ module: 'dates', entry: 'parseDay', changes: ['bound changed'], lines, through: null }];
+// A notice's reason: the changed item and the first places the notice named.
+const place = (...at) => [{ module: 'dates', item: 'parseDay', found: ['its means'], changes: ['bound changed'], why: 'w',
+  places: at.map((x) => { const [file, line] = x.split(':'); return { file, line: Number(line), side: file.startsWith('test/') ? 'test' : 'code' }; }) }];
+const HOLDS = 'holds a place its uses file names for a changed item';
+const REACHES = 'reaches a piece that holds a place its uses file names for a changed item';
 
-test('a test file that reaches a place of uses is related; one that holds a place is related; the rest are left out', () => {
-  const { root, base } = merged({ 'README.md': 'x\n' });
-  const r = list(root, base, place('src/orders/index.mjs:5', 'test/orders/plain.test.mjs:3'));
+test('a test file that reaches a place its uses file names for a changed item is related; one that holds a place is related; the rest are left out', () => {
+  const { root, base } = merged({ 'process/modules/orders.uses.json': usesFile({ file: 'test/orders/plain.test.mjs', side: 'test', line: 3, test: 'it' }) });
+  // The uses file names every place, not only the first six a notice carries.
+  const r = list(root, base, place('src/orders/index.mjs:5'));
   assert.deepEqual(files(r), {
-    'test/orders/day.test.mjs': ['reaches a piece that holds a place named in uses'],
-    'test/orders/plain.test.mjs': ['holds a place named in the job block\'s uses'],
+    'test/orders/day.test.mjs': [REACHES],
+    'test/orders/plain.test.mjs': [HOLDS],
   });
   assert.deepEqual(r.leftOut, ['test/orders/apply.test.mjs', 'test/orders/bill.test.mjs']);
 });
 
-test('a place is read in the base and followed to where it stands in the merged result', () => {
-  // The job put two lines above dayOf: the place's line 5 is now line 7, still in dayOf.
-  const { root, base } = merged({ 'src/orders/index.mjs': `// one\n// two\n${INDEX}` });
-  const r = list(root, base, place('src/orders/index.mjs:5'));
+test('the uses file of the merged result gives the places as they stand now; where it no longer names the item, the notice\'s places are followed from the base', () => {
+  // The job put two lines above dayOf, and its push rewrote its uses file: the place is now line 7, still in dayOf.
+  const moved = usesFile();
+  moved.uses[0].where[0].line = 7;
+  const a = merged({ 'src/orders/index.mjs': `// one\n// two\n${INDEX}`, 'process/modules/orders.uses.json': moved });
+  const r = list(a.root, a.base, place('src/orders/index.mjs:5'));
   // (The two new lines are top-level code of index.mjs, which runs on import: every test file importing it reaches them.)
-  assert.deepEqual(files(r)['test/orders/day.test.mjs'], ['reaches a piece that holds a place named in uses', 'reaches a piece with a line this pull request changed']);
+  assert.deepEqual(files(r)['test/orders/day.test.mjs'], [REACHES, 'reaches a piece with a line this pull request changed']);
   assert.deepEqual(files(r)['test/orders/plain.test.mjs'], ['reaches a piece with a line this pull request changed']);
+  // Its uses file names parseDay nowhere now: the notice's place, line 5 in the base, is line 7 in the merged result.
+  const gone = { ...usesFile(), uses: [] };
+  const b = merged({ 'src/orders/index.mjs': `// one\n// two\n${INDEX}`, 'process/modules/orders.uses.json': gone });
+  assert.deepEqual(files(list(b.root, b.base, place('src/orders/index.mjs:5')))['test/orders/day.test.mjs'], [REACHES, 'reaches a piece with a line this pull request changed']);
 });
 
 test('a test file that reaches a changed line, or was itself added or changed, is related', () => {
@@ -129,13 +144,18 @@ test('step 2: a test file with an import the reader cannot resolve is related', 
   });
 });
 
-test('step 3: a use not followed fully runs the whole module; walk folders are never in the list', () => {
+test('the whole module: a reason that says so, or a module with no uses file yet; walk folders are never in the list', () => {
   const { root, base } = merged({ 'README.md': 'x\n' });
-  const r = list(root, base, [{ module: 'dates', notFollowed: ['reads or calls values of unknown kind'], through: null }]);
+  const all = ['test/orders/apply.test.mjs', 'test/orders/bill.test.mjs', 'test/orders/day.test.mjs', 'test/orders/plain.test.mjs'];
+  const r = list(root, base, [{ module: 'dates', items: ['parseDay'], found: ['no uses file'], why: 'w', whole: 'orders has no uses file yet: its whole tests run' }]);
   assert.equal(r.whole, true);
-  assert.deepEqual(r.files.map((f) => f.file), ['test/orders/apply.test.mjs', 'test/orders/bill.test.mjs', 'test/orders/day.test.mjs', 'test/orders/plain.test.mjs']);
-  assert.match(r.files[0].reasons[0], /^lost the thread, step 3: not followed fully for dates/);
+  assert.deepEqual(r.files.map((f) => f.file), all);
+  assert.deepEqual(r.files[0].reasons, ['the whole module: orders has no uses file yet: its whole tests run']);
   assert.equal(r.files.some((f) => /walk/.test(f.file)), false);
+  const none = merged({ 'process/modules/orders.uses.json': 'not json' });
+  const n = list(none.root, none.base, place('src/orders/index.mjs:5'));
+  assert.deepEqual(n.files.map((f) => f.file), all);
+  assert.match(n.files[0].reasons[0], /^the whole module: orders has no uses file that can be read \(not JSON/);
 });
 
 const told = (uses) => ({ module: 'orders', work: ['notice from dates (pull request 4)'], kind: 'told', uses });
@@ -146,7 +166,7 @@ test('decideScope: a told job runs its related list; an ordinary one, or one wit
   const s = scopeOf(root, base, told(place('src/orders/index.mjs:5')));
   assert.equal(s.scope, 'related');
   assert.deepEqual(s.modules.map((m) => [m.name, m.files, m.left_out]), [['orders', ['test/orders/bill.test.mjs', 'test/orders/day.test.mjs'], ['test/orders/apply.test.mjs', 'test/orders/plain.test.mjs']]]);
-  assert.deepEqual(s.modules[0].related.map((r) => r.reasons), [['reaches a piece with a line this pull request changed'], ['reaches a piece that holds a place named in uses']]);
+  assert.deepEqual(s.modules[0].related.map((r) => r.reasons), [['reaches a piece with a line this pull request changed'], [REACHES]]);
   const o = scopeOf(root, base, { ...told(place('src/orders/index.mjs:5')), kind: 'ordinary' });
   assert.equal(o.scope, 'whole module');
   assert.match(o.why, /its job block says ordinary/);
@@ -155,7 +175,8 @@ test('decideScope: a told job runs its related list; an ordinary one, or one wit
 });
 
 test('decideScope: an empty related list passes at once and says so', () => {
-  const { root, base } = merged({ 'src/orders/index.mjs': INDEX.replace('return 2;', 'return 3;') });
+  // The told job stopped using parseDay; the notice's place is in lonely, which no test reaches.
+  const { root, base } = merged({ 'src/orders/index.mjs': INDEX.replace('return 2;', 'return 3;'), 'process/modules/orders.uses.json': { ...usesFile(), uses: [] } });
   const s = scopeOf(root, base, told(place('src/orders/index.mjs:15')));
   assert.equal(s.scope, 'nothing');
   assert.match(s.why, /told job of orders, and its related list is empty: it passes at once/);
@@ -187,7 +208,7 @@ test('related <pr> lists the same from the session, from the merged result of th
   assert.equal(relatedCmd(ctx, pr.number), 0);
   const text = out.join('\n');
   assert.match(text, /^related tests of orders for pull request 1: job\/orders\/2 at [0-9a-f]{10} merged into tranche at [0-9a-f]{10}/);
-  assert.match(text, /\n {2}test\/orders\/bill\.test\.mjs: reaches a piece with a line this pull request changed\n {2}test\/orders\/day\.test\.mjs: reaches a piece that holds a place named in uses\n {2}left out: test\/orders\/apply\.test\.mjs, test\/orders\/plain\.test\.mjs$/);
+  assert.match(text, /\n {2}test\/orders\/bill\.test\.mjs: reaches a piece with a line this pull request changed\n {2}test\/orders\/day\.test\.mjs: reaches a piece that holds a place its uses file names for a changed item\n {2}left out: test\/orders\/apply\.test\.mjs, test\/orders\/plain\.test\.mjs$/);
   assert.equal(git(['status', '--porcelain'], { cwd: root }), '');
   assert.equal(git(['branch', '--show-current'], { cwd: root }), 'main');
   // An ordinary job has no related list.

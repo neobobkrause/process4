@@ -1,5 +1,7 @@
-// The related list (build text 5, section 7): the test files of a told module that relate to its job, chosen by
-// whole file, made with the reader on the merged result of the job's pull request. Reads files; runs nothing.
+// The related list (design part 2, section 7, "Which tests relate"; build text 5, section 7): the test files of a told
+// module that relate to its job, chosen by whole file, made with the reader on the merged result of the job's pull
+// request. The places are those the told module's uses file names for the changed items its notices name (and the
+// places the notices carry, where the uses file no longer names them). Reads files; runs nothing.
 //
 // A piece is a function, a method, or the top-level code of one file, among the files under the module's `files`
 // and `tests`; a place belongs to the innermost piece that holds its line. Piece A calls piece B when A's code holds
@@ -11,18 +13,19 @@ import path from 'node:path';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
 import { git } from '../util.mjs';
+import { hasUsesFile, readUsesFile } from '../usesfile.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
 const isTestFile = (rel) => /\.test\.[^/]*$/.test(rel) && !WALK.test(rel);
 
 export const RULES = {
-  place: 'holds a place named in the job block\'s uses',
-  reachesPlace: 'reaches a piece that holds a place named in uses',
+  place: 'holds a place its uses file names for a changed item',
+  reachesPlace: 'reaches a piece that holds a place its uses file names for a changed item',
   reachesChanged: 'reaches a piece with a line this pull request changed',
   changed: 'added or changed by this pull request',
   step1: 'lost the thread, step 1',
   step2: 'lost the thread, step 2: an import the reader cannot resolve',
-  step3: 'lost the thread, step 3',
+  step3: 'the whole module',
 };
 
 /** Hunks of `git diff -U0` per file (new-side paths): [{ os, oc, ns, nc }]. */
@@ -77,10 +80,13 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     return { whole: files.length === tests.length && tests.length > 0, files, leftOut: tests.filter((t) => !reasons.get(t).size) };
   };
 
-  // Step 3: a use the notice did not follow: every test file is related.
-  const nf = uses.filter((u) => u.notFollowed);
-  if (nf.length) {
-    for (const t of tests) for (const u of nf) give(t, `${RULES.step3}: not followed fully for ${u.module}, so the whole module's tests`);
+  // The whole module: where the module has no uses file yet, or a reason says its whole tests run (a module told with
+  // no uses file, a notice too large for the job block), or a reason names no item the tool can look up.
+  const usesFile = readUsesFile(tree, module);
+  const whole = !hasUsesFile(usesFile) ? [`${module} has no uses file${usesFile?.unreadable ? ` that can be read (${usesFile.unreadable})` : ' yet'}`]
+    : uses.filter((u) => u.whole || !(u.item || u.outside || u.items)).map((u) => (u.whole ? String(u.whole) : `a reason from ${u.module ?? 'a provider'} that names no item`));
+  if (whole.length) {
+    for (const t of tests) for (const w of whole) give(t, `${RULES.step3}: ${w}`);
     return result();
   }
 
@@ -175,14 +181,17 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     forEachNode(sf, (n) => { visit(n); });
   }
 
-  // Targets: pieces holding a place of uses (read in the base, carried to the merged result), and pieces holding a
-  // line this pull request changed.
+  // Targets: pieces holding a place the uses file names for a changed item (as written for the merged result); where it
+  // names none for a reason, the places the reason carries (read in the base, carried to the merged result); and pieces
+  // holding a line this pull request changed.
   const placeTargets = new Set(), changedTargets = new Set();
-  for (const u of uses) for (const at of u.lines ?? []) {
-    const m = /^(.*):(\d+)$/.exec(at);
-    if (!m || !own.has(m[1])) continue;
-    const p = pieceAt(m[1], mapLine(diff.get(m[1]) ?? [], +m[2]));
-    if (p) placeTargets.add(p);
+  const named = (c, used) => used === c || used.startsWith(`${c}.`) || used.startsWith(`${c}#`);
+  const target = (file, line) => { if (!own.has(file)) return; const p = pieceAt(file, line); if (p) placeTargets.add(p); };
+  for (const u of uses) {
+    const items = u.item ? [u.item] : [];
+    const now = items.length ? usesFile.uses.filter((x) => x.provider === u.module && items.some((c) => named(c, x.item))).flatMap((x) => x.where) : [];
+    if (now.length) { for (const w of now) target(w.file, Number(w.line) || 1); continue; }
+    for (const w of u.places ?? []) target(w.file, mapLine(diff.get(w.file) ?? [], Number(w.line) || 1));
   }
   // A changed test file is in the list for itself; its own changed lines are not counted again.
   for (const [f, hs] of diff) if (own.has(f) && !tests.includes(f)) for (const line of changedLines(hs)) { const p = pieceAt(f, line); if (p) changedTargets.add(p); }

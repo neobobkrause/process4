@@ -3,5 +3,17 @@
   "provider": "bookings",
   "covers": [
     "attack: the test named for a bound no longer tests what its name and the bound line say"
+  ],
+  "meaning": [
+    {
+      "item": "Bookings.open",
+      "was": "a party of 1 to 200",
+      "is": "a party of 1 to 100"
+    },
+    {
+      "item": "op:bookopen",
+      "was": "a party of 1 to 200",
+      "is": "a party of 1 to 100"
+    }
   ]
 }

@@ -16,7 +16,7 @@ import { noticeAfterTests, recordNeed, recordStands } from './testrecord.mjs';
 import { recordsOf, scopeForPR } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, meaningsOf, parseMeaning,
   moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
@@ -78,15 +78,25 @@ export function pushPace(ctx) {
   writeFileSync(file, JSON.stringify(times.slice(-6)));
 }
 
-// The job's record on its pull request: one comment, written only by the job's session.
+// The job's record on its pull request: one comment, written only by the job's session. Its state (blocked, going on,
+// nothing to change) is rewritten in place; the changes of meaning it declares (`meaning`) are kept across rewrites.
 function writeJobRecord(ctx, n, data) {
-  const body = block(RECORD_MARK, data);
   const had = ctx.gh.comments(ctx.slug, n).find((c) => parseBlock(c.body, RECORD_MARK));
+  const meaning = data.meaning ?? parseBlock(had?.body, RECORD_MARK)?.data?.meaning;
+  const body = block(RECORD_MARK, { ...data, ...(meaning?.length ? { meaning } : {}) });
   if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, n, body);
 }
 
-// 2. push [--blocked <module> "<why>" | --unblocked "<why>"]: the current branch to the same-named branch, never forced.
-// --unblocked rewrites the job's record when a block ends by ARCH's decision rather than by the blocking module's merge.
+/** The changes of meaning given by --meaning (once or repeated): each "[<module> ]<item> | <was> | <is now>". */
+const meaningArgs = (a, defaultModule) => (a.meaning === undefined ? [] : [].concat(a.meaning).map((x) => (x === true ? fail('say --meaning "[<module> ]<item> | <what it was> | <what it is now>"') : parseMeaning(x, defaultModule))));
+
+/** Adds changes of meaning to a list held already: a later line for the same item takes its place. */
+const withMeaning = (held, added) => [...(held ?? []).filter((x) => !added.some((y) => y.item === x.item && (y.module ?? null) === (x.module ?? null))), ...added];
+
+// 2. push [--blocked <module> "<why>" | --unblocked "<why>"] [--meaning "<item> | <was> | <is now>"]: the current branch
+// to the same-named branch, never forced. --unblocked rewrites the job's record when a block ends by ARCH's decision
+// rather than by the blocking module's merge. --meaning declares, in the record on the branch's pull request, a change
+// of meaning under the same means (design part 2, section 7): each a changed item when the pull request merges.
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
@@ -94,6 +104,8 @@ export function push(ctx, a) {
   const by = a.blocked === undefined ? null : blockers(a.blocked);
   if (by && !a._[0]) fail('say --blocked <module> "<why>"');
   if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
+  const jobModule = name.match(JOB)?.[1] ?? null;
+  const meaning = meaningArgs(a, jobModule).map((x) => (x.module === jobModule ? { item: x.item, was: x.was, is: x.is } : x));
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
@@ -106,6 +118,12 @@ export function push(ctx, a) {
     const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record on`);
     writeJobRecord(ctx, pr.number, { unblocked: a.unblocked });
     ctx.log(`recorded on pull request ${pr.number}: going on (${a.unblocked})`);
+  }
+  if (meaning.length) {
+    const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record the change of meaning on`);
+    const had = ctx.gh.comments(ctx.slug, pr.number).map((c) => parseBlock(c.body, RECORD_MARK)?.data).find(Boolean) ?? {};
+    writeJobRecord(ctx, pr.number, { ...had, meaning: withMeaning(had.meaning, meaning) });
+    for (const x of meaning) ctx.log(`recorded on pull request ${pr.number}: a change of meaning of ${x.module ? `${x.module} ` : ''}${x.item} (was: ${x.was}; is now: ${x.is})`);
   }
   return 0;
 }
@@ -208,7 +226,7 @@ function printJob(ctx, cfg, pr) {
   ctx.log(jobText(ctx, cfg, { module: job.data.module, branch: pr.head.ref, url: pr.html_url }));
 }
 
-// 3. open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: a draft pull request.
+// 3. open --module <name> [--meaning "<item> | <was> | <is now>"] | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: a draft pull request.
 // With no pull request to open, prints the one open for the branch and its job block.
 export function open(ctx, a) {
   const cfg = loadConfig(ctx.root);
@@ -234,6 +252,11 @@ export function open(ctx, a) {
   const round = records.round?.data || {};
   const { reqs, mine, notices, kind, waits } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round }, module);
   const job = { module, work: [...reqs, ...mine.map(describe)], kind };
+  // The items whose meaning the placed work changes (design part 2, section 7): named by ARCH with --meaning, or on a
+  // waiting-work entry it placed (`meaning`). Each is a changed item when the job's pull request merges.
+  const meaning = withMeaning(mine.flatMap((w) => meaningsOf(w.meaning, module)).map(({ module: m, ...x }) => (m === module ? x : { module: m, ...x })),
+    meaningArgs(a, module).map(({ module: m, ...x }) => (m === module ? x : { module: m, ...x })));
+  if (meaning.length) job.meaning = meaning;
   // Requirements not yet met that the tranche's scope leaves for later are named, so the job knows they are not its work.
   if (waits.length) job.not_this_tranche = waits;
   // Each notice's reasons for this module: from its entry where it carries them, else from the notice comments on its

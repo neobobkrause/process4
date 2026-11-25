@@ -75,6 +75,23 @@ test('push --blocked writes the job\'s record on its pull request, rewritten in 
   assert.throws(() => push(ctx, { _: [], blocked: true }), /--blocked <module>/);
 });
 
+test('push --meaning declares a change of meaning in the job\'s record, kept when the record is rewritten; a later line for the item takes its place', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  push(ctx, { _: [], meaning: ['total | the whole stay | one night', 'dates parseDay | a day | a day and a time'] });
+  assert.match(out.join('\n'), /a change of meaning of total \(was: the whole stay; is now: one night\)/);
+  push(ctx, { _: ['dates refuses a leap day'], blocked: 'dates' });
+  push(ctx, { _: [], meaning: 'total | the whole stay | two nights' });
+  const recs = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).filter(Boolean);
+  assert.deepEqual(recs.map((r) => r.data), [{ blocked: { by: 'dates', why: 'dates refuses a leap day' },
+    meaning: [{ module: 'dates', item: 'parseDay', was: 'a day', is: 'a day and a time' }, { item: 'total', was: 'the whole stay', is: 'two nights' }] }]);
+  assert.throws(() => push(ctx, { _: [], meaning: 'total, the whole stay' }), /say a change of meaning as/);
+  assert.throws(() => push(ctx, { _: [], meaning: true }), /say --meaning/);
+});
+
 test('open --module writes the job block from the requirements and waiting work, and prints the job text', () => {
   const root = product();
   const gh = fakeGitHub();
@@ -102,6 +119,19 @@ test('open --module writes the job block from the requirements and waiting work,
   open(ctx, { _: [] });
   assert.equal(gh.s.prs.length, 1);
   assert.match(out.join('\n'), /job block:[\s\S]*"walk flaw t1-1-I-1-1 L"/);
+});
+
+test('open --module names in the job block each item whose meaning the placed work changes: given with --meaning, or on a waiting-work entry', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'walk-flaw', flaw: 't1-1-I-1-1', link: 'L', meaning: [{ item: 'total', was: 'the whole stay', is: 'one night' }] }] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  branch(ctx, 'job/orders/1');
+  assert.equal(open(ctx, { _: [], module: 'orders', meaning: 'Order.price | in cents | in euros' }), 0);
+  const job = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
+  assert.deepEqual(job.meaning, [{ item: 'total', was: 'the whole stay', is: 'one night' }, { item: 'Order.price', was: 'in cents', is: 'in euros' }]);
 });
 
 test('a job whose only work is notices is told; with other work it is ordinary and keeps the uses', () => {
@@ -257,8 +287,10 @@ function usingProduct() {
     'src/base/legacy.cjs': 'module.exports = 1;\n',
     'src/tax/index.mjs': 'export const t = 1;\n',
     'src/dates/index.mjs': 'export const d = 1;\n',
-    // pricing declares dates and imports nothing
+    // pricing imports nothing; its uses file names dates (a use the import scan cannot see, such as a file read by path)
     'src/pricing/index.mjs': 'export const p = 1;\n',
+    'process/modules/pricing.uses.json': { module: 'pricing', providers: ['dates'], outside: [], orderFaults: [], copies: [],
+      uses: [{ provider: 'dates', item: 'd', itemKind: 'value', type: 'read', route: 'direct', standard: true, where: [{ file: 'src/pricing/index.mjs', side: 'code', line: 1 }] }] },
     // orders: pricing by import, base by require, tax by the product's own package name in a test, late (later) by import
     'src/orders/index.mjs': "import { p } from '../pricing/index.mjs';\nimport { l } from '../late/index.mjs';\nexport const o = p + l;\n",
     'src/orders/old.mjs': "import { createRequire } from 'node:module';\nconst require = createRequire(import.meta.url);\nexport const x = require('../base/legacy.cjs');\n",
@@ -269,7 +301,7 @@ function usingProduct() {
   return root;
 }
 
-test('merge of a job waits for an open job of each earlier module it uses, by import, by declaration and through others', () => {
+test('merge of a job waits for an open job of each earlier module it uses: by its uses file, by import where it has none yet, and through others', () => {
   const root = usingProduct();
   const gh = fakeGitHub();
   const { ctx, out } = ctxFor(root, gh);
@@ -281,7 +313,7 @@ test('merge of a job waits for an open job of each earlier module it uses, by im
     `waits for dates (pull request ${jobs.dates.number})`, `waits for pricing (pull request ${jobs.pricing.number})`]);
   assert.match(out.at(-1), new RegExp(`pull request ${n} not merged`));
   assert.deepEqual(gh.s.calls.filter((c) => c[0] === 'merge'), []);
-  // A blocked job holds no one; dates still holds it, through pricing's declaration.
+  // A blocked job holds no one; dates still holds it, through pricing's uses file.
   gh.addComment('o/product', jobs.pricing.number, block(RECORD_MARK, { blocked: { by: 'dates', why: 'dates refuses a leap day' } }));
   out.length = 0;
   merge(ctx, n);

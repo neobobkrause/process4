@@ -5,5 +5,17 @@
     "bound changed in code and its test, the bound line not",
     "the test's values and calls are the same sets; one value moves from a refusal to an acceptance"
   ],
-  "note": "front's tests expect a party of 9 in the kitchen (8 seats) to be refused."
+  "note": "front's tests expect a party of 9 in the kitchen (8 seats) to be refused.",
+  "meaning": [
+    {
+      "item": "Bookings.open",
+      "was": "a party no larger than the room's seats",
+      "is": "a party may be larger than the room's seats"
+    },
+    {
+      "item": "op:bookopen",
+      "was": "a party no larger than the room's seats",
+      "is": "a party may be larger than the room's seats"
+    }
+  ]
 }

@@ -1,7 +1,10 @@
-// The listing: a module's interface written out from its code and its structured comments together.
+// The listing: a module's items and their stated kinds, written out from its interface files with the reader's checker,
+// with the bound lines its comments mark (build text 2b, section 6). It is the first part of each item's means (M1 to
+// M3 and M9, design part 2, section 7), which means.mjs completes from the code; and the bound lines, whose change is a
+// change of the interface (design part 2, section 7, rule 3 for the tool).
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, tagsOf, tagText, lineOf, docsOf, declarationsOf, forEachNode } from './ts.mjs';
+import { ts, tagsOf, tagText, lineOf, docsOf, forEachNode } from './ts.mjs';
 import { makeCanon } from './canon.mjs';
 
 /** Does the module carry interface comments at all? (Mechanical: any JSDoc tag that states a kind.) */
@@ -31,21 +34,11 @@ function memberOwnBounds(md) {
   return tagsOf(host, 'bound').map(tagText);
 }
 
-/** The kinds named by a @throws tag; {A|B} names two (iteration 6). */
-/** Iteration 7 (rule 48): the names of a signature's parameters, '_' for one written as a pattern. */
-const paramNamesOf = (sig) => sig.getParameters().map((p) => (p.name.startsWith('__') ? '_' : p.name));
-
-export const throwKinds = (tag) => (tag.typeExpression?.type?.getText?.() ?? '').split('|').map((x) => x.trim()).filter(Boolean);
-
 /**
  * @param program the program the listings are read from
  * @param tree the product
- * @param plainKinds where given, a map of file -> that file's plain kinds as its declarations print them, kept by the
- *   caller between programs of one product (notify, read in stages): a file's declarations depend only on the file and
- *   what it imports, which every program that holds the file holds too, so they are written out once, not once per
- *   program. Writing them out makes the reader check the whole file, which is slow when repeated for each program.
  */
-export function makeLister(program, tree, { plainKinds = null } = {}) {
+export function makeLister(program, tree) {
   const checker = program.getTypeChecker();
   const C = makeCanon(checker, tree);
 
@@ -59,16 +52,6 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
     return out;
   }
 
-  /** Iteration 3 (rule 10): `@throws {Kind} member ...` lines on a kind, split among its members like bound lines. */
-  function kindThrows(decl, member, memberNames) {
-    const out = [];
-    for (const tag of tagsOf(decl, 'throws')) {
-      const subject = tagText(tag).split(/[:.\s]/)[0];
-      if (subject === member || !memberNames.includes(subject)) out.push(...throwKinds(tag));
-    }
-    return [...new Set(out)].sort();
-  }
-
   function rangeOf(node, kind) {
     const sf = node.getSourceFile();
     if (kind === 'jsdoc') return { file: sf.fileName, start: node.pos, end: node.end };
@@ -76,27 +59,8 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
     return { file: sf.fileName, start: own.length ? own[0].pos : node.getStart(sf), end: node.end };
   }
 
-  /** One file's plain kinds (unions, plain kinds), from its declarations as written out. */
-  const plainOf = (f) => {
-    let v = plainKinds?.get(f);
-    if (!v) { v = declarationsOf(program, f).__plain ?? new Map(); plainKinds?.set(f, v); }
-    return v;
-  };
-  /** The plain kinds of every module whose public files are read (`has`), in module order: a later one of the same name wins. */
-  const plainOfAll = (has) => {
-    const out = new Map();
-    for (const m of tree.modules) for (const f of m.public) if (has(f)) for (const [k, v] of plainOf(f)) out.set(k, v);
-    return out;
-  };
-  let plainEverywhere = null;
-
-  /**
-   * @param mod the module to list
-   * @param holds where given, the files the module's own program would hold (a program read for several modules at
-   *   once): the plain kinds written out where another module names them are those of these files only, as that
-   *   program would have them
-   */
-  function list(mod, { holds = null } = {}) {
+  /** @param mod the module to list */
+  function list(mod) {
     const entries = {};
     const ranges = [];
     const kindsIn = { accepts: new Map(), handsBack: new Map() }; // data kind key -> entries mentioning it
@@ -122,6 +86,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
         if (!decl) continue;
         const where = `${path.relative(tree.root, decl.getSourceFile().fileName)}:${lineOf(decl)}`;
         const name = things.get(exp.name).size > 1 ? `${path.relative(tree.root, file)}:${exp.name}` : exp.name;
+        if (entries[name]) continue; // the same thing exported again from a second file stays one entry
         if (sym.flags & ts.SymbolFlags.TypeAlias) {
           const t = checker.getDeclaredTypeOfSymbol(sym);
           const bounds = tagsOf(decl, 'bound').map(tagText);
@@ -145,8 +110,6 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
               };
               note('accepts', a, e); note('handsBack', h, e);
               if (p.declarations?.[0]) ranges.push({ entry: e, ...rangeOf(p.declarations[0], 'jsdoc') });
-              const kt = kindThrows(decl, p.name, names);
-              if (kt.length) entries[e].throws = kt;
             }
           } else if (C.isHandle(t)) {
             const props = checker.getPropertiesOfType(t);
@@ -164,12 +127,9 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
                 handsBack = c.ret;
               } else handsBack = C.canon(mt, h);
               entries[e] = { kind: 'method', accepts, handsBack, bounds: [...boundsFor(bounds, p.name, names), ...nestedBounds(a), ...nestedBounds(h)], where };
-              if (sigs.length) entries[e].paramNames = paramNamesOf(sigs[0]);
-              // Iteration 3: a member that may be missing says so (rule 12), and errors stated on the kind (rule 10).
+              // Iteration 3 (rule 12): a member that may be missing says so.
               const raw = checker.getTypeOfSymbol(p);
               if (p.flags & ts.SymbolFlags.Optional || (raw.flags & ts.TypeFlags.Union && raw.types.some((x) => x.flags & ts.TypeFlags.Undefined))) entries[e].optional = true;
-              const kt = kindThrows(decl, p.name, names);
-              if (kt.length) entries[e].throws = kt;
               note('accepts', a, e); note('handsBack', h, e);
               if (p.declarations?.[0]) ranges.push({ entry: e, ...rangeOf(p.declarations[0], 'jsdoc') });
             }
@@ -178,9 +138,6 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
             const shape = C.canon(t, k, true);
             k.kinds.delete(`${mod.id}.${exp.name}`);
             entries[name] = { kind: 'kind', shape, bounds: [...bounds, ...nestedBounds(k)], where };
-            // Iteration 2: a message kind states its channel; the channel is part of what it hands back.
-            const msg = tagsOf(decl, 'message');
-            if (msg.length) entries[name].channel = msg.map((m) => tagText(m).split(/\s+/)[0] || '(none)').sort().join(' ');
             dataKinds.push(name);
             // Iteration 2: the rows of a shared table, owned by this module.
             for (const tag of tagsOf(decl, 'storedrows')) {
@@ -201,9 +158,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
         if (ctors.length) {
           // Iteration 3 (rule 17): an exported class lists what its constructor accepts, and what it builds.
           const c = C.canonSig(ctors[0], a, h);
-          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where, paramNames: paramNamesOf(ctors[0]) };
-          const throws = tagsOf(ctors[0].declaration ?? decl, 'throws').map((tg) => tg.typeExpression?.type?.getText?.()).filter(Boolean).sort();
-          if (throws.length) entries[name].throws = throws;
+          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where };
           // Iteration 5 (rule 27): each member of the class, static or not, is an entry of its own.
           const members = [
             ...checker.getPropertiesOfType(t).filter((p) => p.name !== 'prototype').map((p) => [`${name}.${p.name}`, p]),
@@ -216,32 +171,26 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
             // The member's own bound lines, as a class's and a function's are listed (design part 2, section 7, rule 3
             // for the tool): a changed one tells its users.
             const memberBounds = memberOwnBounds(p.declarations?.[0]);
-            if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
+            if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where }; }
             else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: [...memberBounds, ...nestedBounds(mh)], where };
             const md = p.declarations?.[0];
             if (md) ranges.push({ entry: e, ...rangeOf(md) });
           }
         } else if (sigs.length && checker.getPropertiesOfType(t).length === 0) {
           const c = C.canonSig(sigs[0], a, h);
-          const items = c.params.map((p, i) => ({ ...p, name: sym.valueDeclaration?.parameters?.[i]?.name?.getText?.() }));
-          for (const it of items) delete it.name; // names of parameters are not part of what stands in
           entries[name] = {
             kind: 'function',
-            accepts: { k: 'params', items, ...(c.tparams ? { tparams: c.tparams } : {}) },
+            accepts: { k: 'params', items: c.params, ...(c.tparams ? { tparams: c.tparams } : {}) },
             handsBack: c.ret,
             bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)],
             where,
-            paramNames: paramNamesOf(sigs[0]),
           };
-          // Iteration 2: the kinds of error it raises are part of what it hands back.
-          const throws = [...new Set(tagsOf(decl, 'throws').flatMap(throwKinds))].sort();
           // Iteration 4: every overload is listed.
           if (sigs.length > 1) {
             const all = sigs.map((sg) => C.canonSig(sg, a, h));
             entries[name].accepts = { k: 'overloads', of: all.map((c2) => ({ k: 'params', items: c2.params })) };
             entries[name].handsBack = { k: 'overloads', of: all.map((c2) => c2.ret) };
           }
-          if (throws.length) entries[name].throws = throws;
         } else {
           // A plain constant's single value (a price, a limit) is content, not a kind: unless its comment states a
           // kind, a lone literal is widened to its base kind. A list or table marked as constant keeps its names.
@@ -263,8 +212,9 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
       e.handsBack = side === 'accepts' ? null : e.shape;
       delete e.shape;
     }
-    // Iteration 3 (rule 10): errors stated on the methods where the object is built, and errors inherited by a method
-    // or handler that only hands its call to another listed entry.
+    // Bounds written where an object of a listed kind is built belong to that member (iteration 6, rule 37), and a
+    // method or handler that only hands its call straight on to another listed entry takes that entry's bounds, which
+    // limit what the caller can accept just as much (iteration 6, rule 43).
     const entryOfDecl = (d) => {
       if (!d) return null;
       const f = d.getSourceFile().fileName, at = (d.name ?? d).end - 1;
@@ -276,73 +226,45 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
     for (const f of mod.src) {
       const sf = program.getSourceFile(f);
       if (!sf) continue;
-      const visit = (n) => {
-        if (ts.isObjectLiteralExpression(n)) {
-          const ct = checker.getContextualType(n);
-          for (const prop of n.properties) {
-            if (!ct || !prop.name || !(ts.isIdentifier(prop.name) || ts.isStringLiteral(prop.name))) continue;
-            const ps = checker.getPropertyOfType(ct, prop.name.text);
-            const target = entryOfDecl(ps?.declarations?.[0]);
-            if (!target || !entries[target]) continue;
-            // the comment of the method, or, for a shorthand member ({ quote }), of the variable it names
-            let doc = prop;
-            if (ts.isShorthandPropertyAssignment(prop)) { const vd = checker.getShorthandAssignmentValueSymbol(prop)?.declarations?.[0]; if (vd) doc = vd; }
-            const stated = tagsOf(doc, 'throws').flatMap(throwKinds);
-            if (stated.length) entries[target].throws = [...new Set([...(entries[target].throws ?? []), ...stated])].sort();
-            // Iteration 6 (rule 37): a bound written where the object is built belongs to that member.
-            const bnds = tagsOf(doc, 'bound').map(tagText);
-            if (bnds.length) entries[target].bounds = [...new Set([...(entries[target].bounds ?? []), ...bnds])].sort();
-            // Iteration 4 (rule 23): every listed entry called anywhere in the method's body passes its errors on.
-            const fn = ts.isMethodDeclaration(prop) ? prop : ts.isPropertyAssignment(prop) && (ts.isArrowFunction(prop.initializer) || ts.isFunctionExpression(prop.initializer)) ? prop.initializer : null;
-            const calls = [];
-            if (fn?.body) forEachNode(fn.body, (m) => { if (ts.isCallExpression(m)) calls.push(m); });
-            for (const call of calls) {
-              const callee = ts.isPropertyAccessExpression(call.expression) ? call.expression.name : call.expression;
-              let sym = checker.getSymbolAtLocation(callee);
-              if (sym && sym.flags & ts.SymbolFlags.Alias) { try { sym = checker.getAliasedSymbol(sym); } catch { sym = undefined; } }
-              // a local function of the module (such as quote inside createBookings) stands for the member it fills
-              let decl = sym?.declarations?.[0];
-              let from = entryOfDecl(decl);
-              if (!from && decl && ts.isVariableDeclaration(decl)) {
-                const owner = Object.keys(entries).find((n) => n.endsWith(`.${sym.name}`) && entries[n].kind === 'method');
-                if (owner) from = owner;
-              }
-              // iteration 6 (rule 43): does the method only hand its call straight on, (req) => bookings.open(req)?
-              let body = fn?.body;
-              if (body && ts.isBlock(body) && body.statements.length === 1 && ts.isReturnStatement(body.statements[0])) body = body.statements[0].expression;
-              while (body && (ts.isParenthesizedExpression(body) || ts.isAwaitExpression(body))) body = body.expression;
-              const params = new Set((fn?.parameters ?? []).map((p) => (ts.isIdentifier(p.name) ? p.name.text : '')));
-              const fromParam = (a) => { while (ts.isPropertyAccessExpression(a)) a = a.expression; return ts.isIdentifier(a) && params.has(a.text); };
-              const straight = body === call && call.arguments.every(fromParam);
-              if (from && from !== target) delegations.push([target, from, straight]);
-            }
-          }
+      forEachNode(sf, (n) => {
+        if (!ts.isObjectLiteralExpression(n)) return;
+        const ct = checker.getContextualType(n);
+        if (!ct) return;
+        for (const prop of n.properties) {
+          if (!prop.name || !(ts.isIdentifier(prop.name) || ts.isStringLiteral(prop.name))) continue;
+          const ps = checker.getPropertyOfType(ct, prop.name.text);
+          const target = entryOfDecl(ps?.declarations?.[0]);
+          if (!target || !entries[target]) continue;
+          // the comment of the method, or, for a shorthand member ({ quote }), of the variable it names
+          let doc = prop;
+          if (ts.isShorthandPropertyAssignment(prop)) { const vd = checker.getShorthandAssignmentValueSymbol(prop)?.declarations?.[0]; if (vd) doc = vd; }
+          const bnds = tagsOf(doc, 'bound').map(tagText);
+          if (bnds.length) entries[target].bounds = [...new Set([...(entries[target].bounds ?? []), ...bnds])].sort();
+          const fn = ts.isMethodDeclaration(prop) ? prop : ts.isPropertyAssignment(prop) && (ts.isArrowFunction(prop.initializer) || ts.isFunctionExpression(prop.initializer)) ? prop.initializer : null;
+          let body = fn?.body;
+          if (body && ts.isBlock(body) && body.statements.length === 1 && ts.isReturnStatement(body.statements[0])) body = body.statements[0].expression;
+          while (body && (ts.isParenthesizedExpression(body) || ts.isAwaitExpression(body))) body = body.expression;
+          if (!body || !ts.isCallExpression(body)) continue;
+          // does the method only hand its call straight on, (req) => bookings.open(req)?
+          const params = new Set((fn?.parameters ?? []).map((p) => (ts.isIdentifier(p.name) ? p.name.text : '')));
+          const fromParam = (x) => { while (ts.isPropertyAccessExpression(x)) x = x.expression; return ts.isIdentifier(x) && params.has(x.text); };
+          if (!body.arguments.every(fromParam)) continue;
+          const callee = ts.isPropertyAccessExpression(body.expression) ? body.expression.name : body.expression;
+          let sym = checker.getSymbolAtLocation(callee);
+          if (sym && sym.flags & ts.SymbolFlags.Alias) { try { sym = checker.getAliasedSymbol(sym); } catch { sym = undefined; } }
+          // a local function of the module (such as quote inside createBookings) stands for the member it fills
+          const d = sym?.declarations?.[0];
+          let from = entryOfDecl(d);
+          if (!from && d && ts.isVariableDeclaration(d)) from = Object.keys(entries).find((x) => x.endsWith(`.${sym.name}`) && entries[x].kind === 'method') ?? null;
+          if (from && from !== target) delegations.push([target, from]);
         }
-      };
-      // Kept on a list, not by recursion: a long expression nests deeper than the stack allows (forEachNode).
-      forEachNode(sf, visit);
+      });
     }
-    for (let round = 0; round < 3; round++) for (const [to, from, straight] of delegations) {
-      const inherited = entries[from]?.throws ?? [];
-      if (inherited.length) entries[to].throws = [...new Set([...(entries[to].throws ?? []), ...inherited])].sort();
-      // Iteration 6 (rule 43): and its bounds, which limit what the caller can accept just as much.
-      const inb = straight ? (entries[from]?.bounds ?? []) : [];
+    for (let round = 0; round < 3; round++) for (const [to, from] of delegations) {
+      const inb = entries[from]?.bounds ?? [];
       if (inb.length) entries[to].bounds = [...new Set([...(entries[to].bounds ?? []), ...inb])];
     }
     for (const e of Object.values(entries)) e.bounds = [...new Set(e.bounds)].sort();
-    // Iteration 4 (rule 18): each entry's declaration as TypeScript prints it.
-    // plain kinds (unions, plain kinds) of every module the program reads, to write out where another module names them
-    const plain = holds ? plainOfAll((f) => holds.has(f) && !!program.getSourceFile(f)) : (plainEverywhere ??= plainOfAll((f) => !!program.getSourceFile(f)));
-    const decls = {};
-    for (const f of mod.public) Object.assign(decls, declarationsOf(program, f, plain));
-    for (const [name, e] of Object.entries(entries)) {
-      if (name.startsWith('op:')) {
-        const table = Object.entries(entries).find(([n, x]) => x.kind === 'operation table' && x.handsBack?.names?.includes(name.slice(3)))?.[0];
-        if (table && decls[`${table}.${name.slice(3)}`] !== undefined) e.decl = decls[`${table}.${name.slice(3)}`];
-      } else if (name.startsWith('table:')) {
-        if (decls[e.rowKind] !== undefined) e.decl = decls[e.rowKind];
-      } else if (decls[name] !== undefined) e.decl = decls[name];
-    }
     const sorted = Object.fromEntries(Object.keys(entries).sort().map((k) => [k, entries[k]]));
     return { module: mod.id, hasInterfaceComments: hasInterfaceComments(mod), entries: sorted, ranges };
   }

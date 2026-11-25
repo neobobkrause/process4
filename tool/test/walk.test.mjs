@@ -121,6 +121,20 @@ test('walk areas follows a changed module that names none up to its users', () =
   assert.match(out, /Buy a thing <- orders/);
 });
 
+test('walk areas reads a module\'s users from their uses files; a module with none yet, from its declared uses', () => {
+  // orders' uses file names dates, not pricing (its module-list entry still declares pricing).
+  const uses = (module, providers) => ({ module, providers, uses: providers.map((p) => ({ provider: p, item: 'x', where: [] })), outside: [], orderFaults: [], copies: [] });
+  const t = product({ 'process/modules/orders.uses.json': uses('orders', ['dates']) });
+  writeRound(t.ctx, t.root, { tranche: 't1', round: 3, modules: [{ module: 'pricing', state: 'open' }], walks: [] });
+  t.out.length = 0;
+  walkAreas(t.ctx);
+  assert.doesNotMatch(t.out.join('\n'), /orders/);
+  writeRound(t.ctx, t.root, { tranche: 't1', round: 4, modules: [{ module: 'dates', state: 'open' }], walks: [] });
+  t.out.length = 0;
+  walkAreas(t.ctx);
+  assert.match(t.out.join('\n'), /Checkout <- orders/);
+});
+
 test('walk areas adds a module a notice was sent to (waiting work)', () => {
   const t = product();
   writeRound(t.ctx, t.root, { tranche: 't1', round: 4, modules: [], walks: [] });

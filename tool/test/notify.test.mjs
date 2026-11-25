@@ -6,14 +6,16 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
-import { analyse, notice, noticeText } from '../lib/notice/notice.mjs';
-import { check, commentsOnly } from '../lib/notice/check.mjs';
+import { notice, noticeText, placeText } from '../lib/notice/notice.mjs';
+import { moduleMeans } from '../lib/notice/means.mjs';
+import { check } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
 import { NOTICE_LIMIT, NOTICE_MARK, cutReason, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
 import { JOB_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
+import { withUsesFiles } from './usesfile-standin.mjs';
 
 // GitHub that fails on any reach: listing and check read the checkout only.
 const untouchable = new Proxy({}, { get: (_, k) => () => { throw new Error(`reached GitHub: ${String(k)}`); } });
@@ -42,7 +44,8 @@ const ORDERS = `import { parseDay } from '../dates/index.mjs';
 export function orderDay(t) { return parseDay(t).n; }
 `;
 const entry = (name, uses = [], over = {}) => ({ name, files: [`src/${name}/`], tests: [`test/${name}/`], public: [`src/${name}/index.mjs`], uses, ...over });
-const productFiles = () => ({
+// The product, with each module's uses file as its last job left it (the stand-in writer).
+const productFiles = () => withUsesFiles({
   'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
   'process/modules/order.txt': 'dates\norders\nreport\n',
   'process/modules/dates.json': entry('dates'),
@@ -115,9 +118,14 @@ test('listing prints a module\'s listing at HEAD or at a named commit, and write
   assert.throws(() => listingCmd(ctx, 'dates', { _: [], at: 'nosuch' }), /nosuch is not a commit/);
   assert.throws(() => listingCmd(ctx, 'nobody', { _: [] }), /no module is named nobody/);
   assert.equal(git(['status', '--porcelain'], { cwd: root }), '');
+  // The rest of each item's means, worked out from its code, is printed with it.
+  commit(root, { 'src/dates/index.mjs': DATES('1 to 30').replace('return String(d.n);', "if (d.n < 1) throw new RangeError('n'); console.error(d.n); return String(d.n);") });
+  out.length = 0;
+  listingCmd(ctx, 'dates', { _: [] });
+  assert.match(out.join('\n'), /function formatDay[^\n]*\n(?: {6}[^\n]*\n)* {6}errors that can leave it: RangeError\n {6}channels, settings and files: writes standard error/);
 });
 
-test('notify tells the users of a changed entry: their reasons on the merged pull request, waiting work naming the notice, once per provider and user', () => {
+test('notify tells the users of a changed item, found in their uses files: their reasons on the merged pull request, waiting work naming the notice, once per provider and user', () => {
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();
   const { issue, records } = create(gh, 'o/product', ['waiting-work'], () => {});
@@ -128,10 +136,10 @@ test('notify tells the users of a changed entry: their reasons on the merged pul
   assert.equal(notifyCmd(ctx, 7), 0);
   const text = out.join('\n');
   assert.match(text, new RegExp(`before ${git(['rev-parse', `${sha}^1`], { cwd: root }).slice(0, 10)} \\(first parent\\), after ${sha.slice(0, 10)}`));
-  assert.match(text, /Notice for a change to dates \(TypeScript 5\.6\.3\)/);
-  assert.match(text, /dates parseDay: bound changed -> tells users/);
-  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed\) at src\/orders\/index\.mjs:6\n {6}uses dates parseDay \(bound changed\) at src\/orders\/index\.mjs:1, src\/orders\/index\.mjs:6\n/);
-  assert.match(text, /TOLD report\n {6}uses dates Day \(bound changed\) at src\/report\/index\.mjs:3\n {6}uses dates formatDay \(bound changed\) at src\/report\/index\.mjs:1, src\/report\/index\.mjs:3\n/);
+  assert.match(text, /Notice for a change to dates \(TypeScript 5\.6\.3\)\n3 items changed in a way that tells; 2 module\(s\) told\./);
+  assert.match(text, /dates parseDay: bound changed \[found by its means\] -> tells its users\n {6}why: bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30/);
+  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed; found by its means\) at src\/orders\/index\.mjs:6\n {6}uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6\n/);
+  assert.match(text, /TOLD report\n {6}uses dates Day \(bound changed; found by its means\) at src\/report\/index\.mjs:3\n {6}uses dates formatDay \(bound changed; found by its means\) at src\/report\/index\.mjs:3/);
   const work = waitingWork(gh).work;
   assert.equal(work.length, 3);
   assert.equal(work[0].kind, 'walk-flaw');
@@ -142,10 +150,10 @@ test('notify tells the users of a changed entry: their reasons on the merged pul
   assert.deepEqual(notices.map((d) => [d.from, d.merged, d.part, Object.keys(d.users)]), [['dates', 7, 1, ['orders', 'report']]]);
   assert.match(text, /the notice from dates is written on pull request 7 \(1 comment\(s\)\)/);
   const uses = noticeReasons(gh, 'o/product', orders);
-  const day = uses.find((u) => u.entry === 'Day');
-  assert.deepEqual(day, { module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null,
-    before: { bounds: ['n: whole number, 1 to 31'] }, after: { bounds: ['n: whole number, 1 to 30'] } });
-  assert.deepEqual(uses.map((u) => u.entry).sort(), ['Day', 'parseDay']);
+  const day = uses.find((u) => u.item === 'Day');
+  assert.deepEqual(day, { module: 'dates', item: 'Day', found: ['its means'], changes: ['bound changed'], why: 'bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30',
+    places: [{ file: 'src/orders/index.mjs', side: 'code', line: 6, in: 'orderDay' }], before: { bounds: ['n: whole number, 1 to 31'] }, after: { bounds: ['n: whole number, 1 to 30'] } });
+  assert.deepEqual(uses.map((u) => u.item).sort(), ['Day', 'parseDay']);
   // Run again for the same merge: its own entries and its own comments are rewritten, not doubled.
   const count = gh.s.comments.length;
   notifyCmd(ctx, 7);
@@ -162,7 +170,7 @@ test('notify adds a notice to a told user\'s open job block, once, and the rest 
   // orders has an open told job into the tranche, blocked; report has only a pull request into main, which is no job's.
   gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
   gh.s.prs.push({ number: 21, state: 'open', head: { ref: 'job/report.1', sha: 'h'.repeat(40) }, base: { ref: 'main' } });
-  const old = { module: 'dates', entry: 'old' };
+  const old = { module: 'dates', item: 'old' };
   gh.addComment('o/product', 20, block(JOB_MARK, { module: 'orders', work: ['notice from dates (pull request 3)'], kind: 'told', uses: [old] }, 'words kept'));
   gh.addComment('o/product', 20, block(RECORD_MARK, { blocked: { by: 'dates', why: 'waits' } }));
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
@@ -173,7 +181,7 @@ test('notify adds a notice to a told user\'s open job block, once, and the rest 
   assert.equal(b.data.kind, 'told');
   assert.deepEqual(b.data.work, ['notice from dates (pull request 3)', 'notice from dates (pull request 7)']);
   assert.deepEqual(b.data.uses[0], old);
-  assert.deepEqual(b.data.uses.slice(1).map((u) => u.entry).sort(), ['Day', 'parseDay']);
+  assert.deepEqual(b.data.uses.slice(1).map((u) => u.item).sort(), ['Day', 'parseDay']);
   assert.equal(b.data.notice_seq, 1);
   assert.deepEqual(b.data.notices, [{ from: 'dates', merged: 7 }]);
   assert.equal(b.words, 'words kept');
@@ -243,9 +251,9 @@ test('a job block stays under one comment\'s size: reasons without their words, 
     return noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 7 });
   };
   const reasons = reasonsOf();
-  const tooMany = { module: 'dates', notFollowed: [`the notice from dates (pull request 7) has ${reasons.length} reasons, too many for the job block; the whole module's tests run`], through: null };
+  const tooMany = { module: 'dates', whole: `the notice from dates (pull request 7) has ${reasons.length} reasons, too many for the job block; the whole module's tests run` };
   // A job block already holding `k` characters of earlier uses, and what it is with the notice's `uses` added.
-  const data = (k) => ({ module: 'orders', work: ['R1'], kind: 'ordinary', uses: [{ module: 'dates', entry: 'old', note: 'x'.repeat(k) }] });
+  const data = (k) => ({ module: 'orders', work: ['R1'], kind: 'ordinary', uses: [{ module: 'dates', item: 'old', note: 'x'.repeat(k) }] });
   const withNotice = (k, uses) => block(JOB_MARK, { ...data(k), work: ['R1', 'notice from dates (pull request 7)'], uses: [...data(k).uses, ...uses], notice_seq: 1, notices: [{ from: 'dates', merged: 7 }] }).length;
   const fill = (uses) => NOTICE_LIMIT - 10 - (withNotice(0, uses) - 0);
   const run = (k) => {
@@ -266,7 +274,7 @@ test('a job block stays under one comment\'s size: reasons without their words, 
   const k1 = fill(reasons.map(cutReason));
   assert.ok(withNotice(k1, reasons) >= NOTICE_LIMIT);
   assert.deepEqual(run(k1), reasons.map(cutReason));
-  assert.ok(run(k1).every((r) => r.cut && r.before === undefined && r.lines.length));
+  assert.ok(run(k1).every((r) => r.cut && r.before === undefined && r.places.length));
   // Room only for one reason: the job's related tests err to its whole module.
   const k2 = fill([tooMany]);
   assert.ok(withNotice(k2, reasons.map(cutReason)) >= NOTICE_LIMIT);
@@ -280,7 +288,7 @@ test('a job block too full even for one reason still takes the notice at once: i
   create(gh, 'o/product', ['waiting-work'], () => {});
   gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
   // Earlier uses that fill the block, with no before and after to leave out.
-  const old = Array.from({ length: 3 }, (_, i) => ({ module: 'dates', entry: `old${i}`, note: 'x'.repeat(NOTICE_LIMIT / 3) }));
+  const old = Array.from({ length: 3 }, (_, i) => ({ module: 'dates', item: `old${i}`, note: 'x'.repeat(NOTICE_LIMIT / 3) }));
   gh.addComment('o/product', 20, block(JOB_MARK, { module: 'orders', work: ['R1'], kind: 'ordinary', uses: old }));
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
   const { ctx, out } = ctxFor(root, gh);
@@ -292,7 +300,7 @@ test('a job block too full even for one reason still takes the notice at once: i
   assert.equal(b.notice_seq, 1);
   assert.deepEqual(b.notices, [{ from: 'dates', merged: 7 }]);
   assert.equal(b.uses.length, 1);
-  assert.match(b.uses[0].notFollowed[0], /^the notice from dates \(pull request 7\) has \d+ reasons, too many for the job block, which is full: its 3 earlier reason\(s\) are left out; the whole module's tests run$/);
+  assert.match(b.uses[0].whole, /^the notice from dates \(pull request 7\) has \d+ reasons, too many for the job block, which is full: its 3 earlier reason\(s\) are left out; the whole module's tests run$/);
   assert.match(out.join('\n'), /message the job of orders \(pull request 20\): a notice from dates reached it \(its reasons shortened to fit the job block\)/);
   // It did not wait for orders' next job.
   assert.doesNotMatch(out.join('\n'), /waits for its next job/);
@@ -307,68 +315,164 @@ test('notify on a merge that changes no module\'s files says so before reading a
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
   const text = out.join('\n');
-  assert.match(text, /The merge changed no module's files\.\nThe listing before and after is the same\. Nobody is told\./);
+  assert.match(text, /The merge changed no module's files\.\nNo item changed\. Nobody is told\./);
   assert.doesNotMatch(text, /Notice for a change|TypeScript/);
   assert.equal(gh.s.comments.length, 0);
 });
 
-test('notify on a merge that changes no listing tells nobody and writes nothing', () => {
+test('notify on a merge that changes no item\'s means tells nobody, reads no uses file, and writes nothing', () => {
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();
+  // formatDay's code changes; its stated kinds, bounds and the facts worked out from its code do not.
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
-  assert.match(out.join('\n'), /Notice for a change to dates[^\n]*\nThe listing before and after is the same\. Nobody is told\./);
+  assert.match(out.join('\n'), /Notice for a change to dates[^\n]*\nNo item's means changed\. Nobody is told\./);
+  assert.doesNotMatch(out.join('\n'), /TOLD/);
   assert.equal(gh.s.comments.length, 0);
   gh.s.prs.push({ number: 9, state: 'closed', merged_at: null, head: { ref: 'x' }, base: { ref: 'main' } });
   assert.throws(() => notifyCmd(ctx, 9), /pull request 9 is not merged/);
 });
 
-test('read in stages: a merge that changes a module\'s insides but not its listing reads no later module', () => {
-  const inside = { 'src/dates/index.mjs': DATES('1 to 31', " + ''") };
-  const before = mkdtempSync(join(tmpdir(), 'p4-stage-')), after = mkdtempSync(join(tmpdir(), 'p4-stage-'));
-  write(before, productFiles());
-  write(after, { ...productFiles(), ...inside });
+test('who is told is a lookup in the later modules\' uses files: a module whose file names no changed item is not told, whatever it imports', () => {
+  const files = { ...productFiles(), 'process/modules/order.txt': 'dates\norders\nreport\nchain\nloner\n',
+    'process/modules/chain.json': entry('chain', ['orders']), 'process/modules/loner.json': entry('loner', ['dates']) };
+  // chain uses orders only; loner imports dates and uses only an item the change leaves as it was.
+  files['src/chain/index.mjs'] = "import { orderDay } from '../orders/index.mjs';\n/** @returns {number} */\nexport const first = () => orderDay('1');\n";
+  files['src/loner/index.mjs'] = "import { parseDay } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const p = () => parseDay;\n";
+  const withUses = withUsesFiles(files);
+  const before = mkdtempSync(join(tmpdir(), 'p4-look-')), after = mkdtempSync(join(tmpdir(), 'p4-look-'));
+  write(before, withUses);
+  // only formatDay changes: its code may now throw
+  write(after, { ...withUses, 'src/dates/index.mjs': DATES('1 to 31').replace('return String(d.n);', "if (d.n < 0) throw new RangeError('n'); return String(d.n);") });
   const r = notice(before, after, 'dates');
-  assert.equal(r.summary, 'The listing before and after is the same. Nobody is told.');
-  assert.deepEqual([r.usersRead, r.told, r.notTold], [[], [], []]);
-  const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
-  mergedPR(root, gh, inside);
-  const { ctx, out } = ctxFor(root, gh);
-  assert.equal(notifyCmd(ctx, 7), 0);
-  assert.match(out.join('\n'), /Nobody is told\./);
-  assert.doesNotMatch(out.join('\n'), /TOLD|not told/);
+  assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes}`), ['formatDay: errors that can leave it changed']);
+  assert.match(r.changed[0].why, /^errors that can leave it changed: none -> RangeError$/);
+  assert.deepEqual(r.told.map((t) => t.user), ['report']);
 });
 
-test('read in stages: a later module with no import path to the changed module is neither read nor told; one that reaches it is read', () => {
-  const files = productFiles();
-  files['process/modules/order.txt'] = 'dates\norders\nreport\nchain\nloner\nloose\n';
-  files['process/modules/chain.json'] = entry('chain', ['orders']);
-  files['process/modules/loner.json'] = entry('loner');
-  files['process/modules/loose.json'] = entry('loose');
-  // chain reaches dates only through orders' file; loner has a kind of its own named Day, of the same shape, and no
-  // path to dates; loose imports a name the scan cannot follow.
-  files['src/chain/index.mjs'] = "import { orderDay } from '../orders/index.mjs';\n/** @returns {number} */\nexport const first = () => orderDay('1');\n";
-  files['src/loner/index.mjs'] = '/**\n * @typedef {Object} Day\n * @property {number} n\n */\n/** @param {Day} d @returns {number} */\nexport const n = (d) => d.n;\n';
-  files['src/loose/index.mjs'] = 'export const load = (/** @type {string} */ p) => import(p);\n';
-  const change = { 'src/dates/index.mjs': DATES('1 to 30') };
-  const before = mkdtempSync(join(tmpdir(), 'p4-stage-')), after = mkdtempSync(join(tmpdir(), 'p4-stage-'));
+test('a module named through a middle module is told; a place outside the standard is told of every change of a module it may refer to; an order fault naming it too', () => {
+  const files = withUsesFiles({ ...productFiles(), 'process/modules/order.txt': 'dates\norders\nreport\nfar\nloose\nlate\n',
+    'process/modules/far.json': entry('far', ['orders']), 'process/modules/loose.json': entry('loose'), 'process/modules/late.json': entry('late'),
+    'src/far/index.mjs': 'export const f = 1;\n', 'src/loose/index.mjs': 'export const l = 1;\n', 'src/late/index.mjs': 'export const z = 1;\n' });
+  // far reads Day through orders (its uses file records the route); loose has a place outside the standard that may
+  // refer to any earlier module; late's file records an order fault naming dates.
+  files['process/modules/far.uses.json'] = { module: 'far', providers: ['dates', 'orders'], uses: [
+    { provider: 'orders', item: 'orderDay', itemKind: 'function', type: 'call', route: 'direct', standard: true, where: [{ file: 'src/far/index.mjs', side: 'code', line: 3 }] },
+    { provider: 'dates', item: 'Day', itemKind: 'kind', type: 'read', route: { via: 'orders', item: 'orderDay' }, standard: true, where: [{ file: 'test/far/index.test.mjs', side: 'test', line: 9, test: 'far > reads a day' }] }],
+  outside: [], orderFaults: [], copies: [] };
+  files['process/modules/loose.uses.json'] = { module: 'loose', providers: [], uses: [], outside: [{ rule: 'R1', file: 'src/loose/index.mjs', side: 'code', line: 1, mayRefer: ['*'] }], orderFaults: [], copies: [] };
+  files['process/modules/late.uses.json'] = { module: 'late', providers: [], uses: [], outside: [], orderFaults: [{ provider: 'dates', file: 'src/late/index.mjs', line: 1 }], copies: [] };
+  const before = mkdtempSync(join(tmpdir(), 'p4-route-')), after = mkdtempSync(join(tmpdir(), 'p4-route-'));
   write(before, files);
-  write(after, { ...files, ...change });
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(before, after, 'dates');
-  assert.deepEqual(r.usersRead, ['orders', 'report', 'chain', 'loose']);
-  assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report']);
-  const root = makeRepo(files);
+  assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report', 'far', 'loose', 'late']);
+  const far = r.told.find((t) => t.user === 'far').reasons;
+  assert.deepEqual(far.map((x) => [x.item, x.places]), [['Day', [{ file: 'test/far/index.test.mjs', side: 'test', line: 9, test: 'far > reads a day' }]]]);
+  assert.match(noticeText(r), /TOLD far\n {6}uses dates Day \(bound changed; found by its means\) at test\/far\/index\.test\.mjs:9 \(test "far > reads a day"\)/);
+  const loose = r.told.find((t) => t.user === 'loose').reasons;
+  assert.deepEqual(loose.map((x) => [x.module, x.items, x.found, x.outside]), [['dates', ['Day', 'formatDay', 'parseDay'], ['a place outside the standard'], 'R1 at src/loose/index.mjs:1']]);
+  assert.deepEqual(r.told.find((t) => t.user === 'late').reasons.map((x) => x.found), [['an order fault']]);
+  // A change that tells no one tells none of them either.
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
+  const n = notice(before, after, 'dates');
+  assert.deepEqual([n.changed, n.fresh, n.told], [[], ['today'], []]);
+});
+
+test('a module with no uses file yet is told of every change of an earlier module it imports, and its whole tests run', () => {
+  const files = withUsesFiles({ ...productFiles(), 'process/modules/order.txt': 'dates\norders\nreport\nold\nalone\n',
+    'process/modules/old.json': entry('old'), 'process/modules/alone.json': entry('alone'),
+    'src/old/index.mjs': "import { formatDay } from '../dates/index.mjs';\nexport const f = formatDay;\n", 'src/alone/index.mjs': 'export const a = 1;\n' });
+  delete files['process/modules/old.uses.json'];
+  delete files['process/modules/alone.uses.json'];
+  // A file that cannot be read counts as none.
+  files['process/modules/alone.uses.json'] = 'not json';
+  const before = mkdtempSync(join(tmpdir(), 'p4-nofile-')), after = mkdtempSync(join(tmpdir(), 'p4-nofile-'));
+  write(before, files);
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
+  const r = notice(before, after, 'dates');
+  assert.deepEqual(r.told.map((t) => t.user), ['orders', 'report', 'old']);
+  assert.deepEqual(r.told.find((t) => t.user === 'old').reasons, [{ module: 'dates', items: ['Day', 'formatDay', 'parseDay'], found: ['no uses file'],
+    why: 'old has no uses file yet and imports dates: told of every change of it', whole: 'old has no uses file yet: its whole tests run' }]);
+});
+
+test('a module\'s first means, at its conversion (no uses file before, one after), tells no one', () => {
+  const files = productFiles();
+  const before = mkdtempSync(join(tmpdir(), 'p4-conv-')), after = mkdtempSync(join(tmpdir(), 'p4-conv-'));
+  const { 'process/modules/dates.uses.json': datesUses, ...without } = files;
+  write(before, without);
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
+  assert.ok(datesUses);
+  const r = notice(before, after, 'dates');
+  assert.equal(r.firstMeans, true);
+  assert.ok(r.changed.length && r.changed.every((c) => !c.tells));
+  assert.deepEqual(r.told, []);
+  assert.match(r.summary, /first means \(its conversion\): no item tells anyone/);
+});
+
+test('the means worked out from the code: errors, a class instance, this, arguments written into, channels, and a type error', () => {
+  const P = (body) => `/**
+ * @typedef {Object} Box
+ * @property {number} v
+ */
+/**
+ * @typedef {Object} Boxes
+ * @property {(b: Box) => number} put
+ * @property {(n: number) => Box} make
+ * @property {(n: number) => boolean} ok
+ */
+${body}
+`;
+  const base = `/** @returns {Boxes} */
+export function createBoxes() {
+  /** @type {Box[]} */
+  const all = [];
+  return {
+    put(b) { all.push(b); return all.length; },
+    make(n) { return { v: n }; },
+    ok(n) { return n > 0; },
+  };
+}`;
+  const files = withUsesFiles({ ...productFiles(), 'src/dates/index.mjs': `${DATES()}${P(base)}`,
+    'src/orders/index.mjs': `${ORDERS}import { createBoxes } from '../dates/index.mjs';\nconst boxes = createBoxes();\n/** @returns {number} */\nexport const one = () => boxes.put(boxes.make(1)) + (boxes.ok(1) ? 1 : 0);\n` });
+  const before = mkdtempSync(join(tmpdir(), 'p4-means-')), after = mkdtempSync(join(tmpdir(), 'p4-means-'));
+  write(before, files);
+  const changed = (body) => {
+    write(after, { ...files, 'src/dates/index.mjs': `${DATES()}${P(body)}` });
+    return Object.fromEntries(notice(before, after, 'dates').changed.map((c) => [c.item, c.changes.join(', ')]));
+  };
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { if (n > 99) throw new RangeError('big'); return n > 0; }")), { 'Boxes.ok': 'errors that can leave it changed' });
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', 'ok(n) { return this.make(n).v > 0; }')), { 'Boxes.ok': 'now needs its object as this' });
+  assert.deepEqual(changed(base.replace('put(b) { all.push(b);', 'put(b) { b.v += 1; all.push(b);')), { 'Boxes.put': 'arguments written into changed' });
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { console.error('asked'); return n > 0; }")), { 'Boxes.ok': 'channels, settings or files changed' });
+  // A class instance where plain data was: every item that hands back a Box, and the kind Box itself.
+  const inst = changed(`class BoxImpl {\n  /** @type {number} */\n  #v;\n  /** @param {number} n */\n  constructor(n) { this.#v = n; }\n  get v() { return this.#v; }\n}\n${base.replace('make(n) { return { v: n }; }', '/** @param {number} n */ make(n) { return new BoxImpl(n); }')}`);
+  assert.equal(inst.Box, 'plain data or instance changed');
+  assert.equal(inst['Boxes.make'], 'plain data or instance changed');
+  // A type error in the item's code counts as a change.
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { return n > 0 ? 'yes' : false; }")), { 'Boxes.ok': 'type error in its code' });
+});
+
+test('a change of meaning ARCH names in the job block, or the job declares in its record, is a changed item; it adds, never removes', () => {
+  const root = makeRepo(productFiles());
   const gh = fakeGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
-  mergedPR(root, gh, change);
+  // Its code changes formatDay in no way the means show.
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
+  // The merged job is dates': ARCH named formatDay in its block; the job declared parseDay in its record.
+  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['R1'], kind: 'ordinary', meaning: [{ item: 'formatDay', was: 'the day of the month', is: 'the day of the year' }] }));
+  gh.addComment('o/product', 7, block(RECORD_MARK, { meaning: [{ item: 'parseDay', was: 'a day of the month', is: 'a day of the year' }] }));
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
   const text = out.join('\n');
-  assert.match(text, /TOLD orders\n[\s\S]*TOLD report\n/);
-  assert.doesNotMatch(text, /chain|loner|loose/);
+  assert.match(text, /ARCH's placed work names a change of meaning: dates formatDay \(was: the day of the month; is now: the day of the year\)/);
+  assert.match(text, /the job declares a change of meaning: dates parseDay/);
+  assert.match(text, /dates formatDay: meaning changed \[found by ARCH's placed work\] -> tells its users\n {6}why: meaning: the day of the month -> the day of the year/);
+  assert.match(text, /dates parseDay: meaning changed \[found by the job's declaration\]/);
   assert.deepEqual(waitingWork(gh).work.map((w) => w.module), ['orders', 'report']);
+  const r = noticeReasons(gh, 'o/product', { module: 'report', kind: 'notice', from: 'dates', merged: 7 });
+  assert.deepEqual(r.map((x) => [x.item, x.found]), [['formatDay', ["ARCH's placed work"]]]);
 });
 
 test('notify that runs out of memory reading the product says so plainly, tells nobody, and fails', () => {
@@ -404,7 +508,7 @@ test('a notice comment GitHub will not write fails with GitHub\'s own words; nob
 });
 
 test('a notice too large for one comment is written in parts, each under the limit, and read back whole', () => {
-  const reason = (i, size) => ({ module: 'dates', entry: `e${i}`, changes: ['hands back differently'], lines: [`src/x.mjs:${i}`], through: null,
+  const reason = (i, size) => ({ module: 'dates', item: `e${i}`, found: ['its means'], changes: ['hands back differently'], why: 'w', places: [{ file: 'src/x.mjs', side: 'code', line: i }],
     before: { handsBack: 'x'.repeat(size) }, after: { handsBack: 'y'.repeat(size) } });
   // Three users: a small one, one whose reasons need several parts, and one with a reason too large for any part.
   const users = [
@@ -423,9 +527,9 @@ test('a notice too large for one comment is written in parts, each under the lim
   const read = (module) => noticeReasons(gh, 'o/product', { module, kind: 'notice', from: 'dates', merged: 7 });
   assert.deepEqual(read('orders'), users[0][1]);
   assert.deepEqual(read('report'), users[1][1]);
-  // The reason too large on its own keeps its entry, changes and lines, which choose the related tests, but not its words.
+  // The reason too large on its own keeps its item, changes and places, which choose the related tests, but not its words.
   const [big, small] = read('idle');
-  assert.deepEqual(big, { module: 'dates', entry: 'e99', changes: ['hands back differently'], lines: ['src/x.mjs:99'], through: null, cut: 'its before and after are left out: too large for one comment' });
+  assert.deepEqual(big, { module: 'dates', item: 'e99', found: ['its means'], changes: ['hands back differently'], why: 'w', places: [{ file: 'src/x.mjs', side: 'code', line: 99 }], cut: 'its before and after are left out: too large for one comment' });
   assert.deepEqual(small, users[2][1][1]);
   // A second writing of a smaller notice rewrites its own comments, adds none, and empties a part it no longer needs.
   const count = gh.s.comments.length;
@@ -436,13 +540,13 @@ test('a notice too large for one comment is written in parts, each under the lim
   // Another merge's or another provider's notice is not read.
   assert.throws(() => noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'orders', merged: 7 }), /no reasons/);
   // An older waiting entry that still carries its reasons is used as is.
-  assert.deepEqual(noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 9, uses: [{ module: 'dates', entry: 'old' }] }), [{ module: 'dates', entry: 'old' }]);
+  assert.deepEqual(noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 9, uses: [{ module: 'dates', item: 'old' }] }), [{ module: 'dates', item: 'old' }]);
 });
 
 test('one user\'s reason too large for a comment even without its words is cut to one reason that runs the whole module, not refused', () => {
   // Design part 6, section 5: the tool refuses nothing for size. A reason whose places alone pass one comment.
-  const huge = { module: 'dates', entry: 'e1', changes: ['hands back differently'], lines: Array.from({ length: 6000 }, (_, i) => `src/orders/a-long-file-name-${i}.mjs:${i}`), through: null, before: { handsBack: 'x' }, after: { handsBack: 'y' } };
-  const small = { module: 'dates', entry: 'e2', changes: ['removed'], lines: ['src/orders/index.mjs:1'], through: null };
+  const huge = { module: 'dates', item: 'e1', changes: ['hands back differently'], places: Array.from({ length: 6000 }, (_, i) => ({ file: `src/orders/a-long-file-name-${i}.mjs`, side: 'code', line: i })), before: { handsBack: 'x' }, after: { handsBack: 'y' } };
+  const small = { module: 'dates', item: 'e2', changes: ['removed'], places: [{ file: 'src/orders/index.mjs', side: 'code', line: 1 }] };
   const users = [['orders', [huge, small]], ['report', [small]]];
   const parts = noticeParts('dates', 7, users);
   for (const p of parts) assert.ok(block(NOTICE_MARK, p).length < NOTICE_LIMIT);
@@ -450,7 +554,7 @@ test('one user\'s reason too large for a comment even without its words is cut t
   writeNotice(gh, 'o/product', 7, 'dates', users);
   const read = (module) => noticeReasons(gh, 'o/product', { module, kind: 'notice', from: 'dates', merged: 7 });
   const [cut, kept] = read('orders');
-  assert.deepEqual(cut, { module: 'dates', notFollowed: ['a reason of orders in the notice from dates (pull request 7) is too large for one comment even without its before and after; the whole module\'s tests run'], through: null });
+  assert.deepEqual(cut, { module: 'dates', whole: 'a reason of orders in the notice from dates (pull request 7) is too large for one comment even without its before and after; the whole module\'s tests run' });
   assert.deepEqual(kept, small);
   assert.deepEqual(read('report'), [small]);
 });
@@ -467,7 +571,7 @@ test('notify runs once for each module the merge changed, in module order', () =
   notifyCmd(ctx, 7);
   const text = out.join('\n');
   assert.ok(text.indexOf('Notice for a change to dates') < text.indexOf('Notice for a change to orders'));
-  assert.match(text, /Notice for a change to orders[^\n]*\nThe listing before and after is the same\. Nobody is told\./);
+  assert.match(text, /Notice for a change to orders[^\n]*\nNo item's means changed\. Nobody is told\./);
 });
 
 test('rule 52: accepting more tells nobody only where the type checker confirms it', () => {
@@ -481,7 +585,7 @@ test('rule 52: accepting more tells nobody only where the type checker confirms 
  */
 export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }; }
 `;
-  const files = (opt, ret) => ({
+  const files = (opt, ret) => withUsesFiles({
     'process.json': config(),
     'process/modules/order.txt': 'p\nu\n',
     'process/modules/p.json': entry('p'),
@@ -493,64 +597,66 @@ export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }
   const more = mkdtempSync(join(tmpdir(), 'p4-r52-'));
   const hidden = mkdtempSync(join(tmpdir(), 'p4-r52-'));
   write(before, files('', 'number'));
-  write(more, files('; size?: number', 'number'));
-  write(hidden, files('; size?: number', 'string'));
+  write(more, { ...files('', 'number'), 'src/p/index.mjs': p('; size?: number', 'number') });
+  write(hidden, { ...files('', 'number'), 'src/p/index.mjs': p('; size?: number', 'string') });
   const a = notice(before, more, 'p');
-  assert.deepEqual(a.entries.map((e) => `${e.entry}: ${e.changes}`), ['make: accepts more']);
+  assert.deepEqual(a.changed.map((e) => `${e.item}: ${e.changes}: ${e.tells}`), ['make: accepts more: false']);
   assert.deepEqual(a.told, []);
-  // The tool's own comparison sees only "accepts more" for make (Thing is written by name); the checker does not
-  // confirm it, since what make hands back changed: it is "cannot stand in", and u, which calls make, is told.
+  // The comparison sees only "accepts more" for make (Thing is a kind of handle, written by name); the checker does
+  // not confirm it, since what make hands back changed: it is "cannot stand in", and u, which calls make, is told.
   const b = notice(before, hidden, 'p');
-  const mk = b.entries.find((e) => e.entry === 'make');
+  const mk = b.changed.find((e) => e.item === 'make');
   assert.deepEqual(mk.changes, ['cannot stand in']);
-  assert.match(mk.notConfirmed, /not find the new entry assignable to the old/);
+  assert.match(mk.notConfirmed, /not find the new item assignable to the old/);
   assert.deepEqual(b.told.map((t) => t.user), ['u']);
-  assert.deepEqual(b.told[0].reasons.map((r) => `${r.entry}: ${r.changes}`), ['make: cannot stand in']);
+  assert.deepEqual(b.told[0].reasons.map((r) => `${r.item}: ${r.changes}`), ['make: cannot stand in']);
 });
 
-test('an unknown kind becoming known tells no one; any other difference in the same entry still tells', () => {
-  // The owner's decision B of 25 Nov 2026: where the reader inferred "anything" before and a comment now states a kind,
-  // the running code is the same; nothing changed for a user, here or "through" a later module that passes it on.
+test('an unknown kind becoming known tells no one; any other difference in the same item still tells', () => {
+  // The owner's decision B of 25 Nov 2026, carried by decision C: where the reader read "anything" before and a comment
+  // now states a kind, the running code is the same; nothing changed for a user.
   const root = mkdtempSync(join(tmpdir(), 'p4-known-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-known-'));
   const RAW = '\nexport function raw(x) { return x; }\n';
   const STATED = '\n/**\n * @param {string} x\n * @returns {string}\n */\nexport function raw(x) { return x; }\n';
-  const files = productFiles();
-  files['src/dates/index.mjs'] = DATES() + RAW;
-  files['src/orders/index.mjs'] = `import { raw } from '../dates/index.mjs';\n${ORDERS.split('\n').slice(1).join('\n')}\nexport const shown = () => raw('a');\n`.replace('export function orderDay', "import { parseDay } from '../dates/index.mjs';\nexport function orderDay");
+  const plain = productFiles();
+  plain['src/dates/index.mjs'] = DATES() + RAW;
+  plain['src/orders/index.mjs'] = `import { raw } from '../dates/index.mjs';\n${ORDERS.split('\n').slice(1).join('\n')}\nexport const shown = () => raw('a');\n`.replace('export function orderDay', "import { parseDay } from '../dates/index.mjs';\nexport function orderDay");
+  const files = withUsesFiles(plain);
   write(root, files);
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED });
   const r = notice(root, after, 'dates');
-  assert.deepEqual([r.entries, r.told, r.changedModules], [[], [], []]);
-  assert.equal(r.summary, 'The listing before and after is the same. Nobody is told.');
-  // A stated parameter that is a union keeps its parameter list's brackets in the printed declaration, so the
-  // declaration backstop lines it up with the one before and finds only "anything" stated (civicsmith notify 1356).
+  assert.deepEqual([r.changed, r.told], [[], []]);
+  // A stated parameter that is a union, the same.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + '\n/**\n * @param {{n: number}|undefined} x\n * @returns {number|null}\n */\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
   write(root, { ...files, 'src/dates/index.mjs': DATES() + '\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
   const u = notice(root, after, 'dates');
-  assert.deepEqual([u.entries, u.told], [[], []]);
+  assert.deepEqual([u.changed, u.told], [[], []]);
   write(root, files);
-  // With another change in the same entry (a parameter newly required), that change still tells its users.
+  // With another change in the same item (a parameter newly required), that change still tells its users.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED.replace(' * @returns', ' * @param {number} y\n * @returns').replace('raw(x)', 'raw(x, y)') });
   const m = notice(root, after, 'dates');
-  assert.deepEqual(m.entries.filter((e) => e.module === 'dates').map((e) => `${e.entry}: ${e.changes}`), ['raw: cannot stand in']);
-  assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.entry === 'raw')));
+  assert.deepEqual(m.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: cannot stand in']);
+  assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.item === 'raw')));
 });
 
-test('a notice prints the kinds of error raised where they differ, so the reason a change tells is visible', () => {
-  // civicsmith notify 1356: a first @throws told every user, and the printout showed only the kinds, "anything" -> string.
+test('a comment alone is not a change: an error the code already raised, newly stated, tells no one; one the code newly raises tells', () => {
+  // civicsmith notify 1356: a first @throws told every user. The errors that can leave an item are worked out from its code.
   const root = mkdtempSync(join(tmpdir(), 'p4-raises-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-raises-'));
-  const files = productFiles();
-  files['src/orders/index.mjs'] = `${ORDERS}\nimport { raw } from '../dates/index.mjs';\nexport const shown = () => raw('a');\n`;
-  write(root, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
+  const files = withUsesFiles({ ...productFiles(), 'src/orders/index.mjs': `${ORDERS}\nimport { raw } from '../dates/index.mjs';\nexport const shown = () => raw('a');\n`,
+    'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
+  write(root, files);
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/**\n * @param {string} x\n * @returns {string}\n * @throws {TypeError} when x is empty\n */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
+  assert.deepEqual(notice(root, after, 'dates').changed, []);
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw Object.assign(new TypeError('x'), { code: 'EMPTY' }); return x; }\n` });
   const r = notice(root, after, 'dates');
-  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['raw: hands back differently']);
-  assert.match(noticeText(r), /raises before: \[\]\n {6}raises after: {2}\["TypeError"\]/);
+  assert.deepEqual(r.changed.map((e) => `${e.item}: ${e.changes}`), ['raw: errors that can leave it changed']);
+  assert.match(noticeText(r), /why: errors that can leave it changed: TypeError -> TypeError code EMPTY/);
+  assert.deepEqual(r.told.map((t) => t.user), ['orders']);
 });
 
-test('a name two interface files export for two things is two entries, each told to its own users (civicsmith test-support)', () => {
+test('a name two interface files export for two things is two items, each told to its own users (civicsmith test-support)', () => {
   const gen = (ret) => `/** @param {string} s @returns {${ret}} */\nexport function generate(s) { return ${ret === 'number' ? 's.length' : 's'}; }\n`;
   const files = (a, b) => ({
     'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
@@ -559,39 +665,20 @@ test('a name two interface files export for two things is two entries, each told
     'process/modules/ua.json': entry('ua', ['p']),
     'process/modules/ub.json': entry('ub', ['p']),
     'src/p/a.mjs': a, 'src/p/b.mjs': b,
-    // The same thing exported again from a second file stays one entry.
+    // The same thing exported again from a second file stays one item.
     'src/p/index.mjs': "export { generate as make } from './a.mjs';\nexport { generate as make2 } from './a.mjs';\n",
     'src/ua/index.mjs': "import { generate } from '../p/a.mjs';\n/** @returns {string} */\nexport const one = () => generate('x');\n",
     'src/ub/index.mjs': "import { generate } from '../p/b.mjs';\n/** @returns {string} */\nexport const two = () => String(generate('x'));\n",
   });
   const root = mkdtempSync(join(tmpdir(), 'p4-same-'));
-  write(root, files(gen('string'), gen('string')));
-  assert.deepEqual(Object.keys(analyse(root).listings.get('p').entries).sort(), ['make', 'make2', 'src/p/a.mjs:generate', 'src/p/b.mjs:generate']);
+  const both = withUsesFiles(files(gen('string'), gen('string')));
+  write(root, both);
+  assert.deepEqual(Object.keys(moduleMeans(loadTree(root), 'p').items).sort(), ['make', 'make2', 'src/p/a.mjs:generate', 'src/p/b.mjs:generate']);
   const after = mkdtempSync(join(tmpdir(), 'p4-same-'));
-  write(after, files(gen('number'), gen('string')));
+  write(after, { ...both, 'src/p/a.mjs': gen('number') });
   const r = notice(root, after, 'p');
-  assert.deepEqual(r.entries.map((e) => e.entry).sort(), ['make', 'make2', 'src/p/a.mjs:generate']);
+  assert.deepEqual(r.changed.map((e) => e.item).sort(), ['make', 'make2', 'src/p/a.mjs:generate']);
   assert.deepEqual(r.told.map((t) => t.user), ['ua']);
-});
-
-test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {
-  const root = mkdtempSync(join(tmpdir(), 'p4-nf-'));
-  const after = mkdtempSync(join(tmpdir(), 'p4-nf-'));
-  const files = productFiles();
-  files['process/modules/order.txt'] = 'dates\norders\nreport\nidle\n';
-  files['process/modules/idle.json'] = entry('idle', ['dates']);
-  files['src/idle/index.mjs'] = 'export const idle = 1;\n';
-  write(root, files);
-  write(after, { ...files, 'src/dates/index.mjs': `${DATES('1 to 30')}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
-  const r = notice(root, after, 'dates');
-  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['Day: bound changed', 'formatDay: bound changed', 'parseDay: bound changed', 'today: new entry']);
-  assert.deepEqual(r.told.find((t) => t.user === 'idle').reasons, [{ module: 'dates', notFollowed: ['declares dates but no use of it is found in its code', 'told of Day'], through: null }]);
-  // A change that tells nobody (here a new entry alone) tells a user that is not followed fully nothing either: a notice
-  // for nothing (the owner's decision B of 25 Nov 2026).
-  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
-  const n = notice(root, after, 'dates');
-  assert.deepEqual(n.entries.map((e) => `${e.entry}: ${e.changes}`), ['today: new entry']);
-  assert.deepEqual(n.told, []);
 });
 
 test('check prints each disagreement with file and line, and exits 1', () => {
@@ -738,8 +825,7 @@ test('a very long expression (20,000 terms) does not run the tool out of stack',
   const root = makeRepo(files);
   const tree = loadTree(root);
   assert.equal(check(tree, 'report').refused, false);
-  assert.ok(analyse(tree).listings.get('report').entries.big);
-  assert.equal(commentsOnly(tree, tree, 'report').same, true);
+  assert.ok(moduleMeans(tree, 'report').items.big);
   // Inside one function, the reader itself (TypeScript) follows such an expression by recursion: where it runs out of
   // stack, that file is "cannot tell", never a crash or a refusal.
   commit(root, { 'src/report/index.mjs': `${files['src/report/index.mjs']}export function many() { return show(1) + ${terms}; }\n` });
@@ -827,7 +913,7 @@ export function assemble(ctx, { deliver = null } = {}) { return { ctx, deliver }
   assert.deepEqual(r.refusals.map((x) => `${x.at} ${x.kind}`), ['src/report/index.mjs:2 (b) code disagrees with the stated interface of dates']);
 });
 
-test('a class member\'s own bound is in its listing, and a changed one tells its users', () => {
+test('a class member\'s own bound is in its means, and a changed one tells its users', () => {
   const root = mkdtempSync(join(tmpdir(), 'p4-cb-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-cb-'));
   const cal = (bound) => `${DATES()}
@@ -846,65 +932,27 @@ export class Cal {
   static max(n) { return n; }
 }
 `;
-  const files = productFiles();
-  files['src/dates/index.mjs'] = cal('1 to 31');
-  files['src/orders/index.mjs'] = `${ORDERS}import { Cal } from '../dates/index.mjs';\n/** @returns {number} */\nexport const first = () => new Cal().day(1) + Cal.max(2);\n`;
+  const files = withUsesFiles({ ...productFiles(), 'src/dates/index.mjs': cal('1 to 31'),
+    'src/orders/index.mjs': `${ORDERS}import { Cal } from '../dates/index.mjs';\n/** @returns {number} */\nexport const first = () => new Cal().day(1) + Cal.max(2);\n` });
   write(root, files);
   write(after, { ...files, 'src/dates/index.mjs': cal('1 to 30') });
-  const l = analyse(root).listings.get('dates').entries;
+  const l = moduleMeans(loadTree(root), 'dates').items;
   assert.deepEqual(l['Cal#day'].bounds, ['n: whole number, 1 to 31']);
   assert.deepEqual(l['Cal.max'].bounds, ['at most 1 to 31']);
   const r = notice(root, after, 'dates');
-  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['Cal#day: bound changed', 'Cal.max: bound changed']);
-  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => `${x.entry}: ${x.changes}`)]), [['orders', ['Cal#day: bound changed', 'Cal.max: bound changed']]]);
+  assert.deepEqual(r.changed.map((e) => `${e.item}: ${e.changes}`), ['Cal#day: bound changed', 'Cal.max: bound changed']);
+  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => `${x.item}: ${x.changes}`)]), [['orders', ['Cal#day: bound changed', 'Cal.max: bound changed']]]);
 });
 
-test('not followed fully, narrowed (decision 3B): a changed function tells such a user only where it names it or reaches the provider unreadably; a changed kind tells it as before', () => {
-  const RAW = (extra = '') => `\n/**\n * @param {string} x\n * @returns {string}${extra}\n */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n`;
-  const blind = "export const f = (v) => v.go();\n"; // reads a value of unknown kind: not followed fully
-  const files = {
-    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
-    'process/modules/order.txt': 'dates\nhelpers\nnamer\nblind\nwhole\nvia\n',
-    'process/modules/dates.json': entry('dates'),
-    'process/modules/helpers.json': entry('helpers', ['dates']),
-    'process/modules/namer.json': entry('namer', ['dates']),
-    'process/modules/blind.json': entry('blind', ['dates']),
-    'process/modules/whole.json': entry('whole', ['dates']),
-    'process/modules/via.json': entry('via', ['dates', 'helpers']),
-    'src/dates/index.mjs': DATES() + RAW(),
-    // helpers hands raw on as a value, so a module that reaches helpers may hold it under another name.
-    'src/helpers/index.mjs': "import { raw } from '../dates/index.mjs';\nexport const tools = { reg: raw };\n",
-    'src/namer/index.mjs': `${blind}// calls raw through a value it cannot follow\nexport const g = (t) => t.raw('a');\n`,
-    'src/blind/index.mjs': blind,
-    'src/whole/index.mjs': `import * as D from '../dates/index.mjs';\n${blind}export const h = () => D;\n`,
-    'src/via/index.mjs': `import { tools } from '../helpers/index.mjs';\n${blind}export const k = () => tools;\n`,
-  };
-  const root = mkdtempSync(join(tmpdir(), 'p4-narrow-'));
-  write(root, files);
-  const after = mkdtempSync(join(tmpdir(), 'p4-narrow-'));
-  // A function's change: a first @throws (hands back differently).
-  write(after, { ...files, 'src/dates/index.mjs': DATES() + RAW('\n * @throws {TypeError} when x is empty') });
-  const r = notice(root, after, 'dates');
-  assert.deepEqual(r.entries.filter((e) => e.module === 'dates').map((e) => `${e.entry}: ${e.changes}`), ['raw: hands back differently']);
-  const told = (rep) => rep.told.filter((t) => t.reasons.some((x) => x.notFollowed && x.module === 'dates')).map((t) => t.user).sort();
-  assert.deepEqual(told(r), ['namer', 'via', 'whole']);
-  assert.ok(r.told.find((t) => t.user === 'namer').reasons.find((x) => x.notFollowed).notFollowed.includes('told of raw'));
-  // A kind's change tells every such user, as before.
-  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') + RAW() });
-  assert.deepEqual(told(notice(root, after, 'dates')), ['blind', 'namer', 'via', 'whole']);
-});
-
-test('not followed fully: a reason names its first six places and how many more, so the notice keeps a size', () => {
-  const root = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
-  const after = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
-  const files = productFiles();
-  files['process/modules/order.txt'] = 'dates\norders\nreport\nidle\n';
-  files['process/modules/idle.json'] = entry('idle', ['dates']);
-  files['src/idle/index.mjs'] = Array.from({ length: 9 }, (_, i) => `export const v${i} = JSON.parse('{}').f${i};\n`).join('');
+test('a reason names its first six places and how many more, so the notice keeps a size; the related list reads them all from the uses file', () => {
+  const root = mkdtempSync(join(tmpdir(), 'p4-six-'));
+  const after = mkdtempSync(join(tmpdir(), 'p4-six-'));
+  const files = withUsesFiles({ ...productFiles(), 'src/orders/index.mjs': `${ORDERS}${Array.from({ length: 9 }, (_, i) => `export const v${i} = () => parseDay('${i}');\n`).join('')}` });
   write(root, files);
   write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(root, after, 'dates');
-  const nf = r.told.find((t) => t.user === 'idle').reasons[0].notFollowed;
-  const places = Array.from({ length: 6 }, (_, i) => `src/idle/index.mjs:${i + 1} JSON.parse('{}')`).join('; ');
-  assert.deepEqual(nf, ['declares dates but no use of it is found in its code', `reads or calls values of unknown kind: ${places}; and 3 more`, 'told of Day']);
+  const p = r.told.find((t) => t.user === 'orders').reasons.find((x) => x.item === 'parseDay');
+  assert.deepEqual(p.places.map(placeText), ['src/orders/index.mjs:6', 'src/orders/index.mjs:7', 'src/orders/index.mjs:8', 'src/orders/index.mjs:9', 'src/orders/index.mjs:10', 'src/orders/index.mjs:11']);
+  assert.equal(p.more, 4);
+  assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6, [^\n]*src\/orders\/index\.mjs:11, and 4 more/);
 });

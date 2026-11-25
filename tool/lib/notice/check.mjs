@@ -6,12 +6,11 @@
 //   (b) the module's code that disagrees with a provider's stated interface.
 // The proof's 23 refusals of rules of form (rules 2, 3, 4, 5, 11, 14, 19, 20, 22, 28, 29, 30, 31, 34, 35, 36, 38, 40,
 // 44, 45, 46, 47, 49) are not taken. Where the reader cannot tell, the check says so and never refuses.
-// Also: the comments-only verification of a module's first step.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, options, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeProgram, options, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
-import { ownPackage } from './staged.mjs';
+import { ownPackage } from './imports.mjs';
 
 /**
  * Complaints that mean "I cannot tell", never a disagreement. Decided here:
@@ -578,7 +577,7 @@ function importsOf(sf, cannot) {
     if ((ts.isImportDeclaration(n) || ts.isExportDeclaration(n)) && n.moduleSpecifier) spec(n, n.moduleSpecifier);
     else if (ts.isJSDocImportTag?.(n)) spec(n, n.moduleSpecifier);
     else if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument)) spec(n, n.argument.literal);
-    // import(...), and require(...) under that name (a require made by createRequire too, as the staged scan reads it)
+    // import(...), and require(...) under that name (a require made by createRequire too, as the import scan reads it)
     else if (ts.isCallExpression(n) && (n.expression.kind === ts.SyntaxKind.ImportKeyword || (ts.isIdentifier(n.expression) && n.expression.text === 'require'))) {
       const a0 = n.arguments[0];
       if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
@@ -590,7 +589,7 @@ function importsOf(sf, cannot) {
 
 /**
  * The product file an import by the product's own package name stands for (the `name` of its root package.json, as
- * the staged scan reads it): as the language reader resolves it (through the package's `exports`); without `exports`,
+ * the import scan reads it): as the language reader resolves it (through the package's `exports`); without `exports`,
  * <name>/<path> is that path from the product's top. Returns null where it cannot be followed.
  */
 function makeOwnName(tree) {
@@ -664,88 +663,4 @@ function declaredUses(tree, mod, program, refusals, cannotTell, only, rel) {
   for (const p of mod.uses.filter((u) => !imported.has(u))) {
     cannotTell.push({ at: entryFile, code: 'uses', why: `declares ${p} but no import of it is seen; a use by path is not read`, text: `declares ${p}; no import of it` });
   }
-}
-
-// ---- comments-only verification ----
-
-/** A file's running code as a tree with comments and grouping parentheses left out. */
-const isBoundTestStatement = (st) => ts.isExpressionStatement(st) && isTestCall(st.expression) && /^bound\s/.test(testName(st.expression) ?? '');
-
-/** A file's running code; with withoutBoundTests, its top-level tests named for a bound are left out. */
-function shape(file, withoutBoundTests = false) {
-  const text = fs.readFileSync(file, 'utf8');
-  const sf = ts.createSourceFile(file, text, ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
-  if (!withoutBoundTests) return shapeOfNode(sf);
-  return sf.statements.filter((st) => !isBoundTestStatement(st)).map((st) => shapeOfNode(st)).join('');
-}
-
-/** The names (without 'bound ') of top-level tests named for a bound that are in the after file and not the before. */
-function addedBoundTests(before, after) {
-  const names = (file) => ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS).statements
-    .filter(isBoundTestStatement).map((st) => st.expression.arguments[0].text.replace(/^bound\s+/, '').replace(/\s+/g, ' ').trim());
-  const b = new Set(names(before));
-  return names(after).filter((n) => !b.has(n));
-}
-
-/** Names of calls that name a test or a group of tests. */
-const TEST_CALLS = new Set(['test', 'it', 'describe', 'suite']);
-/** Is this a call that names a test or a group of tests (test, it, describe, or t.test)? */
-export const isTestCall = (n) => ts.isCallExpression(n) && (ts.isIdentifier(n.expression) ? TEST_CALLS.has(n.expression.text) : ts.isPropertyAccessExpression(n.expression) && TEST_CALLS.has(n.expression.name.text));
-const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) ? a0.text : null; };
-
-
-function shapeOfNode(root) {
-  const out = [];
-  // A grouping parenthesis writes nothing of its own: only what it holds (its one child).
-  const enter = (n) => {
-    if (ts.isParenthesizedExpression(n)) return true;
-    if (n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode) return false;
-    let leaf = '';
-    if (ts.isIdentifier(n) || ts.isPrivateIdentifier(n)) leaf = n.text;
-    else if (ts.isStringLiteral(n) || ts.isNumericLiteral(n) || ts.isBigIntLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n) || ts.isRegularExpressionLiteral(n)) leaf = n.text;
-    else if (n.kind === ts.SyntaxKind.TemplateHead || n.kind === ts.SyntaxKind.TemplateMiddle || n.kind === ts.SyntaxKind.TemplateTail) leaf = n.text;
-    const chain = n.flags & ts.NodeFlags.OptionalChain ? '?' : '';
-    out.push(`(${n.kind}${chain}${leaf ? ':' + JSON.stringify(leaf) : ''}`);
-    return true;
-  };
-  const leave = (n) => {
-    if (ts.isParenthesizedExpression(n)) return;
-    // Tokens such as operators are not children in the tree: keep them.
-    if (ts.isBinaryExpression(n)) out.push(`op${n.operatorToken.kind}`);
-    if (ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) out.push(`op${n.operator}`);
-    if (ts.isVariableDeclarationList(n)) out.push(`decl${n.flags & ts.NodeFlags.BlockScoped}`);
-    out.push(')');
-  };
-  forEachNode(root, enter, { leave });
-  return out.join('');
-}
-
-/**
- * Did a change to one module touch comments only? Compares each file's running code with comments and grouping
- * parentheses left out (a parenthesis added around a value to attach a kind to it changes nothing that runs).
- */
-export function commentsOnly(beforeTree, afterTree, moduleId) {
-  const mb = beforeTree.byId.get(moduleId), ma = afterTree.byId.get(moduleId);
-  const boundLinesAfter = new Set();
-  for (const f of ma.src) {
-    const sf = ts.createSourceFile(f, fs.readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
-    walk(sf, (n) => { for (const doc of n.jsDoc ?? []) for (const tag of doc.tags ?? []) if (tag.tagName.text === 'bound') boundLinesAfter.add(tagText(tag)); });
-  }
-  const rel = (m, t) => m.files.map((f) => path.relative(t.root, f)).sort();
-  const fb = rel(mb, beforeTree), fa = rel(ma, afterTree);
-  const files = [];
-  let ok = JSON.stringify(fb) === JSON.stringify(fa);
-  for (const f of new Set([...fb, ...fa])) {
-    const pb = path.join(beforeTree.root, f), pa = path.join(afterTree.root, f);
-    if (!fs.existsSync(pb) || !fs.existsSync(pa)) { files.push({ file: f, same: false, why: 'file added or removed' }); ok = false; continue; }
-    const isTest = ma.tests.includes(pa);
-    // Iteration 3: in a test file, tests named for a bound that this step adds are allowed (rule 4 needs them);
-    // everything else that runs must be unchanged.
-    const added = isTest ? addedBoundTests(pb, pa) : [];
-    const same = isTest ? shape(pb, true) === shape(pa, true) && added.every((t) => boundLinesAfter.has(t)) : shape(pb) === shape(pa);
-    const textSame = fs.readFileSync(pb, 'utf8') === fs.readFileSync(pa, 'utf8');
-    files.push({ file: f, same, textChanged: !textSame, ...(added.length ? { addedBoundTests: added } : {}) });
-    if (!same) ok = false;
-  }
-  return { module: moduleId, same: ok, files };
 }

@@ -4,5 +4,17 @@
   "covers": [
     "change of meaning under an unchanged name, comment NOT updated"
   ],
-  "note": "The job updated its own tests to the new meaning but neither the bound line nor the test name."
+  "note": "The job updated its own tests to the new meaning but neither the bound line nor the test name.",
+  "meaning": [
+    {
+      "item": "op:bookquote",
+      "was": "total: what the whole stay costs",
+      "is": "total: what one night costs"
+    },
+    {
+      "item": "Bookings.quote",
+      "was": "what the whole stay costs",
+      "is": "what one night costs"
+    }
+  ]
 }
