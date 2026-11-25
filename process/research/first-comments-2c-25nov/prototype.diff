@@ -1,0 +1,171 @@
+diff --git a/tool/lib/notice/check.mjs b/tool/lib/notice/check.mjs
+index acca312..52ce8a4 100644
+--- a/tool/lib/notice/check.mjs
++++ b/tool/lib/notice/check.mjs
+@@ -717,7 +717,7 @@ export const isTestCall = (n) => ts.isCallExpression(n) && (ts.isIdentifier(n.ex
+ const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) ? a0.text : null; };
+ 
+ 
+-function shapeOfNode(root) {
++export function shapeOfNode(root) {
+   const out = [];
+   // A grouping parenthesis writes nothing of its own: only what it holds (its one child).
+   const enter = (n) => {
+diff --git a/tool/lib/notice/listing.mjs b/tool/lib/notice/listing.mjs
+index d9004a8..d1ccd98 100644
+--- a/tool/lib/notice/listing.mjs
++++ b/tool/lib/notice/listing.mjs
+@@ -3,6 +3,29 @@ import fs from 'node:fs';
+ import path from 'node:path';
+ import { ts, tagsOf, tagText, lineOf, docsOf, declarationsOf, forEachNode } from './ts.mjs';
+ import { makeCanon } from './canon.mjs';
++import { createHash } from 'node:crypto';
++import { shapeOfNode } from './check.mjs';
++
++/**
++ * PROTOTYPE (options 2C/2D, research only): an entry's own running code, as a digest of its declaration's tree with
++ * comments (JSDoc) and grouping parentheses left out, as commentsOnly compares a file. The node: a function
++ * declaration; for `const f = ...`, the whole variable statement; a class declaration (all its members); a class
++ * member's own declaration, or for `this.x = ...` the statement that sets it. Callees are not followed.
++ */
++export const CODE_TIME = { ns: 0n, n: 0 };
++export function codeOf(node) {
++  const t0 = process.hrtime.bigint();
++  try { return codeOf1(node); } finally { CODE_TIME.ns += process.hrtime.bigint() - t0; CODE_TIME.n++; }
++}
++function codeOf1(node) {
++  if (!node) return undefined;
++  let host = node;
++  if (ts.isVariableDeclaration(host) && host.parent?.parent && ts.isVariableStatement(host.parent.parent)) host = host.parent.parent;
++  if (ts.isPropertyAccessExpression(host) && host.parent && ts.isBinaryExpression(host.parent) && host.parent.left === host) host = host.parent;
++  if (ts.isBinaryExpression(host) && host.parent && ts.isExpressionStatement(host.parent)) host = host.parent;
++  if (host.getSourceFile?.()?.isDeclarationFile) return undefined;
++  return createHash('sha1').update(shapeOfNode(host)).digest('hex').slice(0, 16);
++}
+ 
+ /** Does the module carry interface comments at all? (Mechanical: any JSDoc tag that states a kind.) */
+ export function hasInterfaceComments(mod) {
+@@ -193,7 +216,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+         if (ctors.length) {
+           // Iteration 3 (rule 17): an exported class lists what its constructor accepts, and what it builds.
+           const c = C.canonSig(ctors[0], a, h);
+-          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where, paramNames: paramNamesOf(ctors[0]) };
++          entries[name] = { kind: 'class', accepts: { k: 'params', items: c.params }, handsBack: c.ret, bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)], where, paramNames: paramNamesOf(ctors[0]), code: codeOf(decl), ownBounds };
+           const throws = tagsOf(ctors[0].declaration ?? decl, 'throws').map((tg) => tg.typeExpression?.type?.getText?.()).filter(Boolean).sort();
+           if (throws.length) entries[name].throws = throws;
+           // Iteration 5 (rule 27): each member of the class, static or not, is an entry of its own.
+@@ -211,6 +234,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+             if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
+             else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: [...memberBounds, ...nestedBounds(mh)], where };
+             const md = p.declarations?.[0];
++            entries[e].code = codeOf(md); entries[e].ownBounds = memberBounds;
+             if (md) ranges.push({ entry: e, ...rangeOf(md) });
+           }
+         } else if (sigs.length && checker.getPropertiesOfType(t).length === 0) {
+@@ -224,6 +248,8 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+             bounds: [...ownBounds, ...nestedBounds(a), ...nestedBounds(h)],
+             where,
+             paramNames: paramNamesOf(sigs[0]),
++            code: codeOf(decl),
++            ownBounds,
+           };
+           // Iteration 2: the kinds of error it raises are part of what it hands back.
+           const throws = [...new Set(tagsOf(decl, 'throws').flatMap(throwKinds))].sort();
+@@ -239,7 +265,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+           // kind, a lone literal is widened to its base kind. A list or table marked as constant keeps its names.
+           const stated = ts.getJSDocType(decl) || ts.getJSDocType(host);
+           const vt = !stated && t.flags & ts.TypeFlags.Literal ? checker.getBaseTypeOfLiteralType(t) : t;
+-          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(vt, h), bounds: [...ownBounds, ...nestedBounds(h)], where };
++          entries[name] = { kind: 'value', accepts: null, handsBack: C.canon(vt, h), bounds: [...ownBounds, ...nestedBounds(h)], where, code: codeOf(decl), ownBounds };
+         }
+         note('accepts', a, name); note('handsBack', h, name);
+       }
+diff --git a/tool/lib/notice/notice.mjs b/tool/lib/notice/notice.mjs
+index 9715b07..51e06b9 100644
+--- a/tool/lib/notice/notice.mjs
++++ b/tool/lib/notice/notice.mjs
+@@ -99,6 +99,10 @@ export function knownDecl(b, a) {
+   return stretchOk();
+ }
+ 
++/** PROTOTYPE (research): which option of "own running code unchanged" is in force, from P4_OWNCODE. */
++const OWNCODE = process.env.P4_OWNCODE ?? '';
++const PROTO = { provider: null };
++
+ /** Compares two listings of one module, entry by entry. */
+ export function diffListings(moduleId, before, after) {
+   const b = before.entries, a = after.entries;
+@@ -158,26 +162,41 @@ export function diffListings(moduleId, before, after) {
+       continue;
+     }
+     const changes = [];
++    // PROTOTYPE (research, options 2C/2D; P4_OWNCODE=2C|2D|2Dp): the entry's own running code unchanged.
++    const codeSame = eb.code !== undefined && eb.code === ea.code;
++    const silenced = [];
++    const firstThrowsOnSameCode = OWNCODE.startsWith('2C') && codeSame && !(eb.throws ?? []).length && (ea.throws ?? []).length > 0;
++    const firstBoundOnSameCode = OWNCODE.startsWith('2C') && codeSame && !(eb.bounds ?? []).length && (ea.bounds ?? []).length > 0;
+     const ba = renameHandles(ek.accepts, handleMap), bh = renameHandles(ek.handsBack, handleMap);
+     if (!same(ba, ea.accepts)) changes.push(standsIn(ba, ea.accepts) ? 'accepts more' : 'cannot stand in');
+     if (!same(bh, ea.handsBack)) changes.push('hands back differently');
+-    if (!same(eb.bounds, ea.bounds)) changes.push('bound changed');
++    if (!same(eb.bounds, ea.bounds)) { if (firstBoundOnSameCode) silenced.push('bound changed'); else changes.push('bound changed'); }
+     // Iteration 2: the kinds of error raised, and a message's channel, are part of what is handed back.
+-    if ((!same(eb.throws ?? [], ea.throws ?? []) || (eb.channel ?? '') !== (ea.channel ?? '')) && !changes.includes('hands back differently')) changes.push('hands back differently');
++    if (!same(eb.throws ?? [], ea.throws ?? []) && firstThrowsOnSameCode && (eb.channel ?? '') === (ea.channel ?? '')) silenced.push('hands back differently (first throws)');
++    else if ((!same(eb.throws ?? [], ea.throws ?? []) || (eb.channel ?? '') !== (ea.channel ?? '')) && !changes.includes('hands back differently')) changes.push('hands back differently');
+     // Iteration 7 (rule 48): a parameter's name found at another place: the parameters have moved.
+     if (eb.paramNames && ea.paramNames && eb.paramNames.some((n, i) => n !== '_' && ea.paramNames.includes(n) && ea.paramNames.indexOf(n) !== i)) changes.push('parameters moved');
+     // Iteration 3 (rule 12): a member that may now be missing hands back differently.
+     if (ea.optional && !eb.optional && !changes.includes('hands back differently')) changes.push('hands back differently');
+     // Iteration 4 (rule 18): silent only when the entry is shown unchanged. A declaration that differs where the tool's
+     // own comparison found nothing tells.
+-    if (!changes.length && eb.decl !== undefined && ea.decl !== undefined) {
++    // PROTOTYPE 2C+: on unchanged own code, the printed-declaration backstop is not consulted.
++    if (!changes.length && eb.decl !== undefined && ea.decl !== undefined && !(OWNCODE === '2C+' && codeSame)) {
+       let bd = eb.decl;
+       for (const [o, n] of renamed) bd = bd.replace(new RegExp(`\\b${o}\\b`, 'g'), n);
+       if (!knownDecl(bd, ea.decl)) changes.push('declaration changed (not classified)');
+     }
+-    if (!changes.length) continue;
++    // PROTOTYPE 2D: any difference in a function, class, class member or value entry whose own running code is
++    // unchanged tells no one (2Dp: only in the provider itself, not in a module changed through it).
++    const twoD = (OWNCODE === '2D' || (OWNCODE === '2Dp' && moduleId === PROTO.provider)) && codeSame && ['function', 'class', 'class member', 'value'].includes(ea.kind);
++    if (twoD && changes.length) {
++      out.push({ entry: name, changes, tells: 'nobody', before: describe(eb), after: describe(ea), names: [name, pairedMember.get(name) ?? name], silenced: [...changes, ...silenced], sort: ea.kind, codeSame, ownCode: true });
++      continue;
++    }
++    if (!changes.length) { if (silenced.length) out.push({ entry: name, changes: [], tells: 'nobody', before: describe(eb), after: describe(ea), names: [name, name], silenced, sort: ea.kind, codeSame }); continue; }
++    const extra = silenced.length ? { silenced } : {};
+     const names = [name, pairedMember.get(name) ?? name];
+-    if (pairedMember.has(name)) out.push({ entry: pairedMember.get(name), changes, tells: changes.some((c) => TELLS.has(c)) ? 'users' : 'nobody', before: describe(eb), after: describe(ea), names });
++    if (pairedMember.has(name)) out.push({ entry: pairedMember.get(name), changes, tells: changes.some((c) => TELLS.has(c)) ? 'users' : 'nobody', before: describe(eb), after: describe(ea), names, ...extra, sort: ea.kind, codeSame });
+     out.push({
+       entry: name,
+       changes,
+@@ -185,6 +204,7 @@ export function diffListings(moduleId, before, after) {
+       before: describe(eb),
+       after: describe(ea),
+       names,
++      ...extra, sort: ea.kind, codeSame,
+     });
+   }
+   return out;
+@@ -348,6 +368,7 @@ function noticeWith(R, provider) {
+   const pIndex = order.indexOf(provider);
+   if (pIndex < 0) throw new Error(`no such module: ${provider}`);
+   // usersRead: the later modules whose uses were read (with the whole product read at once, every one).
++  PROTO.provider = provider;
+   const report = { provider, reader: `TypeScript ${readerVersion()}`, firstCommentsStep: false, changedModules: [], entries: [], told: [], notTold: [], usersRead: [] };
+ 
+   // The first job on a module without interface comments: a comments-only step sends no notice.
+@@ -371,7 +392,9 @@ function noticeWith(R, provider) {
+     // Rule 52: "accepts more" only where the type checker confirms it.
+     for (const e of d) {
+       const k = e.changes.indexOf('accepts more');
+-      if (k < 0) continue;
++      if (k < 0 || e.ownCode) continue;
++      // PROTOTYPE 2C+: on unchanged own code, an "accepts more" is not put to the checker (it stays tells-nobody).
++      if (OWNCODE === '2C+' && e.codeSame) { e.silenced = [...(e.silenced ?? []), 'accepts more (not put to the checker)']; continue; }
+       const c = R.confirm(id, ...(e.names ?? [e.entry, e.entry]));
+       if (c.confirmed) continue;
+       e.changes.splice(k, 1, ...(e.changes.includes('cannot stand in') ? [] : ['cannot stand in']));
