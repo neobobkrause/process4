@@ -155,14 +155,12 @@
     ],
     "front": [
      "store seededStore: cannot stand in"
-    ],
-    "reports": [
-     "store: not followed fully"
     ]
    },
    "refuses": [],
    "rerecorded": [
-    "store's check refused in design 8 and does not now: it rested on the module's own deliberate error assertions (assert.throws passing put's old numeric argument); with the deliberate-error-assertion exemption adopted for fault D (the owner's decision of 19 Nov 2026; design part 2 section 6; build text 1b command 18), such a value is \"cannot tell\", not a refusal"
+    "store's check refused in design 8 and does not now: it rested on the module's own deliberate error assertions (assert.throws passing put's old numeric argument); with the deliberate-error-assertion exemption adopted for fault D (the owner's decision of 19 Nov 2026; design part 2 section 6; build text 1b command 18), such a value is \"cannot tell\", not a refusal",
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ],
    "needs": []
   },
@@ -444,13 +442,13 @@
    "told": {
     "bookings": [
      "calendar addDays: bound changed, hands back differently"
-    ],
-    "reports": [
-     "calendar: not followed fully"
     ]
    },
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
+   ]
   },
   "P23-user-already-disagrees": {
    "series": "planned",
@@ -550,9 +548,6 @@
    "told": {
     "front": [
      "store seededStore: cannot stand in"
-    ],
-    "reports": [
-     "store: not followed fully"
     ]
    },
    "refuses": [
@@ -560,6 +555,9 @@
    ],
    "needs": [
     "front"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "P28-handle-method-renamed": {
@@ -612,15 +610,15 @@
     ],
     "front": [
      "text-rules slugify: bound changed"
-    ],
-    "reports": [
-     "rooms: not followed fully"
     ]
    },
    "refuses": [],
    "needs": [
     "rooms",
     "front"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "A04-message-kind-not-shared": {
@@ -768,9 +766,6 @@
      "money formatAmount: cannot stand in, bound changed",
      "money splitEvenly: cannot stand in, hands back differently, bound changed",
      "meter MeterMsg: cannot stand in, hands back differently, bound changed"
-    ],
-    "reports": [
-     "bookings: not followed fully"
     ]
    },
    "refuses": [
@@ -782,6 +777,9 @@
     "bookings",
     "meter",
     "billing"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "X01-optional-param-callback": {
@@ -811,14 +809,14 @@
    "told": {
     "front": [
      "bookings Clock.now: bound changed"
-    ],
-    "reports": [
-     "bookings: not followed fully"
     ]
    },
    "refuses": [],
    "needs": [
     "front"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "X04-includes-on-literal-list": {
@@ -1868,14 +1866,14 @@
    "told": {
     "billing": [
      "bookings Bookings.quote: parameters moved"
-    ],
-    "reports": [
-     "bookings: not followed fully"
     ]
    },
    "refuses": [],
    "needs": [
     "billing"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "U09-price-sheet-in-euros": {
@@ -1969,14 +1967,13 @@
   "T02-quote-bound-not-reaching-operation": {
    "series": "round8-independent",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
    "needs": [
     "billing"
+   ],
+   "rerecorded": [
+    "reports was told, now is not told: it is not followed fully, and the narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026) tells such a user of a changed function, method, value or class member only where its files name it or it reaches the provider in a way the scan cannot read; reports's files name none of the entries that changed, and the proof's reading (needs) does not list it"
    ]
   },
   "T03-unknown-room-refused-in-helper": {

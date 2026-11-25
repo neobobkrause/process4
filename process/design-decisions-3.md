@@ -91,3 +91,28 @@ renames the exports; 4B the correction). Researched in `process/research/same-na
 with their next move.
 
 **The owner's words.** "Decision:4b" — 25 November 2026 (a comment on his standing page, on option 4B).
+
+### Subject: A user the tool cannot follow fully is told of a changed function only where it may use it
+
+**The rule as it now stands.** A user the tool cannot follow fully is told of every change to a kind of the provider that
+tells any user (a kind, handle kind, class, operation, table or table of operations). Of a changed function, method, value
+or class member it is told only where its own files name that entry, or where it reaches the provider in a way the tool
+cannot read: an import the tool cannot follow anywhere in what its files reach, the provider's whole exports taken, or
+another module in that reach that re-exports or carries the provider, hands the entry on as a value, or takes the provider
+whole. A change that tells no one tells it nothing, as before. The reason it carries names the changed entries that told
+it. Two misses are accepted: a function handed in as a callback from a module the user does not reach, and a name built
+from pieces (design part 2, section 7, decision 2 and "A declared use that no code makes"; build text 5, section 6; build
+text 2b, section 6; `tool/lib/notice/narrow.mjs`, new, and `notice.mjs`, `staged.mjs`, with a test).
+
+It answered a measured cost on civicsmith, 25 Nov 2026: test-support's merge (1350) changed one function, `registerDeclared`,
+which about 5 modules call, and told about 125, about 120 of them only because the tool cannot follow their plain
+JavaScript; each told job cost about $1.40 to $1.90 and nearly all closed with nothing to change. Measured by a worker: on
+the proof's 150 recorded changes 8 answers change, in each the module `reports` no longer told, which the proof's own
+reading of who needed a change never lists (no hole); re-recorded in `expected.json`, each with its reason. On a made-up
+product of 50 such users a changed function told 7 instead of 50; a changed kind still told 50. It narrows the owner's
+decision 2 on his word; it adds no test, gate, review or stop. Not known: how many of civicsmith's users stay told through
+an import the tool cannot read. Option 3B of two (3A no change; 3B the narrower rule). Researched in
+`process/research/notify-rerun-repeats-25nov.md` (its last sections) and `narrowing-decision-2-25nov/`. Products receive it
+with their next move.
+
+**The owner's words.** "Decision: 3b" — 25 November 2026 (a comment on his standing page, on option 3B).

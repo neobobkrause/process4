@@ -16,6 +16,7 @@ import { makeUsage } from './usage.mjs';
 import { same, standsIn, render } from './canon.mjs';
 import { commentsOnly } from './check.mjs';
 import { stagedReader } from './staged.mjs';
+import { makeNarrow } from './narrow.mjs';
 
 /** Reads a whole product once: every module's listing and every module's uses, from one program. */
 export function analyse(root) {
@@ -417,6 +418,7 @@ function noticeWith(R, provider) {
 
   // Who is told: every later module, declared or not. A module the staged reading did not read cannot use any module
   // that changed: it is neither told nor named.
+  let narrow = null;
   for (let i = pIndex + 1; i < order.length; i++) {
     const user = order[i];
     if (!R.isCandidate(user)) continue;
@@ -437,17 +439,22 @@ function noticeWith(R, provider) {
         if (e.tells === 'users that name it' && !u.named) continue;
         reasons.push({ module: m, entry: e.entry, changes: [...e.changes], lines: [...u.lines], through, ...partsThatDiffer(e) });
       }
-      // Not followed fully (build text 5, section 6): for a provider U declares, any of four causes. Such a user
-      // counts as using everything of the provider, and is told on any change to its listing that tells users: a
-      // change that tells nobody (a confirmed "accepts more", a new entry) tells it nothing either (the owner's
-      // decision B of 25 Nov 2026; civicsmith told 121 such users of an added optional parameter).
+      // Not followed fully (build text 5, section 6): for a provider U declares, any of four causes. Such a user is
+      // told of a change to the provider's listing that tells users: a change that tells nobody (a confirmed "accepts
+      // more", a new entry) tells it nothing (the owner's decision B of 25 Nov 2026), and a changed function, method,
+      // value or class member only where narrow.mjs finds it may use it (decision 3B of 25 Nov 2026).
       if (declared && diff.some((e) => e.tells !== 'nobody')) {
         const why = [];
         if (!useB?.size && !useA?.size) why.push(`declares ${m} but no use of it is found in its code`);
         if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${firstPlaces(ub.anything).join('; ')}`);
         if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${firstPlaces(ub.unreadOps).join(', ')}`);
         if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${firstPlaces(ub.unreadTables).join(', ')}`);
-        if (why.length) reasons.push({ module: m, notFollowed: why, through });
+        // Decision 3B of 25 Nov 2026 (narrow.mjs): of the changed function, method, value and class member entries, only
+        // those the user's files name, or all where it reaches the provider in a way the scan cannot read, tell it.
+        if (why.length) {
+          const tells = (narrow ??= makeNarrow(B.tree, A.tree, { usesOf: (id) => R.uses('B', id) })).telling(user, m, diff.filter((e) => e.tells !== 'nobody'));
+          if (tells.length) reasons.push({ module: m, notFollowed: [...why, `told of ${firstPlaces(tells).join(', ')}`], through });
+        }
       }
     }
     if (reasons.length) report.told.push({ user, reasons, undeclared: (ub?.undeclared ?? []).filter((p) => changed.has(p)) });

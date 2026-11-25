@@ -543,7 +543,7 @@ test('not followed fully: a declared provider with no use found tells the user o
   write(after, { ...files, 'src/dates/index.mjs': `${DATES('1 to 30')}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
   const r = notice(root, after, 'dates');
   assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['Day: bound changed', 'formatDay: bound changed', 'parseDay: bound changed', 'today: new entry']);
-  assert.deepEqual(r.told.find((t) => t.user === 'idle').reasons, [{ module: 'dates', notFollowed: ['declares dates but no use of it is found in its code'], through: null }]);
+  assert.deepEqual(r.told.find((t) => t.user === 'idle').reasons, [{ module: 'dates', notFollowed: ['declares dates but no use of it is found in its code', 'told of Day'], through: null }]);
   // A change that tells nobody (here a new entry alone) tells a user that is not followed fully nothing either: a notice
   // for nothing (the owner's decision B of 25 Nov 2026).
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
@@ -817,6 +817,41 @@ export class Cal {
   assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => `${x.entry}: ${x.changes}`)]), [['orders', ['Cal#day: bound changed', 'Cal.max: bound changed']]]);
 });
 
+test('not followed fully, narrowed (decision 3B): a changed function tells such a user only where it names it or reaches the provider unreadably; a changed kind tells it as before', () => {
+  const RAW = (extra = '') => `\n/**\n * @param {string} x\n * @returns {string}${extra}\n */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n`;
+  const blind = "export const f = (v) => v.go();\n"; // reads a value of unknown kind: not followed fully
+  const files = {
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'dates\nhelpers\nnamer\nblind\nwhole\nvia\n',
+    'process/modules/dates.json': entry('dates'),
+    'process/modules/helpers.json': entry('helpers', ['dates']),
+    'process/modules/namer.json': entry('namer', ['dates']),
+    'process/modules/blind.json': entry('blind', ['dates']),
+    'process/modules/whole.json': entry('whole', ['dates']),
+    'process/modules/via.json': entry('via', ['dates', 'helpers']),
+    'src/dates/index.mjs': DATES() + RAW(),
+    // helpers hands raw on as a value, so a module that reaches helpers may hold it under another name.
+    'src/helpers/index.mjs': "import { raw } from '../dates/index.mjs';\nexport const tools = { reg: raw };\n",
+    'src/namer/index.mjs': `${blind}// calls raw through a value it cannot follow\nexport const g = (t) => t.raw('a');\n`,
+    'src/blind/index.mjs': blind,
+    'src/whole/index.mjs': `import * as D from '../dates/index.mjs';\n${blind}export const h = () => D;\n`,
+    'src/via/index.mjs': `import { tools } from '../helpers/index.mjs';\n${blind}export const k = () => tools;\n`,
+  };
+  const root = mkdtempSync(join(tmpdir(), 'p4-narrow-'));
+  write(root, files);
+  const after = mkdtempSync(join(tmpdir(), 'p4-narrow-'));
+  // A function's change: a first @throws (hands back differently).
+  write(after, { ...files, 'src/dates/index.mjs': DATES() + RAW('\n * @throws {TypeError} when x is empty') });
+  const r = notice(root, after, 'dates');
+  assert.deepEqual(r.entries.filter((e) => e.module === 'dates').map((e) => `${e.entry}: ${e.changes}`), ['raw: hands back differently']);
+  const told = (rep) => rep.told.filter((t) => t.reasons.some((x) => x.notFollowed && x.module === 'dates')).map((t) => t.user).sort();
+  assert.deepEqual(told(r), ['namer', 'via', 'whole']);
+  assert.ok(r.told.find((t) => t.user === 'namer').reasons.find((x) => x.notFollowed).notFollowed.includes('told of raw'));
+  // A kind's change tells every such user, as before.
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') + RAW() });
+  assert.deepEqual(told(notice(root, after, 'dates')), ['blind', 'namer', 'via', 'whole']);
+});
+
 test('not followed fully: a reason names its first six places and how many more, so the notice keeps a size', () => {
   const root = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-nf6-'));
@@ -829,5 +864,5 @@ test('not followed fully: a reason names its first six places and how many more,
   const r = notice(root, after, 'dates');
   const nf = r.told.find((t) => t.user === 'idle').reasons[0].notFollowed;
   const places = Array.from({ length: 6 }, (_, i) => `src/idle/index.mjs:${i + 1} JSON.parse('{}')`).join('; ');
-  assert.deepEqual(nf, ['declares dates but no use of it is found in its code', `reads or calls values of unknown kind: ${places}; and 3 more`]);
+  assert.deepEqual(nf, ['declares dates but no use of it is found in its code', `reads or calls values of unknown kind: ${places}; and 3 more`, 'told of Day']);
 });
