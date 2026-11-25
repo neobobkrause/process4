@@ -104,3 +104,17 @@ unchanged".
   (`constructor_?:`; the worker ran before the 1B correction merged; to check against it); class members never list `@throws`.
 
 Prototype (switch `P4_OWNCODE`): `first-comments-2c-25nov/prototype.diff`.
+
+## More evidence, 09:02Z (civicsmith ARCH #22 via coordinator #9, unchanged)
+
+"re-run of notify 1404 (jurisdictions #1, a comments-only pull request: every changed line of jurisdictions/index.mjs is
+JSDoc, code identical with comments stripped) told about 150 modules, nearly all as "not followed fully" users, against
+design part 2 section 7 (a module's first structured-comments step sends no notice). The first two told jobs, civil-time #2
+(1538) and id-spaces #2 (1539), closed nothing-to-change for that reason, about $1.4-1.6 each. ... The notify queue I
+inherited holds about 70 more old merges, many comments-carrying; at this rate each can start up to ~150 notice-only jobs."
+
+PROCESS #13's reading: the first-comments exemption applies only to a module with no interface comments before (jurisdictions
+likely had some). civicsmith runs 55db8e4, without 3B (narrowing for not-followed users), 1B or 4B; 3B alone removes a
+not-followed user unless it names a changed function or reaches the provider unreadably, so much of the ~150 would likely go
+(unmeasured on civicsmith). Choice 2C+ would cover a comments-only change on unchanged code. Exposure if unchanged: up to
+~70 × ~150 × ~$1.5. Put to the owner as urgent: decide 2, move civicsmith now, and (his call) hold notice-only checks until moved.
