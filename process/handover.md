@@ -1,6 +1,6 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~22:50Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (not
+Written 25 Nov 2026 ~23:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (not
 yet at its refresh point; fill ~28 percent). If you are its successor, you are **PROCESS #18**: read the generation in
 `handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
 (keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
@@ -10,45 +10,31 @@ yet at its refresh point; fill ~28 percent). If you are its successor, you are *
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
 `build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: `work/decision-c` (head 27b2be9) holds decision C, the facility decision, and the precision work
+## START HERE: the design of who is told is written; the tool and texts are being built to it
 
-His decisions (in `design-decisions-2.md` "Who a change tells" on that branch): "Decision: C, the full standard, with the
-first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current
-on every module job." (25 Nov 18:51Z) and "Decision: use the simplification: the tool carries Node's and workerd's facility
-classification; ARCH names the boundary modules and classifies the packages its product uses." (20:26Z). His standing
-instruction: do it properly, no contradictions, evolve existing elements; correct implementation duplication/ambiguity
-yourself, bring him only what changes a rule.
+Branch `work/decision-c-design` (from `work/decision-c` 27b2be9; head a17447b or later) holds the design part 2 §7–8
+rewritten on the owner's request (his words, 25 Nov ~22:55Z, in `precision-26nov/README.md`): who knows that an interface
+changes, by cause; what the tool compares (domain and range in his 14 Nov definitions, verified in process3 at 2a43eb5);
+what is and is not a change; who uses what (uses file, with `takesIn`, `mock`, `packages`); exactly who is told; the
+insides only; what a told module does. Checked by a fresh worker (`design-check.md` on `work/decision-c-design-check`,
+28 findings, all answered). His page for reading it: https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ (source
+`md2html.py` in PROCESS's scratchpad: regenerate from the design if it changes).
 
-**Done by PROCESS #17 on `work/decision-c`** (all by workers; research `process/research/precision-26nov/`, on main):
-- Member-by-member telling (uses file marks each use `member`/`whole`/`handed back`/`none`; a member added tells whole-value
-  users only; a handle's changed method also tells whole-value holders, which closed X03); a named meaning not told to a
-  pure hand-back user.
-- What changed made exact where the language decides (equivalent rewrites by the checker; errors caught; channels);
-  accepts-more confirmed more widely BUT never where a user's function may be handed more arguments (that confirmation
-  was unsafe and is closed on every path).
-- Tool faults: a program started by a literal path is in its starter's closure (channels only), `env`/`argv`/`stdin`
-  read; a relabelled copy of another module's kind is an S4 place and its readers are told.
-- 242/242 tests. Original proof 112/958/846/0. Converted proof (`measure.mjs`): 108 needed, 388 told, 288 without need, 8
-  missed (5 meter framing, 2 same-kind swaps, X01).
+His decisions recorded on that branch ("Who a change tells", item 3 and words at its end): "Decision: remove the rule
+that accepting more tells no one; any change to what a provider accepts tells its users." (25 Nov 23:07Z); his answers
+on a job's record of same domain and range and a told job that changes nothing, recorded on his "yes" (~23:11Z). Two
+lines are PROCESS's, shown to him: an open job whose notice needs nothing keeps its pass; the mechanical-edit exception.
 
-**The owner's way of judging findings (his words, 25 Nov ~22:30Z, recorded in `precision-26nov/README.md`):** report a
-false result only where "neither roles, jobs, nor tools can recognize the change"; every change has a cause (requirement,
-walk flaw, notice, the job's own failed test), interface changes go through ARCH (design 2 §8), meanings are named by ARCH
-and declared by the job. PROCESS asked once whether to record it as a decision: unanswered. Under it PROCESS told him: no
-unrecognizable miss once correction 2 is made (X01 is recognized but rule 7 discards what the tool sees); the 5 meter and 2
-swap misses are covered by the meter's interface tests and ARCH/the job's declaration.
+He said "Go ahead and build it" (~23:35Z); PROCESS asked once whether to record it as his approval: unanswered.
 
-**Next, in order:**
-1. His answer on **correction 2** (on his page): a confirmed "accepts more" still tells users whose uses file records
-   handing the function on, or that build their own value of the accepted kind (`misses.md` P3). Corrections 1 (P1B) and
-   3 (P4) were withdrawn under his way of judging. If he decides, record his words, build P3, re-measure.
-2. A worker (`work/decision-c-needless`) classifies the ~100 non-A needless notices by his test into: tool imprecision
-   (narrow it), the job knows but cannot inform (declarations only add — a design question for him), no element can know.
-   Bring him only what his test leaves.
-3. Then a fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), and ONE pull
-   request `work/decision-c` → main, merged once `tool-tests` passes (quote his decisions in the PR body).
-4. Then Part D: trial on process3-probes (needs a fresh ROOT from him: choice 5), civicsmith's move on his instruction at
-   its coordinator, the first pass of 8, his review.
+**Building now** (two workers; names fixed between them: `push --same <item> "<why>"`, `push --notice-nothing "<why>"`,
+`close --nothing-to-change` pushing a rewritten uses file; uses file `mock`, `packages`, `takesIn`):
+- `work/decision-c-tool`: the tool (list in `precision-26nov/design-to-build.md`, F3 as a lookup through `takesIn`).
+- `work/decision-c-texts`: build texts (5 §6–7 cut to the how) and starting texts; reading sets ≤ 175,000.
+
+**Next:** join both onto `work/decision-c-design`; a fresh-eyes check that tool, texts and design agree (code and texts,
+not conclusions); then ONE pull request to main from that branch, its body quoting his decisions and approving words;
+merge once `tool-tests` passes. Do not re-run the proof's measurement (his words): reason from the texts.
 
 The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
 `3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
