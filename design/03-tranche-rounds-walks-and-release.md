@@ -67,7 +67,7 @@ The coordinator gives the owner a short account: the tranche's scope where one i
 ## 7. An urgent fix
 
 - An urgent fix is a tranche whose content is that fix alone.
-- When an urgent fix is needed while a tranche is open, the open tranche is paused on the owner's word; the fix is built as its own tranche from the main branch and merged; the paused tranche then takes the main branch in and goes on.
+- When an urgent fix is needed while a tranche is open, the open tranche is paused on the owner's word; the fix is built as its own tranche from the main branch and merged; the paused tranche then takes the main branch in, a merge told as any is (part 2, section 7), and goes on.
 
 ## 8. Support beyond the process
 
