@@ -220,6 +220,9 @@ so to him on the same thread).
 3. **Describing is not changing; accepting more is.** An item's first means, at its conversion, tells no one; nor does a
    new item. This carries decision 2 of 25 November (an unknown kind becoming known tells no one) and its union case
    (decision 1B). Any change to what an item accepts, accepting more included, changes its domain and tells its users.
+   Where the job knows that an item the tool found changed has the same domain and range, it records that in its pull
+   request, with one line why, and that item tells no one; every other changed item, named or declared item, and module
+   told of any change is told as before. A told job that finds nothing to change closes and runs no test.
 4. **An item's name.** An item is named by its name within its module. Where two of a module's interface files export one
    name for two different things, each is an item of its own named `<file>:<name>`, the file as the module list writes it;
    the same thing exported again from a second file stays one item (decision 4B; build text 2b, section 6).
@@ -264,6 +267,12 @@ UTC (in PROCESS #16's session, on the options: no change, ARCH keeps the whole l
 On accepting more: "Decision: remove the rule that accepting more tells no one; any change to what a provider accepts tells
 its users." — 25 November 2026, 23:07 UTC (in PROCESS #17's session; researched in `process/research/precision-26nov/`,
 `misses.md` §3).
+On a job's record and a told job that changes nothing (in PROCESS #17's session, answering the two questions the design
+left open; PROCESS asked once whether to record them as decisions, and he answered "yes" — 25 November 2026, 23:11 UTC):
+"1. a job's record that a changed item's domain and range are the same take that item off the notice so long as all other
+changes are still properly factored into the decision of who to notify and who not to notify
+2. a told module that finds nothing to change, should not still run its related tests before it closes" — 25 November
+2026, 23:10 UTC.
 
 ### Subject: How `notify` reads the product
 
