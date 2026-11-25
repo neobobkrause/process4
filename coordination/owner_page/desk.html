@@ -22,13 +22,14 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:35 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. One choice for you below: sessions that sit idle are compacted. I am also designing your proposal for recording which providers each module uses.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:40 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. One choice for you below: sessions that sit idle are compacted. I am also designing your proposal for recording which providers each module uses.</p>
 </header>
 
 <section class="card">
 <h2>Next: your proposal that each module records the providers it uses</h2>
 <p>You proposed that every module keep a file of the providers, and the items of each, that its code and tests use. A job that understands the code writes it first; every later job keeps it current. Finding a provider's users then becomes a lookup taking seconds, instead of the tool guessing from plain JavaScript, which is the main cause of the over-telling. I agree it addresses the root problem rather than patching it. Option C is set aside while it is designed.</p>
 <p>PROCESS #15 (me) is designing it in full and will put it to you with options. Two things the design must settle besides the file: whether an item really changed (describing unchanged code must not count), and that it replaces your earlier rule "No list is kept by hand". Your words and my first analysis are in <code>process/research/uses-metadata-25nov.md</code>. Nothing is built before your decision.</p>
+<p><b>civicsmith's refactoring, as you asked.</b> The design will include civicsmith's path: how its refactoring plan and the work already merged are kept, what giving every module its file costs, and whether to continue the refactoring or restart it after the fix. I have asked civicsmith's coordinator for the facts: the plan, where the work stands, what the told jobs have cost, and the size of the code. Nothing of civicsmith's is lost while it holds: its work is in its branches and pull requests. In my view no Process4 version available now fixes this flaw, so moving civicsmith now would not help; holding or moving stays your call.</p>
 </section>
 
 <section class="wait">
@@ -45,14 +46,6 @@ a{color:var(--accent)}
 <p>To choose, reply here starting with "Decision:", for example "Decision: C". You may also set these options aside.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you, when convenient: archive PROCESS #14 and PROCESS #13</h2>
-<p>PROCESS #15 is running and has taken over. The two earlier sessions are finished.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b>, find the session named <b>PROCESS #14</b>, open its menu and click <b>Archive</b>. It leaves the list.</li>
-<li>Do the same for the session named <b>PROCESS #13</b>.</li>
-</ol>
-</section>
 
 <section class="card">
 <h2>Also waiting, when convenient</h2>
