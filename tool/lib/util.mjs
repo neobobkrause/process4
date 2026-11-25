@@ -39,7 +39,7 @@ export const TRANSIENT = /HTTP 5\d\d|ECONNRESET|ETIMEDOUT|EAI_AGAIN|connection r
 // always say how long; a minute is GitHub's own advice for its secondary limit.
 // A call allowed to fail answers null; GitHub's own words for that failure are kept, as gh.refused, until the next call.
 // GitHub's whole refusal: gh's own line (standard error) and the message GitHub sent with it, which `gh api` prints on
-// standard output as JSON ({ message, errors }): "body is too long" is only there (notify 1356, 25 Nov 2026).
+// standard output as JSON ({ message, errors }): "body is too long" is only there.
 export function refusalWords(r) {
   const err = (r.stderr || '').trim().split('\n').slice(0, 3).join(' ');
   const out = (r.stdout || '').trim();

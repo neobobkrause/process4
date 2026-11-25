@@ -1,4 +1,4 @@
-// Tests once, in the job (the owner's decision of 24 Nov 2026; build text 5, section 5). `p4 test` runs a pull
+// Tests once, in the job (design part 2, section 6; build text 1, section 5; build text 5, section 5). `p4 test` runs a pull
 // request's tests in the session that owns the work and writes the test record; `ready` marks ready only where the
 // record stands, or where nothing needs one; GitHub's required run (`run verdict`) runs no test and only reads the
 // record. The scope is decided as the required run decided it before: on GitHub's merge of the pull request's head
@@ -7,11 +7,11 @@ import { appendFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { requiredCheck } from './config.mjs';
-import { block, parseBlock } from './github.mjs';
-import { JOB_MARK } from './round.mjs';
+import { block } from './github.mjs';
+import { jobBlockOf } from './round.mjs';
 import { pushPace } from './commands.mjs';
-import { decideScope, runModules } from './scope.mjs';
-import { TEST_MARK, noticeSeq, recordStands, testRecordOf } from './testrecord.mjs';
+import { DROP, decideScope, runModules } from './scope.mjs';
+import { TEST_MARK, noticeSeq, recordNeed, recordStands, testRecordOf } from './testrecord.mjs';
 import { fail, git } from './util.mjs';
 
 const short = (sha) => String(sha).slice(0, 10);
@@ -20,8 +20,7 @@ const utc = (ms) => new Date(ms).toISOString().replace(/:\d\d(\.\d+)?Z$/, 'Z');
 /** A pull request's job block and test record, from one read of its comments. */
 export function recordsOf(ctx, n) {
   const comments = ctx.gh.comments(ctx.slug, n);
-  const job = comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || null;
-  return { jobBlock: job, record: testRecordOf(comments) };
+  return { jobBlock: jobBlockOf(comments)?.data || null, record: testRecordOf(comments) };
 }
 
 /**
@@ -40,7 +39,7 @@ export function scopeForPR(ctx, pr, { jobBlock = null, related = true } = {}) {
   const head = pr.head.sha;
   if (git(['cat-file', '-e', `${head}^{commit}`], { cwd, allowFail: true }).code !== 0) git(['fetch', '-q', 'origin', `refs/heads/${branch}`], { cwd });
   // A drop's pull request is judged against main as GitHub's run holds it (origin/main).
-  if (/^drop\//.test(branch)) git(['fetch', '-q', 'origin', '+refs/heads/main:refs/remotes/origin/main'], { cwd, allowFail: true });
+  if (DROP.test(branch)) git(['fetch', '-q', 'origin', '+refs/heads/main:refs/remotes/origin/main'], { cwd, allowFail: true });
   const m = git(['merge-tree', '--write-tree', baseTip, head], { cwd, allowFail: true });
   if (m.code !== 0) fail(`${branch} does not merge cleanly into ${baseRef}; merge ${baseRef} into the branch first`);
   const merged = git(['commit-tree', m.stdout.split('\n')[0].trim(), '-p', baseTip, '-p', head, '-m', `merged result of pull request ${pr.number}`], { cwd });
@@ -78,7 +77,7 @@ function askRerun(ctx, head) {
 const tail = (text, n = 40) => text.trimEnd().split('\n').slice(-n).join('\n');
 
 /**
- * Before the tests run, the branch takes in its base's newest commit (the owner's decision B of 25 Nov 2026): where the
+ * Before the tests run, the branch takes in its base's newest commit (design part 2, section 3): where the
  * base holds commits the head lacks, the base is merged into the checkout with a plain merge commit, never a rebase,
  * and pushed, so the tests run on code that holds what the base already holds. Where the two do not merge cleanly,
  * nothing is changed and nothing runs. A pull request into main, and a drop's, are left as they are. Returns the head.
@@ -87,7 +86,7 @@ export function bringBaseIn(ctx, pr) {
   const cwd = ctx.root;
   const baseRef = pr.base.ref;
   const branch = pr.head.ref;
-  if (baseRef === 'main' || /^drop\//.test(branch)) return pr.head.sha;
+  if (baseRef === 'main' || DROP.test(branch)) return pr.head.sha;
   git(['fetch', '-q', 'origin', `refs/heads/${baseRef}`], { cwd });
   const baseTip = git(['rev-parse', 'FETCH_HEAD'], { cwd });
   if (git(['merge-base', '--is-ancestor', baseTip, 'HEAD'], { cwd, allowFail: true }).code === 0) return pr.head.sha;
@@ -152,19 +151,21 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
 }
 
 /**
- * run verdict: on GitHub's machines, the required run's one job. It runs no test: it passes where the scope is
- * nothing, or where the test record stands for the head; it fails otherwise. Writes the step summary.
+ * run verdict: on GitHub's machines, the required run's one job. It runs no test: it passes where the pull request
+ * needs no test record (recordNeed), or where the record stands for the head; it fails otherwise. A draft cannot
+ * merge, so it is judged without its notices: a draft whose scope is nothing passes at once (build text 1, section 5,
+ * step 2). Writes the step summary.
  */
 export function verdict(root, { base, baseRef, branch, draft, head, jobBlock, record, log = console.log, summary = process.env.GITHUB_STEP_SUMMARY }) {
   const s = decideScope(root, { base, baseRef, branch, draft, jobBlock, related: false });
   const lines = [`## module-tests`, '', `Scope: **${s.scope}**, because ${s.why}. Config read from ${s.config_from}.`, ''];
   let ok;
   let why;
-  if (s.scope === 'nothing') { ok = true; why = 'nothing needs a test record: passed at once'; }
+  if (!recordNeed(s, draft ? null : jobBlock).needed) { ok = true; why = 'nothing needs a test record: passed at once'; }
   else {
     const st = recordStands(record, head, jobBlock);
     ok = st.ok;
-    why = st.ok ? st.why : record ? st.why : `no pass recorded for ${head}; run p4 test`;
+    why = st.ok || record ? st.why : `no pass recorded for ${head}; run p4 test`;
     if (record) lines.push(`Test record: ${record.result} at ${short(record.commit)}, ${record.passed} passed, ${record.failed} failed, scope ${record.scope}, written ${record.written}.`, '');
   }
   lines.push(`${ok ? 'Passed' : 'Failed'}: ${why}.`);

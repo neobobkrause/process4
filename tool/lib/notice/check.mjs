@@ -11,8 +11,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ts, loadReader, makeProgram, options, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
-import { makeLister } from './listing.mjs';
-import { makeUsage } from './usage.mjs';
 import { ownPackage } from './staged.mjs';
 
 /**
@@ -70,8 +68,7 @@ function walk(n, f) { forEachNode(n, (m) => { f(m); }); }
  * The character spans of the first argument of each deliberate error assertion (assert.throws, assert.rejects and
  * their kin) in a test file. A test may pass a wrong-typed value on purpose there to show that the error condition is
  * properly identified and communicated (design part 2, section 6). That is not one of the two approved refusals, so a
- * reader's complaint inside such a span is "cannot tell", never a disagreement (fault D, the owner's decision of 19 Nov
- * 2026). Decided here: the signal is the enclosing assertion, the one place the test marks the value as deliberate.
+ * reader's complaint inside such a span is "cannot tell", never a disagreement (build text 1b, command 18). Decided here: the signal is the enclosing assertion, the one place the test marks the value as deliberate.
  */
 function errorAssertionSpans(sf) {
   const spans = [];
@@ -88,7 +85,7 @@ const outOfStack = (e) => e instanceof RangeError && /call stack/i.test(e.messag
 function within(node, outer) { return node.pos >= outer.pos && node.end <= outer.end; }
 
 /**
- * Who states what a complaint of the reader contradicts (the owner's decision 3B of 22 Nov 2026). The reader complains
+ * Who states what a complaint of the reader contradicts (design part 2, section 6; build text 1b, command 18). The reader complains
  * about plain code too: a kind it worked out itself from the code (a field added later, null where it inferred a
  * number). Neither of the two approved refusals is about that, so a complaint is refused only where a structured
  * comment states the thing contradicted.
@@ -107,7 +104,7 @@ function within(node, outer) { return node.pos >= outer.pos && node.end <= outer
  * is about that comment. One more, decided here: an import of a name that a file of another module does not export
  * (or a name asked of such a file's module object) is answered by that file's exports, not by kinds the reader works
  * out, so the reader can tell for certain: it is (b), whether or not the file is one of the module's interface files.
- * For a value that cannot be assigned where it goes (the owner's decision of 24 Nov 2026), only the receiving side
+ * For a value that cannot be assigned where it goes (design part 2, section 6), only the receiving side
  * counts: what is expected where the value goes, and, for a function handed over, its own parameter that the other
  * side hands a value into. The value's own comment is not what such a complaint contradicts.
  *
@@ -321,7 +318,7 @@ function makeClaims(checker, tree, mod) {
     const end = (d.start ?? 0) + (d.length ?? 0);
     while (e.parent && !ts.isSourceFile(e.parent) && e.parent.getStart(sf) === e.getStart(sf) && e.parent.end <= end) e = e.parent;
     if (ts.isReturnStatement(e) && e.expression) e = e.expression;
-    // A value that cannot be assigned where it goes (the owner's decision of 24 Nov 2026): only the receiving side
+    // A value that cannot be assigned where it goes (design part 2, section 6): only the receiving side
     // counts, the parameter, field, variable or answer the value goes into. What the value handed over states is not
     // what the complaint contradicts. Where the complaint points at the receiving place itself (a declaration's name,
     // the left of an assignment), that place is read as before.
@@ -384,7 +381,7 @@ function makeClaims(checker, tree, mod) {
  * @param tree the product
  * @param moduleId the module whose own tests run this check
  * @param opts { files: paths relative to the product (only these files' disagreements), analysis: a reading of the
- *   whole product already made (program, listings, uses), to reuse }
+ *   whole product already made ({ program }), to reuse }
  */
 export function check(tree, moduleId, opts = {}) {
   loadReader();
@@ -568,7 +565,7 @@ export function check(tree, moduleId, opts = {}) {
     }
   }
 
-  declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel);
+  declaredUses(tree, mod, program, refusals, cannotTell, only, rel);
   return { module: moduleId, refused: refusals.length > 0, refusals, cannotTell };
 }
 
@@ -620,13 +617,12 @@ function makeOwnName(tree) {
 /**
  * Declared uses against imports (design part 2, section 6: "a check that the module's declared uses match its
  * imports", reading its tests as well as its source). An import is one by a written path or by the product's own
- * package name, made by import, export from, import(), require() or a comment's @import or import('...') (the owner's
- * decision of 24 Nov 2026). An import of another module's file that the entry does not declare disagrees. A declared
- * use of a module that is not before this one in the order disagrees. A declared use that neither an import nor a call
- * by name through a carrier makes is "cannot tell", never refused (the owner's decision of 24 Nov 2026): it may be made
- * by a path (a file read, a program run), which the check does not read.
+ * package name, made by import, export from, import(), require() or a comment's @import or import('...') (build text
+ * 1b, command 18). An import of another module's file that the entry does not declare disagrees. A declared use of a
+ * module that is not before this one in the order disagrees. A declared use with no import seen is "cannot tell",
+ * never refused.
  */
-function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel) {
+function declaredUses(tree, mod, program, refusals, cannotTell, only, rel) {
   const imported = new Map();
   const entryFile = `${tree.cfg.process_folder.replace(/\/?$/, '/')}modules/${mod.id}.json`;
   const ownName = makeOwnName(tree);
@@ -647,7 +643,7 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
     }
   }
   // A module may use only modules before it (design part 2, section 1). A declared use of a module at the same or a
-  // later place in the order disagrees (the owner's decision of 22 Nov 2026), so declaring a later module is no way
+  // later place in the order disagrees (design part 2, section 6), so declaring a later module is no way
   // to make an import of it pass. The job cannot settle that in its own files: it goes to ARCH (part 2, section 3).
   const notBefore = (id) => { const o = tree.byId.get(id); return o && o.index >= mod.index ? o : null; };
   for (const u of mod.uses) {
@@ -663,28 +659,9 @@ function declaredUses(tree, mod, program, opts, refusals, cannotTell, only, rel)
       refusals.push({ at: p.at, code: 'uses', text: `imports ${other}, which ${entryFile} does not declare in uses${later}`, kind: 'declared uses disagree with the imports' });
     }
   }
-  const missing = mod.uses.filter((u) => !imported.has(u));
-  if (!missing.length) return;
-  // Calls by name through a carrier make a use without an import: read them as the notice does.
-  let u = opts.analysis?.uses?.get(mod.id);
-  if (!u) {
-    try {
-      const lister = makeLister(program, tree);
-      const listings = new Map(tree.modules.filter((m) => m.public.length && m.public.every((f) => program.getSourceFile(f))).map((m) => [m.id, lister.list(m)]));
-      u = makeUsage(program, tree, listings).usesOf(mod);
-    } catch (e) {
-      if (!outOfStack(e)) throw e;
-      for (const p of missing) cannotTell.push({ at: entryFile, code: 'uses', why: 'the reader ran out of stack following calls by name (an expression nested too deeply to follow)', text: `declares ${p}; no import of it` });
-      return;
-    }
-  }
-  for (const p of missing) {
-    if (u.uses.has(p)) continue;
-    if (u.unreadOps.length || u.unreadTables.length || u.anything.length) {
-      cannotTell.push({ at: entryFile, code: 'uses', why: 'calls by names, tables or values of unknown kind the reader cannot read may make this use', text: `declares ${p}; no import of it` });
-      continue;
-    }
-    // Neither source nor tests import it or call it by name: a use by path (a file read, a program run) may make it.
+  // A declared use that no import shows is "cannot tell", never refused (design part 2, section 6): it may be made by
+  // a path (a file read, a program run) or a call by name, which the check does not follow.
+  for (const p of mod.uses.filter((u) => !imported.has(u))) {
     cannotTell.push({ at: entryFile, code: 'uses', why: `declares ${p} but no import of it is seen; a use by path is not read`, text: `declares ${p}; no import of it` });
   }
 }

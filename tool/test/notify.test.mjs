@@ -273,6 +273,32 @@ test('a job block stays under one comment\'s size: reasons without their words, 
   assert.deepEqual(run(k2), [tooMany]);
 });
 
+test('a job block too full even for one reason still takes the notice at once: its earlier uses give way', () => {
+  // Design part 2, section 7: a notice reaches an open job at once; part 6, section 5: nothing is refused for size.
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
+  // Earlier uses that fill the block, with no before and after to leave out.
+  const old = Array.from({ length: 3 }, (_, i) => ({ module: 'dates', entry: `old${i}`, note: 'x'.repeat(NOTICE_LIMIT / 3) }));
+  gh.addComment('o/product', 20, block(JOB_MARK, { module: 'orders', work: ['R1'], kind: 'ordinary', uses: old }));
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const body = gh.s.comments.find((x) => x.on === 20).body;
+  assert.ok(body.length < NOTICE_LIMIT);
+  const b = parseBlock(body, JOB_MARK).data;
+  assert.deepEqual(b.work, ['R1', 'notice from dates (pull request 7)']);
+  assert.equal(b.notice_seq, 1);
+  assert.deepEqual(b.notices, [{ from: 'dates', merged: 7 }]);
+  assert.equal(b.uses.length, 1);
+  assert.match(b.uses[0].notFollowed[0], /^the notice from dates \(pull request 7\) has \d+ reasons, too many for the job block, which is full: its 3 earlier reason\(s\) are left out; the whole module's tests run$/);
+  assert.match(out.join('\n'), /message the job of orders \(pull request 20\): a notice from dates reached it \(its reasons shortened to fit the job block\)/);
+  // It did not wait for orders' next job.
+  assert.doesNotMatch(out.join('\n'), /waits for its next job/);
+  assert.deepEqual(waitingWork(gh).work.map((w) => w.module), ['report']);
+});
+
 test('notify on a merge that changes no module\'s files says so before reading any code', () => {
   // civicsmith, 23 Nov 2026: such a merge read the whole product twice and ran out of memory.
   const root = makeRepo(productFiles());
@@ -411,6 +437,22 @@ test('a notice too large for one comment is written in parts, each under the lim
   assert.throws(() => noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'orders', merged: 7 }), /no reasons/);
   // An older waiting entry that still carries its reasons is used as is.
   assert.deepEqual(noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 9, uses: [{ module: 'dates', entry: 'old' }] }), [{ module: 'dates', entry: 'old' }]);
+});
+
+test('one user\'s reason too large for a comment even without its words is cut to one reason that runs the whole module, not refused', () => {
+  // Design part 6, section 5: the tool refuses nothing for size. A reason whose places alone pass one comment.
+  const huge = { module: 'dates', entry: 'e1', changes: ['hands back differently'], lines: Array.from({ length: 6000 }, (_, i) => `src/orders/a-long-file-name-${i}.mjs:${i}`), through: null, before: { handsBack: 'x' }, after: { handsBack: 'y' } };
+  const small = { module: 'dates', entry: 'e2', changes: ['removed'], lines: ['src/orders/index.mjs:1'], through: null };
+  const users = [['orders', [huge, small]], ['report', [small]]];
+  const parts = noticeParts('dates', 7, users);
+  for (const p of parts) assert.ok(block(NOTICE_MARK, p).length < NOTICE_LIMIT);
+  const gh = fakeGitHub();
+  writeNotice(gh, 'o/product', 7, 'dates', users);
+  const read = (module) => noticeReasons(gh, 'o/product', { module, kind: 'notice', from: 'dates', merged: 7 });
+  const [cut, kept] = read('orders');
+  assert.deepEqual(cut, { module: 'dates', notFollowed: ['a reason of orders in the notice from dates (pull request 7) is too large for one comment even without its before and after; the whole module\'s tests run'], through: null });
+  assert.deepEqual(kept, small);
+  assert.deepEqual(read('report'), [small]);
 });
 
 test('notify runs once for each module the merge changed, in module order', () => {

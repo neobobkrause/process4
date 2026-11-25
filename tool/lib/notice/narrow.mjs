@@ -1,4 +1,4 @@
-// The narrowing of decision 2 (the owner's decision 3B of 25 Nov 2026; design part 2, section 7; build text 5, section 6).
+// The narrowing of rule 2 for the tool that finds the change (design part 2, section 7; build text 5, section 6).
 // A user the tool cannot follow fully is told of a changed function, method, value or class member only where:
 //  (a) its own files, before or after the change, name that entry: an identifier or property name equal to the entry's
 //      name (for a member, the member's name; for an entry named with its file, the name after the file), read over the
@@ -15,7 +15,7 @@ import fs from 'node:fs';
 import { makeReach } from './staged.mjs';
 
 /** The kinds of entry the narrowing applies to; any other tells a user that is not followed fully as before. */
-export const NARROWED = new Set(['function', 'value', 'method', 'class member']);
+const NARROWED = new Set(['function', 'value', 'method', 'class member']);
 
 const IDENT = /[A-Za-z_$][\w$]*/g;
 // The provider's whole exports taken: a namespace import, or a literal import()/require() of one of its files.
@@ -23,11 +23,11 @@ const WHOLE = [/\bimport\s*\*\s*as\s+[\w$]+\s*from\s*(['"])([^'"\n]+)\1/g, /\bim
 const REEXPORT_FROM = /\bexport\s*(?:\*(?:\s*as\s+[\w$]+)?|\{[^}]*\})\s*from\b/;
 
 /** The names a changed entry is matched by: the entry's name, or for a member the member's name; before and after. */
-export function namesOf(e) {
+function namesOf(e) {
   const all = [e.entry, ...(e.names ?? []), ...(e.to ? [e.to] : [])];
   return [...new Set(all.map((n) => n.replace(/^.*:/, '').split(/[.#]/).pop()))];
 }
-export const kindOf = (e) => e.before?.kind ?? e.after?.kind;
+const kindOf = (e) => e.before?.kind ?? e.after?.kind;
 
 /**
  * @param usesOf (module) => its uses before the change (usage.mjs), where read; with amend (the default), a
@@ -122,5 +122,5 @@ export function makeNarrow(treeB, treeA, { usesOf = () => undefined, amend = tru
     return null;
   }
 
-  return { telling, namesIn, opaqueWhy };
+  return { telling };
 }

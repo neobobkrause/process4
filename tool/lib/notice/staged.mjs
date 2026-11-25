@@ -1,5 +1,5 @@
-// The notice read in stages (notify on a large product, civicsmith, 23 Nov 2026: a whole product read before and after
-// a merge ran out of memory). The rules and the answers are the whole reading's (notice.mjs); only what is read
+// The notice read in stages (build text 1b, command 11, "How it reads, in stages"), since a whole product read before
+// and after a merge can run out of memory. The rules and the answers are the whole reading's (notice.mjs); only what is read
 // changes:
 // 1. the changed module's listing before and after, each from a program over its own files and what they import; the
 //    same listing tells nobody, and no user is read;
@@ -10,10 +10,9 @@
 //    a module that may change; and, where operations or tables are in play, one that reaches a carrier (build text 2b,
 //    section 5) or a module that answers operations or owns tables. A module that is none of these cannot use it;
 // 3. the parsed files are kept between programs of one side; each program, and its type checker, goes before the next.
-// Made faster without changing an answer (the owner's decision B of 25 Nov 2026; an early provider's notice on
-// civicsmith took most of an hour):
+// Made faster without changing an answer:
 // 4. the later modules are read in batches of BATCH, one program for each batch, not one for each module; never the
-//    whole product in one program, which ran out of memory on civicsmith (23 Nov 2026);
+//    whole product in one program, which can run out of memory;
 // 5. each file's plain kinds, written out from its declarations, are kept for the side (listing.mjs), not written out
 //    again for each program;
 // 6. the users' code after the change is read only where it can add a use: where operations or tables are in play,

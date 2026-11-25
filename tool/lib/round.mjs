@@ -15,6 +15,15 @@ export const JOB = /^job\/([a-z0-9-]+)[./](\d+)$/;
 export const jobBranch = (module, n) => `job/${module}.${n}`;
 export const REQUIRED = 'module-tests';
 
+/** A pull request's job block among its comments, the first marked <!-- process4-job --> (build text 5, section 5): { data, words, comment }, or null. */
+export function jobBlockOf(comments) {
+  for (const c of comments || []) {
+    const b = parseBlock(c.body, JOB_MARK);
+    if (b) return { ...b, comment: c };
+  }
+  return null;
+}
+
 const jobOf = (pr) => {
   const m = (pr.head?.ref || '').match(JOB);
   return m ? { module: m[1], n: Number(m[2]) } : null;
@@ -23,7 +32,7 @@ const jobOf = (pr) => {
 export const describe = (w) => (w.kind === 'notice' ? `notice from ${w.from} (pull request ${w.merged})`
   : w.kind === 'walk-flaw' ? `walk flaw ${w.flaw} ${w.link}` : `flaw from ${w.from}: ${w.words}`);
 
-// The tranche's scope (the owner's decision D of 24 Nov 2026): ARCH writes in the round record
+// The tranche's scope (design part 2, section 3, point 1; build text 5, section 2): ARCH writes in the round record
 // `"scope": { "tranche": "<the round's tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While the round record
 // names that tranche, a requirement not yet met is work only where the scope names it, or names its whole module; every
 // other requirement waits until the tranche ends. Notices, walk flaws and flaws a job reports are always work. No scope,
@@ -68,7 +77,7 @@ export function readView(ctx, { records } = {}) {
     cfg, base, modules, requirements, prs, merged, round, records: recs,
     waiting: recs['waiting-work']?.data?.work || [],
     notes: liveNotes(notesData, ends),
-    jobBlock: (n) => commentsOf(n).map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || null,
+    jobBlock: (n) => jobBlockOf(commentsOf(n))?.data || null,
     jobRecord: (n) => {
       const c = commentsOf(n).find((x) => parseBlock(x.body, RECORD_MARK));
       return c ? { ...parseBlock(c.body, RECORD_MARK).data, at: c.updated_at || c.created_at || '' } : null;
@@ -171,10 +180,6 @@ export function slots(view, states) {
 }
 
 // 9. The ready modules, ranked: any module the owner put first, then the earliest in order.
-export function pickNext(view, states) {
-  return rankReady(view, states)[0] || null;
-}
-
 function rankReady(view, states) {
   const ready = states.filter((s) => s.state === 'has work' && (s.ready_again || workOf(view, s.module).any));
   const order = new Map(view.modules.map((m) => [m.name, m.order]));
@@ -183,7 +188,7 @@ function rankReady(view, states) {
   return ready.sort((a, b) => rank(a) - rank(b));
 }
 
-// 9. The next job, with the slots (the owner's decision of 24 Nov 2026, item 4). New work starts, the ranked first,
+// 9. The next job, with the slots (design part 2, section 5; build text 1b, command 9). New work starts, the ranked first,
 // only while the slots in use are below the slot number. Above it, only a told start: a module with a notice waiting
 // for it and no open job, earlier in the order than the latest running (open, not blocked) job's module, starts at
 // once; a later one waits its turn. Returns { pick, above, why, later }: `pick` null with `why` 'none ready' or

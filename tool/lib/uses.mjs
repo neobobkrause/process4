@@ -1,4 +1,4 @@
-// The modules a module uses, for merge (the owner's decision of 24 Nov 2026, "the update plan as laid out", item 3):
+// The modules a module uses, for merge (design part 2, section 8; build text 1b, command 6):
 // the modules its files (code and tests) import, followed file to file as the notice's staged reach reads them
 // (notice/staged.mjs: relative paths and require), and through the product's own package name; plus the modules it
 // declares in the module list; closed over those modules' own uses. A text scan of imports only: no language reader.

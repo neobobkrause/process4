@@ -43,8 +43,7 @@ export const throwKinds = (tag) => (tag.typeExpression?.type?.getText?.() ?? '')
  * @param plainKinds where given, a map of file -> that file's plain kinds as its declarations print them, kept by the
  *   caller between programs of one product (notify, read in stages): a file's declarations depend only on the file and
  *   what it imports, which every program that holds the file holds too, so they are written out once, not once per
- *   program. Writing them out makes the reader check the whole file, which made notify on an early provider take most
- *   of an hour (civicsmith, 25 Nov 2026).
+ *   program. Writing them out makes the reader check the whole file, which is slow when repeated for each program.
  */
 export function makeLister(program, tree, { plainKinds = null } = {}) {
   const checker = program.getTypeChecker();
@@ -110,7 +109,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
     };
     const resolved = (exp) => (exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp);
     // A name that two interface files export for two different things is two entries, each named with its file
-    // (`<file>:<name>`); otherwise the second would hide the first (civicsmith test-support's five `generate`s).
+    // (`<file>:<name>`); otherwise the second would hide the first.
     const things = new Map();
     for (const file of mod.public) for (const exp of exportsOf(file)) {
       if (!things.has(exp.name)) things.set(exp.name, new Set());
@@ -214,8 +213,8 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
             const mt = checker.getTypeOfSymbol(p);
             const msigs = mt.getCallSignatures();
             const ma = newCtx(), mh = newCtx();
-            // The member's own bound lines, as a class's and a function's are listed (the owner's decision of 24 Nov
-            // 2026; design part 2, section 7, decision 3): a changed one tells its users.
+            // The member's own bound lines, as a class's and a function's are listed (design part 2, section 7, rule 3
+            // for the tool): a changed one tells its users.
             const memberBounds = memberOwnBounds(p.declarations?.[0]);
             if (msigs.length) { const mc = C.canonSig(msigs[0], ma, mh); entries[e] = { kind: 'class member', accepts: { k: 'params', items: mc.params }, handsBack: mc.ret, bounds: [...memberBounds, ...nestedBounds(ma), ...nestedBounds(mh)], where, paramNames: paramNamesOf(msigs[0]) }; }
             else entries[e] = { kind: 'class member', accepts: null, handsBack: C.canon(mt, mh), bounds: [...memberBounds, ...nestedBounds(mh)], where };
