@@ -12,7 +12,7 @@ percent. Never `git add -A`; add paths by name. The owner archives PROCESS #13 h
 
 **Your reading** (the owner's decision (ii), 25 Nov): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. Open a decision entry, a build text
-or a research file, or give it to a worker, when a question touches it. New subjects go in `design-decisions-3.md` and the index.
+or a research file, or give it to a worker, when a question touches it. The record is two files, one entry per subject: a decision on an existing subject rewrites its entry in place; a new subject goes at the end of `design-decisions-2.md`; keep the index current.
 
 ## START HERE: two choices wait for the owner, on his page
 
@@ -40,7 +40,7 @@ two sections; prototype `process/research/first-comments-2c-25nov/prototype.diff
 on such an entry no declaration backstop and an "accepts more" not put to the checker; 2D any difference on unchanged code
 (not recommended: silences 13 recorded bound changes, misses a change inside a helper). On his word: build from the
 prototype (drop the switch), replay the proof (1 answer, Z19, re-recorded with its reason), update design part 2 §7 (a
-module with no comments yet / an unknown kind becoming stated), build text 2b §6's table, record in `-3.md`. Found along the
+module with no comments yet / an unknown kind becoming stated), build text 2b §6's table, record in the subject "Who a change tells" (`design-decisions-2.md`), rewritten in place. Found along the
 way, not put: rule 52 cannot confirm a class with a `#private` field; class members never list `@throws`; whether the 1B
 `unbracket` fix covers an optional constructor parameter (`constructor_?:`) — check.
 
@@ -53,7 +53,7 @@ starting-texts index sizes. process3-probes needs a fresh ROOT from the owner no
 **After choice 2**, the owner moves civicsmith with one line in its coordinator's session: "Instruction: move civicsmith to the
 latest Process4 version" (on his page). civicsmith is on 55db8e4; since then main has 1B, 3B, 4B.
 
-## Done by PROCESS #13, 25 Nov (all merged; entries in `design-decisions-3.md`)
+## Done by PROCESS #13, 25 Nov (all merged; now in `design-decisions-2.md`, subjects "Who a change tells" and "How a notice reaches a user")
 
 - 1B (PR 275): `open --module` writes `notices`; the repeat check reads work lines in any state; `unbracket` keeps a parameter
   list's brackets; a notice prints raises/channel/may-be-missing where they differ.
