@@ -22,31 +22,28 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026 by PROCESS #11. You asked for a refresh: start PROCESS #12 (below). civicsmith's refactoring is running. The read-only count on civicsmith stays optional.</p>
+<p class="updated">Updated 25 Nov 2026, about 01:25 UTC, by PROCESS #12. One choice waits for you now. A second fault, the more pressing one, is being measured and comes to you next.</p>
 </header>
 
-<section class="card">
-<h2>Done: your drop of tranche t1 (your decision C, 24 Nov)</h2>
-<p>Built and merged (pull request 225). ARCH carries a drop out with one tool command that puts back main's version of every code and test file the tranche changed, keeping your requirements, module list, records and lanes' work; the test run passes it at once only when every changed file is exactly main's. civicsmith gets it by your move line.</p>
+<section class="wait">
+<h2>Waiting for you: a job's tests ran without the tranche's newest changes</h2>
+<p><b>The bottom line.</b> A job runs its tests on its own branch as it last pushed it. If other jobs have merged into the tranche since, the job tests code that lacks them. On civicsmith this failed provenance's first run for nothing, and the failure counted against it. I recommend the tool bring the tranche into the job's branch before each test run.</p>
+<p><b>What happened.</b> record-grammar's job fixed its stated interface and merged. provenance's job, branched earlier, then ran its tests: the check refused a field record-grammar's merged fix already allowed. The job merged the tranche into its branch itself and ran again: 201 tests passed in about 30 seconds. Seen in provenance's own session; nothing worked round.</p>
+<p><b>Why it matters.</b> Each failed run counts: the third brings a fresh session for the job, the fifth sets the module aside. A run lost this way on a module whose tests take most of two hours costs that long. The reverse, a pass on old code that would fail once merged, was not seen but is possible.</p>
+<p><b>Why it happens.</b> When I built the update of 24 Nov I chose to run a job's tests on its branch as pushed, and the design says so. Before the update GitHub tested the branch as merged into the tranche.</p>
+<ul>
+<li><b>A. No change.</b> A job that fails this way merges the tranche in and runs again, as provenance did. A wasted run, counted as a failure.</li>
+<li><b>B. The tool brings the tranche in first (recommended).</b> Before running the tests, the tool merges the tranche's newest state into the job's branch and pushes it, then tests that. What is tested is then what would merge at that moment. If the two clash, it says so and runs nothing; such a branch could not merge anyway, so nothing new is stopped. A small tool change with its own test.</li>
+<li><b>C. The tool tests a temporary merged copy</b>, leaving the job's branch as it is. A failure there cannot be seen in the job's own copy until the job merges the tranche in by hand, so it usually ends up as B with an extra step.</li>
+</ul>
+<p>To choose, comment on this item, for example <b>Decision: B, as recommended</b>. civicsmith gets it by its next move to the latest version.</p>
 </section>
 
-<section class="card">
-<h2>Covered by the update: the 45-minute limit, and the run that passed with no tests</h2>
-<p>Both items you saw here before need nothing from you. In the update, a job runs its tests once, in its own session, and GitHub's test check only reads the recorded result. So GitHub runs no tests at all: there is no 45-minute run to be cut off, and no run that can see a job as unfinished and pass it with nothing tested. civicsmith gets this with the update, by your move line, once it is built and tried on the trial product. Until then civicsmith runs no jobs (you dropped t1), so neither fault can bite in the meantime.</p>
-</section>
-
-<section class="card">
-<h2>Done: PROCESS #8, #9 and #10 archived (24 Nov, on your word)</h2>
-</section>
-
-<section class="card">
-<h2>Done: the order of a move that changes the test check (your decision B, 24 Nov)</h2>
-<p>Merged (pull request 242), your words recorded exactly. Where a new version brings a new test check, a move is now written as two changes in order: the version first, then the check. One sentence in the design, in ARCH's text and in the tool's command list; no tool change. Products get it with their next move.</p>
-</section>
-
-<section class="card">
-<h2>Done: civicsmith is on the update (24 Nov, on your line)</h2>
-<p>civicsmith's ARCH reports civicsmith moved to the new version, with its new test check in place. I cannot read civicsmith's records from here; this is as its coordinator passed it on.</p>
+<section class="wait">
+<h2>Coming next: after an early module merges, telling the others takes most of an hour</h2>
+<p><b>The bottom line.</b> On civicsmith, when record-grammar (third of 204 modules) merged, the tool's step that works out which other modules must be told of the change ran 38 minutes and used 8 GB without finishing. It was restarted at 00:47 UTC and was still running at 00:57. Meanwhile ARCH holds eight finished jobs that use record-grammar. I am measuring where the time goes on a made-up product of the same shape and will put options to you with numbers.</p>
+<p><b>Good to know now.</b> The hold is ARCH's own choice, to avoid extra work. The process does not need it: a job merged before the telling runs is told afterwards, and gets a small follow-up job. Whether to wait or merge is ARCH's call.</p>
+<p><b>Also, as PROCESS #11 warned:</b> the refactoring tranche is drawing in modules. Flaws that one job finds in another module's older code are always work in the tranche, as you chose, so by 00:44 UTC jobs had opened for ten more modules, and more are queued. Nothing is wrong by the rules; tell me if you want that held, and I will look at it as a fault.</p>
 </section>
 
 <section class="card">
@@ -84,162 +81,23 @@ if your approvals allow; otherwise end your turn with it, and the owner passes i
 </section>
 
 <section class="card">
-<h2>Done: the update's trial on the trial product (24 Nov)</h2>
-<p>Every trial session moved to the new version. As ARCH reports it: two small jobs ran their own tests and merged; invoice's merge waited, as it should, while the tax job it depends on was still open; when tax merged, the tool told invoice's still-open job of the change, the job checked it, ran its tests again, and only then merged. No faults reported. I have asked the trial's coordinator one detail I cannot see from here: that GitHub's check on those two jobs was the new one, which only reads the job's recorded pass.</p>
-</section>
-
-<section class="card">
-<h2>Done: the update is built (your decision of 24 Nov)</h2>
-<p>Merged (pull request 233), with your words recorded exactly. A job now runs its tests once, in its own session, for up to two hours, and records the result; it marks itself ready only on a recorded pass, and GitHub's check only reads that record. A provider's change reaches a running job at once. A ready job waits while a job of a module it uses is still open. A told job that comes earlier in the order than the latest running one starts at once, even with no free slot. The check now sees two more kinds of import, and no longer refuses a declared use it cannot see. The three small fixes are in. On the 150 changes recorded when the notice was first proven, every recorded answer is the same; 47 notices are now shorter, because a long list of places now stops at six. Not yet run in a real round: that is what the trial is for.</p>
-</section>
-
-
-
-
-
-
-
-<section class="wait">
-<h2>Waiting for you, first: one line that moves civicsmith onto today's fixes</h2>
-<p>civicsmith's coordinator will not move on your instruction passed through me: the design says you type it in its own session. So:</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #4</b>.</li>
-<li>Type: <div class="draft">Instruction: move civicsmith to the latest Process4 version</div></li>
-<li>You should see it record your words and tell ARCH, then tell you in one line when every civicsmith session is on the new version.</li>
-</ol>
-</section>
-
-<section class="wait">
-<h2>Waiting for you: start PROCESS #12 (you asked for a refresh), then archive PROCESS #11</h2>
-<p>PROCESS #11 has written its handover; nothing is half done and everything is merged. The question to civicsmith's coordinator is answered: every job running is either inside the refactoring's list or a flaw handed to a module, as designed; details in PROCESS #11's last reply. One new process fault came in at the last minute (a job's tests ran on its branch without the tranche's newest changes); PROCESS #12 researches it and puts it to you.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read in full, in order: design parts 00–10; build/05-the-records-and-following.md; process/design-decisions.md and process/design-decisions-2.md; process/README.md; the index of your research, process/research/README.md; process/lanes/civicsmith/README.md; and process/handover.md — read it last and continue from it. Open a research file only when a question needs it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>It names itself <b>PROCESS #12</b>. Then archive the session named <b>PROCESS #11</b> (its menu, <b>Archive</b>).</li>
-</ol>
-</section>
-
-<section class="card">
-<h2>Done: civicsmith is on the tranche scope, and its refactoring is running (24–25 Nov)</h2>
-<p>civicsmith moved to the version with your decision D, and its refactoring tranche has started: capture, control-plane, record-grammar and test-support jobs are running.</p>
-</section>
-
-<section class="card">
-<h2>Done: your decisions of 23 Nov are built, and civicsmith is told to move</h2>
+<h2>Done recently</h2>
 <ul>
-<li><b>Job branch names (B, pull request 192).</b> A job's branch is named like <code>job/setup-words.1</code>, so civicsmith's old branches no longer block it.</li>
-<li><b>A set-aside job going on (B, pull request 204).</b> When ARCH tells a set-aside job to go on, the job records it, and the tool counts its slot as used.</li>
-<li><b>The tool's memory (B, pull request 199; then D, pull request 205).</b> After a merge the tool now reads only what the merge can affect: the changed module's interface before and after, and only if that changed, the modules that can reach it, one at a time. On all 150 changes recorded when the method was first proven it gives the same answers; on a large test product of 312 modules it needs half to a quarter of the memory. If a reading still does not fit, it says so plainly and names the notice owed, instead of crashing.</li>
-</ul>
-<p>Your words are recorded exactly. On your instruction I told civicsmith's coordinator to bring civicsmith up to the latest version; it needs you to type the line in its own session (above). Not yet known: whether civicsmith's job merges now fit in a session machine's memory; that shows at its next merge.</p>
-</section>
-
-<section class="card">
-<h2>Done: the false "no secrets" rule is gone (your decision B, 23 Nov)</h2>
-<p>The setup step no longer says a repository may hold no secrets; what secrets a product's own workflows keep is the product's matter. Your words are recorded exactly. Every note sessions had written on that rule now carries a line saying it is withdrawn, so no session acts on it again. No tool or role text changed, so no product needs to move. Merged (pull request 195).</p>
-</section>
-
-
-
-
-
-
-
-
-<section class="card">
-<h2>Done: civicsmith is on your three decisions</h2>
-<p>civicsmith's ARCH reports every civicsmith session on the newest Process4 version, which holds your three decisions of 22 Nov. civicsmith's coordinator is recording your new number of jobs at a time (8). That is as reported by those sessions; I cannot read civicsmith's records from here.</p>
-</section>
-
-<section class="card">
-<h2>Done: your three decisions of 22 Nov ("all as you've recommended")</h2>
-<ul>
-<li><b>Replacing sessions.</b> A long-lived session is now replaced at the first natural pause after it is half full, not at every pause. Where a session cannot read how full it is, it is still replaced at a pause.</li>
-<li><b>Wake timers.</b> Whoever archives a session also switches off its wake timer; at a takeover the new ROOT makes its own timer and switches off the old ones.</li>
-<li><b>Reading research.</b> A lane, and I, read a one-line-per-file index of our research, and open a research file, or hand it to a helper, when a question needs it. The rest of what we read in full is unchanged.</li>
-</ul>
-<p>Your words are recorded exactly, with my question in between. Text only: the tool did not change. One thing left as it stands, for transparency: my own reading set, with the record of your decisions, is still about 211,000 bytes, over the 175,000 limit though under the 220,000 measured to read well. I recommend no change now. Next time you start a PROCESS, the prompt I give you here will name the index instead of my whole folder.</p>
-</section>
-
-<section class="card">
-<h2>Done: your three decisions of 22 Nov</h2>
-<ul>
-<li><b>1B (pull request 172).</b> The step that was meant to lock each session's copy of the process, and did nothing, is gone; the texts say the copy is kept apart and no session edits it.</li>
-<li><b>2B (pull request 174).</b> A lane's entry is written before the lane starts with its address blank, and the address is filled in once after; a second lane is still refused.</li>
-<li><b>3B (pull request 176).</b> The check refuses only where a comment states what the code contradicts, or where code crosses another module's stated interface; everything else is "cannot tell". With it: a product can name copied and built files for the tool to skip, and the crash on pdf-worker is mended. On a small made-up product of plain code, refusals went from 13 to none. One of the 48 refusals recorded when the method was first proven changes: a refusal that rested on no comment and was already marked as needing nothing, so it was a false one.</li>
-</ul>
-<p>Your words are recorded exactly. Action 9, civicsmith's branch rule, is recorded as done on your word.</p>
-</section>
-
-<section class="card">
-<h2>Found: civicsmith's tests that reach a later module (the third reading, 22 Nov)</h2>
-<p><b>The bottom line.</b> You were right, and it is wide. No code file imports a later module. But many tests reach later modules by other means, most of all by starting the whole running product: 62 test files in 21 modules do that. Counting those, nearly every module depends on nearly every other through its tests, so a change almost anywhere can fail a test somewhere else. The four modules T53 was working on are not on main, so they could not be named.</p>
-<ul>
-<li><b>How it gets fixed.</b> The lane has sorted every case into thirteen groups for civicsmith's ARCH, which decides each before any job opens on those modules. For most, the test simply belongs to a later module, and Process4 can give a test file to another module in the module list without moving the file. A few are real design questions about where one module ends and another begins.</li>
-<li><b>What Process4 cannot do.</b> The tool's check sees imports. It cannot see a test that starts the product, reads another module's files, or runs its program. So for these the order rule rests on ARCH's module list, not on the tool. I recommend no change to the process for this now: nothing has yet failed under Process4, and the first tranche, kept to modules that are clear of all this, is where it is shown.</li>
+<li><b>PROCESS #12 is running</b> (25 Nov, on your start), and PROCESS #11 is archived. Both products' ROOTs are told.</li>
+<li><b>A tranche's scope, held by ARCH</b> (your decision D, 24 Nov, pull request 246). civicsmith runs its refactoring tranche on it.</li>
+<li><b>The order of a move that changes the test check</b> (your decision B, 24 Nov, pull request 242).</li>
+<li><b>The update</b> (your decision of 24 Nov, pull request 233): a job runs its tests once, in its own session; GitHub only reads the record; a provider's change reaches a running job at once; a ready job waits while a job of a module it uses is open. Tried cleanly on the trial product; civicsmith is on it.</li>
+<li><b>Your drop of tranche t1</b> (your decision C, 24 Nov, pull request 225).</li>
+<li>Earlier decisions are in the record of your decisions in the process's repository, each with your exact words.</li>
 </ul>
 </section>
-
-<section class="card">
-<h2>Done: a declared use of a later module is refused (your decision of 22 Nov)</h2>
-<p>The tool's existing check now refuses a module that declares a use of a later module, in its code or its tests. A job that needs such a use takes it to ARCH and is set aside while other work goes on. Your words are recorded exactly. One limit stands and is written down: the check sees one kind of reference, an import by file path. The second reading of civicsmith-copy looks for every other kind.</p>
-</section>
-
-<section class="card">
-<h2>Done: civicsmith-copy's set-up so far (22 Nov, on your word)</h2>
-<ul>
-<li>The GitHub set-up of civicsmith-copy: the connection check and the repository settings.</li>
-<li>The Cloudflare token: created by you, and its value entered in the environment (22 Nov).</li>
-<li>The set-up session: civicsmith's first Process4 files, merged by you; the tranche branch; the Node 26 start-up step landed by you on main.</li>
-<li>The two approvals files, landed by you on civicsmith-copy's main.</li>
-<li>The paused tranche T53: your decision, "Start from main as it is. T53 stays where it is as history, and anything worth keeping comes back as Process4 work." The lane records it for civicsmith, and it goes into civicsmith's own record of your decisions when its coordinator starts.</li>
-</ul>
-<p>The second reading read back your approvals file, <code>CLAUDE.md</code>: it is as drafted. You fixed the forbidden-commands file on 22 Nov with the whole corrected file. The third reading could not read it back, because that session's copy of main was not the newest; the set-up session reads it back first. Its Node 26 start-up step comes back later, in a pull request from the set-up session that you land with one click. The GitHub settings cannot be read by a session, so they stand on your word.</p>
-</section>
-
-<section class="card">
-<h2>Done: the onboarding lane's page, and no GitHub token (your decision of 22 Nov)</h2>
-<p>Recorded word for word and written into the design for every product: the onboarding lane talks directly to PROCESS, keeps the product's own "waiting for Bob" page with status and fully detailed steps, and starts with GitHub. No GitHub token is made, because sessions act through Claude's GitHub connection; the tool is unchanged. One act has not yet been tried through that connection: publishing a release.</p>
-</section>
-
-<section class="card">
-<h2>Done: your two decisions of 22 Nov (tests; signing keys)</h2>
-<ul>
-<li><b>Tool tests.</b> GitHub now runs the tool's tests only on a pull request that changes the tool, and only once, when it is marked ready. Every other pull request passes at once. Before pushing, PROCESS runs only the tests of the tool it changed, and none when no tool changed. <b>A correction:</b> I told you GitHub ran them on every pull request. That was wrong. It already skipped pull requests that touched no tool file. What ran needlessly was my own run by hand, a run for any change to a role's starting text, and a second run on each tool change. All three are gone.</li>
-<li><b>Signing keys.</b> <code>BIO_RELEASE_SEED</code> and <code>BIO_RATIFY_SEED</code> are production signing keys and they stay in the sessions' environment. The design now says a product's production signing keys are kept there for the release ceremony. The record holds a sentence of 20 Nov, "No session directly holds a production key"; your decision replaces it, and the design no longer says it.</li>
-<li><b>civicsmith-copy's approvals draft changed in two places to match:</b> sessions may use the signing keys to produce the installer in the release ceremony, and may never use them for anything else.</li>
-</ul>
-</section>
-
-<section class="card">
-<h2>Done: the trial's work is on main</h2>
-<p>The finished work is on main (pull request #383), the two branches share history, and your newer approvals and forbidden-commands files are on both. Nothing is waiting for you here.</p>
-</section>
-
-<section class="card">
-<h2>Done: how a product is onboarded (your four decisions of 22 Nov)</h2>
-<ul>
-<li><b>An onboarding lane for each product.</b> PROCESS starts one for every product that joins. It writes the product's plan, your page of clicks, and the brief for the set-up session, and ends when the product's ROOT starts. For civicsmith, the civicsmith lane is that lane.</li>
-<li><b>Reading the product.</b> You start a read-only session on the product's repository with the lane's brief, as you did for civicsmith.</li>
-<li><b>Settings.</b> Every change to GitHub or hosting settings is your click, from the lane's page.</li>
-<li><b>Tokens.</b> A token you make for a product is made once, with every permission its development will need for its whole life. The lane works out the whole list first, so you are not asked for another. I have asked the civicsmith lane for that list.</li>
-</ul>
-<p>Your words are recorded exactly.</p>
-</section>
-
-<section class="card">
-<h2>Done: the setup-step fixes (your "Decision: B")</h2>
-<p>The steps for bringing an existing product under Process4 now say: the one session you start to set up a product drafts its approvals, writes its first Process4 files, and makes the tranche branch from main; your branch rule replaces any old required check with module-tests. The record now says the trial carried out every setup step. The stale size figure is fixed.</p>
-</section>
-
-
 
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>The trial</b> is running and quiet. Its coordinator confirmed on 22 Nov: it has not been stopped since you restarted it on 20 Nov, every requirement is met, no job is open, and no process fault is open. Two optional things wait for you in the coordinator's session, neither blocking: your go on bringing main's forbidden-commands file in line with the tranche branch's, and whether to try the two paths the trial has not yet used (a told job that changes code; walks and a development deployment).</li>
-<li><b>civicsmith</b> is running under Process4: ROOT, the watcher, ARCH, the coordinator and the UX lane are up. Its onboarding lane has ended. civicsmith's coordinator keeps civicsmith's own page of what waits for you. No job has opened.</li>
-<li><b>Next for civicsmith:</b> its first tranche, now that jobs may start. ARCH opens it and decides its scope.</li>
+<li><b>civicsmith</b> is running its refactoring tranche (t2) under ARCH #15: eight jobs at a time, eight more finished and held for the step above. Its coordinator #7 keeps civicsmith's own page of what waits for you.</li>
+<li><b>The trial product</b> (process3-probes) is quiet: every requirement met, no job open, no fault open.</li>
+<li><b>PROCESS</b> has no lane running.</li>
 </ul>
 </section>
 </main>
