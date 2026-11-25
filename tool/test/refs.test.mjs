@@ -466,10 +466,11 @@ import { all } from '../../src/u/index.mjs';
 test('u > lists every name', () => { assert.equal(all().split(',').length, 3); });
 ` });
   const first = read(root, 'u');
-  assert.deepEqual(places(first), [], 'no place but the facility list\'s own');
-  assert.ok(first.outside.every((o) => o.rule === 'R14'), 'with no facility list, each host facility is listed');
-  // the product's facility list, beside the module list (build text 2c)
-  write(root, { 'process/modules/facilities.json': facilityList(first.facilities) });
+  assert.deepEqual(places(first), [], 'no place but the facility rule\'s own');
+  // the tool classifies the host's facilities: only the file read, which reaches out, outside a boundary module, is a place
+  assert.deepEqual(first.outside.map((o) => `${o.rule} ${o.what}`), ['R14 uses node:fs.readFileSync, which reaches out, outside a boundary module']);
+  // the product's facility list, beside the module list (build text 2c), names u a boundary module
+  write(root, { 'process/modules/facilities.json': { versions: { node: '22.12.0' }, boundary: ['u'], facilities: [] } });
   const r = read(root, 'u');
   assert.deepEqual(r.outside, []);
   assert.deepEqual(r.orderFaults, []);
@@ -622,9 +623,9 @@ export function g() { return eval('1 + 1'); }
 setInterval(() => {}, 1000);
 export let counter = 0;
 `, { 'test/u/u.test.mjs': `import { test } from 'node:test';
-test('u > times itself', () => { const t = Date.now(); void t; });
+test('u > times itself', () => { console.log(Date.now()); });
 ` });
-  write(root, { 'process/modules/facilities.json': facilityList(['SymbolConstructor.for'], { out: ['setInterval', 'DateConstructor.now'] }) });
+  write(root, { 'process/modules/facilities.json': facilityList([]) });
   const r = read(root, 'u');
   const at = (rule) => r.outside.filter((o) => o.rule === rule).map((o) => `${o.file.split('/')[0]}:${o.line}`);
   assert.deepEqual(at('S2'), ['src:8']);
@@ -632,9 +633,10 @@ test('u > times itself', () => { const t = Date.now(); void t; });
   assert.deepEqual(at('S9'), ['src:11']);
   assert.deepEqual(at('R21'), ['src:12']);
   assert.deepEqual(at('R22'), ['test:2']);
-  // a listed facility that is boundary, outside a boundary module; one not on the list
-  assert.ok(r.outside.some((o) => o.rule === 'R14' && /setInterval, which reaches out, outside a boundary module/.test(o.what)));
-  assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses DateConstructor\.now/.test(o.what) && o.side === 'test'));
+  // a facility the tool classifies as reaching out, used outside a boundary module (a timer stays in the process: R21
+  // is the place of the one started at the top level)
+  assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses console\.log, which reaches out, outside a boundary module/.test(o.what) && o.side === 'test'));
+  assert.ok(!r.outside.some((o) => o.rule === 'R14' && /setInterval|DateConstructor\.now/.test(o.what)));
   assert.ok(r.facilities.includes('SymbolConstructor.for'));
   // a member of the module object named by a choice of written-out names is a use; the cast one is a downcast (R16)
   assert.ok(usesOf(r).some((u) => u.startsWith('p:TITLE')) && usesOf(r).some((u) => u.startsWith('p:OP_PRICE')), usesOf(r).join('; '));
@@ -832,6 +834,43 @@ test('push, where the branch changes the module list, rewrites the uses files of
   assert.deepEqual(changed, ['process/modules/p.uses.json', 'process/modules/u.uses.json']);
   // u now uses q's two, which the move took there, through p's re-export
   assert.ok(readUses(root, 'u', { ref: 'HEAD' }).uses.some((x) => x.provider === 'q' && x.item === 'two'), JSON.stringify(readUses(root, 'u', { ref: 'HEAD' }).uses));
+});
+
+test('a push that changes the facility list, or moves to a Process4 version that classifies facilities differently, rewrites every uses file', () => {
+  const files = {
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nu\n',
+    'process/modules/p.json': { name: 'p', files: ['src/p/'], tests: ['test/p/'], public: ['src/p/index.mjs'] },
+    'process/modules/u.json': { name: 'u', files: ['src/u/'], tests: ['test/u/'], public: ['src/u/index.mjs'] },
+    'src/p/index.mjs': '/** @returns {number} */\nexport function one() { return 1; }\n',
+    // u writes to the console, which reaches out: a place outside the standard unless u is a boundary module
+    'src/u/index.mjs': "import { one } from '../p/index.mjs';\n/** @returns {void} */\nexport function say() { console.log(one()); }\n",
+  };
+  const root = makeRepo(files);
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const { ctx } = ctxFor(root, fakeGitHub());
+  git(['checkout', '-q', '-b', 'work/first'], { cwd: root });
+  commit(root, { 'src/p/index.mjs': `${files['src/p/index.mjs']}\n`, 'src/u/index.mjs': `${files['src/u/index.mjs']}\n` });
+  push(ctx, { _: [] });
+  assert.ok(readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  // ARCH names u a boundary module: every module's uses file is rewritten in the same push, u's changes
+  git(['checkout', '-q', '-b', 'work/facilities'], { cwd: root });
+  commit(root, { 'process/modules/facilities.json': { versions: { node: '22.12.0' }, boundary: ['u'], facilities: [] } });
+  push(ctx, { _: [] });
+  assert.deepEqual(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: root }).split('\n'), ['process/modules/u.uses.json']);
+  assert.ok(!readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  // A move to another Process4 version: a file written under a tool whose classification differs (here one this
+  // repository cannot read) is rewritten; one written under this tool's is left as it is.
+  git(['checkout', '-q', '-b', 'work/move'], { cwd: root });
+  const u = readUses(root, 'u', { ref: 'HEAD' });
+  commit(root, { 'process/modules/u.uses.json': { ...u, written: { ...u.written, tool: 'f'.repeat(40) } } });
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  commit(root, { 'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] }, process: { repository: 'https://github.com/o/process4', version: '4.1.0', commit: 'b'.repeat(40) } }) });
+  push(ctx, { _: [] });
+  assert.deepEqual(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: root }).split('\n'), ['process/modules/u.uses.json']);
+  assert.notEqual(readUses(root, 'u', { ref: 'HEAD' }).written.tool, 'f'.repeat(40));
 });
 
 // ---- the uses file ----

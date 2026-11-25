@@ -140,8 +140,8 @@ test('notify tells the users of a changed item, found in their uses files: their
   assert.match(text, new RegExp(`before ${git(['rev-parse', `${sha}^1`], { cwd: root }).slice(0, 10)} \\(first parent\\), after ${sha.slice(0, 10)}`));
   assert.match(text, /Notice for a change to dates \(TypeScript 5\.6\.3\)\n3 items changed in a way that tells; 2 module\(s\) told\./);
   assert.match(text, /dates parseDay: bound changed \[found by its means\] -> tells its users\n {6}means: bound changed: n: whole number, 1 to 31 -> n: whole number, 1 to 30/);
-  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay\n {6}uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay\n/);
-  assert.match(text, /TOLD report\n {6}uses dates Day \(bound changed; found by its means\) at src\/report\/index\.mjs:3\n {6}uses dates formatDay \(bound changed; found by its means\) at src\/report\/index\.mjs:3/);
+  assert.match(text, /TOLD orders\n {6}uses dates Day \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay\n {6}uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:1 \(top level\), src\/orders\/index\.mjs:6 orderDay\n/);
+  assert.match(text, /TOLD report\n {6}uses dates Day \(bound changed; found by its means\) at src\/report\/index\.mjs:3 show\n {6}uses dates formatDay \(bound changed; found by its means\) at src\/report\/index\.mjs:1 \(top level\), src\/report\/index\.mjs:3 show/);
   const work = waitingWork(gh).work;
   assert.equal(work.length, 3);
   assert.equal(work[0].kind, 'walk-flaw');
@@ -616,7 +616,7 @@ export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }
     'process/modules/p.json': entry('p'),
     'process/modules/u.json': entry('u', ['p']),
     'src/p/index.mjs': p(opt, ret),
-    'src/u/index.mjs': "import { make } from '../p/index.mjs';\nexport const one = () => make({ name: 'a' });\n",
+    'src/u/index.mjs': "import { make } from '../p/index.mjs';\n/** @returns {void} */\nexport function one() { make({ name: 'a' }); }\n",
   });
   const before = mkdtempSync(join(tmpdir(), 'p4-r52-'));
   const more = mkdtempSync(join(tmpdir(), 'p4-r52-'));
@@ -650,13 +650,18 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   const files = withUsesFiles(plain);
   write(root, files);
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED });
+  // No item changed; orders, whose code reads raw's answer as a value of unknown kind before the change (R1, a place
+  // outside the standard), hears of any change to dates' files until it is converted, and only so.
+  const only = (rep) => rep.told.every((t) => t.reasons.every((x) => x.outside));
   const r = notice(root, after, 'dates');
-  assert.deepEqual([r.changed, r.told], [[], []]);
+  assert.deepEqual(r.changed, []);
+  assert.ok(only(r), JSON.stringify(r.told));
   // A stated parameter that is a union, the same.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + '\n/**\n * @param {{n: number}|undefined} x\n * @returns {number|null}\n */\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
   write(root, { ...files, 'src/dates/index.mjs': DATES() + '\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
   const u = notice(root, after, 'dates');
-  assert.deepEqual([u.changed, u.told], [[], []]);
+  assert.deepEqual(u.changed, []);
+  assert.ok(only(u), JSON.stringify(u.told));
   write(root, files);
   // With another change in the same item (a parameter newly required), that change still tells its users.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED.replace(' * @returns', ' * @param {number} y\n * @returns').replace('raw(x)', 'raw(x, y)') });
@@ -976,6 +981,7 @@ test('a reason names its first six places and how many more, so the notice keeps
   write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(root, after, 'dates');
   const p = r.told.find((t) => t.user === 'orders').reasons.find((x) => x.item === 'parseDay');
-  assert.deepEqual(p.places, ['src/orders/index.mjs:6 orderDay', 'src/orders/index.mjs:7', 'src/orders/index.mjs:8', 'src/orders/index.mjs:9', 'src/orders/index.mjs:10', 'src/orders/index.mjs:11', 'and 4 more']);
-  assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:6 orderDay, [^\n]*src\/orders\/index\.mjs:11, and 4 more/);
+  // eleven places: the import, orderDay and the nine v<i>
+  assert.deepEqual(p.places, ['src/orders/index.mjs:1 (top level)', 'src/orders/index.mjs:6 orderDay', 'src/orders/index.mjs:7 v0', 'src/orders/index.mjs:8 v1', 'src/orders/index.mjs:9 v2', 'src/orders/index.mjs:10 v3', 'and 5 more']);
+  assert.match(noticeText(r), /uses dates parseDay \(bound changed; found by its means\) at src\/orders\/index\.mjs:1 \(top level\), [^\n]*src\/orders\/index\.mjs:10 v3, and 5 more/);
 });

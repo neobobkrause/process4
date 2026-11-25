@@ -155,7 +155,7 @@ test('the whole module: a reason that says so, or a module with no uses file yet
   const none = merged({ 'process/modules/orders.uses.json': 'not json' });
   const n = list(none.root, none.base, place('src/orders/index.mjs:5'));
   assert.deepEqual(n.files.map((f) => f.file), all);
-  assert.match(n.files[0].reasons[0], /^the whole module: orders has no uses file that can be read \(not JSON/);
+  assert.match(n.files[0].reasons[0], /^the whole module: orders has no uses file yet/);
 });
 
 const told = (uses) => ({ module: 'orders', work: ['notice from dates (pull request 4)'], kind: 'told', uses });

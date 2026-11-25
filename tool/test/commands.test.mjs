@@ -232,7 +232,8 @@ const passFor = (gh, pr) => gh.addComment('o/product', pr.number, block(TEST_MAR
 test('ready on a conversion job writes the conversion\'s report: places gone by rule, copies, places still outside and what they wait on, time, cost', () => {
   const place = (rule, line, more = {}) => ({ rule, file: 'src/orders/index.mjs', side: 'code', line, mayRefer: ['dates'], ...more });
   const uses = (outside, copies = []) => ({ module: 'orders', providers: ['dates'], uses: [], outside, orderFaults: [], copies });
-  const root = makeRepo({ ...productFiles(), 'process/modules/orders.uses.json': uses([place('S5', 1), place('S5', 2), place('R1', 3)]) });
+  // The base, read as `uses` reads it: orders reaches dates' file, which dates' entry names no interface file of, twice (S5).
+  const root = makeRepo(productFiles());
   git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
   git(['checkout', '-q', '-b', 'job/orders.2'], { cwd: root });
   commit(root, { 'process/modules/orders.uses.json': uses([place('R1', 3, { waitsOn: 'dates: a reader of its days' })], [{ provider: 'dates', item: 'd', file: 'test/orders/days.json', pointer: '/first' }]) });

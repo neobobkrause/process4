@@ -22,6 +22,16 @@ import { isTestCall } from './check.mjs';
 import { handCopies, makeResolver, readFacilities, readUses, sideOf } from '../usesfile.mjs';
 import { underPath } from '../util.mjs';
 
+let HOST_FACILITIES = null;
+/** The tool's classification of Node's facilities (facilities-build.mjs): name -> 'in' | 'out'. */
+export function hostFacilities() {
+  if (!HOST_FACILITIES) {
+    const d = JSON.parse(fs.readFileSync(fileURLToPath(new URL('./facilities.json', import.meta.url)), 'utf8'));
+    HOST_FACILITIES = new Map([...d.in.map((n) => [n, 'in']), ...d.out.map((n) => [n, 'out'])]);
+  }
+  return HOST_FACILITIES;
+}
+
 /** Every module earlier than the one read: "may refer to any of them". */
 export const ANY = '*';
 
@@ -291,8 +301,10 @@ export function readReferences(tree, moduleId, opts = {}) {
   }
   /** A facility as the facility list names it: a module's name without its quotes (node:fs.readFileSync). */
   const listName = (name) => name.replace(/^"([^"]+)"/, '$1');
-  /** Whether a facility stays in the process ('in') or reaches out ('out'), as the facility list says; null if not on it. */
-  const reachOf = (name) => facilityList?.reach?.get(listName(name)) ?? null;
+  /** Whether a facility stays in the process ('in') or reaches out ('out'): by the tool's classification of the host's
+   * facilities (facilities.json beside this file), else by the product's facility list (its packages); null where neither
+   * classifies it (build text 2c, "Facilities"). */
+  const reachOf = (name) => hostFacilities().get(listName(name)) ?? facilityList?.reach?.get(listName(name)) ?? null;
   const boundaryModules = facilityList?.boundary ?? new Set();
   const isBoundaryModule = boundaryModules.has(mod.id);
   function facility(node, sym, { write = false } = {}) {
@@ -303,7 +315,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const never = NEVER.get(name) ?? (REGEXP_STATIC.test(name) ? 'S8' : null) ?? ([...NEVER.keys()].find((k) => name.startsWith(`${k}.`)) ? NEVER.get([...NEVER.keys()].find((k) => name.startsWith(`${k}.`))) : null);
     if (never) place(never, node, { what: `uses ${shown}, which no product may use`, waitsOn: 'this module' });
     else if (write) place('R14', node, { what: `writes ${shown}, a member the host declares` });
-    else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, which is not on the facility list`, waitsOn: 'ARCH: the facility list' });
+    else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, which neither the tool's classification of the host nor the facility list names`, waitsOn: 'ARCH: the facility list' });
     else if (reachOf(name) === 'out' && !isBoundaryModule) place('R14', node, { what: `uses ${shown}, which reaches out, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
     return name;
   }

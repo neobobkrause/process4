@@ -1,7 +1,8 @@
 // The uses file at work (design part 2, sections 7 and 9; build text 1b, commands 2, 27 and 28; build text 2c): `push`,
 // and `test` where it merges the base in, rewrite the uses file of every module the branch changes against its base
 // (a job's: its own module), where the branch changes the module list, of the modules it touches and their users, and
-// where it changes the facility list, of every module,
+// where it changes the facility list, or moves to a Process4 version whose classification of the host's facilities
+// differs from the one a file was written under, of every module (that file),
 // from the code at the commit pushed, and carry it in the push; `uses <module>` writes one module's uses file into the
 // checkout from the code there and prints what a conversion's first step lists.
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -26,6 +27,23 @@ export function toolVersion() {
   const version = JSON.parse(readFileSync(join(TOOL_DIR, 'package.json'), 'utf8')).version;
   toolCommit = r.code === 0 && /^[0-9a-f]{40}$/.test(r.stdout.trim()) ? r.stdout.trim() : `process4-tool ${version}`;
   return toolCommit;
+}
+
+const CLASSIFICATION = 'tool/lib/notice/facilities.json';
+const classifications = new Map();
+/**
+ * The text of the classification of the host's facilities that the tool at a commit carries (notice/facilities.json),
+ * read from the tool's own repository; null where that commit cannot be read there (then it counts as different).
+ */
+export function classificationAt(commit) {
+  if (!commit) return null;
+  if (!classifications.has(commit)) {
+    let text = null;
+    if (commit === toolVersion()) { try { text = readFileSync(join(TOOL_DIR, 'lib/notice/facilities.json'), 'utf8'); } catch { text = null; } }
+    else if (/^[0-9a-f]{40}$/.test(commit)) { const r = git(['show', `${commit}:${CLASSIFICATION}`], { cwd: TOOL_DIR, allowFail: true }); text = r.code === 0 ? r.stdout : null; }
+    classifications.set(commit, text);
+  }
+  return classifications.get(commit);
 }
 
 /**
@@ -70,6 +88,15 @@ function modulesToWrite(root, baseTree, headTree, base, head, job) {
   // A change to the facility list changes what every module's places outside the standard are (R14): every module's
   // uses file is rewritten in the same push (design part 2, section 7).
   if (files.includes(facilitiesPath(headTree.cfg))) for (const m of headTree.modules) out.add(m.id);
+  // A move to a Process4 version (process.json's process commit changed): every uses file written under a tool whose
+  // classification of the host's facilities differs from this tool's is rewritten (design part 2, section 7).
+  if (files.includes('process.json') && baseTree && JSON.stringify(baseTree.cfg.process ?? null) !== JSON.stringify(headTree.cfg.process ?? null)) {
+    const mine = classificationAt(toolVersion());
+    for (const m of headTree.modules) {
+      const d = readUses(headTree.root, m.id, { cfg: headTree.cfg });
+      if (!d || classificationAt(d.written?.tool) !== mine) out.add(m.id);
+    }
+  }
   const listChanged = files.some((f) => f.startsWith(dir) && (f.endsWith('.json') && !f.endsWith('.uses.json') && !f.endsWith('facilities.json') || f.endsWith('order.txt')));
   if (!listChanged || !baseTree) return out;
   const touched = new Set();
@@ -127,7 +154,8 @@ export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
     for (const id of headTree.modules.map((m) => m.id).filter((x) => mods.has(x))) {
       const data = usesData(headTree, id, head);
       const before = readUses(root, id, { cfg: headTree.cfg, ref: 'HEAD' });
-      if (sameUses(before, data)) continue;
+      // the same file, unless it was written under a classification of the host's facilities other than this tool's
+      if (sameUses(before, data) && classificationAt(before?.written?.tool) === classificationAt(toolVersion())) continue;
       written.push({ module: id, file: writeUses(root, id, data, { cfg: headTree.cfg }), data });
     }
   } finally {

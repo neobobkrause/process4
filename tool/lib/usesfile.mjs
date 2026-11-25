@@ -209,10 +209,12 @@ export function sideOf(entry, rel) {
 export const facilitiesPath = (cfg) => `${modulesDir(cfg)}facilities.json`;
 
 /**
- * The product's facility list (build text 2c; R14):
- *   { "versions": { "node", "workerd" }, "boundary": [modules], "facilities": [ { "name": "node:fs.readFileSync", "reach": "in" | "out" } ] }
+ * The product's facility list (build text 2c, "Facilities"; R14): its pinned versions, its boundary modules, and the
+ * facilities of the packages it uses (the host's, Node's and the language's, the tool classifies itself:
+ * notice/facilities.json):
+ *   { "versions": { "node", "workerd" }, "boundary": [modules], "facilities": [ { "name": "pg:Client.query", "reach": "in" | "out" } ] }
  * Read as { file, versions, boundary: Set of modules, reach: Map of name to "in" or "out" }. Null where the product has
- * none yet: then no facility is on it.
+ * none yet: then it has no boundary module and no package's facility is classified.
  */
 export function readFacilities(tree) {
   const rel = facilitiesPath(tree.cfg);
