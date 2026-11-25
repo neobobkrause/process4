@@ -16,7 +16,7 @@ How the rules stand against "at most ten". Each text has ten numbered lines or f
 | `watcher.md` | The watcher | 3,115 | 9 | 22 | Rules |
 | `coordinator.md` | The coordinator | 4,636 | 10 | 33 | Rules |
 | `arch.md` | ARCH | 5,197 | 10 | 29 | Rules |
-| `process.md` | PROCESS | 6,179 | 10 | 32 | Rules |
+| `process.md` | PROCESS | 6,186 | 10 | 32 | Rules |
 | `lane.md` | A lane (template: area, folder, design pages) | 3,722 | 8 | 26 | Rules |
 | `job.md` | A job (template the tool fills when ARCH's session opens the pull request: module, branch, pull request; the work, the kind and the uses stay in the job block there) | 4,366 | 10 | 33 | Rules |
 | `walking-session.md` | A walking session (template the tool fills with `walk text`: number, internal or external, tranche, round, the walk issue, the walks' folder, the copy's name and address; its areas stay in the round record and its two commands in the process config) | 3,622 | 10 | 27 | Rules |
@@ -25,11 +25,11 @@ The commands named are those of build text 1b, section 4. Every text but PROCESS
 
 **As filled in, and the 20 Nov rule.** The limit is measured on the role's instructions as filled in, with the one mechanical fetch line (the clone command, run once) left out of the count (the owner's decision, 20 Nov 2026). A filled text holds names and addresses only: a product name of about 40 characters, the pinned commit id, and, for every text but PROCESS's and ROOT's, the roughly 198-byte fetch line, which the count excludes.
 
-The binding text is `process.md`: it carries no fetch line, so its counted size is its file size, 6,179 bytes, well under the 8,192-byte limit. Every other text but ROOT's carries the fetch line the count excludes, so each has about 198 bytes more real headroom than its file size suggests; with a 40-character product name and the commit id filled in, all stay well under 8,192 (`root.md` and `coordinator.md`, the next tightest, count at roughly 4,296 and 4,438). The role-text limit was raised from 4,096 to 8,192 bytes on the 20 November 2026 measurement (part 5, section 2); the four reading figures are now measured, not provisional.
+The binding text is `process.md`: it carries no fetch line, so its counted size is its file size, 6,186 bytes, well under the 8,192-byte limit. Every other text but ROOT's carries the fetch line the count excludes, so each has about 198 bytes more real headroom than its file size suggests; with a 40-character product name and the commit id filled in, all stay well under 8,192 (`root.md` and `coordinator.md`, the next tightest, count at roughly 4,296 and 4,438). The role-text limit was raised from 4,096 to 8,192 bytes on the 20 November 2026 measurement (part 5, section 2); the four reading figures are now measured, not provisional.
 
 ## 2. What each text tells its session to read in full
 
-Sizes of the design's parts, in bytes (last measured 25 Nov 2026): 00 10,448; 01 11,967; 02 19,247; 03 11,033; 04 23,036; 05 5,720; 06 15,037; 07 13,232; 08 4,489; 09 2,628; 10 10,053. All eleven: 126,890. Build texts: 02 15,266; 02b 11,162; 03 20,922; 05 23,346. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (23,036) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
+Sizes of the design's parts, in bytes (last measured 25 Nov 2026): 00 10,448; 01 11,967; 02 19,247; 03 11,033; 04 23,036; 05 5,971; 06 15,120; 07 13,232; 08 4,489; 09 2,628; 10 10,053. All eleven: 127,224. Build texts: 02 15,266; 02b 11,162; 03 20,922; 05 23,346. The set maximum is 175,000; the single-text maximum is 60,000 bytes on Claude Code (24,000 on Codex until it is measured), and part 04 (23,036) and build text 03 (20,922) are the largest single texts, under it on both harnesses. In the copy the design is in `design/` and the build texts in `build/`, and each text's reading line names them so.
 
 Each role reads one harness part, 07 or 08. The combined figure is given with 07, the larger; with 08 it is 8,743 less.
 
@@ -39,7 +39,7 @@ Each role reads one harness part, 07 or 08. The combined figure is given with 07
 | The watcher | 00, 01, 04, 05, 06, 07 or 08 | 05 | 102,786 | The roles, wakes and handover records; after a takeover, `root.md` |
 | The coordinator | 00 to 06, 07 or 08 | 05 | 133,066 | The ranking page, the product's record of the owner's decisions, the shared state |
 | ARCH | 00 to 06, 07 or 08, 09 | 03 and 05 | 156,616 | The process config, ranking page, module list, both decision records, the shared state |
-| PROCESS | All eleven | 05; each other one before changing it | 150,236 | The record of the owner's decisions about the design, its folder's README and research index, its handover record |
+| PROCESS | All eleven | None; each one before changing it, and any when a question touches it | 127,224 | Its folder's README, the index of the owner's decisions, its research index, its handover record |
 | A lane | 00, 01, 03, 04, 05, 06, 07 or 08 | 05; and 03 for the UX lane | 113,819; the UX lane 134,741 | The ranking page, the index of the research in its folder, its design pages' links, its handover record |
 | A job | 00, 01, 02, 04, 05, 06, 07 or 08 | 02, 02b, 03 and 05 | 169,383 | The ranking page, the module order file, its module's entry and requirements file (kept under the single-text maximum by rule), its pull request |
 | A walking session | 00, 01, 03, 06, 07 or 08; and 09 for the external walk | 03 | 82,639 internal; 85,267 external | The process config and the ranking page; for each of its areas, its page of the Screens document or the journeys |

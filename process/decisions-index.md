@@ -1,0 +1,72 @@
+# The owner's decisions about the Process4 design: the index
+
+PROCESS reads this index in full and opens an entry when a question touches it (design part 5, section 3). One line for each
+subject: its title and the file that holds it. The design states every decision as it now stands; the record keeps the
+owner's exact dated words and the reasons. Keep it current with each entry written.
+
+- Routing an instruction the coordinator records as a standing note — `design-decisions.md`
+- What a job reads before it builds — `design-decisions.md`
+- Reporting that an act cannot be done — `design-decisions.md`
+- The required check's name — `design-decisions.md`
+- Naming the pull request for a job's commands — `design-decisions.md`
+- The check and deliberate error-condition tests (fault D) — `design-decisions.md`
+- Checking the environment's permissions-management settings on setup and an account switch — `design-decisions.md`
+- Moving a product to the latest (or a named) Process4 version — `design-decisions.md`
+- Refreshing PROCESS across repositories, and re-attempting a non-substantive refusal — `design-decisions.md`
+- The coordinator records the owner's words from a file — `design-decisions.md`
+- How the starting-text size limit is measured — `design-decisions.md`
+- The four reading values — `design-decisions.md`
+- Two reading-measurement findings — a silent cut read, and reading a session's own fill — `design-decisions.md`
+- The design document carries no history — enforcing the separation — `design-decisions.md`
+- Showing a record entry is for transparency, not an approval gate — `design-decisions.md`
+- How a tranche ends, and what shows its journeys complete — `design-decisions.md`
+- The terms "provider" and "user" — `design-decisions.md`
+- Publishing a release — who publishes, and production keys and tokens — `design-decisions.md`
+- An urgent fix while a tranche is open — `design-decisions.md`
+- A told job's tests — the three readings — `design-decisions.md`
+- The smaller readings (part 10, section 1, item 7) — `design-decisions.md`
+- Which list of journeys counts (walk matter 9.1) — `design-decisions.md`
+- AI journeys in walks (walk matters 9.2 and 9.3) — `design-decisions.md`
+- A flaw set aside by ARCH (walk matter 9.4) — `design-decisions.md`
+- No owner approval of a tranche — `design-decisions.md`
+- Parts walked by hand (walk matter 9.5) — `design-decisions.md`
+- Releasing from a tranche merged with its flaws named — `design-decisions.md`
+- Codex — Claude Code first, Codex later — `design-decisions.md`
+- A walk-flaw module whose job hands the flaw back (round-done gap) — `design-decisions.md`
+- How a lane's marked owner-words reach the coordinator — `design-decisions.md`
+- Standardized session names — `design-decisions-2.md`
+- How the coordinator finds the live PROCESS — `design-decisions-2.md`
+- PROCESS and the products it serves share one Claude account; the first account switch moves them together — `design-decisions-2.md`
+- The owner never edits a file or types a command — `design-decisions-2.md`
+- A tranche branch starts from main — `design-decisions-2.md`
+- Setting up an existing product under Process4 — `design-decisions-2.md`
+- A session can set its own name (seen to work) — `design-decisions-2.md`
+- Onboarding a product — the onboarding lane, how it reads the product, and who changes settings — `design-decisions-2.md`
+- A product's token is made once, with every permission its development will need — `design-decisions-2.md`
+- When the tool's own tests run — `design-decisions-2.md`
+- A declared use of a later module is refused — `design-decisions-2.md`
+- Each session's copy of the process — `design-decisions-2.md`
+- Writing a lane's entry before the lane starts — `design-decisions-2.md`
+- The check refuses only what a structured comment states — `design-decisions-2.md`
+- When a long-lived role is refreshed — `design-decisions-2.md`
+- A replaced session's scheduled wake — `design-decisions-2.md`
+- Research is read through an index — `design-decisions-2.md`
+- The form of a job's branch — `design-decisions-2.md`
+- A product's repository may hold secrets — `design-decisions-2.md`
+- The tool's code reading on a large product — `design-decisions-2.md`
+- A job whose block ARCH ended says it goes on — `design-decisions-2.md`
+- The notice reads only what a merge can affect — `design-decisions-2.md`
+- How a dropped tranche is carried out — `design-decisions-2.md`
+- Tests once in the job, notices that reach running jobs, merging after the modules a job uses, and slots — `design-decisions-2.md`
+- The order of a move whose new version changes the required-run workflow — `design-decisions-2.md`
+- A tranche's scope, recorded by ARCH — `design-decisions-2.md`
+- Merging goes on while a notice is worked out — `design-decisions-2.md`
+- A job's tests run on its branch brought up to the tranche — `design-decisions-2.md`
+- The notice after an early provider's merge: faster, harmless changes tell no one, no notice lost — `design-decisions-2.md`
+- `ready` where there is nothing to mark — `design-decisions-3.md`
+- The notice: an unknown kind becoming known, nothing lost to size or a race, no repeats — `design-decisions-3.md`
+- The notice's second group carried out: no repeat for a job opened from waiting work, a parameter list's brackets, the errors printed — `design-decisions-3.md`
+- One name exported by two interface files for two things is two entries — `design-decisions-3.md`
+- A user the tool cannot follow fully is told of a changed function only where it may use it — `design-decisions-3.md`
+- Cleaning up Process4 before further improvements — `design-decisions-3.md`
+- What PROCESS reads in full — `design-decisions-3.md`

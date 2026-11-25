@@ -10,9 +10,9 @@ your session there (the file must start with the JSON block; keep the registry a
 registry your address. Read your own fill (`get_session`, `context_usage`). Refresh at the first natural pause after 50
 percent. Never `git add -A`; add paths by name. The owner archives PROCESS #13 himself (a step on his page).
 
-**Your reading:** the design, build text 5, the three decision files (`design-decisions.md`, `-2.md`, `-3.md`; new subjects
-go in `-3.md`), `process/README.md`, `process/research/README.md` (the index), `process/lanes/civicsmith/README.md`, and this
-handover. Open a research file, or give it to a worker, when a question needs it.
+**Your reading** (the owner's decision (ii), 25 Nov): the design in full, `process/README.md`, `process/decisions-index.md`,
+`process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. Open a decision entry, a build text
+or a research file, or give it to a worker, when a question touches it. New subjects go in `design-decisions-3.md` and the index.
 
 ## START HERE: two choices wait for the owner, on his page
 
