@@ -59,9 +59,19 @@ export const standardOptions = () => ({
   noUncheckedIndexedAccess: true,
   exactOptionalPropertyTypes: true,
 });
-export function makeStandardProgram(files, oldProgram = undefined) {
+export function makeStandardProgram(files, oldProgram = undefined, virtual = null) {
   loadReader();
-  return ts.createProgram([...files, NODE_DESCRIPTION, HOST_DESCRIPTION], standardOptions(), undefined, oldProgram);
+  const o = standardOptions();
+  let host;
+  if (virtual?.size) {
+    // Files the tool writes only in memory (the questions makeConfirm puts to the checker), served beside the real ones.
+    host = ts.createCompilerHost(o);
+    const { getSourceFile, fileExists, readFile } = host;
+    host.getSourceFile = (f, lang, ...rest) => (virtual.has(f) ? ts.createSourceFile(f, virtual.get(f), lang, true) : getSourceFile.call(host, f, lang, ...rest));
+    host.fileExists = (f) => virtual.has(f) || fileExists.call(host, f);
+    host.readFile = (f) => (virtual.has(f) ? virtual.get(f) : readFile.call(host, f));
+  }
+  return ts.createProgram([...files, ...(virtual?.keys() ?? []), NODE_DESCRIPTION, HOST_DESCRIPTION], o, host, oldProgram);
 }
 
 export const readerVersion = () => loadReader().version;

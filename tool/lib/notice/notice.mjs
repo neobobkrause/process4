@@ -20,10 +20,11 @@
 // uses file yet that imports it (its files' imports, read as text: usesfile.mjs). Each is told once, with the reasons
 // of build text 5, section 5.
 import fs from 'node:fs';
+import path from 'node:path';
 import { loadTree } from './model.mjs';
-import { ts, loadReader, makeStandardProgram, readerVersion, tagsOf, tagText } from './ts.mjs';
+import { ts, loadReader, makeStandardProgram, readerVersion } from './ts.mjs';
 import { makeLister } from './listing.mjs';
-import { moduleMeans } from './means.mjs';
+import { moduleMeans, meansSideOf, MEANS_SIDE } from './means.mjs';
 import { same, standsIn, render } from './canon.mjs';
 import { importedModules, readUses } from '../usesfile.mjs';
 
@@ -62,75 +63,170 @@ export function known(b, a) {
 }
 
 /**
- * Rule 52. One program reads the interface files of the module before and after; for an item found to accept more, the
- * type checker is asked: for a function, method, class or value, is the new one assignable to the old; for what a user
- * hands in (a kind on the accepting side, an operation's request, a table's rows), is the old one assignable to the new.
+ * Rule 52, and what counts as a change (design part 2, section 7): the questions put to the type checker about one item,
+ * before and after. One program reads the module's interface files on both sides and, written only in memory, a file
+ * that names each item's declaration on each side and asks:
+ * - **the same**: whether its two declarations, or the same part of each (what it accepts, what it hands back), are
+ *   identical by the checker's own identity relation (TypeScript's "subsequent variable declarations must have the same
+ *   type"). A kind's name given or dropped, a type parameter renamed, a handle kind renamed with the same members, are
+ *   the same; anything the checker can tell apart is not.
+ * - **accepts more**: whether everything the old accepted, the new accepts, and what it hands back is the same. For a
+ *   function, method, class member or class with one signature and no type parameter, the old argument list is assigned
+ *   to the new (`Parameters`, `ConstructorParameters`), and what it hands back (`ReturnType`, `InstanceType`) is asked
+ *   to be the same; for an operation, its request and its answer the same way; for a kind on the accepting side, the
+ *   old kind is assigned to the new; for a generic or overloaded item, the new is assigned to the old as a whole, which
+ *   only confirms what the written forms already show as accepting more.
+ *   The checker relates a method's parameters both ways and lets "anything" through (its documented unsound points):
+ *   where either side's accepted part holds a method, a class's object or "anything", nothing is confirmed.
+ * Never confirmed: what the checker does not prove. Asked once per pair of sides and module, for every item whose
+ * written forms differ, in one program.
  */
+const CONFIRMS = new WeakMap();
+let confirmFiles = 0;
 export function makeConfirm(treeB, treeA, moduleId) {
-  let program = null;
-  let checker = null;
-  const exportsOf = (tree) => {
-    const out = new Map();
-    for (const f of tree.byId.get(moduleId)?.public ?? []) {
-      const sf = program.getSourceFile(f);
-      const ms = sf && checker.getSymbolAtLocation(sf);
-      if (!ms) continue;
-      for (const exp of checker.getExportsOfModule(ms)) {
-        if (out.has(exp.name)) continue;
-        out.set(exp.name, exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp);
-      }
+  if (!CONFIRMS.has(treeB)) CONFIRMS.set(treeB, new WeakMap());
+  const byA = CONFIRMS.get(treeB);
+  if (!byA.has(treeA)) byA.set(treeA, new Map());
+  const byM = byA.get(treeA);
+  if (!byM.has(moduleId)) byM.set(moduleId, buildConfirm(treeB, treeA, moduleId));
+  return byM.get(moduleId);
+}
+
+const NOT_FOUND = 'the item cannot be found to ask the type checker';
+const UNSOUND = "what it accepts holds a method, a class's object or \"anything\", which the type checker relates both ways: it cannot prove it";
+
+function buildConfirm(treeB, treeA, moduleId) {
+  const answers = new Map();
+  const asked = new Map(); // item -> the way it was asked
+  const ways = (item) => asked.get(item);
+  const sides = () => [meansSideOf(treeB, moduleId) ?? (treeB.byId.has(moduleId) ? (moduleMeans(treeB, moduleId), meansSideOf(treeB, moduleId)) : null),
+    meansSideOf(treeA, moduleId) ?? (treeA.byId.has(moduleId) ? (moduleMeans(treeA, moduleId), meansSideOf(treeA, moduleId)) : null)];
+  const q = (s) => JSON.stringify(s);
+  const generic = (c) => !!c && /"k":"generic"|"tparams"/.test(JSON.stringify(c));
+  /** The type of an item's declaration on one side (S, the side's module), and of its parts, as the checker writes them. */
+  function exprsOf(name, meta, simple, S) {
+    let whole = null;
+    const m = /^([^.#:]+)([.#])(.+)$/.exec(name);
+    if (name.startsWith('op:')) whole = meta.table ? `${S}.${meta.table}[${q(name.slice(3))}]` : null;
+    else if (name.startsWith('table:')) whole = meta.rowKind ? `${S}.${meta.rowKind}` : null;
+    else if (name.includes(':')) whole = null; // a name two interface files export for two things
+    else if (m) {
+      const [, owner, sep, member] = m;
+      if (member.startsWith('#') || member.startsWith('__')) whole = null;
+      else if (meta.kind === 'class member') whole = sep === '.' ? `(typeof ${S}.${owner})[${q(member)}]` : `${S}.${owner}[${q(member)}]`;
+      else whole = `${S}.${owner}[${q(member)}]`;
+    } else whole = ['function', 'value', 'class'].includes(meta.kind) ? `typeof ${S}.${name}` : `${S}.${name}`;
+    if (!whole) return null;
+    if (meta.kind === 'operation') return { whole, accepts: `${whole}['req']`, handsBack: `${whole}['res']`, way: 'parts' };
+    if (meta.kind === 'class' && simple) return { whole, accepts: `ConstructorParameters<${whole}>`, handsBack: `InstanceType<${whole}>`, way: 'parts' };
+    if (['function', 'method', 'class member'].includes(meta.kind) && simple) {
+      return { whole, accepts: `Parameters<NonNullable<${whole}>>`, handsBack: `ReturnType<NonNullable<${whole}>>`, way: 'parts' };
     }
-    return out;
-  };
-  const marked = (sym, tag) => (sym.declarations ?? []).some((d) => tagsOf(d, tag).length);
-  /** The type to ask about for an item, and which way to ask: 'out' (new to old) or 'in' (old to new). */
-  function typeOf(tree, item) {
-    const ex = exportsOf(tree);
-    const aliasType = (sym) => checker.getDeclaredTypeOfSymbol(sym);
-    if (item.startsWith('op:')) {
-      const name = item.slice(3);
-      for (const sym of ex.values()) {
-        if (!(sym.flags & ts.SymbolFlags.TypeAlias) || !marked(sym, 'optable')) continue;
-        const p = checker.getPropertyOfType(aliasType(sym), name);
-        const req = p && checker.getPropertyOfType(checker.getTypeOfSymbol(p), 'req');
-        if (req) return { t: checker.getTypeOfSymbol(req), way: 'in' };
-      }
-      return null;
-    }
-    if (item.startsWith('table:')) {
-      const table = item.slice(6);
-      for (const sym of ex.values()) {
-        if (sym.flags & ts.SymbolFlags.TypeAlias && (sym.declarations ?? []).some((d) => tagsOf(d, 'storedrows').some((t) => tagText(t).split(/\s+/)[0] === table))) return { t: aliasType(sym), way: 'in' };
-      }
-      return null;
-    }
-    const m = /^([^.#]+)([.#])(.+)$/.exec(item);
-    if (m) {
-      const owner = ex.get(m[1]);
-      if (!owner) return null;
-      let host;
-      if (owner.flags & ts.SymbolFlags.TypeAlias) host = aliasType(owner);
-      else if (m[2] === '.') host = checker.getTypeOfSymbol(owner);
-      else host = checker.getDeclaredTypeOfSymbol(owner);
-      const p = checker.getPropertyOfType(host, m[3]);
-      return p ? { t: checker.getTypeOfSymbol(p), way: 'out' } : null;
-    }
-    const sym = ex.get(item);
-    if (!sym) return null;
-    if (sym.flags & ts.SymbolFlags.TypeAlias) return { t: aliasType(sym), way: 'in' };
-    return { t: checker.getTypeOfSymbol(sym), way: 'out' };
+    const isKind = ['kind', 'handle kind', 'operation table', 'stored rows'].includes(meta.kind);
+    return { whole, accepts: whole, handsBack: whole, way: isKind ? 'in' : 'out' };
   }
-  return function confirm(item) {
-    if (!program) {
-      program = makeStandardProgram([...(treeB.byId.get(moduleId)?.public ?? []), ...(treeA.byId.get(moduleId)?.public ?? [])]);
-      checker = program.getTypeChecker();
+  /** Asks the checker about the given items, in one program. */
+  function ask(names) {
+    const [sb, sa] = sides();
+    const n = `${process.pid}-${confirmFiles++}`;
+    let text = `import type * as B from './.p4-confirm-${n}-b.mjs';\nimport type * as A from './.p4-confirm-${n}-a.mjs';\n`;
+    const questions = [];
+    const add = (item, what, body) => { questions.push({ item, what, start: text.length, end: text.length + body.length }); text += `${body}\n`; };
+    const ways = new Map();
+    for (const name of names) {
+      const ib = sb?.items[name], ia = sa?.items[name];
+      // asked part by part only where both sides have one signature and no type parameter
+      const simple = [ib, ia].every((it) => it?.accepts?.k === 'params' && !generic(it.accepts) && !generic(it.handsBack) && it.handsBack?.k !== 'overloads');
+      const eb = ib && exprsOf(name, sb.meta[name] ?? {}, simple, 'B'), ea = ia && exprsOf(name, sa.meta[name] ?? {}, simple, 'A');
+      answers.set(name, { same: { accepts: false, handsBack: false }, more: { confirmed: false, why: NOT_FOUND } });
+      if (!eb || !ea || eb.way !== ea.way) continue;
+      const k = ways.size;
+      ways.set(name, { k, way: eb.way });
+      asked.set(name, eb.way);
+      // the same: identical, and each assignable to the other (the identity relation takes a stated undefined and the
+      // mark of an optional member for one; assignability under exactOptionalPropertyTypes does not)
+      for (const part of ['accepts', 'handsBack']) {
+        add(name, part, `declare var q${k}_${part}: ${eb[part]};\ndeclare var q${k}_${part}: ${ea[part]};\n`
+          + `declare const q${k}_${part}_b: ${eb[part]};\nconst q${k}_${part}_ba: ${ea[part]} = q${k}_${part}_b;\n`
+          + `declare const q${k}_${part}_a: ${ea[part]};\nconst q${k}_${part}_ab: ${eb[part]} = q${k}_${part}_a;`);
+      }
+      // the old accepted part handed to the new; for a generic or overloaded item, the new item handed to the old
+      if (eb.way === 'out') add(name, 'more', `declare const q${k}_o: ${ea.whole};\nconst q${k}_n: ${eb.whole} = q${k}_o;`);
+      else add(name, 'more', `declare const q${k}_o: ${eb.accepts};\nconst q${k}_n: ${ea.accepts} = q${k}_o;`);
     }
-    const o = typeOf(treeB, item);
-    const n = typeOf(treeA, item);
-    if (!o || !n || o.way !== n.way) return { confirmed: false, why: 'the item cannot be found to ask the type checker' };
-    const ok = o.way === 'out' ? checker.isTypeAssignableTo(n.t, o.t) : checker.isTypeAssignableTo(o.t, n.t);
-    return ok ? { confirmed: true } : { confirmed: false, why: o.way === 'out' ? 'the type checker does not find the new item assignable to the old' : 'the type checker does not find the old kind assignable to the new' };
+    if (!questions.length) return;
+    text += 'export {};\n';
+    const dir = treeA.root;
+    const barrel = (tree) => (tree.byId.get(moduleId)?.public ?? []).map((f) => `export * from ${q(f)};`).join('\n') || 'export {};';
+    const file = path.join(dir, `.p4-confirm-${n}.mts`);
+    const virtual = new Map([[path.join(dir, `.p4-confirm-${n}-b.mts`), barrel(treeB)], [path.join(dir, `.p4-confirm-${n}-a.mts`), barrel(treeA)], [file, text]]);
+    const program = makeStandardProgram([...(treeB.byId.get(moduleId)?.public ?? []), ...(treeA.byId.get(moduleId)?.public ?? [])], undefined, virtual);
+    const checker = program.getTypeChecker();
+    const sf = program.getSourceFile(file);
+    const diags = [...program.getSyntacticDiagnostics(sf), ...program.getSemanticDiagnostics(sf)];
+    const failed = (x) => diags.some((d) => d.start !== undefined && d.start >= x.start && d.start < x.end);
+    const declared = new Map();
+    for (const st of sf.statements) {
+      if (!ts.isVariableStatement(st)) continue;
+      for (const d of st.declarationList.declarations) if (ts.isIdentifier(d.name)) declared.set(d.name.text, checker.getTypeAtLocation(d.name));
+    }
+    for (const x of questions) if (x.what !== 'more') answers.get(x.item).same[x.what] = !failed(x);
+    for (const x of questions.filter((y) => y.what === 'more')) {
+      const r = answers.get(x.item);
+      const { k, way } = ways.get(x.item);
+      const no = failed(x);
+      if (no || [declared.get(`q${k}_o`), declared.get(`q${k}_n`)].some((t) => !t || unproven(checker, t))) {
+        r.more = { confirmed: false, why: !no ? UNSOUND : way === 'out' ? 'the type checker does not find the new item assignable to the old'
+          : way === 'in' ? 'the type checker does not find the old kind assignable to the new' : 'the type checker does not find that the new item accepts everything the old did' };
+      } else if (way === 'parts' && !r.same.handsBack) r.more = { confirmed: false, why: 'the type checker does not find the new item assignable to the old: what it hands back is not the same' };
+      else r.more = { confirmed: true };
+    }
+  }
+  const answer = (item) => {
+    if (!answers.has(item)) {
+      const [sb, sa] = sides();
+      // every item on both sides whose written forms differ, asked at once
+      const differ = sb && sa ? Object.keys(sa.items).filter((n) => sb.items[n] && !answers.has(n)
+        && (!same(known(sb.items[n].accepts, sa.items[n].accepts) ?? null, sa.items[n].accepts ?? null) || !same(known(sb.items[n].handsBack, sa.items[n].handsBack) ?? null, sa.items[n].handsBack ?? null))) : [];
+      ask([...new Set([item, ...differ])]);
+    }
+    return answers.get(item) ?? { same: { accepts: false, handsBack: false }, more: { confirmed: false, why: NOT_FOUND } };
   };
+  const confirm = (item) => answer(item).more;
+  confirm.same = (item, part) => answer(item).same[part];
+  // Where the written forms cannot show that an item accepts more, only a question part by part, or about a kind handed
+  // in, says so: a generic or overloaded item handed to the old as a whole may hand back otherwise for some calls.
+  confirm.acceptsMore = (item) => answer(item).more.confirmed && ways(item) !== 'out';
+  return confirm;
+}
+
+/**
+ * Whether the checker's answer about a type cannot be relied on: it holds "anything", a member written as a method, or a
+ * class's object (whose methods are methods), each of which the checker relates both ways.
+ */
+function unproven(checker, t, seen = new Set(), depth = 0) {
+  if (!t || seen.has(t) || depth > 12) return false;
+  seen.add(t);
+  const f = t.flags;
+  if (f & ts.TypeFlags.Any) return true;
+  if (f & (ts.TypeFlags.Union | ts.TypeFlags.Intersection)) return t.types.some((m) => unproven(checker, m, seen, depth + 1));
+  if (!(f & ts.TypeFlags.Object)) return false;
+  if (((t.objectFlags & ts.ObjectFlags.Reference ? t.target?.objectFlags : 0) | t.objectFlags) & ts.ObjectFlags.Class) return true;
+  for (const a of t.objectFlags & ts.ObjectFlags.Reference ? checker.getTypeArguments(t) : []) if (unproven(checker, a, seen, depth + 1)) return true;
+  // a list, or a kind of the language's own library (Promise, Map...): its arguments only, not the library's own methods
+  const lib = (t.symbol?.declarations ?? []).some((d) => d.getSourceFile().isDeclarationFile);
+  if (checker.isArrayType(t) || checker.isTupleType(t) || (lib && !t.symbol?.name?.startsWith('__'))) return false;
+  for (const s of [...t.getCallSignatures(), ...t.getConstructSignatures()]) {
+    if (s.declaration && (ts.isMethodSignature(s.declaration) || ts.isMethodDeclaration(s.declaration))) return true;
+    for (const p of s.getParameters()) if (unproven(checker, checker.getTypeOfSymbol(p), seen, depth + 1)) return true;
+    if (unproven(checker, s.getReturnType(), seen, depth + 1)) return true;
+  }
+  for (const p of checker.getPropertiesOfType(t)) {
+    if ((p.declarations ?? []).some((d) => ts.isMethodSignature(d) || ts.isMethodDeclaration(d))) return true;
+    if (unproven(checker, checker.getTypeOfSymbol(p), seen, depth + 1)) return true;
+  }
+  for (const i of checker.getIndexInfosOfType(t)) if (unproven(checker, i.type, seen, depth + 1)) return true;
+  return false;
 }
 
 /** The means of an item for people: each part, its kinds written out. */
@@ -148,6 +244,14 @@ export function describe(it) {
 
 const show = (x) => (Array.isArray(x) ? (x.length ? x.join(', ') : 'none') : x === undefined || x === null ? 'nothing' : typeof x === 'boolean' ? (x ? 'yes' : 'no') : String(x));
 
+/** The checker's questions about one item, where both sides' means say where they were read from (moduleMeans). */
+function askerOf(b, a) {
+  const sb = b?.[MEANS_SIDE], sa = a?.[MEANS_SIDE];
+  if (!sb || !sa || sb.name !== sa.name || sb.side.moduleId !== sa.side.moduleId || sb.side.tree === sa.side.tree) return null;
+  const confirm = makeConfirm(sb.side.tree, sa.side.tree, sb.side.moduleId);
+  return { same: (part) => confirm.same(sb.name, part), acceptsMore: () => confirm.acceptsMore(sb.name) };
+}
+
 /**
  * Compares the means of one item before and after: the parts that differ, each with its word, and the one-line why.
  * Returns null where nothing differs.
@@ -162,10 +266,14 @@ export function compareItem(b, a) {
   // Iteration 5 (rule 33): an added overload that keeps every old signature only accepts more.
   const sigPairs = (accepts, handsBack) => (accepts?.k === 'overloads' ? accepts.of.map((p, i) => JSON.stringify([p, handsBack?.of?.[i]])) : accepts?.k === 'params' ? [JSON.stringify([accepts, handsBack])] : null);
   const pb = sigPairs(ba, bh), pa = sigPairs(a.accepts, a.handsBack);
+  // Where the written forms differ, the type checker is asked about the declarations themselves (makeConfirm): a part
+  // it finds the same is unchanged (a kind's name given or dropped, a type parameter renamed); one it confirms accepts
+  // more, where the written forms cannot show it (a function handed in that is handed less), accepts more.
+  const ask = askerOf(b, a);
   if (pb && pa && (ba?.k === 'overloads' || a.accepts?.k === 'overloads') && pb.length < pa.length && pb.every((x, i) => pa[i] === x)) differ('accepts more', render(ba), render(a.accepts));
   else {
-    if (!same(ba ?? null, a.accepts ?? null)) differ(standsIn(ba ?? null, a.accepts ?? null) ? 'accepts more' : 'cannot stand in', ba, a.accepts, (u) => (u ? render(u) : 'nothing'));
-    if (!same(bh ?? null, a.handsBack ?? null)) differ('hands back differently', bh, a.handsBack, (u) => (u ? render(u) : 'nothing'));
+    if (!same(ba ?? null, a.accepts ?? null) && !ask?.same('accepts')) differ(standsIn(ba ?? null, a.accepts ?? null) || ask?.acceptsMore() ? 'accepts more' : 'cannot stand in', ba, a.accepts, (u) => (u ? render(u) : 'nothing'));
+    if (!same(bh ?? null, a.handsBack ?? null) && !ask?.same('handsBack')) differ('hands back differently', bh, a.handsBack, (u) => (u ? render(u) : 'nothing'));
   }
   if (!!a.optional && !b.optional) differ('may now be missing', false, true);
   if (!same(b.bounds ?? [], a.bounds ?? [])) differ('bound changed', b.bounds ?? [], a.bounds ?? []);

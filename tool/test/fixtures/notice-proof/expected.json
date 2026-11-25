@@ -21,9 +21,11 @@
   "now told: an item ARCH's placed work names": 36,
   "firstCommentsStep retired": 1,
   "needs: a break found by running the user's own tests": 13,
-  "no longer told of a kind changed member by member, whose changed members it does not use": 16,
-  "no longer told of an item told through a kind changed member by member": 1,
-  "now also told of a changed method of a handle kind whose whole value it uses": 90
+  "no longer told of a kind changed member by member, whose changed members it does not use": 9,
+  "no longer told of an item told through a kind changed member by member": 0,
+  "now also told of a changed method of a handle kind whose whole value it uses": 64,
+  "told with other words: what changed, as the type checker finds it or worked out exactly": 20,
+  "told with other reasons and other words: the two joined": 29
  },
  "changes": {
   "P01-price-content": {
@@ -210,7 +212,6 @@
    "told": {
     "door": [
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
@@ -219,25 +220,17 @@
     ],
     "billing": [
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: hands back differently",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: hands back differently",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -253,8 +246,10 @@
     "door was not told, now is told: its uses file names bookings op:bookopen (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (hands back differently); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings Bookings.open (channels, settings or files changed), bookings op:bookquote (channels, settings or files changed); now also told of bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (hands back differently): the items that changed are worked out as the branch on what changed does (no longer bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (hands back differently): the items that changed are worked out as the branch on what changed does (as it tells another module: no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings Bookings.open: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "P06-answer-field-renamed": {
@@ -456,7 +451,6 @@
     "door": [
      "bookings op:bookcancel: hands back differently, channels, settings or files changed",
      "bookings op:bookopen: hands back differently, channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -466,25 +460,20 @@
     "billing": [
      "bookings BookingHandlers.bookcancel: hands back differently, channels, settings or files changed",
      "bookings BookingHandlers.bookopen: hands back differently, channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: hands back differently, channels, settings or files changed",
      "bookings Bookings.find: hands back differently",
      "bookings Bookings.open: hands back differently, channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings BookingHandlers.bookcancel: hands back differently, channels, settings or files changed",
      "bookings BookingHandlers.bookopen: hands back differently, channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: hands back differently, channels, settings or files changed",
      "bookings Bookings.find: hands back differently",
      "bookings Bookings.open: hands back differently, channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
      "bookings op:bookcancel: hands back differently, channels, settings or files changed",
      "bookings op:bookopen: hands back differently, channels, settings or files changed",
      "bookings: a place outside the standard"
@@ -503,8 +492,9 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently, channels, settings or files changed); bookings Bookings.open (hands back differently, channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "door was not told, now is told: its uses file names bookings op:bookcancel (hands back differently, channels, settings or files changed); bookings op:bookopen (hands back differently, channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: no longer told of bookings Booking (added created): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and billing's uses of it are none of those (they read other members, or name it or hold it under a name); now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.find (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: no longer told of bookings Booking (added created): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and front's uses of it are none of those (they read other members, or name it or hold it under a name); now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.find (a method of Bookings), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings Booking (hands back differently), bookings op:bookquote (channels, settings or files changed); now also told of bookings BookingHandlers.bookcancel (hands back differently, channels, settings or files changed), bookings BookingHandlers.bookopen (hands back differently, channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.find (hands back differently): the items that changed are worked out as the branch on what changed does (no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: no longer told of bookings Booking (hands back differently); now also told of bookings BookingHandlers.bookcancel (hands back differently, channels, settings or files changed), bookings BookingHandlers.bookopen (hands back differently, channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.cancel (hands back differently, channels, settings or files changed), bookings Bookings.find (hands back differently), bookings Bookings.open (hands back differently, channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
     "reports, told with other reasons: no longer told of bookings Booking (added created): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name) (build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
@@ -640,7 +630,6 @@
     ],
     "bookings": [
      "money Amount: removed",
-     "money amount: hands back differently",
      "money: a place outside the standard"
     ],
     "door": [
@@ -648,14 +637,10 @@
     ],
     "meter": [
      "money Amount: removed",
-     "money amount: hands back differently",
      "money: a place outside the standard"
     ],
     "billing": [
      "money Amount: removed",
-     "money add: accepts more, hands back differently",
-     "money amount: hands back differently",
-     "money splitEvenly: accepts more, hands back differently",
      "money: a place outside the standard"
     ],
     "front": [
@@ -685,7 +670,10 @@
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "bookings is told with other words (what changed, 25 Nov): no longer money amount: hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "meter is told with other words (what changed, 25 Nov): no longer money amount: hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money add: accepts more, hands back differently; money amount: hands back differently; money splitEvenly: accepts more, hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "P14-meaning-changed-comment-updated": {
@@ -1402,22 +1390,31 @@
    "provider": "bookings",
    "told": {
     "door": [
+     "bookings op:bookquote: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "meter": [
      "bookings: a place outside the standard"
     ],
     "billing": [
+     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
+     "bookings Bookings.quote: channels, settings or files changed",
      "bookings createBookings: channels, settings or files changed",
+     "bookings op:bookquote: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
+     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
+     "bookings Bookings.quote: channels, settings or files changed",
      "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
@@ -1432,8 +1429,10 @@
     "billing was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): now also bookings op:bookquote: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookquote (channels, settings or files changed), bookings Bookings.find (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed), bookings Bookings.quote (channels, settings or files changed), bookings op:bookquote (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (now also bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookquote (channels, settings or files changed), bookings Bookings.find (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed), bookings Bookings.quote (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: now also bookings op:bookquote: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "A03-reexported-function": {
@@ -2495,13 +2494,16 @@
     ],
     "billing": [
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -2515,8 +2517,9 @@
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "billing, told with other reasons and other words, the two joined: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores; and what changed (25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, code it reaches reads, field by name, fields that the code reading the store writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings Bookings.find (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, code it reaches reads, field by name, fields that the code reading the store writes, so that code's channels join its own), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, code it reaches reads, field by name, fields that the code reading the store writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "Y06-channel-line-built-first": {
@@ -2694,44 +2697,20 @@
    "provider": "bookings",
    "told": {
     "door": [
-     "bookings op:bookcancel: channels, settings or files changed",
-     "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
-     "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "meter": [
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings BookingHandlers.bookcancel: channels, settings or files changed",
-     "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
-     "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings: hands back differently",
-     "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
-     "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings BookingHandlers.bookcancel: channels, settings or files changed",
-     "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
-     "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings: hands back differently",
-     "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookcancel: channels, settings or files changed",
-     "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -2743,9 +2722,10 @@
     "billing was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "reports, told with other reasons: no longer told of bookings Bookings (added takings): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name) (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookcancel: channels, settings or files changed; bookings op:bookopen: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed; bookings op:bookstatus: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings Bookings.cancel (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed), bookings op:bookquote (channels, settings or files changed), bookings op:bookstatus (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings Bookings.cancel: channels, settings or files changed; bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed; bookings op:bookstatus: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: no longer told of bookings op:bookcancel (channels, settings or files changed), bookings op:bookopen (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings op:bookcancel: channels, settings or files changed; bookings op:bookopen: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports, told with other reasons and other words, the two joined: no longer told of bookings Bookings (added takings): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name); and what changed (25 Nov): no longer bookings Bookings.cancel: channels, settings or files changed; bookings Bookings.open: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
   "Y11-tests-grouped-with-it": {
@@ -3581,7 +3561,6 @@
     "door": [
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -3591,23 +3570,18 @@
     "billing": [
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
@@ -3626,8 +3600,9 @@
     "billing was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings op:bookquote (channels, settings or files changed); now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.cancel (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
   "Z17-filter-boolean": {
@@ -3852,7 +3827,6 @@
      "money: a place outside the standard"
     ],
     "billing": [
-     "money Tally: cannot stand in",
      "money Tally.sum: hands back differently",
      "money: a place outside the standard"
     ],
@@ -3878,7 +3852,8 @@
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money Tally: cannot stand in: the type checker confirms that money Tally accepts more: the old constructor's arguments are accepted by the new, and what it builds is the same (its static sum is an item of its own, still told) (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "V02-bound-values-in-mapped-list": {
@@ -4056,19 +4031,12 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings Bookings.find: channels, settings or files changed",
-     "bookings bookingHandlers: channels, settings or files changed",
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings Bookings.find: channels, settings or files changed",
-     "bookings bookingHandlers: channels, settings or files changed",
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -4084,8 +4052,9 @@
     "billing was not told, now is told: its uses file names bookings bookingHandlers (channels, settings or files changed); bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings bookingHandlers (channels, settings or files changed); bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R6, S5) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings bookingHandlers (channels, settings or files changed), bookings createBookings (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings bookingHandlers: channels, settings or files changed; bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: no longer told of bookings bookingHandlers (channels, settings or files changed), bookings createBookings (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings bookingHandlers: channels, settings or files changed; bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "V07-write-with-callback": {
@@ -4306,37 +4275,18 @@
    "provider": "bookings",
    "told": {
     "door": [
-     "bookings op:bookcancel: hands back differently",
-     "bookings op:bookopen: hands back differently",
-     "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
     "meter": [
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings BookingHandlers.bookcancel: hands back differently",
-     "bookings BookingHandlers.bookopen: hands back differently",
-     "bookings BookingHandlers.bookstatus: hands back differently",
-     "bookings Bookings.cancel: hands back differently",
-     "bookings Bookings.find: hands back differently",
-     "bookings Bookings.open: hands back differently",
-     "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings BookingHandlers.bookcancel: hands back differently",
-     "bookings BookingHandlers.bookopen: hands back differently",
-     "bookings BookingHandlers.bookstatus: hands back differently",
-     "bookings Bookings.cancel: hands back differently",
-     "bookings Bookings.find: hands back differently",
-     "bookings Bookings.open: hands back differently",
-     "bookings op:bookcancel: hands back differently",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings Bookings.cancel: hands back differently",
-     "bookings Bookings.open: hands back differently",
      "bookings: a place outside the standard"
     ]
    },
@@ -4348,9 +4298,10 @@
     "billing was not told, now is told: its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently); bookings Bookings.open (hands back differently); bookings op:bookstatus (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings Booking (hands back differently); bookings op:bookcancel (hands back differently); bookings op:bookopen (hands back differently); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently); bookings Bookings.open (hands back differently); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: no longer told of bookings Booking (changed state): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and billing's uses of it are none of those (they read other members, or name it or hold it under a name); now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: no longer told of bookings Booking (changed state): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and front's uses of it are none of those (they read other members, or name it or hold it under a name); no longer told of bookings op:bookopen (through Booking): its means differ only inside a kind that changed member by member, so a use that only calls it or names it hears of it by that kind's own uses, each value the call hands back being listed where it stands; now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.find (a method of Bookings), bookings Bookings.open (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "reports, told with other reasons: no longer told of bookings Booking (changed state): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name) (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookcancel: hands back differently; bookings op:bookopen: hands back differently; bookings op:bookstatus: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings Booking (hands back differently), bookings Bookings.cancel (hands back differently), bookings Bookings.open (hands back differently), bookings op:bookstatus (hands back differently): the items that changed are worked out as the branch on what changed does (no longer bookings Booking: hands back differently; bookings Bookings.cancel: hands back differently; bookings Bookings.open: hands back differently; bookings op:bookstatus: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: no longer told of bookings Booking (hands back differently), bookings op:bookcancel (hands back differently), bookings op:bookopen (hands back differently): the items that changed are worked out as the branch on what changed does (no longer bookings Booking: hands back differently; bookings op:bookcancel: hands back differently; bookings op:bookopen: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged) (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports, told with other reasons and other words, the two joined: no longer told of bookings Booking (changed state): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name); and what changed (25 Nov): no longer bookings Booking: hands back differently; bookings Bookings.cancel: hands back differently; bookings Bookings.open: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
   "V14-overload-added": {
@@ -4966,7 +4917,6 @@
      "money: a place outside the standard"
     ],
     "billing": [
-     "money splitEvenly: hands back differently",
      "money: a place outside the standard"
     ],
     "front": [
@@ -4987,7 +4937,8 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names money splitEvenly (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money splitEvenly: hands back differently: the type checker finds its declarations the same before and after (a list kind given a name, the same list), so it is unchanged (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "W15-export-list": {
@@ -5139,7 +5090,6 @@
     "door": [
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -5149,25 +5099,20 @@
     "billing": [
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.find: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.find: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
@@ -5188,8 +5133,9 @@
     "billing was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.find (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.find (a method of Bookings), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings op:bookquote (channels, settings or files changed); now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.find (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.cancel (channels, settings or files changed), bookings Bookings.find (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
   "U02-table-name-in-constant-rows-compact": {
@@ -5204,13 +5150,16 @@
     ],
     "billing": [
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings Bookings.find: channels, settings or files changed",
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -5224,8 +5173,9 @@
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "billing, told with other reasons and other words, the two joined: now also told of bookings Bookings.find (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores; and what changed (25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings Bookings.find (channels, settings or files changed), bookings Bookings.open (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join its own), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U03-coded-error-through-object-assign": {
@@ -5501,7 +5451,6 @@
      "rooms Rooms.find: removed",
      "rooms Rooms.list: removed",
      "rooms createRooms: hands back differently",
-     "rooms roomHandlers: cannot stand in",
      "rooms: a place outside the standard"
     ],
     "front": [
@@ -5510,7 +5459,6 @@
      "rooms Rooms.find: removed",
      "rooms Rooms.list: removed",
      "rooms createRooms: hands back differently",
-     "rooms roomHandlers: cannot stand in",
      "rooms: a place outside the standard"
     ],
     "reports": [
@@ -5538,8 +5486,8 @@
     "billing was not told, now is told: its uses file names rooms Rooms (removed); rooms Rooms.add (removed); rooms createRooms (hands back differently); rooms roomHandlers (cannot stand in); and its uses file lists places outside the standard (rules R1, R14) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names rooms Rooms (removed); rooms Rooms.find (removed); rooms createRooms (hands back differently); rooms roomHandlers (cannot stand in); and its uses file lists places outside the standard (rules R6) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings, told with other reasons: now also told of rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which bookings hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "billing, told with other reasons: now also told of rooms Rooms.find (a method of Rooms), rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of rooms Rooms.add (a method of Rooms), rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
+    "billing, told with other reasons and other words, the two joined: now also told of rooms Rooms.find (a method of Rooms), rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores; and what changed (25 Nov): no longer rooms roomHandlers: cannot stand in: the type checker confirms that rooms roomHandlers accepts more: the old handle is assignable to the new one it now takes (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of rooms Rooms.add (a method of Rooms), rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores; and what changed (25 Nov): no longer rooms roomHandlers: cannot stand in: the type checker confirms that rooms roomHandlers accepts more: the old handle is assignable to the new one it now takes (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
     "reports, told with other reasons: now also told of rooms Rooms.find (a method of Rooms), rooms Rooms.list (a method of Rooms): a changed method of a handle kind reaches the uses of the handle's whole value, which reports hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
@@ -5634,7 +5582,6 @@
      "money Amount: plain data or instance changed",
      "money add: errors that can leave it changed, plain data or instance changed",
      "money amount: errors that can leave it changed, plain data or instance changed",
-     "money formatAmount: plain data or instance changed",
      "money splitEvenly: errors that can leave it changed, plain data or instance changed",
      "money: a place outside the standard"
     ],
@@ -5657,7 +5604,8 @@
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names money Amount (plain data or instance changed); money add (errors that can leave it changed, plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); money formatAmount (plain data or instance changed); money splitEvenly (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names money Amount (plain data or instance changed); and its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money formatAmount: plain data or instance changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (money amount, which builds the amounts formatAmount is handed, and the errors it builds) (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U14-inline-import-to-at-import": {
@@ -5863,20 +5811,18 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings Bookings.find: channels, settings or files changed",
      "bookings Bookings.quote: bound changed, meaning changed (means, named)",
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings op:bookquote: meaning changed (named)",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings Bookings.find: channels, settings or files changed",
      "bookings Bookings.quote: bound changed, meaning changed (means, named)",
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -5891,8 +5837,9 @@
     "front was not told, now is told: its uses file names bookings createBookings (errors that can leave it changed, channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings createBookings (errors that can leave it changed, channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meaning: the items this change names stand for the meaning entries ARCH places in waiting work, since its title states the new value or meaning as its aim (study-changes.md, section 2.7)",
-    "billing, told with other reasons: now also told of bookings Bookings.find (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings Bookings.find (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)"
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings createBookings (errors that can leave it changed, channels, settings or files changed); now also told of bookings Bookings.quote (bound changed, meaning changed (means, named)), bookings createBookings (errors that can leave it changed): the items that changed are worked out as the branch on what changed does (no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: no longer told of bookings createBookings (errors that can leave it changed, channels, settings or files changed); now also told of bookings Bookings.quote (bound changed, meaning changed (means, named)), bookings createBookings (errors that can leave it changed): the items that changed are worked out as the branch on what changed does (no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "T03-unknown-room-refused-in-helper": {
@@ -6170,7 +6117,6 @@
      "bookings BookingOps: hands back differently",
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -6181,13 +6127,9 @@
      "bookings BookingHandlers: hands back differently",
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings: hands back differently",
      "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -6195,19 +6137,15 @@
      "bookings BookingHandlers: hands back differently",
      "bookings BookingHandlers.bookcancel: channels, settings or files changed",
      "bookings BookingHandlers.bookopen: channels, settings or files changed",
-     "bookings BookingHandlers.bookquote: channels, settings or files changed",
      "bookings BookingHandlers.bookstatus: channels, settings or files changed",
      "bookings Bookings: hands back differently",
      "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings Bookings.quote: channels, settings or files changed",
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
      "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -6219,9 +6157,10 @@
     "door was not told, now is told: its uses file names bookings BookingOps (hands back differently); bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "billing, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "front, told with other reasons: now also told of bookings BookingHandlers.bookcancel (a method of BookingHandlers), bookings BookingHandlers.bookopen (a method of BookingHandlers), bookings BookingHandlers.bookquote (a method of BookingHandlers), bookings BookingHandlers.bookstatus (a method of BookingHandlers), bookings Bookings.cancel (a method of Bookings), bookings Bookings.open (a method of Bookings), bookings Bookings.quote (a method of Bookings): a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores (build text 5, section 6; build text 2c, the uses file's value)",
-    "reports, told with other reasons: no longer told of bookings Bookings (added forRoom): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name) (build text 5, section 6; build text 2c, the uses file's value)"
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons and other words, the two joined: no longer told of bookings Bookings.open (channels, settings or files changed), bookings op:bookquote (channels, settings or files changed); now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (no longer bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which billing hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "front, told with other reasons and other words, the two joined: now also told of bookings BookingHandlers.bookcancel (channels, settings or files changed), bookings BookingHandlers.bookopen (channels, settings or files changed), bookings BookingHandlers.bookstatus (channels, settings or files changed), bookings Bookings.cancel (channels, settings or files changed): the items that changed are worked out as the branch on what changed does (as it tells another module: no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure), and, of those, a changed method of a handle kind reaches the uses of the handle's whole value, which front hands on or stores, as the branch on who is told does (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)",
+    "reports, told with other reasons and other words, the two joined: no longer told of bookings Bookings (added forRoom): a kind changed member by member reaches the uses of its whole value and the reads of a member removed, changed or made optional, and reports's uses of it are none of those (they read other members, or name it or hold it under a name); and what changed (25 Nov): no longer bookings Bookings.open: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6; build text 2c, the uses file's value)"
    ]
   },
   "T11-bound-test-assertion-messages": {

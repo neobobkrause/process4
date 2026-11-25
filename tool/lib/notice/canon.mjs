@@ -9,8 +9,9 @@
 // - A kind that still mentions a type parameter (generic code, such as the door) is written as TypeScript prints it.
 // - A kind written by its name in the product keeps its name beside its shape (the means, design part 2, section 7: "its
 //   stated types, expanded through every type they name", names kept, since a user may write the name); a cycle is cut
-//   at a name. A kind joined with & to a plain value (a named kind for a meaningful value, `number & {...}`) keeps
-//   every part. A field stated read-only says so.
+//   at a name. A user that writes a name uses the kind's own entry, so where two forms differ only in a name, the
+//   comparison asks the checker, which finds them the same (notice.mjs, makeConfirm). A kind joined with & to a plain
+//   value (a named kind for a meaningful value, `number & {...}`) keeps every part. A field stated read-only says so.
 import { ts } from './ts.mjs';
 
 const P = (n) => ({ k: 'prim', n });
@@ -140,7 +141,7 @@ export function makeCanon(checker, tree) {
       notePrimitiveKind(p.declarations?.[0], ctx);
       const opt = !!(p.flags & ts.SymbolFlags.Optional);
       let pt = checker.getTypeOfSymbol(p);
-      if (opt) pt = removeUndefined(pt);
+      if (opt) pt = removeOptionalMark(pt, p);
       out.props[p.name] = readOnly(p) ? { opt, ro: true, t: canon(pt, ctx) } : { opt, t: canon(pt, ctx) };
     }
     const idx = checker.getIndexInfosOfType(t);
@@ -181,6 +182,28 @@ export function makeCanon(checker, tree) {
     if (rest.length === t.types.length) return t;
     if (rest.length === 1) return rest[0];
     return { ...t, types: rest, __synthetic: true, flags: t.flags };
+  }
+
+  /**
+   * An optional member's kind without the mark of its being optional. Under the standard's exactOptionalPropertyTypes,
+   * `a?: number` and `a?: number | undefined` are different kinds (the second accepts a stated undefined): the checker
+   * marks the first with its own "missing" undefined, which is removed; a stated undefined is kept. Where the setting is
+   * off, an optional member's undefined is that mark, and is removed, unless its declaration states undefined (then kept:
+   * a change may be reported where none is, never missed).
+   */
+  function removeOptionalMark(t, p) {
+    if (!(t.flags & ts.TypeFlags.Union)) return t;
+    const missing = t.types.filter((m) => m.debugIntrinsicName === 'missing');
+    if (missing.length) {
+      const rest = t.types.filter((m) => !missing.includes(m));
+      return rest.length === 1 ? rest[0] : { ...t, types: rest, __synthetic: true, flags: t.flags };
+    }
+    const d = p.declarations?.[0];
+    const node = d && (d.typeExpression?.type ?? d.type);
+    let stated = null;
+    try { stated = node ? checker.getTypeFromTypeNode(node) : null; } catch { stated = null; }
+    const hasUndefined = (x) => !!x && (x.flags & ts.TypeFlags.Undefined || (x.flags & ts.TypeFlags.Union && x.types.some((m) => m.flags & ts.TypeFlags.Undefined)));
+    return hasUndefined(stated) ? t : removeUndefined(t);
   }
 
   function paramOptional(p) {
