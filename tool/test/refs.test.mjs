@@ -633,10 +633,10 @@ test('u > times itself', () => { console.log(Date.now()); });
   assert.deepEqual(at('S9'), ['src:11']);
   assert.deepEqual(at('R21'), ['src:12']);
   assert.deepEqual(at('R22'), ['test:2']);
-  // a facility the tool classifies as reaching out, used outside a boundary module (a timer stays in the process: R21
-  // is the place of the one started at the top level)
+  // facilities the tool classifies as reaching out (the console, a timer, the clock), used outside a boundary module
   assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses console\.log, which reaches out, outside a boundary module/.test(o.what) && o.side === 'test'));
-  assert.ok(!r.outside.some((o) => o.rule === 'R14' && /setInterval|DateConstructor\.now/.test(o.what)));
+  assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses setInterval, which reaches out, outside a boundary module/.test(o.what) && o.side === 'code'));
+  assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses DateConstructor\.now, which reaches out, outside a boundary module/.test(o.what) && o.side === 'test'));
   assert.ok(r.facilities.includes('SymbolConstructor.for'));
   // a member of the module object named by a choice of written-out names is a use; the cast one is a downcast (R16)
   assert.ok(usesOf(r).some((u) => u.startsWith('p:TITLE')) && usesOf(r).some((u) => u.startsWith('p:OP_PRICE')), usesOf(r).join('; '));
@@ -952,4 +952,38 @@ test('push writes the uses file of the module it changes, from the code as pushe
 test('the reading is attributed by the checker: TypeScript is the pinned version', () => {
   loadReader();
   assert.equal(ts.version, '5.6.3');
+});
+
+// ---- the tool's classification of the host's facilities (build text 2c, "Facilities") ----
+
+test('the host\'s facilities: a clock read, Symbol.for, WeakRef and an unreviewed Node module are places; path.join and structuredClone are not', () => {
+  const root = product(`import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+/** @returns {string} */
+export function where() { return join('a', 'b'); }
+/** @returns {{ n: number }} */
+export function copy() { return structuredClone({ n: 1 }); }
+/** @returns {number} */
+export function when() { return new Date().getTime(); }
+/** @returns {symbol} */
+export function shared() { return Symbol.for('x'); }
+/** @returns {WeakRef<object>} */
+export function weak() { return new WeakRef({}); }
+/** @returns {string} */
+export function temp() { return tmpdir(); }
+/** @returns {number} */
+export function day() { return new Date('2026-11-25T00:00:00Z').getUTCDate(); }
+`);
+  const r = read(root, 'u');
+  const at = (line) => r.outside.filter((o) => o.file === 'src/u/index.mjs' && o.line === line).map((o) => `${o.rule} ${o.what}`);
+  assert.deepEqual(at(4), [], 'path.join stays in the process');
+  assert.deepEqual(at(6), [], 'structuredClone stays in the process');
+  assert.deepEqual(at(8), ['R14 uses Date(), which reaches out, outside a boundary module'], 'the clock');
+  assert.deepEqual(at(10), ['S8 uses SymbolConstructor.for, which no product may use']);
+  assert.ok(at(12).some((x) => /^R14 uses WeakRef.*reaches out, outside a boundary module$/.test(x)), at(12).join('; '));
+  assert.ok(at(14).some((x) => /^R14 uses node:os\.tmpdir, which reaches out, outside a boundary module$/.test(x)), at(14).join('; '));
+  assert.deepEqual(at(16), [], 'a date from its arguments, read in UTC, stays in the process');
+  // the test runner, outside the module's tests
+  const t = read(product("import { test } from 'node:test';\n/** @returns {void} */\nexport function x() { test('a', () => {}); }\n"), 'u');
+  assert.ok(t.outside.some((o) => o.rule === 'R14' && /the test runner's, outside the module's tests/.test(o.what)), JSON.stringify(t.outside));
 });

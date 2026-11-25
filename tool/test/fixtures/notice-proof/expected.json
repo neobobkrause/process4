@@ -9,12 +9,12 @@
  ],
  "totals": {
   "needed": 112,
-  "told": 903,
-  "toldWithoutNeed": 791,
+  "told": 958,
+  "toldWithoutNeed": 846,
   "neededAndMissed": 0
  },
  "rerecordedCounts": {
-  "now told: a place outside the standard, on any change": 615,
+  "now told: a place outside the standard, on any change": 670,
   "told with other words": 116,
   "now told: a changed item its uses file names": 136,
   "meaning named by ARCH's placed work": 17,
@@ -63,6 +63,9 @@
     "store": [
      "text-rules: a place outside the standard"
     ],
+    "rooms": [
+     "text-rules: a place outside the standard"
+    ],
     "bookings": [
      "text-rules: a place outside the standard"
     ],
@@ -87,6 +90,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -103,6 +107,9 @@
      "text-rules: a place outside the standard"
     ],
     "store": [
+     "text-rules: a place outside the standard"
+    ],
+    "rooms": [
      "text-rules: a place outside the standard"
     ],
     "bookings": [
@@ -135,6 +142,7 @@
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules titleCase (removed); and its uses file lists places outside the standard (rules R6) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -150,6 +158,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -182,6 +193,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money splitEvenly (removed); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -363,7 +375,8 @@
    "provider": "store",
    "told": {
     "rooms": [
-     "store Store.put: cannot stand in, errors that can leave it changed"
+     "store Store.put: cannot stand in, errors that can leave it changed",
+     "store: a place outside the standard"
     ],
     "bookings": [
      "store Store.put: cannot stand in, errors that can leave it changed",
@@ -390,7 +403,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store.put (cannot stand in, errors that can leave it changed)",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store.put (cannot stand in, errors that can leave it changed); and its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store.put (cannot stand in, errors that can leave it changed); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names store seededStore (cannot stand in, errors that can leave it changed); and its uses file lists places outside the standard (rules R6) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -502,6 +515,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: bound changed, meaning changed (means, named)",
      "money amount: bound changed",
@@ -543,6 +559,7 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and bookings Booking (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.cancel (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.open (bound changed) is not a changed item: its means are the same; what changed was its written description; \"not followed fully\" is retired with decision 3B",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meaning: the items this change names stand for the meaning entries ARCH places in waiting work, since its title states the new value or meaning as its aim (study-changes.md, section 2.7)"
    ]
@@ -555,6 +572,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -603,6 +623,7 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and bookings Booking (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.cancel (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.open (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; \"not followed fully\" is retired with decision 3B",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
    ]
   },
@@ -686,6 +707,9 @@
     "store": [
      "text-rules: a place outside the standard"
     ],
+    "rooms": [
+     "text-rules: a place outside the standard"
+    ],
     "bookings": [
      "text-rules: a place outside the standard"
     ],
@@ -715,6 +739,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -867,7 +892,8 @@
    "provider": "store",
    "told": {
     "rooms": [
-     "store Store: hands back differently"
+     "store Store: hands back differently",
+     "store: a place outside the standard"
     ],
     "bookings": [
      "store Store: hands back differently",
@@ -895,7 +921,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms was not told, now is told: its uses file names store Store (hands back differently)",
+    "rooms was not told, now is told: its uses file names store Store (hands back differently); and its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names store Store (hands back differently); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -909,6 +935,9 @@
    "provider": "calendar",
    "told": {
     "store": [
+     "calendar: a place outside the standard"
+    ],
+    "rooms": [
      "calendar: a place outside the standard"
     ],
     "bookings": [
@@ -938,6 +967,7 @@
    "rerecorded": [
     "firstCommentsStep: retired; a comments-only first step tells no one because an unknown kind becoming known is not a change of the means; a conversion's first means tell no one (decision C, \"Describing is not changing\")",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names calendar parseDay (bound changed); and its uses file lists places outside the standard (rules R1) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -951,6 +981,9 @@
    "provider": "calendar",
    "told": {
     "store": [
+     "calendar: a place outside the standard"
+    ],
+    "rooms": [
      "calendar: a place outside the standard"
     ],
     "bookings": [
@@ -977,6 +1010,7 @@
    "rerecorded": [
     "bookings was told, now is told with other words: the words are the parts of the means that changed; its uses file names calendar addDays (bound changed, errors that can leave it changed)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -992,6 +1026,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -1024,6 +1061,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money splitEvenly (hands back differently); and its uses file lists places outside the standard (rules R1, R14, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1039,6 +1077,9 @@
      "text-rules: a place outside the standard"
     ],
     "store": [
+     "text-rules: a place outside the standard"
+    ],
+    "rooms": [
      "text-rules: a place outside the standard"
     ],
     "bookings": [
@@ -1065,6 +1106,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1123,6 +1165,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: cannot stand in, hands back differently, bound changed",
      "money amount: hands back differently, bound changed",
@@ -1172,6 +1217,7 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and bookings Booking (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.cancel (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.open (hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description; \"not followed fully\" is retired with decision 3B",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
    ]
   },
@@ -1179,6 +1225,9 @@
    "series": "planned",
    "provider": "store",
    "told": {
+    "rooms": [
+     "store: a place outside the standard"
+    ],
     "bookings": [
      "store: a place outside the standard"
     ],
@@ -1207,6 +1256,7 @@
    ],
    "rerecorded": [
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names store seededStore (cannot stand in); and its uses file lists places outside the standard (rules R6) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1221,7 +1271,8 @@
     "rooms": [
      "store Store: hands back differently",
      "store Store.get: removed",
-     "store createStore: errors that can leave it changed"
+     "store createStore: errors that can leave it changed",
+     "store: a place outside the standard"
     ],
     "bookings": [
      "store Store: hands back differently",
@@ -1260,7 +1311,7 @@
     "bookings"
    ],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed)",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1315,7 +1366,8 @@
      "text-rules: a place outside the standard"
     ],
     "rooms": [
-     "text-rules slugify: bound changed, meaning changed (means, named)"
+     "text-rules slugify: bound changed, meaning changed (means, named)",
+     "text-rules: a place outside the standard"
     ],
     "bookings": [
      "text-rules: a place outside the standard"
@@ -1343,7 +1395,7 @@
     "front"
    ],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (bound changed, meaning changed; named by ARCH's placed work)",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (bound changed, meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (bound changed, meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R6) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1389,6 +1441,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -1417,6 +1472,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money splitEvenly (errors that can leave it changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1541,6 +1597,9 @@
     "store": [
      "text-rules: a place outside the standard"
     ],
+    "rooms": [
+     "text-rules: a place outside the standard"
+    ],
     "bookings": [
      "text-rules: a place outside the standard"
     ],
@@ -1565,6 +1624,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1648,7 +1708,7 @@
     "bookings"
    ],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1, R2, S3, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1, R14, R2, S3, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "bookings was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file names store Store (hands back differently); store Store.get (removed); store createStore (errors that can leave it changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1665,6 +1725,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -1713,6 +1776,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money Amount (cannot stand in, hands back differently, bound changed); money add (cannot stand in, hands back differently, bound changed); money amount (hands back differently, bound changed); money formatAmount (cannot stand in, bound changed); money splitEvenly (cannot stand in, hands back differently, bound changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and meter MeterMsg (cannot stand in, hands back differently, bound changed) is not a changed item: its means are the same; what changed was its written description",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
@@ -1726,6 +1790,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -1756,6 +1823,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1868,7 +1936,8 @@
    "provider": "store",
    "told": {
     "rooms": [
-     "store Store.put: accepts more, errors that can leave it changed, type error in its code"
+     "store Store.put: accepts more, errors that can leave it changed, type error in its code",
+     "store: a place outside the standard"
     ],
     "bookings": [
      "store Store.put: accepts more, errors that can leave it changed, type error in its code",
@@ -1895,7 +1964,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms was not told, now is told: its uses file names store Store.put (accepts more, errors that can leave it changed, type error in its code)",
+    "rooms was not told, now is told: its uses file names store Store.put (accepts more, errors that can leave it changed, type error in its code); and its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names store Store.put (accepts more, errors that can leave it changed, type error in its code); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -1912,6 +1981,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -1953,6 +2025,7 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and bookings Booking (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.cancel (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.open (bound changed) is not a changed item: its means are the same; what changed was its written description; \"not followed fully\" is retired with decision 3B",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
    ]
   },
@@ -2151,6 +2224,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: plain data or instance changed",
      "money amount: plain data or instance changed",
@@ -2193,6 +2269,7 @@
     "needs: front added, a break found by running front's own tests before and after the change, which the proof's reading lacked (process/research/uses-metadata-25nov/proof.md, section 1.3)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2340,6 +2417,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: meaning changed (named)",
      "money: a place outside the standard"
@@ -2370,6 +2450,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2387,6 +2468,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -2430,6 +2514,7 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and bookings Booking (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.cancel (bound changed) is not a changed item: its means are the same; what changed was its written description; bookings Bookings.open (bound changed) is not a changed item: its means are the same; what changed was its written description; \"not followed fully\" is retired with decision 3B",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meaning: the items this change names stand for the meaning entries ARCH places in waiting work, since its title states the new value or meaning as its aim (study-changes.md, section 2.7)"
    ]
@@ -2523,6 +2608,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -2547,6 +2635,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2565,6 +2654,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -2589,6 +2681,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2605,6 +2698,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -2637,6 +2733,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money Tally (cannot stand in); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2691,6 +2788,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: meaning changed (named)",
      "money: a place outside the standard"
@@ -2721,6 +2821,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2788,6 +2889,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: plain data or instance changed",
      "money amount: plain data or instance changed",
@@ -2831,6 +2935,7 @@
     "needs: front added, a break found by running front's own tests before and after the change, which the proof's reading lacked (process/research/uses-metadata-25nov/proof.md, section 1.3)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2925,6 +3030,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -2953,6 +3061,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money formatAmount (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -2968,6 +3077,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -3000,6 +3112,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money sum (cannot stand in); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3015,6 +3128,9 @@
      "text-rules: a place outside the standard"
     ],
     "store": [
+     "text-rules: a place outside the standard"
+    ],
+    "rooms": [
      "text-rules: a place outside the standard"
     ],
     "bookings": [
@@ -3047,6 +3163,7 @@
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules listWords (cannot stand in, arguments written into changed); and its uses file lists places outside the standard (rules R6) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3101,7 +3218,8 @@
      "text-rules: a place outside the standard"
     ],
     "rooms": [
-     "text-rules slugify: bound changed, meaning changed (means, named)"
+     "text-rules slugify: bound changed, meaning changed (means, named)",
+     "text-rules: a place outside the standard"
     ],
     "bookings": [
      "text-rules: a place outside the standard"
@@ -3127,7 +3245,7 @@
     "rooms"
    ],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (bound changed, meaning changed; named by ARCH's placed work)",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (bound changed, meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3147,6 +3265,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -3179,6 +3300,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money Tally.sum (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and money Tally (declaration changed (not classified)) is not a changed item: its means are the same; what changed was its written description",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3228,6 +3350,9 @@
     "store": [
      "calendar: a place outside the standard"
     ],
+    "rooms": [
+     "calendar: a place outside the standard"
+    ],
     "bookings": [
      "calendar: a place outside the standard"
     ],
@@ -3254,6 +3379,7 @@
    ],
    "rerecorded": [
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3390,6 +3516,9 @@
     "store": [
      "text-rules: a place outside the standard"
     ],
+    "rooms": [
+     "text-rules: a place outside the standard"
+    ],
     "bookings": [
      "text-rules: a place outside the standard"
     ],
@@ -3416,6 +3545,7 @@
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules isEmail (bound changed); and its uses file lists places outside the standard (rules R6) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3463,6 +3593,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -3487,6 +3620,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3503,6 +3637,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -3536,6 +3673,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money Tally (cannot stand in); money Tally.sum (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3603,6 +3741,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: plain data or instance changed",
      "money amount: plain data or instance changed",
@@ -3646,6 +3787,7 @@
     "needs: front added, a break found by running front's own tests before and after the change, which the proof's reading lacked (process/research/uses-metadata-25nov/proof.md, section 1.3)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3662,6 +3804,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -3691,6 +3836,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3770,6 +3916,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -3794,6 +3943,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -3987,6 +4137,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -4011,6 +4164,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4029,6 +4183,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -4053,6 +4210,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4226,6 +4384,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -4254,6 +4415,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file names money formatAmount (cannot stand in, hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4272,7 +4434,8 @@
      "text-rules: a place outside the standard"
     ],
     "rooms": [
-     "text-rules slugify: errors that can leave it changed"
+     "text-rules slugify: errors that can leave it changed",
+     "text-rules: a place outside the standard"
     ],
     "bookings": [
      "text-rules: a place outside the standard"
@@ -4296,7 +4459,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (errors that can leave it changed)",
+    "rooms was told, now is told with other words: the words are the parts of the means that changed; its uses file names text-rules slugify (errors that can leave it changed); and its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4386,7 +4549,8 @@
      "text-rules: a place outside the standard"
     ],
     "rooms": [
-     "text-rules slugify: channels, settings or files changed"
+     "text-rules slugify: channels, settings or files changed",
+     "text-rules: a place outside the standard"
     ],
     "bookings": [
      "text-rules: a place outside the standard"
@@ -4414,7 +4578,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
-    "rooms was not told, now is told: its uses file names text-rules slugify (channels, settings or files changed)",
+    "rooms was not told, now is told: its uses file names text-rules slugify (channels, settings or files changed); and its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4464,6 +4628,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -4489,6 +4656,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4537,6 +4705,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -4562,6 +4733,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4578,6 +4750,9 @@
      "text-rules: a place outside the standard"
     ],
     "store": [
+     "text-rules: a place outside the standard"
+    ],
+    "rooms": [
      "text-rules: a place outside the standard"
     ],
     "bookings": [
@@ -4604,6 +4779,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4617,7 +4793,8 @@
    "provider": "store",
    "told": {
     "rooms": [
-     "store Store: hands back differently"
+     "store Store: hands back differently",
+     "store: a place outside the standard"
     ],
     "bookings": [
      "store Store: hands back differently",
@@ -4645,7 +4822,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms was not told, now is told: its uses file names store Store (hands back differently)",
+    "rooms was not told, now is told: its uses file names store Store (hands back differently); and its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names store Store (hands back differently); and its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4662,6 +4839,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -4694,6 +4874,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -4873,6 +5054,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: meaning changed (named)",
      "money: a place outside the standard"
@@ -4903,6 +5087,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5074,6 +5259,9 @@
    "series": "round7-independent",
    "provider": "store",
    "told": {
+    "rooms": [
+     "store: a place outside the standard"
+    ],
     "bookings": [
      "store: a place outside the standard"
     ],
@@ -5096,6 +5284,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5137,6 +5326,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: plain data or instance changed",
      "money amount: errors that can leave it changed, plain data or instance changed",
@@ -5171,6 +5363,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5183,6 +5376,9 @@
    "series": "round7-independent",
    "provider": "store",
    "told": {
+    "rooms": [
+     "store: a place outside the standard"
+    ],
     "bookings": [
      "store: a place outside the standard"
     ],
@@ -5205,6 +5401,7 @@
    "refuses": [],
    "needs": [],
    "rerecorded": [
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to store, which hear of any change to store's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5221,6 +5418,9 @@
      "text-rules: a place outside the standard"
     ],
     "store": [
+     "text-rules: a place outside the standard"
+    ],
+    "rooms": [
      "text-rules: a place outside the standard"
     ],
     "bookings": [
@@ -5247,6 +5447,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5263,6 +5464,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -5289,6 +5493,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5431,6 +5636,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -5459,6 +5667,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5498,6 +5707,9 @@
     "store": [
      "calendar: a place outside the standard"
     ],
+    "rooms": [
+     "calendar: a place outside the standard"
+    ],
     "door": [
      "calendar: a place outside the standard"
     ],
@@ -5521,6 +5733,7 @@
    ],
    "rerecorded": [
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to calendar, which hear of any change to calendar's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5570,6 +5783,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money Amount: meaning changed (named)",
      "money: a place outside the standard"
@@ -5600,6 +5816,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file names money Amount (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5691,6 +5908,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -5715,6 +5935,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5731,6 +5952,9 @@
      "money: a place outside the standard"
     ],
     "store": [
+     "money: a place outside the standard"
+    ],
+    "rooms": [
      "money: a place outside the standard"
     ],
     "bookings": [
@@ -5758,6 +5982,7 @@
     "billing was told, now is told with other words: the words are the parts of the means that changed; its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6); and money splitEvenly (declaration changed (not classified)) is not a changed item: its means are the same; what changed was its written description",
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5776,7 +6001,8 @@
      "text-rules: a place outside the standard"
     ],
     "rooms": [
-     "text-rules slugify: channels, settings or files changed"
+     "text-rules slugify: channels, settings or files changed",
+     "text-rules: a place outside the standard"
     ],
     "bookings": [
      "text-rules: a place outside the standard"
@@ -5804,7 +6030,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
-    "rooms was not told, now is told: its uses file names text-rules slugify (channels, settings or files changed)",
+    "rooms was not told, now is told: its uses file names text-rules slugify (channels, settings or files changed); and its uses file lists places outside the standard (rules R14) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to text-rules, which hear of any change to text-rules's files until converted (design part 2, section 7; build text 5, section 6)",
@@ -5867,6 +6093,9 @@
     "store": [
      "money: a place outside the standard"
     ],
+    "rooms": [
+     "money: a place outside the standard"
+    ],
     "bookings": [
      "money: a place outside the standard"
     ],
@@ -5891,6 +6120,7 @@
    "rerecorded": [
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "bookings was not told, now is told: its uses file lists places outside the standard (rules R1) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",

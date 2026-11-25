@@ -27,7 +27,7 @@ let HOST_FACILITIES = null;
 export function hostFacilities() {
   if (!HOST_FACILITIES) {
     const d = JSON.parse(fs.readFileSync(fileURLToPath(new URL('./facilities.json', import.meta.url)), 'utf8'));
-    HOST_FACILITIES = new Map([...d.in.map((n) => [n, 'in']), ...d.out.map((n) => [n, 'out'])]);
+    HOST_FACILITIES = new Map([...d.in.map((n) => [n, 'in']), ...(d.tests ?? []).map((n) => [n, 'tests']), ...d.out.map((n) => [n, 'out'])]);
   }
   return HOST_FACILITIES;
 }
@@ -44,8 +44,23 @@ const NEVER = new Map([
   ['SymbolConstructor.for', 'S8'], ['SymbolConstructor.keyFor', 'S8'], ['eval', 'S9'], ['Function', 'S9'],
   ['FunctionConstructor', 'S9'], ['Object.constructor', 'S9'], ['"node:vm"', 'S9'], ['"node:module".register', 'S2'],
   ['"node:module".registerHooks', 'S2'], ['ErrorConstructor.prepareStackTrace', 'R14'], ['ErrorConstructor.stackTraceLimit', 'R14'],
+  ['"node:inspector"', 'R14'], ['BufferConstructor.allocUnsafe', 'R14'], ['BufferConstructor.allocUnsafeSlow', 'R14'],
 ]);
 const REGEXP_STATIC = /^RegExpConstructor\.(\$\d|\$_|input|lastMatch|lastParen|leftContext|rightContext|\$&|\$\+|\$`|\$')$/;
+/**
+ * The rule a facility that is never on any list breaks (study-references.md 1.5), or null: by its qualified name, a
+ * module's name with or without its quotes. The tool's classification (facilities-build.mjs) leaves these out.
+ */
+export function neverRule(name) {
+  const q = name.replace(/^(node:[^.]+)/, '"$1"');
+  for (const n of [name, q]) {
+    if (NEVER.has(n)) return NEVER.get(n);
+    if (REGEXP_STATIC.test(n)) return 'S8';
+    const k = [...NEVER.keys()].find((x) => n.startsWith(`${x}.`));
+    if (k) return NEVER.get(k);
+  }
+  return null;
+}
 /** Named process-wide channels (S8). */
 const CHANNELS = new Set(['"node:diagnostics_channel".channel', '"node:worker_threads".BroadcastChannel', '"node:worker_threads".setEnvironmentData', '"node:worker_threads".getEnvironmentData', 'NodeProcess.on', 'NodeProcess.once', 'NodeProcess.emit']);
 /** Activity a module's evaluation must not start (R21), and what a test may not rely on (R22). */
@@ -308,13 +323,17 @@ export function readReferences(tree, moduleId, opts = {}) {
   const boundaryModules = facilityList?.boundary ?? new Set();
   const isBoundaryModule = boundaryModules.has(mod.id);
   function facility(node, sym, { write = false } = {}) {
-    const name = facilityName(sym);
+    let name = facilityName(sym);
     if (!name) return null;
+    // the clock: Date() called, or new Date() with no argument (ECMA-262 21.4.2.1)
+    const par = node.parent;
+    if (name === 'Date' && par && par.expression === node && (ts.isCallExpression(par) || (ts.isNewExpression(par) && !(par.arguments?.length)))) name = 'Date()';
     const shown = listName(name);
     inventory.add(shown);
-    const never = NEVER.get(name) ?? (REGEXP_STATIC.test(name) ? 'S8' : null) ?? ([...NEVER.keys()].find((k) => name.startsWith(`${k}.`)) ? NEVER.get([...NEVER.keys()].find((k) => name.startsWith(`${k}.`))) : null);
+    const never = neverRule(name);
     if (never) place(never, node, { what: `uses ${shown}, which no product may use`, waitsOn: 'this module' });
     else if (write) place('R14', node, { what: `writes ${shown}, a member the host declares` });
+    else if (reachOf(name) === 'tests') { if (!mod.tests.includes(node.getSourceFile().fileName)) place('R14', node, { what: `uses ${shown}, the test runner's, outside the module's tests`, waitsOn: 'this module' }); }
     else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, which neither the tool's classification of the host nor the facility list names`, waitsOn: 'ARCH: the facility list' });
     else if (reachOf(name) === 'out' && !isBoundaryModule) place('R14', node, { what: `uses ${shown}, which reaches out, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
     return name;
