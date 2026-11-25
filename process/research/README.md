@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `notify-1356-anything-to-stated-25nov.md` — setup-words' merge: comments that state kinds once inferred as "anything" changed 164 later listings and told 198; a 422 whose reason was lost; a notice to a job merged the same moment; options A to C, B recommended (unknown becoming known tells no one).
 - `notify-rerun-repeats-25nov.md` — re-running `notify 1350` on the fixed tool still told 125 (a `registerDeclared` hand-back change, not only accepts-more; real or inferred not yet known) and repeated the notice for ten finished jobs; the repeat is a tool fault (skip jobs of any state that carried it).
 - `ready-on-ready-pr-25nov.md` — civicsmith store-request #4: `p4 ready` on a pull request already ready or merged answered with a GraphQL refusal; nothing lost; decision B (say plainly, drop the fallback), 25 Nov.
 - `not-followed-told-everything-25nov.md` — `notify 1350` (an optional parameter added to test-support) told 121 modules, nearly all "not followed fully"; build text 5 tells such a user of any change, against "Accepting more tells no one"; decision B: such a user is told only of a change that tells users; slots above the number, information.
