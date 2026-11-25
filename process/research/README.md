@@ -6,7 +6,7 @@ a file, or gives it to a worker, when a question needs it. One line for each fil
 
 ## 25 Nov 2026
 - `notify-slow-early-provider-25nov.md` — `notify` after record-grammar's merge ran 38 minutes and 8 GB on civicsmith without a notice; ARCH holds six merges meanwhile; research questions, no options yet; the tranche drawing in modules.
-- `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche (PROCESS #11's own choice in the update); options A to C, not yet put to the owner.
+- `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche; what failed (only `check`, on a field record-grammar's merged job had stated), the cost (a wasted run counted as failed); options A to C, B recommended (`p4 test` merges the tranche in first); put to the owner by PROCESS #12.
 
 ## 24 Nov 2026
 - `move-with-new-workflow-24nov.md` — civicsmith's move to the update failed as one pull request (the new workflow ran the old tool the base names) and passed as two in order; options A and B (say the order).
