@@ -2,7 +2,7 @@ Length: 125 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
-Sections 5 and 6 of build text 2, kept in their own file so that each stays under 24,000 bytes; their numbers are kept. Sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, section 10, the coding standard, in `02c-the-coding-standard.md`; whose section 1 says what was proven and names the proof; "proof:" paths below are in its folder. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It adds no check, gate, review or stop; where it and the design (`design/`) differ, the design rules.
+Sections 5 and 6 of build text 2, kept in their own file so that each stays under 24,000 bytes; their numbers are kept. Sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, whose section 1 names the proof ("proof:" paths below are in its folder), and section 10, the coding standard, in `02c-the-coding-standard.md`. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It adds no check, gate, review or stop; where it and the design (`design/`) differ, the design rules.
 
 Marks: **Decided here:** a choice made in this text, with what it gives and what it costs. **Unproven:** never shown to work in this form. Every example is made up: a product in plain JavaScript with modules `dates`, `pricing` and `orders`.
 

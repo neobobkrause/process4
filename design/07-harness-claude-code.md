@@ -1,6 +1,6 @@
 # Part 7. The harness table for Claude Code
 
-Length: 87 lines. Last section: "5. The permissions-management settings".
+Length: 85 lines. Last section: "5. The permissions-management settings".
 
 Everything in this part is specific to Claude Code.
 
@@ -51,8 +51,8 @@ As measured on Claude Code:
 - Why the cloud once handed a session a copy of its branch about an hour old, and whether it still does.
 - Whether approvals that reach a session after its start count the same as approvals read at the start.
 - Whether a session's browser can reach the development site.
-- Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice, as "Destructive or Unwanted Actions" and "Undermining Oversight"). PROCESS is therefore started and refreshed by the owner, not by ROOT (part 4, section 5; part 6, section 7).
-- A cross-repository read of another repository's shared state is refused. A session is scoped to its own repository; a `gh api` read of another repository's issue returns HTTP 403 ("GitHub access to this repository is not enabled for this session"), even for a public repository, measured in both directions (a product session reading the process repository, and the reverse). A plain `git` clone of the public process repository works (the session's copy of the process); only the `gh api` read of its issue — where the shared state lives — is refused. So the coordinator finds the live PROCESS from its own product's roles record, kept current by a cross-repository message, not by reading the process repository (part 4, section 5; part 6, section 7).
+- Whether a session can create or archive a session on another repository. Cross-repository messaging between roles worked once the permissions-management settings (section 5) were in place; but a cross-repository session-lifecycle act was still refused with those settings in place (ROOT archiving the process-repository PROCESS session was refused twice, as "Destructive or Unwanted Actions" and "Undermining Oversight").
+- A cross-repository read of another repository's shared state is refused. A session is scoped to its own repository; a `gh api` read of another repository's issue returns HTTP 403 ("GitHub access to this repository is not enabled for this session"), even for a public repository, measured in both directions (a product session reading the process repository, and the reverse). A plain `git` clone of the public process repository works (the session's copy of the process); only the `gh api` read of its issue — where the shared state lives — is refused.
 - Whether a session can reach a session under a **different Claude account**. Session-to-session acts are scoped to one account by the harness's own tools — creating a session requires the same account, and a listing shows only the account's own sessions — so a cross-account reach (messaging, listing, create, archive) is treated as unavailable. PROCESS and the products it serves therefore run under one account, and an account switch moves them together (build text 6, section 1). Not measured directly across two accounts.
 - How many live sessions the account bears. New starts once failed silently at about fifty.
 - Whether a program goes on reaching GitHub from a session at a real rate. With the ordinary push and every `gh` command refused to the session itself, a script run with `node` that started `gh` and `git` read the repository's pull requests, opened an issue, wrote and rewrote a comment in place, and pushed a branch, acting as the sessions' account. GitHub's other interface (GraphQL) was refused by the session's route; only REST calls work. The owner received no email from GitHub about the issue or its rewritten comment.
@@ -73,8 +73,6 @@ Before these acts PROCESS starts the product's onboarding lane (part 6, section 
 8. Do the same for the product, in a plain session he starts on the product's repository for this one act, with the lane's brief. Before the product has a coordinator, that session drafts the product's approvals (part 6, section 2). It also writes the product's first Process4 files — `process.json`, the module list, the required-run workflow and the copy of the forbidden commands — by pull request into main, and then makes the tranche branch from main's newest commit, also where main already holds an earlier history.
 9. Start ROOT: the product's repository alone, the tranche branch, Auto mode, a plain prompt.
 10. Once the required run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing, replacing any check an earlier process required there.
-
-Act 10 was done before act 9 on the trial.
 
 ## 5. The permissions-management settings
 

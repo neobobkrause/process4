@@ -78,15 +78,15 @@ The tool decides both, because each has one right answer:
 - **Which tests relate.** The tool picks them, not the job. The notice carries the places in the told module that its uses file names for the changed items. The related tests are the module's test files that hold such a place, or reach code that holds one, or reach code the told job itself changed, together with any test file the job changed. They are chosen by whole test file.
 - A job is a told job only when notices are its module's only work. A module with other work as well has an ordinary job, which reads the notice's uses and whose whole module's tests run.
 - **The scope.** The tool sets it: nothing, the related tests, or the whole module. It works the list out itself, so the job supplies nothing. An ordinary job runs the whole module; a told job runs the related tests; a job that changed no running code runs nothing.
-- A told job that finds nothing to change records that in its pull request and closes it unmerged. No test runs, because nothing changed.
+- A told job that finds nothing to change closes as section 4 says, and runs no test.
 - Three points on what the owner's rule means: a told job's own edits count among "the changed parts"; tests are chosen by whole file; and where the tool cannot follow a told module's code inside it, or the module has no uses file yet, that module's whole tests run.
 - **Unproven:** the tool's reading under the standard, the means and the uses files, built from this design and not yet run on a real product; and that the tool can follow from a use to the tests that reach it inside a module. What it costs to bring a product's code into the standard is measured by the first pass of eight real modules.
 - **When the module list changes.** A change to the list sends no notice of itself. Where it moves an item between modules, splits a module or renames a provider, the tool rewrites, in the same change, the uses files of the modules touched and of every user that names a moved or renamed item. An item moved counts as removed from one module and new in the other, so its users are told. Where only a provider's name changes for its users, their code is changed by a mechanical edit.
 
 Rules for the tool that finds the change:
 
-1. Which items of a provider a user uses is worked out by the tool from the user's code and tests, kept to the coding standard, and recorded in the user's uses file. The tool reads the files to find users.
-2. A place outside the standard is told of every change of the modules it may refer to, until a job converts it; where the tool cannot say which, of every earlier module.
+1. Users are found by reading their uses files (above).
+2. A place outside the standard is told as above, until a job converts it; where the tool cannot say which modules it may refer to, it may refer to every earlier one.
 3. A bound that a kind of value cannot express is written on its own marked line in the comment. A change to those words is a change to the interface. In the owner's words: "If those words are changing, then there must be a reason why. It must be that that interface is changing, right?"
 4. Code that checks or builds what crosses a module's interface says, in a comment, which kind it checks or builds.
 5. Calls made by name go through a table: each provider publishes one table of its operations, the tables are gathered into one list, and a call by name uses a written-out name through that table.
@@ -104,7 +104,7 @@ Which language reader the tool uses is a fact of the product, named in its proce
 
 ## 9. Changes that are not a job's
 
-- **The mechanical edit.** A worker in ARCH's session makes it as one change covering every affected module, with each touched module's uses file rewritten by the tool (section 7), and it is merged once; and the moment: when no job is open, between a round's last merge and its internal walk. ARCH's session tests it as section 6 says. A module where the change needs judgment gets its own job.
+- **The mechanical edit.** A worker in ARCH's session makes it as one change covering every affected module, with each touched module's uses file rewritten by the tool (section 7), and it is merged once, when no job is open, between a round's last merge and its internal walk. ARCH's session tests it as section 6 says. A module where the change needs judgment gets its own job.
 - **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing.
 - **Requirement text, the module list, and the process's named files.** These change no code and no tests, so their pull requests merge through the tool with no module tests run and no record of them.
 - **The required run.** There is one required run on GitHub, with one name. It reports on every pull request, judging it with the tool at the version its base branch names. It passes at once, needing no record of tests, when no module's code or tests changed; on the tranche's own pull request into the main branch; and on a dropped tranche's pull request whose every file is the main branch's own (part 3, section 5).

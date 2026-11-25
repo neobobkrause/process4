@@ -2,20 +2,20 @@ Length: 214 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
-Written by Claude on 18 Nov 2026, beside the design (`design/`, "the design"). **Status: proposed. Built in the tool, not run in a process in force; nothing is in force.** It answers item 12 of the design's part 10, section 2. It adds no rule to the design, and no test, check, gate, review or stop: the test record's hold on `ready` and `merge` is the design's (part 2, section 6). The carrier is taken from `process4/working/design_work_18nov/shared_state_carrier.md` and the following from `notified_job_tests.md` beside it; where either, or this text, differs from the design, the design rules. Every example is made up.
+Beside the design (`design/`, "the design"). **Status: proposed. Built in the tool, not run in a process in force; nothing is in force.** It answers item 12 of the design's part 10, section 2. It adds no rule to the design, and no test, check, gate, review or stop: the test record's hold on `ready` and `merge` is the design's (part 2, section 6). Where this text differs from the design, the design rules. Every example is made up.
 
 Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrule any. **Unproven:** never shown to work.
 
 ## 1. The issue that carries the shared state
 
 - One issue in the product's repository, titled `Process4 shared state`, with the label `process4-state`. Its body is two fixed lines: what it is, and that only the tool writes it.
-- Each record is one comment. Its first line is the hidden mark `<!-- process4-record: <key> -->`. **Decided here:** after the mark comes one JSON block; a handover has its plain words after the block; an empty record is the mark and `{}`. Gives: every command reads fixed fields. Costs: the owner reads JSON on the page, where the carrier file had plain lines.
+- Each record is one comment. Its first line is the hidden mark `<!-- process4-record: <key> -->`. **Decided here:** after the mark comes one JSON block; a handover has its plain words after the block; an empty record is the mark and `{}`. Gives: every command reads fixed fields. Costs: the owner reads JSON on the page.
 - Times are UTC, written `2026-11-20T09:00Z`. A session is named by the address its harness gives it. No record uses "@".
 - **Finding it.** Once in a session the tool lists open issues with the label and takes the lowest number. `state write --create`, run by ROOT, makes the label, the issue and the comments of section 2 that are not a lane's, each empty, and locks the issue.
 - **Reading.** One call lists the issue's comments, 100 to a page. The tool keeps those whose first line is a mark, with each comment's id. A missing key reads as empty. `state read [<record>]` prints one or all. With `--repository <address>` it reads the issue of another repository (section 4).
 - **Writing.** `state write <record> --from <file>` sends the whole new body in one request to that comment. A key with no comment yet is created. The tool prints the record's size and refuses none for size.
 - **A failed write.** On a rate-limit answer the tool waits as GitHub says and tries again up to four times (the design, part 4, section 4); the same on a server or network failure. A comment that is gone is made afresh. Anything else, or tries used up: exit 1 with GitHub's words, the record stays as it was, and the session reports a process fault. No list of later writes is kept.
-- **One writing session for each record** (the design, part 4, section 4). All sessions act as one GitHub account, so this is held by the starting texts. A job writes none. So the carrier file's read-back for two writers is not built.
+- **One writing session for each record** (the design, part 4, section 4). All sessions act as one GitHub account, so this is held by the starting texts. A job writes none.
 
 ## 2. The eight records
 
@@ -208,7 +208,7 @@ Gives: the list errs toward running a test file. Costs: where a module is one la
 
 ## 8. Unproven, and not settled here
 
-1. Every form in sections 1 to 5 is built and has not run in a process in force. Not verified from GitHub's own pages: the size a comment holds, that a rewrite notifies no one, and that a locked issue still takes the sessions' writes. On a product, GitHub refused the write of a waiting-work record that repeated a notice's uses for each user, its reason not kept; the tool now keeps the notice comments and a job block under 60,000 characters each.
+1. Every form in sections 1 to 5 is built and has not run in a process in force. Not verified from GitHub's own pages: the size a comment holds, that a rewrite notifies no one, and that a locked issue still takes the sessions' writes.
 2. Whether the owner can read the JSON records well enough on the page.
 3. Sections 5's `uses`, 6 and 7 are not built; the proof's 150 changes are to be recorded again under them (build text 4, stage 4). The proof's own run is in build text 2, section 1: "What a told job does was not run."
 4. What is read of the shared state to show that an account switch lost no work is not written (build text 4, stage 7).
