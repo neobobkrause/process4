@@ -50,3 +50,28 @@ Option B of three (A no change; B all three; C the second and third only). Resea
 
 **The owner's words.** "Decision: B, as recommended" — 25 November 2026 (in PROCESS #12's session, on the three fixes put
 to him together).
+
+### Subject: The notice's second group carried out: no repeat for a job opened from waiting work, a parameter list's brackets, the errors printed
+
+**The rule as it now stands.** The rules of the entry above are unchanged; the tool now keeps them where it did not.
+
+1. **No repeats, for every told job.** `open --module` writes the job block's `notices` for each notice it copies from
+   waiting work, and `notify`'s repeat check also reads a block's work line, whatever the pull request's state; so a re-run
+   skips a told job opened from waiting work after it merged or closed (`open` in `tool/lib/commands.mjs`, `toOpenJobs` in
+   `tool/lib/notify.mjs`; build text 5, section 5).
+2. **An unknown kind becoming known, also where a parameter is a union.** The printed declaration kept as a backstop keeps a
+   parameter list's brackets (`unbracket` in `tool/lib/notice/ts.mjs`), so it lines up with the one before and finds only
+   "anything" stated, as rule 1 of the entry above says.
+3. **The reason a change tells is printed.** A notice prints the kinds of error raised, a message's channel and "may now be
+   missing" where they differ (`noticeText` in `tool/lib/notice/notice.mjs`).
+
+It answered three faults met on civicsmith on 25 Nov 2026, passed on by ARCH #18 through coordinator #9: a re-run of
+`notify 1339` told jurisdictions (1404), signatures (1408) and connection-grammar (1407) again and opened duplicate told
+jobs; a parameter list printed without its brackets made "anything → stated" tell; and `notify 1356`'s 197 told users
+read as decision B failing, where the printout hid the first `@throws` that told them. Tests for each; the proof's 150
+recorded answers unchanged. It adds no test, gate, review or stop. Option 1B of two (1A no change; 1B the correction), put
+to him with three other choices on who is told after a change, which stay open. Researched in
+`process/research/notify-1356-still-197-25nov.md` and `notify-rerun-repeats-25nov.md`. Products receive it with their next
+move.
+
+**The owner's words.** "Decision: 1b" — 25 November 2026 (a comment on his standing page, on option 1B).
