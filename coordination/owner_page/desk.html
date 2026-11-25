@@ -35,7 +35,7 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: three choices about who is told after a change</h2>
+<h2>Waiting for you: four choices about who is told after a change</h2>
 <p><b>The problem.</b> civicsmith's notices are still telling far too many modules. Two merges today told 197 and about 125 modules. Each told module costs a short check, about $1.40 to $1.90 and 2 minutes, and nearly all end with nothing to change: roughly $300 and $200 for those two merges alone. Three causes, each with its own choice. They work together: 1 and 2 cut most of the first kind of case (a module being described for the first time), 3 cuts most of the second (a helper few modules call).</p>
 
 <p><b>1. Two tool faults against your decision B of today.</b> (a) A told check opened from the waiting list was not recognised as having already had its notice, so a re-run told jurisdictions, signatures and connection-grammar a second time. (b) The tool printed some function headings with their brackets lost, so a kind stated for the first time still counted as a change, which your decision B said it should not. Both are corrected and tested, ready in pull request 275; the 150 answers recorded when the method was proven are unchanged.</p>
@@ -55,7 +55,12 @@ a{color:var(--accent)}
 <li><b>3A. No change.</b></li>
 <li><b>3B. The narrower rule (recommended).</b> It changes your decision 2 of the notice's rules.</li>
 </ul>
-<p>To answer, type in my session (or as a comment here), for example: <b>Decision: 1B, 2C, 3B</b>, or any other mix, or no change. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
+<p><b>4. Five helper functions with one name count as one.</b> civicsmith's test helpers have five files that each offer a function called <code>generate</code>. The tool keeps only one of them, so a change to one file's <code>generate</code> tells the users of all five, and a change to another tells no one at all, which misses a module that needed telling. The correction keeps each as its own entry, named with its file; nothing else changes. Built and tested; all 150 recorded answers are unchanged. It also changes one sentence of the build text that describes the listing, which is why it waits for you.</p>
+<ul>
+<li><b>4A. No change.</b> civicsmith's ARCH could rename the five functions instead, a change to civicsmith's own code.</li>
+<li><b>4B. The correction (recommended).</b></li>
+</ul>
+<p>To answer, type in my session (or as a comment here), for example: <b>Decision: 1B, 2C, 3B, 4B</b>, or any other mix, or no change. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
