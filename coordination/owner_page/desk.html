@@ -22,26 +22,17 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 01:25 UTC, by PROCESS #12. One choice waits for you now: the item just below. The tool's speed is being measured and comes to you next. Your decision on merges going on is done.</p>
+<p class="updated">Updated 25 Nov 2026 by PROCESS #12. Both your decisions of today are built. Next: the tool's speed, being measured now; you asked to hold civicsmith's move until that is settled.</p>
 </header>
 
 <section class="card">
 <h2>Done: merges go on while the tool works out who to tell (your decision B, 25 Nov)</h2>
-<p>Recorded word for word. ARCH now runs that step in the background and keeps merging finished jobs; a job still open when the answer comes hears of it at once, and a job that merged first gets a small follow-up job. ARCH's instructions, two sentences of the design and the tool's command list say so; no tool change. civicsmith gets it when you type, in the session named <b>civicsmith coordinator #7</b>: <b>Instruction: move civicsmith to the latest Process4 version</b></p>
+<p>Recorded word for word. ARCH now runs that step in the background and keeps merging finished jobs; a job still open when the answer comes hears of it at once, and a job that merged first gets a small follow-up job. ARCH's instructions, two sentences of the design and the tool's command list say so; no tool change. civicsmith gets it by your move line, held for now at your word until the tool's speed is settled.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: a job's tests ran without the tranche's newest changes</h2>
-<p><b>The bottom line.</b> A job runs its tests on its own branch as it last pushed it. If other jobs have merged into the tranche since, the job tests code that lacks them. On civicsmith this failed provenance's first run for nothing, and the failure counted against it. I recommend the tool bring the tranche into the job's branch before each test run.</p>
-<p><b>What happened.</b> record-grammar's job fixed its stated interface and merged. provenance's job, branched earlier, then ran its tests: the check refused a field record-grammar's merged fix already allowed. The job merged the tranche into its branch itself and ran again: 201 tests passed in about 30 seconds. Seen in provenance's own session; nothing worked round.</p>
-<p><b>Why it matters.</b> Each failed run counts: the third brings a fresh session for the job, the fifth sets the module aside. A run lost this way on a module whose tests take most of two hours costs that long. The reverse, a pass on old code that would fail once merged, was not seen but is possible.</p>
-<p><b>Why it happens.</b> When I built the update of 24 Nov I chose to run a job's tests on its branch as pushed, and the design says so. Before the update GitHub tested the branch as merged into the tranche.</p>
-<ul>
-<li><b>A. No change.</b> A job that fails this way merges the tranche in and runs again, as provenance did. A wasted run, counted as a failure.</li>
-<li><b>B. The tool brings the tranche in first (recommended).</b> Before running the tests, the tool merges the tranche's newest state into the job's branch and pushes it, then tests that. What is tested is then what would merge at that moment. If the two clash, it says so and runs nothing; such a branch could not merge anyway, so nothing new is stopped. A small tool change with its own test.</li>
-<li><b>C. The tool tests a temporary merged copy</b>, leaving the job's branch as it is. A failure there cannot be seen in the job's own copy until the job merges the tranche in by hand, so it usually ends up as B with an extra step.</li>
-</ul>
-<p>To choose, comment on this item, for example <b>Decision: B, as recommended</b>. civicsmith gets it by its next move to the latest version.</p>
+<section class="card">
+<h2>Done: a job's tests now run on its branch brought up to the tranche (your decision B, 25 Nov)</h2>
+<p>Recorded word for word, with your "Yes, B covered the stale-branch item too". Before running a job's tests, the tool merges the tranche's newest state into the job's branch and pushes it, so what is tested is what would merge at that moment; if the two clash, it says so and runs nothing. The tool's tests for it pass. civicsmith gets it with your move line, which you asked to hold until the tool's speed is settled.</p>
 </section>
 
 <section class="wait">

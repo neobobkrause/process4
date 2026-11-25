@@ -31,7 +31,7 @@ Length: 109 lines. Last section: "9. Changes that are not a job's".
 - A job writes only its own module's files. In the owner's words: "A job for module A isn't allowed to change module B. The only other way of editing a module is when a mechanical edit (like a word table change) makes the change." This is held by the job's instructions and by no check.
 - A job never merges, starts a session, deploys or changes the process.
 - A job stopped by another module's flaw reports the flaw to ARCH, records that it is blocked, pushes and stops. Its slot is freed. When the other module merges, the job is made ready again. Where ARCH ends the block by its own decision instead (part 2, section 8) and tells the job to go on, the job records that it goes on, and holds its slot again.
-- A job's module tests run at its pull request's head, in scope as GitHub would merge it into the tranche branch at that moment. A later merge by another module does not run them again, unless a notice reaches the job while it is open (section 7). A break caused another way is found by that module's next job or by a walk.
+- A job's module tests run at its pull request's head, which the tool first brings up to the tranche branch's newest commit by a plain merge, so the tests judge what would merge at that moment. A later merge by another module does not run them again, unless a notice reaches the job while it is open (section 7). A break caused another way is found by that module's next job or by a walk.
 
 ## 4. When a module's work is finished, and when a round's jobs are done
 
