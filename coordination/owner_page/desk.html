@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 13:55 UTC, by PROCESS #14. The cleanup is under way; choices 2 and 5 come after it.</p>
+<p class="updated">Updated 25 Nov 2026, about 14:10 UTC, by PROCESS #14. The cleanup's four text steps are done; the tool step is running. Choices 2 and 5 come after it.</p>
 </header>
 
 <section class="card">
@@ -30,10 +30,11 @@ a{color:var(--accent)}
 <p><b>Decided: B and (ii)</b> (your words, 25 Nov about 13:45 UTC), recorded word for word. My reading is now the design, my handover and short indexes; the record of your decisions and the build texts are opened when a question touches them (merged, pull request 298).</p>
 <p>The cleanup changes no rule and no behaviour. It runs one area at a time, and each change is listed here when it merges:</p>
 <ol>
-<li>Your record of decisions regrouped by subject, every word of yours kept (in progress).</li>
-<li>The design's 26 findings rewritten in place (in progress).</li>
-<li>The build texts, then the starting texts, once the design has landed.</li>
-<li>The tool's duplicate code made one.</li>
+<li><b>Done:</b> your record of decisions regrouped by subject: 66 entries became 32 subjects in two files, 114,000 bytes down to 84,000. I checked that all 78 of your quotations are there word for word (pull request 301).</li>
+<li><b>Done:</b> the design's 26 findings rewritten in place, each rule once in its home section (pull requests 300, 302, 305). For example, a dropped tranche's pull request is no longer tested in one part and untested in another, and a restarted ROOT no longer archives PROCESS.</li>
+<li><b>Done:</b> the build texts' 34 findings (pull request 304): the command list states who is told once, as the current rule; its 24 dated decision clauses are gone, the rules kept.</li>
+<li><b>Done:</b> the starting texts (pull request 303): ARCH's five-subject rule split in two; acts sessions take now named; four disagreements with the design corrected. Every text is under 6,100 bytes and ten rules.</li>
+<li><b>In progress:</b> the tool's duplicate code made one. Two places that break the design are corrected with it: a notice is no longer stopped for size, and a running job's notice is no longer held back when its details are full.</li>
 </ol>
 <p>The findings behind each step are in <code>process/research/cleanup-audit-25nov/</code>.</p>
 </section>
