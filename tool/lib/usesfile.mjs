@@ -23,6 +23,12 @@ export function readUsesFile(tree, module) {
   const file = path.join(tree.root, usesFilePath(tree.cfg, module));
   let text;
   try { text = fs.readFileSync(file, 'utf8'); } catch { return null; }
+  return parseUsesFile(text, module);
+}
+
+/** A uses file's text read as the form, or `{ module, unreadable }` where it is not; null for no text. */
+export function parseUsesFile(text, module) {
+  if (text === null || text === undefined) return null;
   let data;
   try { data = JSON.parse(text); } catch (e) { return { module, unreadable: `not JSON: ${e.message}` }; }
   if (!data || typeof data !== 'object' || !Array.isArray(data.uses ?? [])) return { module, unreadable: 'not the form of a uses file' };
@@ -32,6 +38,7 @@ export function readUsesFile(tree, module) {
     uses: (data.uses ?? []).filter((u) => u && typeof u.provider === 'string' && typeof u.item === 'string').map((u) => ({ ...u, where: Array.isArray(u.where) ? u.where : [] })),
     outside: Array.isArray(data.outside) ? data.outside.filter((o) => o && typeof o === 'object') : [],
     orderFaults: Array.isArray(data.orderFaults) ? data.orderFaults : [],
+    copies: Array.isArray(data.copies) ? data.copies.filter((c) => c && typeof c === 'object') : [],
     written: data.written ?? null,
   };
 }

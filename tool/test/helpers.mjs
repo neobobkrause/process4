@@ -48,11 +48,13 @@ export const productFiles = () => ({
 
 // GitHub in memory: pull requests, issues, comments, labels, check runs, all by number.
 export function fakeGitHub(over = {}) {
-  const s = { prs: [], issues: [], comments: [], labels: [], runs: [], wfruns: [], logs: {}, releases: [], next: 1, nextComment: 100, calls: [], time: '2026-11-20T10:00:00Z' };
+  // `earlier`: pull requests merged before the test began (each module's conversion: `converted`), read with the rest
+  // but kept out of `prs`, so that a test's own pull requests are `prs` alone.
+  const s = { prs: [], earlier: [], issues: [], comments: [], labels: [], runs: [], wfruns: [], logs: {}, releases: [], next: 1, nextComment: 100, calls: [], time: '2026-11-20T10:00:00Z' };
   const gh = {
     s,
     repo: () => ({ default_branch: 'main' }),
-    getPR: (slug, n) => s.prs.find((p) => p.number === n),
+    getPR: (slug, n) => s.prs.find((p) => p.number === n) ?? s.earlier.find((p) => p.number === n),
     prForBranch: (slug, b) => s.prs.find((p) => p.state === 'open' && p.head.ref === b) || null,
     lastPRForBranch: (slug, b) => s.prs.filter((p) => p.head.ref === b).slice(-1)[0] || null,
     closedPRs: (slug, base) => s.prs.filter((p) => p.state === 'closed' && p.base.ref === base),
@@ -63,10 +65,10 @@ export function fakeGitHub(over = {}) {
     },
     markReady: (slug, n) => { gh.getPR(slug, n).draft = false; },
     mergePR: (slug, n, sha) => { s.calls.push(['merge', n, sha]); return { merged: true, sha: 'm'.repeat(40) }; },
-    comments: (slug, n) => s.comments.filter((c) => c.on === n),
+    comments: (slug, n) => [...(s.earlier.find((p) => p.number === n)?.comments ?? []), ...s.comments.filter((c) => c.on === n)],
     addComment: (slug, n, body) => { const c = { id: s.nextComment++, on: n, body, created_at: s.time, updated_at: s.time }; s.comments.push(c); return c; },
     editComment: (slug, id, body) => { const c = s.comments.find((x) => x.id === id); if (!c) return null; c.body = body; c.updated_at = s.time; return c; },
-    allPRs: (slug, base) => s.prs.filter((p) => p.base.ref === base).slice().reverse(),
+    allPRs: (slug, base) => [...s.earlier, ...s.prs].filter((p) => p.base.ref === base).slice().reverse(),
     closePR: (slug, n) => { s.calls.push(['close', n]); gh.getPR(slug, n).state = 'closed'; },
     runsForHead: (slug, sha) => s.wfruns.filter((r) => r.head_sha === sha),
     rerunRun: (slug, id) => { const r = s.wfruns.find((x) => x.id === id); s.calls.push(['rerun', id]); return !!r && r.status === 'completed'; },
@@ -103,4 +105,15 @@ export function ctxFor(root, gh, over = {}) {
       ...over,
     },
   };
+}
+
+// Each module's conversion merged before the test began (design part 2, section 7, "The conversion"): a merged job pull
+// request of kind `conversion` into the tranche branch, job/<module>.1, numbered from 900. The modules' next jobs are
+// job/<module>.2.
+export function converted(gh, modules, base = 'tranche') {
+  for (const m of modules) {
+    const pr = { number: 900 + gh.s.earlier.length, state: 'closed', merged_at: '2026-11-01T00:00:00Z', closed_at: '2026-11-01T00:00:00Z', title: `${m}: job 1`, head: { ref: `job/${m}.1`, sha: 'c'.repeat(40) }, base: { ref: base } };
+    pr.comments = [{ id: 9000 + pr.number, on: pr.number, body: `<!-- process4-job -->\n\`\`\`json\n${JSON.stringify({ module: m, work: ['conversion: bring the module into the coding standard'], kind: 'conversion' })}\n\`\`\`\n` }];
+    gh.s.earlier.push(pr);
+  }
 }

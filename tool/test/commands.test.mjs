@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
+import { CONVERSION_MARK, JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
 import { writeNotice } from '../lib/noticecomments.mjs';
 import { mark } from '../lib/state.mjs';
 import { TEST_MARK } from '../lib/testrecord.mjs';
 import { MEANING_MARK } from '../lib/round.mjs';
 import { git } from '../lib/util.mjs';
-import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
+import { commit, config, converted, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
 function product() {
   const root = makeRepo(productFiles());
@@ -66,6 +66,7 @@ test('push keeps to six a minute', () => {
 test('push --blocked writes the job\'s record on its pull request, rewritten in place', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
@@ -79,6 +80,7 @@ test('push --blocked writes the job\'s record on its pull request, rewritten in 
 test('push --meaning declares a change of meaning in the pull request\'s meaning comment; a later line for the item takes its place', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
@@ -96,6 +98,7 @@ test('push --meaning declares a change of meaning in the pull request\'s meaning
 test('open --module writes the job block from the requirements and waiting work, and prints the job text', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
   writeFileSync(f, JSON.stringify({ work: [
@@ -125,6 +128,7 @@ test('open --module writes the job block from the requirements and waiting work,
 test('open --module copies the module\'s meaning entries from waiting work into the job block\'s meaning', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
   writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'meaning', item: 'total', line: 'the whole stay; one night' },
@@ -143,6 +147,7 @@ test('a job whose only work is notices is told; with other work it is ordinary a
   const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
   git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
   writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7, uses: [{ module: 'dates', entry: 'd' }] }] }));
@@ -159,6 +164,7 @@ test('open --module copies each waiting notice\'s reasons for its module from th
   const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
   git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const day = { module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null };
   const big = Array.from({ length: 30 }, (_, i) => ({ ...day, entry: `e${i}`, before: { handsBack: 'x'.repeat(3000) }, after: { handsBack: 'y'.repeat(3000) } }));
@@ -190,6 +196,7 @@ test('open --module of a waiting notice with no reasons on its pull request fail
   const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
   git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
   writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }] }));
@@ -202,6 +209,7 @@ test('open --module of a waiting notice with no reasons on its pull request fail
 test('open --title opens a draft into the tranche, or into main with --into-main', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   git(['checkout', '-q', '-b', 'work/reqs'], { cwd: root });
   open(ctx, { _: [], title: 'Requirement text' });
@@ -214,8 +222,30 @@ test('open --title opens a draft into the tranche, or into main with --into-main
 // A pass recorded for a pull request's head (tests once, in the job), so that ready marks it.
 const passFor = (gh, pr) => gh.addComment('o/product', pr.number, block(TEST_MARK, { commit: pr.head.sha, notice_seq: 0, scope: 'whole module', result: 'pass', passed: 1, failed: 0 }));
 
+test('ready on a conversion job writes the conversion\'s report: places gone by rule, copies, places still outside and what they wait on, time, cost', () => {
+  const place = (rule, line, more = {}) => ({ rule, file: 'src/orders/index.mjs', side: 'code', line, mayRefer: ['dates'], ...more });
+  const uses = (outside, copies = []) => ({ module: 'orders', providers: ['dates'], uses: [], outside, orderFaults: [], copies });
+  const root = makeRepo({ ...productFiles(), 'process/modules/orders.uses.json': uses([place('S5', 1), place('S5', 2), place('R1', 3)]) });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  git(['checkout', '-q', '-b', 'job/orders.2'], { cwd: root });
+  commit(root, { 'process/modules/orders.uses.json': uses([place('R1', 3, { waitsOn: 'dates: a reader of its days' })], [{ provider: 'dates', item: 'd', file: 'test/orders/days.json', pointer: '/first' }]) });
+  git(['push', '-q', 'origin', 'job/orders.2'], { cwd: root });
+  git(['checkout', '-q', 'main'], { cwd: root });
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  const pr = gh.createPR('o/product', { head: 'job/orders.2', base: 'tranche', draft: true });
+  pr.created_at = '2026-11-20T07:50:00Z';
+  gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['conversion: bring the module into the coding standard'], kind: 'conversion' }));
+  passFor(gh, pr);
+  assert.equal(ready(ctx, pr.number), 0);
+  const rep = gh.s.comments.map((c) => parseBlock(c.body, CONVERSION_MARK)).find(Boolean).data;
+  assert.deepEqual(rep, { converted: { S5: 2 }, copies: ['test/orders/days.json /first dates d'], waits: ['R1 src/orders/index.mjs:3: dates: a reader of its days'], time: '2h 10m', cost: 'unmeasured' });
+  assert.match(out.join('\n'), /the conversion's report is written on pull request 1: S5 2; 1 place\(s\) still outside/);
+});
+
 test('ready marks ready and reads it back', () => {
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(makeRepo(), gh);
   passFor(gh, gh.createPR('o/product', { head: 'work/x', base: 'tranche', draft: true }));
   ready(ctx, 1);
@@ -227,6 +257,7 @@ test('ready marks ready and reads it back', () => {
 
 test('ready says plainly where there is nothing to mark: already ready, merged or closed', () => {
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(makeRepo(), gh);
   gh.createPR('o/product', { head: 'work/a', base: 'tranche', draft: false });
   const merged = gh.createPR('o/product', { head: 'work/b', base: 'tranche', draft: false });
@@ -244,6 +275,7 @@ test('ready says plainly where there is nothing to mark: already ready, merged o
 
 test('results reads the required run on the head commit', () => {
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(makeRepo(), gh);
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   results(ctx, 1);
@@ -259,6 +291,7 @@ test('results reads the required run on the head commit', () => {
 test('merge obeys the owner\'s hold, waits a minute after the last merge, and merges at the head commit', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   const f = join(root, 'n.json');
@@ -309,6 +342,7 @@ function usingProduct() {
 test('merge of a job waits for an open job of each earlier module it uses: by its uses file, by import where it has none yet, and through others', () => {
   const root = usingProduct();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   const jobs = Object.fromEntries(['base', 'tax', 'dates', 'pricing', 'late', 'orders'].map((m) => [m, gh.createPR('o/product', { head: `job/${m}.1`, base: 'tranche', draft: false })]));
   const n = jobs.orders.number;
@@ -334,6 +368,7 @@ test('merge of a job waits for an open job of each earlier module it uses: by it
 test('merge of a job waits for a module its head newly imports, though the tranche does not show the use', () => {
   const root = usingProduct();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   // The job's branch adds an import of dates to late, on its head commit only.
   git(['checkout', '-q', '-b', 'job/late.1'], { cwd: root });
@@ -350,6 +385,7 @@ test('merge of a job waits for a module its head newly imports, though the tranc
 test('merge of a job refuses when a notice reached it after its tests ran', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const pr = gh.createPR('o/product', { head: 'job/orders.1', base: 'tranche', draft: false });
   gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['R2', 'notice from dates (pull request 4)'], kind: 'ordinary', notice_seq: 1, notices: [{ from: 'dates', merged: 4 }] }));
@@ -374,6 +410,7 @@ test('with no process.json, branch and open take --into, so a first pull request
   commit(root, { 'x.txt': 'later on main\n' });
   git(['push', '-q', 'origin', 'main'], { cwd: root });
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   branch(ctx, 'work/first-content', 'p4-tranche');
   assert.equal(git(['rev-parse', `${remote(root, 'work/first-content')}^`], { cwd: root }), remote(root, 'p4-tranche'));
@@ -385,6 +422,7 @@ test('with no process.json, branch and open take --into, so a first pull request
 
 test('results passes over a run cancelled by a newer one', () => {
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(makeRepo(), gh);
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   gh.s.runs.push({ id: 1, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'success', started_at: '1', html_url: 'R1' });
@@ -395,6 +433,7 @@ test('results passes over a run cancelled by a newer one', () => {
 
 test('results says waiting, not failed, when the only run on the head was cancelled by the newer one (fault k)', () => {
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(makeRepo(), gh);
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: false });
   gh.s.runs.push({ id: 2, sha: pr.head.sha, name: 'module-tests', status: 'completed', conclusion: 'cancelled', started_at: '2', html_url: 'R2' });
@@ -406,6 +445,7 @@ test('results says waiting, not failed, when the only run on the head was cancel
 test('push --blocked records two blocking modules, repeated or with a comma (fault n)', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
@@ -424,6 +464,7 @@ test('a job branch is made beside an old flat job/<module> branch, and open find
   // job/<module>/<n> beside one ("directory file conflict"). job/<module>.<n> is a flat name beside it.
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx } = ctxFor(root, gh);
   const f = join(root, 'ww.json');
   writeFileSync(f, JSON.stringify({ work: [] }));
@@ -444,6 +485,7 @@ test('a job branch is made beside an old flat job/<module> branch, and open find
 test('open works from a detached checkout (fault o)', () => {
   const root = product();
   const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
   const { ctx, out } = ctxFor(root, gh);
   git(['checkout', '-q', '--detach'], { cwd: root });
   open(ctx, { _: [], title: 'Requirement text', branch: 'work/req' });

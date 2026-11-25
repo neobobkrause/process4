@@ -17,9 +17,10 @@ import { recordsOf, scopeForPR } from './testrun.mjs';
 
 import {
   JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, MEANING_MARK, meaningsOf,
-  moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
+  hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
+import { hasUsesFile, parseUsesFile, usesFilePath } from './usesfile.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
@@ -254,8 +255,13 @@ export function open(ctx, a) {
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const waiting = records['waiting-work']?.data?.work || [];
   const round = records.round?.data || {};
-  const { reqs, mine, notices, kind, waits } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round }, module);
-  const job = { module, work: [...reqs, ...mine.map(describe)], kind };
+  // Whether the module has had its conversion: a merged job pull request of kind conversion (build text 1b, command 9).
+  const prsInto = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || ''));
+  const converted = (m) => hasConverted(prsInto, (k) => jobBlockOf(ctx.gh.comments(ctx.slug, k))?.data || null, m);
+  const w = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round, converted }, module);
+  const { mine, notices, kind, waits } = w;
+  // A conversion's work is the conversion alone; the module's other work waits for its next job.
+  const job = { module, work: workLines(w), kind };
   // The items whose meaning the placed work changes, which ARCH names as `meaning` entries in waiting work (design part 2,
   // section 7; build text 5, sections 2 and 5): each a changed item when the job's pull request merges.
   const meaning = meaningsOf(mine.filter((w) => w.kind === 'meaning'));
@@ -299,7 +305,43 @@ export function ready(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   if (pr.draft) fail(`pull request ${n} is still a draft`);
   ctx.log(`pull request ${n} is ${pr.state} and ready; the required run ${requiredCheck(ctx.root)} has been asked for`);
+  if (jobBlock?.kind === 'conversion') conversionReport(ctx, pr, jobBlock.module);
   return 0;
+}
+
+export const CONVERSION_MARK = 'process4-conversion';
+
+/**
+ * The conversion's report (build text 1b, command 4; build text 5, section 5), written once a conversion job is marked
+ * ready, for the owner's review, and rewritten in place: from the module's uses file at the head, and at the base as the
+ * job found it, the places outside the standard gone, by rule; the copies; the places still outside, with what each waits
+ * on; the time from the pull request's opening to `ready`; and the cost, "unmeasured" where it cannot be read.
+ */
+function conversionReport(ctx, pr, module) {
+  const cfg = loadConfig(ctx.root);
+  const path = usesFilePath(cfg, module);
+  const at = (ref) => { const f = git(['fetch', '-q', 'origin', ref], { cwd: ctx.root, allowFail: true }); return f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null; };
+  const baseSha = at(`refs/heads/${pr.base.ref}`);
+  const headSha = at(`refs/heads/${pr.head.ref}`) ?? pr.head.sha;
+  const head = parseUsesFile(readAt(ctx.root, path, headSha), module);
+  const base = baseSha ? parseUsesFile(readAt(ctx.root, path, baseSha), module) : null;
+  const count = (u) => { const c = {}; for (const o of u?.outside ?? []) c[o.rule ?? '?'] = (c[o.rule ?? '?'] ?? 0) + 1; return c; };
+  const was = count(base), now = count(head);
+  const converted = {};
+  for (const [rule, k] of Object.entries(was)) if (k > (now[rule] ?? 0)) converted[rule] = k - (now[rule] ?? 0);
+  const mins = Math.max(0, Math.round((ctx.nowMs() - Date.parse(pr.created_at ?? new Date(ctx.nowMs()).toISOString())) / 60000));
+  const data = {
+    converted: hasUsesFile(base) ? converted : 'unknown: the base holds no uses file of the module to compare with',
+    copies: (head?.copies ?? []).map((c) => `${c.file}${c.line ? `:${c.line}` : ''}${c.pointer ? ` ${c.pointer}` : ''} ${c.provider ? `${c.provider} ` : ''}${c.item ?? ''}`.trim()),
+    waits: (head?.outside ?? []).map((o) => `${o.rule ?? '?'} ${o.file}:${o.line ?? ''}: ${o.waitsOn ?? 'nothing named'}`),
+    time: `${Math.floor(mins / 60)}h ${mins % 60}m`,
+    cost: 'unmeasured',
+  };
+  if (!hasUsesFile(head)) data.note = `the head holds no uses file of ${module} that can be read${head?.unreadable ? ` (${head.unreadable})` : ''}`;
+  const body = block(CONVERSION_MARK, data);
+  const had = ctx.gh.comments(ctx.slug, pr.number).find((c) => parseBlock(c.body, CONVERSION_MARK));
+  if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, pr.number, body);
+  ctx.log(`the conversion's report is written on pull request ${pr.number}: ${Object.entries(converted).map(([r, k]) => `${r} ${k}`).join(', ') || 'no place converted'}; ${data.waits.length} place(s) still outside`);
 }
 
 // 14. results <pr>: the test record's standing, then the required run's state on the head commit.
@@ -472,7 +514,7 @@ export function nextJob(ctx) {
     entry = { module: pick.module, state: 'open', pull_request: null, branch: name };
     ctx.log(`module: ${pick.module}`);
     ctx.log(`branch: ${name}`);
-    ctx.log(`work: ${[...w.reqs, ...w.mine.map(describe)].join('; ')}`);
+    ctx.log(`work: ${workLines(w).join('; ')}${w.conversion && (w.later.reqs.length || w.later.mine.length) ? ` (its other work waits for its next job: ${[...w.later.reqs, ...w.later.mine.map(describe)].join('; ')})` : ''}`);
     ctx.log(`kind: ${w.kind}`);
     ctx.log(`then: branch ${name}; open --module ${pick.module} prints its starting instructions`);
   }

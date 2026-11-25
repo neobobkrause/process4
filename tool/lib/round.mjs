@@ -48,10 +48,23 @@ export function scopeOf(round) {
   return new Set(s.holds.map((x) => String(x).trim().replace(/\s+/g, ' ')));
 }
 const inScope = (holds, module, r) => !holds || holds.has(module) || holds.has(`${module} ${r}`);
+// A conversion is within the scope where it names the module or one of its requirements (build text 5, section 2).
+const conversionInScope = (holds, module) => !holds || [...holds].some((h) => h === module || h.startsWith(`${module} `));
 
-// The work a module has now: requirements not yet met at the tranche branch's newest commit, within the tranche's scope,
-// and what waits for it in the waiting-work record. A told job's kind when notices are all. `waits` holds the
-// requirements not yet met that the scope leaves for a later tranche.
+/** The first line of a conversion job's work (design part 2, section 7, "The conversion"). */
+export const CONVERSION = 'conversion: bring the module into the coding standard';
+
+/**
+ * Whether a module has had its conversion: a job pull request of kind `conversion` for it has merged (build text 1b,
+ * command 9). `prs` are the job pull requests into the tranche branch; `blockOf(n)` reads a pull request's job block.
+ */
+export const hasConverted = (prs, blockOf, module) => prs.some((p) => p.merged_at && jobOf(p)?.module === module && blockOf(p.number)?.kind === 'conversion');
+
+// The work a module has now: its conversion, where none of its conversions has merged and the tranche's scope holds it,
+// which is then its only work, the rest waiting for its next job; otherwise requirements not yet met at the tranche
+// branch's newest commit, within the tranche's scope, and what waits for it in the waiting-work record. A told job's kind
+// when notices are all. `waits` holds the requirements not yet met that the scope leaves for a later tranche.
+// `view.converted(module)` says whether the module has had its conversion.
 export function workOf(view, module) {
   const holds = scopeOf(view.round);
   const all = notYetMet(view.requirements[module]);
@@ -59,9 +72,15 @@ export function workOf(view, module) {
   const waits = all.filter((r) => !inScope(holds, module, r));
   const mine = view.waiting.filter((w) => w.module === module);
   const notices = mine.filter((w) => w.kind === 'notice');
+  if (!view.converted(module) && conversionInScope(holds, module)) {
+    return { reqs: [], mine: [], notices: [], kind: 'conversion', conversion: true, waits, later: { reqs, mine }, any: true };
+  }
   const kind = notices.length && notices.length === mine.length && !reqs.length ? 'told' : 'ordinary';
   return { reqs, mine, notices, kind, waits, any: reqs.length + mine.length > 0 };
 }
+
+/** The lines of a job's work, as the job block and next-job write them. */
+export const workLines = (w) => (w.conversion ? [CONVERSION] : [...w.reqs, ...w.mine.map(describe)]);
 
 // Everything the round's commands read, in one place. `ctx` is the commands' context.
 export function readView(ctx, { records } = {}) {
@@ -78,11 +97,13 @@ export function readView(ctx, { records } = {}) {
   const ends = { mergedJobs: merged.map((m) => ({ ...m, merged_at: m.merged_at.replace(/:\d\dZ$/, 'Z') })), round };
   const comments = {};
   const commentsOf = (n) => (comments[n] ||= ctx.gh.comments(ctx.slug, n));
+  const jobBlock = (n) => jobBlockOf(commentsOf(n))?.data || null;
   return {
     cfg, base, modules, requirements, prs, merged, round, records: recs,
+    converted: (module) => hasConverted(prs, jobBlock, module),
     waiting: recs['waiting-work']?.data?.work || [],
     notes: liveNotes(notesData, ends),
-    jobBlock: (n) => jobBlockOf(commentsOf(n))?.data || null,
+    jobBlock,
     jobRecord: (n) => {
       const c = commentsOf(n).find((x) => parseBlock(x.body, RECORD_MARK));
       return c ? { ...parseBlock(c.body, RECORD_MARK).data, at: c.updated_at || c.created_at || '' } : null;
@@ -144,7 +165,7 @@ export function finished(view, module) {
     why = `pull request ${last.number} closed with nothing to change: ${rec.nothing_to_change}`;
   }
   const w = workOf(view, module);
-  if (w.any) return { finished: false, why: `${why}, but it has work again: ${[...w.reqs, ...w.mine.map(describe)].join('; ')}` };
+  if (w.any) return { finished: false, why: `${why}, but it has work again: ${workLines(w).join('; ')}` };
   return { finished: true, why };
 }
 

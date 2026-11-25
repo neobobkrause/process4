@@ -11,10 +11,10 @@
 //
 // Who is told (build text 5, section 6): a lookup in the later modules' uses files, with no user's code read. Each
 // module whose uses file names a changed item or a member of a changed type (by its provider and name, whatever the
-// route), or holds a marked copy of one; each module with an order fault naming the changed module; and, on any change
-// to the provider's files whether or not an item changed, each module with a place outside the standard whose `mayRefer`
-// names the provider and each later module with no uses file yet that imports it (the import scan, imports.mjs). Each
-// is told once, with the reasons of build text 5, section 5.
+// route), or holds a marked copy of one; and, on any change to the provider's files whether or not an item changed,
+// each module with a place outside the standard whose `mayRefer` names the provider, each module with an order fault
+// naming it (an earlier module, whose file is read too), and each later module with no uses file yet that imports it
+// (the import scan, imports.mjs). Each is told once, with the reasons of build text 5, section 5.
 import fs from 'node:fs';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, readerVersion, standardOptions, tagsOf, tagText } from './ts.mjs';
@@ -275,7 +275,9 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   for (const user of order) {
     const before = [...byModule.keys()].filter((m) => indexOf(m) < indexOf(user));
-    if (!before.length) continue;
+    // An order fault is a use of a later module: the module that holds it may come before the changed one.
+    const faultable = [...byModule.keys()].filter((m) => m !== user);
+    if (!before.length && !faultable.length) continue;
     const ub = readUsesFile(B, user), ua = readUsesFile(A, user);
     const files = [ub, ua].filter(hasUsesFile);
     const reasons = [];
@@ -318,14 +320,16 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
               places: firstPlaces([{ file: o.file, line: o.line, ...(o.tests?.length ? { test: o.tests.join('; ') } : {}) }]) });
           }
         }
-        // An order fault naming the changed module.
-        if (byModule.get(m).length) {
-          for (const f of faults) {
-            const names = typeof f === 'string' ? [f] : [f.provider, f.module, ...(Array.isArray(f.mayRefer) ? f.mayRefer : [])].filter(Boolean);
-            if (!names.includes(m)) continue;
-            reasons.push({ module: m, items: itemsOf(m), found: 'order fault', changes: [], orderFault: `${f.rule ?? 'order'} ${f.file ?? ''}:${f.line ?? ''}`,
-              why: `${anyChange(m)}; an order fault names ${m}`, places: f.file ? firstPlaces([{ file: f.file, line: f.line }]) : [] });
-          }
+      }
+      // An order fault is a place outside the standard: the module that holds it hears of any change to the files of the
+      // module it names, whether or not an item changed, until it is converted (design part 2, section 7).
+      for (const m of faultable) {
+        if (!(m === provider ? filesChanged : byModule.get(m).length)) continue;
+        for (const f of faults) {
+          const names = typeof f === 'string' ? [f] : [f.provider, f.module, ...(Array.isArray(f.mayRefer) ? f.mayRefer : [])].filter(Boolean);
+          if (!names.includes(m)) continue;
+          reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], orderFault: `${f.rule ?? 'order'} ${f.file ?? ''}:${f.line ?? ''}`,
+            why: `${anyChange(m)}; an order fault names ${m}`, places: f.file ? firstPlaces([{ file: f.file, line: f.line }]) : [] });
         }
       }
     }

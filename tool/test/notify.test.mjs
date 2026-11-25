@@ -374,16 +374,31 @@ test('a module named through a middle module is told; a place outside the standa
   assert.match(noticeText(r), /TOLD far\n {6}uses dates Day \(bound changed; found by its means\) at test\/far\/index\.test\.mjs:9 far > reads a day/);
   const loose = r.told.find((t) => t.user === 'loose').reasons;
   assert.deepEqual(loose.map((x) => [x.module, x.items, x.found, x.outside]), [['dates', ['Day', 'formatDay', 'parseDay'], 'any change', 'R1 src/loose/index.mjs:1']]);
-  assert.deepEqual(r.told.find((t) => t.user === 'late').reasons.map((x) => [x.found, x.orderFault]), [['order fault', 'order src/late/index.mjs:1']]);
-  // A change to dates' files that changes no item's means (a new item) tells only the place outside the standard, which
-  // hears of any change until converted.
+  assert.deepEqual(r.told.find((t) => t.user === 'late').reasons.map((x) => [x.found, x.orderFault]), [['any change', 'order src/late/index.mjs:1']]);
+  // A change to dates' files that changes no item's means (a new item) tells only the place outside the standard and the order fault, which
+  // hear of any change until converted.
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
   const n = notice(before, after, 'dates');
-  assert.deepEqual([n.changed, n.fresh, n.told.map((t) => t.user)], [[], ['today'], ['loose']]);
+  assert.deepEqual([n.changed, n.fresh, n.told.map((t) => t.user)], [[], ['today'], ['loose', 'late']]);
   assert.match(n.told[0].reasons[0].why, /^its files changed, though no item's means did; a place outside the coding standard that may refer to any earlier module$/);
   // A change that only names an item's meaning, with no file changed, tells no place outside the standard of it.
   const m = notice(before, before, 'dates', { filesChanged: false, named: [{ item: 'parseDay', line: 'a; b', found: 'named' }] });
-  assert.deepEqual(m.told.map((t) => t.user), ['orders', 'late']);
+  assert.deepEqual(m.told.map((t) => t.user), ['orders']);
+});
+
+test('an order fault is a use of a later module: the earlier module that holds it hears of any change to that module\'s files', () => {
+  const files = productFiles();
+  // orders (before report in the order) refers to report: an order fault in its uses file.
+  files['process/modules/orders.uses.json'] = { ...files['process/modules/orders.uses.json'], orderFaults: [{ provider: 'report', file: 'test/orders/index.test.mjs', side: 'test', line: 2 }] };
+  const before = mkdtempSync(join(tmpdir(), 'p4-fault-')), after = mkdtempSync(join(tmpdir(), 'p4-fault-'));
+  write(before, files);
+  // report's code changes; no item's means does
+  write(after, { ...files, 'src/report/index.mjs': `${files['src/report/index.mjs']}// a note\nconst unused = 1;\n` });
+  const r = notice(before, after, 'report');
+  assert.deepEqual(r.changed, []);
+  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => [x.found, x.orderFault])]), [['orders', [['any change', 'order test/orders/index.test.mjs:2']]]]);
+  // A change that names a meaning but changes no file tells it nothing.
+  assert.deepEqual(notice(before, before, 'report', { filesChanged: false }).told, []);
 });
 
 test('a module with no uses file yet is told of every change of an earlier module it imports, and its whole tests run', () => {
