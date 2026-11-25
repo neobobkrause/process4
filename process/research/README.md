@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `ready-on-ready-pr-25nov.md` — civicsmith store-request #4: `p4 ready` on a pull request already ready or merged answered with a GraphQL refusal; nothing lost; options A and B (say plainly, drop the fallback).
 - `not-followed-told-everything-25nov.md` — `notify 1350` (an optional parameter added to test-support) told 121 modules, nearly all "not followed fully"; build text 5 tells such a user of any change, against "Accepting more tells no one"; decision B: such a user is told only of a change that tells users; slots above the number, information.
 - `waiting-work-too-large-25nov.md` — `notify 1339` (43 min) told seven open jobs, then could not write waiting work (likely over GitHub's 65,536-character comment limit; most users "not followed fully"), so the other notices were lost; the tool drops GitHub's words on a failed write; decision B: reasons on the merged pull request, waiting work names the notice.
 - `merges-held-for-notify-25nov.md` — civicsmith ARCH holds nine ready jobs while `notify` runs after record-grammar's merge; what in the process makes it wait (design part 2 §7 "the notice reaches that job at once", ARCH rule 2's one-turn sequence); options A to C; the owner chose B (merging goes on, `notify` in the background), 25 Nov; raised by the owner.
