@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `depth-limit-watcher-25nov.md` — process3-probes watcher #12 at depth 8 could not arm its wake; the warning "two levels away" comes one takeover late (a ROOT at depth 7 has broken children); options A to C.
 - `first-comments-2c-25nov/` — a worker's prototype of options 2C, 2C+ and 2D (a first `@throws`/`@bound`, or any difference, on an entry whose own code is unchanged tells no one); results in `notify-1356-still-197-25nov.md`, last section (membership's first comments, PR 1457).
 - `same-name-entries-25nov.md` — test-support's five files each export `generate`; the listing kept one, so notices for nothing and a missed user; correction built (`same-name-entries-25nov/tool.patch`), choice 4 on the owner's page.
 - `notify-1356-still-197-25nov.md` — after 55db8e4, `notify 1356` still told 197: a first `@throws` or `@bound` on an entry that stated none is a change by the rules (and the printout hides it); `unbracket` stripped a parameter list's brackets, so the declaration backstop told against decision B (corrected in PR 275, the owner's decision 1B); options A to D put as one group with the narrowing below.
