@@ -1,73 +1,54 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~20:55Z by **PROCESS #16** (`session_018Bhcee8zHEFYs9oDczEFEK`) at its refresh point (past 50 percent),
-at a natural pause: no worker running, everything pushed. Your successor is **PROCESS #17**: read the generation in
-`handover-process` (16), name yourself `PROCESS #17` with set-session-title, record generation 17 and your session there
+Written 25 Nov 2026 ~22:50Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (not
+yet at its refresh point; fill ~28 percent). If you are its successor, you are **PROCESS #18**: read the generation in
+`handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
 (keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
-0 until your first turn ends, then is real; refresh at the first natural pause after 50 percent. Never `git add -A`; put
-`.claude/worktrees/` in `.git/info/exclude`. The first `git fetch origin main` once returned a stale tip: fetch twice and
-compare with `git ls-remote origin main`.
+0 until your first turn ends, then is real. Never `git add -A`; put `.claude/worktrees/` in `.git/info/exclude`.
 
 **Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
 `build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: decision C and the facility decision are built on `work/decision-c` (head 3338a4c); not yet on main
+## START HERE: `work/decision-c` (head 27b2be9) holds decision C, the facility decision, and the precision work
 
-The owner's words, in PROCESS #16's session, 25 Nov: "Decision: C, the full standard, with the first pass of 8; build the
-conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."
-(18:51Z) and "Decision: use the simplification: the tool carries Node's and workerd's facility classification; ARCH names
-the boundary modules and classifies the packages its product uses." (20:26Z). Both are recorded in `design-decisions-2.md`
-("Who a change tells") on that branch. Also his standing instruction: "It's important that this process4 change be done
-properly. This shouldn't result in any contradictions. All changes should try to properly evolve existing elements of the
-process rather than piling more on top." And: "changes only happen based on my decisions, but the way in which those
-decisions are implemented can result in duplication, contradictions, and ambiguity without my involvement" — correct
-those yourself; bring him only what would change a rule.
+His decisions (in `design-decisions-2.md` "Who a change tells" on that branch): "Decision: C, the full standard, with the
+first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current
+on every module job." (25 Nov 18:51Z) and "Decision: use the simplification: the tool carries Node's and workerd's facility
+classification; ARCH names the boundary modules and classifies the packages its product uses." (20:26Z). His standing
+instruction: do it properly, no contradictions, evolve existing elements; correct implementation duplication/ambiguity
+yourself, bring him only what changes a rule.
 
-**State of `work/decision-c`** (all one branch; main untouched so main never holds a design its tool contradicts):
-- Record: six entries rewritten in place (Who a change tells; How `notify` reads the product; How a notice reaches a user;
-  The round item 2; A job's tests item 3; What the check refuses item 3; A tranche ends item 3); 3B retired.
-- Design parts 0, 2, 3, 4, 5, 6, 10 evolved; build texts 01, 01b, 02, 02b, new 02c (the coding standard and uses file),
-  03, 04, 05, new `build/README.md`; job.md, arch.md, starting_texts/00-index.md. A tidy study (research
-  `tidy-25nov.md`) fixed 25 contradictions and folded duplicates; reading sets now job 166,734 and ARCH 167,721 of 175,000.
-- Tool: `cd tool && npm test` 224/224. Reference reader under the standard (`lib/notice/refs.mjs`), uses-file writer at
-  every `push` and `test` (`lib/usesfile.mjs`, `lib/usescmd.mjs`), `p4 uses`, the means M1–M9 (`lib/notice/means.mjs`),
-  `notify` as a lookup, merge wait and related tests from uses files, the conversion kind and its report at `ready`,
-  `push --meaning`, the tool's own facility classification (`lib/notice/facilities.json`, nothing defaults to in),
-  uses files rewritten on a module-list change, a facility-list change, or a version move. Research:
-  `uses-metadata-25nov/conversion-sites.md` (every assignability site of TypeScript 5.6.3, all covered).
-- Proof (150 changes + 13 found breaks; uses files by the real writer): 112 needed, 958 told, 846 told without need,
-  0 missed. The over-telling is the proof product's code not keeping the standard (places told of every change).
+**Done by PROCESS #17 on `work/decision-c`** (all by workers; research `process/research/precision-26nov/`, on main):
+- Member-by-member telling (uses file marks each use `member`/`whole`/`handed back`/`none`; a member added tells whole-value
+  users only; a handle's changed method also tells whole-value holders, which closed X03); a named meaning not told to a
+  pure hand-back user.
+- What changed made exact where the language decides (equivalent rewrites by the checker; errors caught; channels);
+  accepts-more confirmed more widely BUT never where a user's function may be handed more arguments (that confirmation
+  was unsafe and is closed on every path).
+- Tool faults: a program started by a literal path is in its starter's closure (channels only), `env`/`argv`/`stdin`
+  read; a relabelled copy of another module's kind is an S4 place and its readers are told.
+- 242/242 tests. Original proof 112/958/846/0. Converted proof (`measure.mjs`): 108 needed, 388 told, 288 without need, 8
+  missed (5 meter framing, 2 same-kind swaps, X01).
+
+**The owner's way of judging findings (his words, 25 Nov ~22:30Z, recorded in `precision-26nov/README.md`):** report a
+false result only where "neither roles, jobs, nor tools can recognize the change"; every change has a cause (requirement,
+walk flaw, notice, the job's own failed test), interface changes go through ARCH (design 2 §8), meanings are named by ARCH
+and declared by the job. PROCESS asked once whether to record it as a decision: unanswered. Under it PROCESS told him: no
+unrecognizable miss once correction 2 is made (X01 is recognized but rule 7 discards what the tool sees); the 5 meter and 2
+swap misses are covered by the meter's interface tests and ARCH/the job's declaration.
 
 **Next, in order:**
-1. **The owner's open question on false positives** (asked ~20:50Z, unanswered): he requires no misses AND no false
-   positives. PROCESS #16 told him (a) needless notices from unconverted places end with conversion (he agreed); (b) after
-   conversion two kinds remain: A, a user of exactly the changed item whose use is unaffected — inherent (undecidable;
-   his own rule "any change to either a provider's domain or range necessitates that its users be retested" calls for
-   telling it), asked whether he accepts A; B1–B5, tool imprecision: member-level granularity (a type's or class's
-   change matched to uses of its other members, `X.*`), equivalent type rewrites, over-approximated computed facts,
-   ARCH-named meanings telling pass-through users, unconfirmed accepts-more. His later question (~20:58Z): "Why can't a
-   job that adds a new field or parameter that doesn't break existing calls recognize that that kind of change doesn't
-   require that any users be notified?" Answer given: a new optional parameter the checker confirms already tells no one
-   (his rule); a new field handed back can break only users of the whole value (spread, keys, serialize, whole-value
-   comparison), so the tool, not the job, tells only those — add this to B1. B1, B4 fully; B2 very likely (unverified);
-   B5 mostly; B3 only partly. Then (~21:05Z): "Can the coding standard recognize the difference between using a record
-   by fields (and be resilient when a field isn't found in a record), and identify when a user uses a record wholly so
-   that the provider knows who to notify for that reason and who not to?" Answered yes: field reads (`Quote.total`,
-   type read) vs whole-value uses (pass on, spread, keys/values, JSON, clone, whole comparison) are recorded per use
-   and certain under R1 and R17; a field added tells only whole-value users; removed/changed/made-optional tells its
-   readers and whole-value users. Today `notify` matches `X` to `X.*`: build the member-level match first. A further
-   idea, NOT studied and to be put to him before building (it touches "no test of users before a provider's change
-   merges", though it is a type check, not a test run): re-type-check each user's places against the provider's new
-   declarations and tell only users whose uses fail — removes type-level case A, not meaning changes. He was told PROCESS would tighten B1–B5 now
-   (changes no rule) and re-measure the proof on a CONVERTED copy of its modules to count A and B apart, unless he says
-   otherwise. Do that (workers in worktrees from `work/decision-c`), and get his answer on A.
-2. A fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), then ONE pull
-   request `work/decision-c` → main, merged once `tool-tests` passes (his decisions are the approving words; quote them
-   in the PR body).
-3. Then design Part D: trial on process3-probes (needs a fresh ROOT from him: choice 5), civicsmith's move on his
-   instruction at its coordinator, first pass (ARCH records a scope of the first 8 modules; ARCH writes the facility list
-   of boundary modules and packages first), his review.
+1. His answer on **correction 2** (on his page): a confirmed "accepts more" still tells users whose uses file records
+   handing the function on, or that build their own value of the accepted kind (`misses.md` P3). Corrections 1 (P1B) and
+   3 (P4) were withdrawn under his way of judging. If he decides, record his words, build P3, re-measure.
+2. A worker (`work/decision-c-needless`) classifies the ~100 non-A needless notices by his test into: tool imprecision
+   (narrow it), the job knows but cannot inform (declarations only add — a design question for him), no element can know.
+   Bring him only what his test leaves.
+3. Then a fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), and ONE pull
+   request `work/decision-c` → main, merged once `tool-tests` passes (quote his decisions in the PR body).
+4. Then Part D: trial on process3-probes (needs a fresh ROOT from him: choice 5), civicsmith's move on his instruction at
+   its coordinator, the first pass of 8, his review.
 
 The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
 `3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
@@ -99,6 +80,10 @@ list still reads "…for your decision": only he can rename it in a browser.
 - Coordinator #9: `session_018BhcedNDzSLiPUv54snhat`.
 
 ## Lessons
+
+- Judge a false result in the process's context (his words above): ask why the change is made and who knows. A measurement
+  that replays changes as if no role or job acted overstates misses; never bring him backups for duties another role holds.
+  A worker's widening can open a miss (the callback confirmation): check each against `misses.md` before joining.
 
 - The owner wants load-bearing designs: "every reference means every reference". Never claim certainty with exceptions;
   separate a hidden reference from a bug; settle by study of the language, not sampling.
