@@ -415,15 +415,17 @@ export function pick(x) { return x; }
   assert.ok(r.outside.some((o) => o.rule === 'R4' && o.item === 'take'), places(r).join('; '));
 });
 
-test('every reference: A4 names the module that owns the setting, where the facility list says', () => {
-  const root = product(CASES.find((c) => c.id.startsWith('A4')).u);
-  const r = read(root, 'u', { facilities: { entries: {}, owners: { 'env:PRICE_URL': 'p' } } });
+test('every reference: A4 names the module that may own the setting: the earlier boundary modules the facility list names', () => {
+  const root = product(CASES.find((c) => c.id.startsWith('A4')).u, { 'process/modules/facilities.json': facilityList([], { boundary: ['p'] }) });
+  const r = read(root, 'u');
   assert.deepEqual(r.outside.filter((o) => o.rule === 'R12').map((o) => [o.mayRefer, o.waitsOn]), [[['p'], 'p: an accessor for PRICE_URL']]);
 });
 
 // ---- ordinary code that keeps the standard raises nothing ----
 
-const ordinary = (r) => ({ entries: Object.fromEntries(r.facilities.map((f) => [f, 'in-process'])), owners: {} });
+/** A facility list in build text 2c's form: each name in the process, those in `out` reaching out. */
+const facilityList = (names, { out = [], boundary = [] } = {}) => ({ versions: { node: '22.12.0', workerd: '2026-11-01' }, boundary,
+  facilities: [...new Set([...names, ...out])].map((name) => ({ name, reach: out.includes(name) ? 'out' : 'in' })) });
 test('every reference: the controls, ordinary code, raise no place at all once its facilities are on the list', () => {
   // A1b: an own channel decoded to an own kind. K1: spread, destructuring, a generic identity, for...of, a read-only
   // list parameter, a structural parameter, catch with instanceof of the provider's class; a test with written names.
@@ -466,8 +468,8 @@ test('u > lists every name', () => { assert.equal(all().split(',').length, 3); }
   const first = read(root, 'u');
   assert.deepEqual(places(first), [], 'no place but the facility list\'s own');
   assert.ok(first.outside.every((o) => o.rule === 'R14'), 'with no facility list, each host facility is listed');
-  // the product's facility list, at the place the config names by default (build text 2c, section 12)
-  write(root, { 'process/facilities.json': { versions: { node: '22', typescript: '5.6.3' }, ...ordinary(first) } });
+  // the product's facility list, beside the module list (build text 2c)
+  write(root, { 'process/modules/facilities.json': facilityList(first.facilities) });
   const r = read(root, 'u');
   assert.deepEqual(r.outside, []);
   assert.deepEqual(r.orderFaults, []);
@@ -475,7 +477,7 @@ test('u > lists every name', () => { assert.equal(all().split(',').length, 3); }
   assert.deepEqual(r.providers, ['p']);
   // what is used, by name, by type and through the conversions it makes
   for (const f of ['p:make call', 'p:PError', 'p:Row read', 'p:readRow call']) assert.ok(usesOf(r).some((u) => u.startsWith(f)), `${f} among ${usesOf(r).join('; ')}`);
-  assert.ok(r.facilities.includes('"node:fs".readFileSync') && r.facilities.includes('JSON.parse'), r.facilities.join(', '));
+  assert.ok(r.facilities.includes('node:fs.readFileSync') && r.facilities.includes('JSON.parse'), r.facilities.join(', '));
 });
 
 // ---- the path rule (S5, S6) ----
@@ -563,18 +565,21 @@ test('u > lists the words', () => { assert.equal(f()[0], 'Price list'); });
 test('u > a chance match', () => { assert.equal(f().length, /** @notcopy */ ('Price list').length - 6); });
 `,
     'test/u/fixture.json': '{ "heading": "Price list", "op": "priceof" }\n',
-    'process/modules/u.uses.json': { module: 'u', copies: [{ file: 'test/u/fixture.json', pointer: '/op', of: 'p:OP_PRICE' }] },
+    'process/modules/u.uses.json': { module: 'u', copies: [{ provider: 'p', item: 'OP_PRICE', file: 'test/u/fixture.json', pointer: '/op' }] },
   });
   const r = read(root, 'u');
-  const c = (pred) => r.copies.filter(pred);
-  assert.deepEqual(c((x) => x.marked === 'copyOf_p_TITLE').map((x) => [x.provider, x.item, x.line]), [['p', 'TITLE', 2]]);
-  assert.deepEqual(c((x) => x.marked === '@copyof p:LIMIT').map((x) => x.differs), [{ here: 200, provider: 250 }]);
-  assert.deepEqual(c((x) => !x.marked && !x.of && x.file === 'src/u/index.mjs').map((x) => `${x.provider}:${x.item}@${x.line}`), ['p:OP_PRICE@6']);
+  const m = (pred) => r.marked.filter(pred);
+  const c = (pred) => r.candidates.filter(pred);
+  assert.deepEqual(m((x) => x.marked === 'copyOf_p_TITLE').map((x) => [x.provider, x.item, x.line]), [['p', 'TITLE', 2]]);
+  assert.deepEqual(m((x) => x.marked === '@copyof p:LIMIT').map((x) => x.differs), [{ here: 200, provider: 250 }]);
+  assert.deepEqual(c((x) => x.file === 'src/u/index.mjs').map((x) => `${x.provider}:${x.item}@${x.line}`), ['p:OP_PRICE@6']);
   assert.deepEqual(c((x) => x.file === 'test/u/u.test.mjs').map((x) => `${x.provider}:${x.item}@${x.line} ${x.test}`).sort(), ['p:TITLE@4 u > lists the words', 'p:WORDS.title@4 u > lists the words']);
-  assert.deepEqual(c((x) => x.file === 'test/u/fixture.json' && !x.of).map((x) => `${x.item}${x.pointer}`).sort(), ['TITLE/heading', 'WORDS.title/heading']);
-  assert.deepEqual(c((x) => x.of), [{ file: 'test/u/fixture.json', pointer: '/op', of: 'p:OP_PRICE' }]);
-  // a marked copy is read as a use of the item; so is the hand-written one
-  for (const f of ['p:TITLE copy', 'p:LIMIT copy', 'p:OP_PRICE copy']) assert.ok(usesOf(r).includes(f), `${f} among ${usesOf(r).join('; ')}`);
+  assert.deepEqual(c((x) => x.file === 'test/u/fixture.json').map((x) => `${x.item}${x.pointer}`).sort(), ['TITLE/heading', 'WORDS.title/heading']);
+  // the uses file keeps the hand-written copy in a JSON file as written (build text 2c)
+  assert.deepEqual(r.copies, [{ provider: 'p', item: 'OP_PRICE', file: 'test/u/fixture.json', pointer: '/op' }]);
+  // a marked copy is read as a use of the item; so is the hand-written one, at its line
+  for (const f of ['p:TITLE marked copy', 'p:LIMIT marked copy', 'p:OP_PRICE marked copy']) assert.ok(usesOf(r).includes(f), `${f} among ${usesOf(r).join('; ')}`);
+  assert.deepEqual(r.uses.find((u) => u.item === 'OP_PRICE').where, [{ file: 'test/u/fixture.json', side: 'test', line: 1 }]);
 });
 
 // ---- test names (S12) and places ----
@@ -619,7 +624,8 @@ export let counter = 0;
 `, { 'test/u/u.test.mjs': `import { test } from 'node:test';
 test('u > times itself', () => { const t = Date.now(); void t; });
 ` });
-  const r = read(root, 'u', { facilities: { entries: { 'SymbolConstructor.for': 'in-process', setInterval: 'boundary', 'DateConstructor.now': 'boundary' }, owners: {} } });
+  write(root, { 'process/modules/facilities.json': facilityList(['SymbolConstructor.for'], { out: ['setInterval', 'DateConstructor.now'] }) });
+  const r = read(root, 'u');
   const at = (rule) => r.outside.filter((o) => o.rule === rule).map((o) => `${o.file.split('/')[0]}:${o.line}`);
   assert.deepEqual(at('S2'), ['src:8']);
   assert.deepEqual(at('S8').sort(), ['src:13', 'src:6']);
@@ -627,14 +633,205 @@ test('u > times itself', () => { const t = Date.now(); void t; });
   assert.deepEqual(at('R21'), ['src:12']);
   assert.deepEqual(at('R22'), ['test:2']);
   // a listed facility that is boundary, outside a boundary module; one not on the list
-  assert.ok(r.outside.some((o) => o.rule === 'R14' && /setInterval, a boundary facility, outside a boundary module/.test(o.what)));
+  assert.ok(r.outside.some((o) => o.rule === 'R14' && /setInterval, which reaches out, outside a boundary module/.test(o.what)));
   assert.ok(r.outside.some((o) => o.rule === 'R14' && /uses DateConstructor\.now/.test(o.what) && o.side === 'test'));
   assert.ok(r.facilities.includes('SymbolConstructor.for'));
   // a member of the module object named by a choice of written-out names is a use; the cast one is a downcast (R16)
   assert.ok(usesOf(r).some((u) => u.startsWith('p:TITLE')) && usesOf(r).some((u) => u.startsWith('p:OP_PRICE')), usesOf(r).join('; '));
   // with the module a boundary module, the boundary facility is its own to use
-  const b = caseProduct({ ...BASE, 'src/u/index.mjs': 'setInterval(() => {}, 1000);\n' }, { entries: { u: { boundary: true } } });
-  assert.ok(!read(b, 'u', { facilities: { entries: { setInterval: 'boundary' }, owners: {} } }).outside.some((o) => o.rule === 'R14'));
+  const b = caseProduct({ ...BASE, 'src/u/index.mjs': 'setInterval(() => {}, 1000);\n', 'process/modules/facilities.json': facilityList([], { out: ['setInterval'], boundary: ['u'] }) });
+  assert.ok(!read(b, 'u').outside.some((o) => o.rule === 'R14'));
+});
+
+// ---- every conversion site of the checker (process/research/uses-metadata-25nov/conversion-sites.md) ----
+
+test('conversion sites: at each, the tool relates the two types itself, member by member', () => {
+  // A list of dogs, which the module may keep writing to, given the writable type of a list of animals: R6 at each site
+  // where a value passes from one type to another; a method that takes less than its kind promises: R5.
+  const u = `import { Dog } from '../d/index.mjs';
+import { Cat } from '../c/index.mjs';
+import { Base } from '../a/index.mjs';
+import { make, PError } from '../p/index.mjs';
+/** @import { Animal, Handler } from '../a/index.mjs' */
+const dogs = [new Dog()];
+const cats = [new Cat()];
+/** @type {Dog[] | undefined} */
+const maybe = dogs;
+/** @type {{ la: Dog[] }} */
+const box = { la: dogs };
+/** @param {Animal[]} a @returns {void} */
+function take(a) { void a; }
+/** @param {...Animal[]} a @returns {void} */
+function takeAll(...a) { void a; }
+/** @param {TemplateStringsArray} s @param {Animal[]} a @returns {void} */
+function tag(s, a) { void s; void a; }
+/** @this {{ pets: Animal[] }} @returns {number} */
+function count() { return this.pets.length; }
+/** @param {boolean} flag @returns {Animal[]} */
+export function sites(flag) {
+  take(dogs); // site: argument
+  takeAll(...[dogs]); // site: spread argument
+  tag\`\${dogs}\`; // site: tagged template
+  const holder = { pets: dogs, count };
+  holder.count(); // site: receiver
+  /** @type {() => Animal[]} */
+  const g = () => dogs; // site: arrow body
+  /** @type {Animal[]} */
+  let a = [];
+  a = dogs; // site: assignment
+  /** @type {Animal[] | undefined} */
+  let b;
+  b ??= dogs; // site: logical assignment
+  /** @type {Animal[][]} */
+  const ll = [dogs]; // site: list element
+  /** @type {Animal[][]} */
+  const l2 = [...[dogs]]; // site: list spread
+  ll[0] = dogs; // site: element assignment
+  /** @type {{ pets: Animal[] }} */
+  const o = { pets: dogs }; // site: field
+  const pets = dogs;
+  /** @type {{ pets: Animal[] }} */
+  const o2 = { pets }; // site: shorthand field
+  /** @type {Animal[]} */
+  let la = [];
+  ({ la } = box); // site: assignment taken apart
+  const { lb = dogs } = /** @type {{ lb?: Animal[] }} */ ({}); // site: default taken apart
+  // a for-of variable: in JavaScript the checker gives it the type iterated, whatever its comment says (run), so no conversion
+  for (const /** @type {Animal[]} */ each of [dogs]) void each;
+  /** @type {Animal[]} */
+  const c = flag ? dogs : cats; // site: conditional
+  /** @type {Animal[]} */
+  const d = maybe ?? []; // site: logical
+  /** @type {{ [k: string]: unknown }} */
+  const spread = { ...make()[0] }; // site: object spread
+  const s = /** @satisfies {Animal[]} */ (dogs);
+  void [g, a, b, l2, o, o2, la, lb, c, d, spread, s];
+  return dogs; // site: return
+}
+/** @param {Animal[]} [a] @returns {void} */
+export function withDefault(a = dogs) { void a; } // site: parameter default
+/** @returns {Generator<Animal[]>} */
+export function* gen() { yield dogs; } // site: yield
+export class Pen {
+  /** @type {Animal[]} */
+  animals = dogs; // site: class field
+}
+export class Keeper extends Base {
+  /** @param {Dog} d @returns {Dog} */
+  static keep(d) { return d; } // site: static override
+}
+/** @implements {Handler} */
+export class Barker { // site: implements
+  /** @param {Dog} d @returns {void} */
+  handle(d) { d.bark(); }
+}
+/** @returns {void} */
+export function fails() {
+  try { throw new PError('x'); } catch (e) { if (e instanceof PError) void e.code; } // site: throw and catch
+}
+`;
+  const A2 = A.replace('export class Base {', 'export class Base {\n  /**\n   * @param {Animal} a\n   * @returns {Animal}\n   */\n  static keep(a) { return a; }');
+  const root = caseProduct({ ...BASE, 'src/a/index.mjs': A2, 'src/u/index.mjs': u });
+  const r = read(root, 'u');
+  const lineOf = (site) => u.split('\n').findIndex((l) => l.endsWith(`// site: ${site}`)) + 1;
+  const at = (rule, site) => r.outside.some((o) => o.rule === rule && o.file === 'src/u/index.mjs' && o.line === lineOf(site));
+  for (const site of ['argument', 'spread argument', 'tagged template', 'receiver', 'arrow body', 'assignment', 'logical assignment', 'list element',
+    'list spread', 'element assignment', 'field', 'shorthand field', 'assignment taken apart', 'default taken apart', 'conditional',
+    'logical', 'return', 'parameter default', 'yield', 'class field']) assert.ok(at('R6', site), `R6 at the ${site} (line ${lineOf(site)}): ${places(r).join('; ')}`);
+  for (const site of ['static override', 'implements']) assert.ok(at('R5', site), `R5 at the ${site}: ${places(r).join('; ')}`);
+  assert.ok(at('R17', 'object spread'), `R17 at the object spread: ${places(r).join('; ')}`);
+  // satisfies only checks: both types are used, the value keeps its own
+  assert.ok(!r.outside.some((o) => o.rule === 'R6' && o.line === u.split('\n').findIndex((l) => l.includes('@satisfies')) + 1));
+  // a value of another module's type thrown, and its error class caught
+  const types = (item) => r.uses.filter((x) => x.provider === 'p' && x.item === item && x.where.some((w) => w.line === lineOf('throw and catch'))).map((x) => x.type);
+  assert.ok(types('PError').includes('throw') && types('PError').includes('catch'), types('PError').join(', '));
+});
+
+test('conversion sites: a decorator receives the value it decorates', () => {
+  const root = caseProduct({ ...BASE, 'src/a/index.mjs': `${A}
+/**
+ * @param {{ new (): Animal, kind: Animal[] }} target
+ * @returns {void}
+ */
+export function register(target) { void target; }
+`, 'src/u/index.mjs': `import { Dog } from '../d/index.mjs';
+import { register } from '../a/index.mjs';
+@register
+export class Kennel extends Dog {
+  static kind = [new Dog()];
+}
+` });
+  const r = read(root, 'u');
+  assert.ok(r.outside.some((o) => o.rule === 'R6' && o.line === 3 && /a decorated declaration/.test(o.what)), places(r).join('; '));
+  assert.ok(usesOf(r).includes('a:register conversion'), usesOf(r).join('; '));
+});
+
+test('S7: a call by name through a door written as build text 2b, section 5 now writes it is a use of the operation; R20 holds for the old form', () => {
+  const root = caseProduct({ ...BASE,
+    'src/p/index.mjs': `${P}
+/**
+ * @typedef {{
+ *   priceof: {req: { n: number }, res: number}
+ * }} PricingOps
+ * @optable
+ */
+`,
+    'src/q/index.mjs': `/**
+ * @typedef {(op: 'priceof', body: { n: number }) => Promise<number>} AllOps
+ */
+/**
+ * @typedef {Object} Door
+ * @property {AllOps} call
+ * @carriesop call
+ */
+/** @returns {Door} */
+export function door() { return { call: async (op, body) => (op === 'priceof' ? body.n : 0) }; }
+/** @typedef {{[K in 'a' | 'b']: number}} OldForm */
+`,
+    'src/u/index.mjs': `import { door } from '../q/index.mjs';
+/** @returns {Promise<number>} */
+export function price() { return door().call('priceof', { n: 1 }); }
+` });
+  assert.ok(usesOf(read(root, 'u')).includes('p:op:priceof operation by name'), usesOf(read(root, 'u')).join('; '));
+  // the door's own module: a mapped type, the form 2b no longer uses, is a place outside the standard
+  assert.ok(read(root, 'q').outside.some((o) => o.rule === 'R20'));
+});
+
+// ---- the module list changes ----
+
+test('push, where the branch changes the module list, rewrites the uses files of the modules it touches and of their users', () => {
+  const files = {
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nq\nu\n',
+    'process/modules/p.json': { name: 'p', files: ['src/p/'], tests: ['test/p/'], public: ['src/p/index.mjs'] },
+    'process/modules/q.json': { name: 'q', files: ['src/q/'], tests: ['test/q/'], public: ['src/q/index.mjs'] },
+    'process/modules/u.json': { name: 'u', files: ['src/u/'], tests: ['test/u/'], public: ['src/u/index.mjs'] },
+    'src/p/index.mjs': "export { two } from './two.mjs';\n/** @returns {number} */\nexport function one() { return 1; }\n",
+    'src/p/two.mjs': '/** @returns {number} */\nexport function two() { return 2; }\n',
+    'src/q/index.mjs': 'export const q = 1;\n',
+    'src/u/index.mjs': "import { two } from '../p/index.mjs';\n/** @returns {number} */\nexport function four() { return two() * 2; }\n",
+  };
+  const root = makeRepo(files);
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const { ctx } = ctxFor(root, fakeGitHub());
+  // first, every module's uses file, as conversions would write them
+  git(['checkout', '-q', '-b', 'work/first'], { cwd: root });
+  commit(root, { 'src/p/index.mjs': `${files['src/p/index.mjs']}\n`, 'src/q/index.mjs': `${files['src/q/index.mjs']}\n`, 'src/u/index.mjs': `${files['src/u/index.mjs']}\n` });
+  push(ctx, { _: [] });
+  assert.deepEqual(readUses(root, 'u', { ref: 'HEAD' }).providers, ['p']);
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  // ARCH moves two.mjs from p to q in the module list, as one change: u's code is not touched
+  git(['checkout', '-q', '-b', 'work/move'], { cwd: root });
+  commit(root, {
+    'process/modules/p.json': { name: 'p', files: ['src/p/index.mjs'], tests: ['test/p/'], public: ['src/p/index.mjs'] },
+    'process/modules/q.json': { name: 'q', files: ['src/q/', 'src/p/two.mjs'], tests: ['test/q/'], public: ['src/q/index.mjs', 'src/p/two.mjs'] },
+  });
+  push(ctx, { _: [] });
+  const changed = git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: root }).split('\n').sort();
+  // p lost two and u's names it; q's own uses are as they were, so its file is unchanged
+  assert.deepEqual(changed, ['process/modules/p.uses.json', 'process/modules/u.uses.json']);
+  // u now uses q's two, which the move took there, through p's re-export
+  assert.ok(readUses(root, 'u', { ref: 'HEAD' }).uses.some((x) => x.provider === 'q' && x.item === 'two'), JSON.stringify(readUses(root, 'u', { ref: 'HEAD' }).uses));
 });
 
 // ---- the uses file ----
@@ -646,14 +843,15 @@ test('u > names', () => { names(); });
 ` });
   const tree = loadTree(root);
   const d = usesData(tree, 'u', 'a'.repeat(40));
-  assert.deepEqual(Object.keys(d), ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies', 'facilities']);
+  assert.deepEqual(Object.keys(d), ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies']);
   assert.deepEqual(d.written.commit, 'a'.repeat(40));
-  assert.match(d.written.tool, /^process4-tool \S+, typescript 5\.6\.3$/);
+  // the tool's commit: the commit of the copy it runs from
+  assert.equal(d.written.tool, git(['rev-parse', 'HEAD'], { cwd: new URL('..', import.meta.url).pathname }));
   assert.deepEqual(d.providers, ['p', 'q']);
   const rows = d.uses.find((u) => u.provider === 'q' && u.item === 'rows' && u.type === 'call');
   assert.deepEqual(rows, { provider: 'q', item: 'rows', itemKind: 'function', type: 'call', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 6, in: 'names' }] });
-  assert.ok(d.uses.some((u) => u.provider === 'p' && u.item === 'Row' && u.itemKind === 'kind' && u.route.via === 'q' && u.route.item === 'rows'));
-  for (const o of d.outside) assert.deepEqual(Object.keys(o).filter((k) => k !== 'item'), ['rule', 'file', 'side', 'line', 'what', 'mayRefer', 'waitsOn', 'tests']);
+  assert.ok(d.uses.some((u) => u.provider === 'p' && u.item === 'Row' && u.itemKind === 'type' && u.type === 'receive' && u.route.via === 'q' && u.route.item === 'rows'));
+  for (const o of d.outside) assert.deepEqual(Object.keys(o), ['rule', 'file', 'side', 'line', 'mayRefer', 'waitsOn', 'tests']);
   const rel = writeUses(root, 'u', d, { cfg: tree.cfg });
   assert.equal(rel, usesPath(tree.cfg, 'u'));
   assert.equal(rel, 'process/modules/u.uses.json');
@@ -698,17 +896,18 @@ test('push writes the uses file of the module it changes, from the code as pushe
   git(['checkout', '-q', '--', 'src/u/index.mjs'], { cwd: root });
   const c = check(loadTree(root), 'u');
   assert.deepEqual(c.refusals, []);
-  // `uses` prints the same reading for a conversion job, and writes nothing
+  // `uses` reads the checkout, writes the uses file into it, and prints what a conversion's first step lists
   out.length = 0;
-  const status = git(['status', '--porcelain'], { cwd: root });
-  assert.equal(usesCmd(ctx, 'u', { _: [] }), 0);
-  assert.match(out.join('\n'), /^Uses of u\nproviders: p\nuses \(\d+\):\n {2}p one \(function\): call, direct\n {6}src\/u\/index\.mjs:3 in two\n {6}test\/u\/u\.test\.mjs:3 test "u > one is one"/);
-  assert.match(out.join('\n'), /read at [0-9a-f]{10}; the file is process\/modules\/u\.uses\.json, written by push/);
+  assert.equal(usesCmd(ctx, 'u'), 0);
+  assert.match(out.join('\n'), /^Uses of u\nproviders: p\nreferences in standard form \(\d+\):\n {2}p one \(function\): call, direct\n {6}src\/u\/index\.mjs:3 in two\n {6}test\/u\/u\.test\.mjs:3 test "u > one is one"/);
+  assert.match(out.join('\n'), /unchanged: process\/modules\/u\.uses\.json, from the code in the checkout/);
+  write(root, { 'src/u/index.mjs': 'export const x = 2;\n' });
   out.length = 0;
-  usesCmd(ctx, 'u', { _: [], json: true, at: 'HEAD^' });
-  assert.deepEqual(JSON.parse(out.join('\n')).providers, ['p']);
-  assert.equal(git(['status', '--porcelain'], { cwd: root }), status);
-  assert.throws(() => usesCmd(ctx, 'nobody', { _: [] }), /no module is named nobody/);
+  usesCmd(ctx, 'u');
+  assert.match(out.join('\n'), /written: process\/modules\/u\.uses\.json/);
+  assert.deepEqual(readUses(root, 'u').uses.filter((u) => u.where.some((w) => w.side === 'code')), []);
+  assert.equal(git(['status', '--porcelain'], { cwd: root }), ' M process/modules/u.uses.json\n M src/u/index.mjs');
+  assert.throws(() => usesCmd(ctx, 'nobody'), /no module is named nobody/);
 });
 
 test('the reading is attributed by the checker: TypeScript is the pinned version', () => {

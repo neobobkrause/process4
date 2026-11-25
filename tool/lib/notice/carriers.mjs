@@ -17,17 +17,28 @@ export function carrierOf(checker, call) {
   try { sig = checker.getResolvedSignature(call); } catch { return undefined; }
   const decl = sig?.declaration;
   if (!decl) return undefined;
-  const prop = findAncestor(decl, (n) => ts.isJSDocPropertyTag(n) || ts.isPropertySignature(n) || ts.isFunctionDeclaration(n));
-  if (!prop) return undefined;
-  let kind;
-  const memberName = String(prop.name?.escapedText ?? prop.name?.text ?? '');
-  for (const [tag, k] of [['carriesop', 'op'], ['carriestable', 'table']]) {
-    if (ts.isFunctionDeclaration(prop)) { if (tagsOf(prop, tag).length) kind = k; }
-    else {
-      const td = findAncestor(prop, (n) => ts.isJSDocTypedefTag(n));
-      if (td) for (const t of tagsOf(td, tag)) if (tagText(t).split(/[\s,]+/).includes(memberName)) kind = k;
+  const isMember = (n) => ts.isJSDocPropertyTag(n) || ts.isPropertySignature(n) || ts.isFunctionDeclaration(n);
+  const markOf = (prop) => {
+    const name = String(prop.name?.escapedText ?? prop.name?.text ?? '');
+    for (const [tag, k] of [['carriesop', 'op'], ['carriestable', 'table']]) {
+      if (ts.isFunctionDeclaration(prop)) { if (tagsOf(prop, tag).length) return k; }
+      else {
+        const td = findAncestor(prop, (n) => ts.isJSDocTypedefTag(n));
+        if (td) for (const t of tagsOf(td, tag)) if (tagText(t).split(/[\s,]+/).includes(name)) return k;
+      }
     }
+    return undefined;
+  };
+  let prop = findAncestor(decl, isMember);
+  let kind = prop ? markOf(prop) : undefined;
+  // A member whose kind is a named kind (one signature for each operation, build text 2b, section 5): the signature is
+  // declared in that kind, not on the member, so the member is the one the call names.
+  if (!kind) {
+    const callee = ts.isPropertyAccessExpression(call.expression) ? call.expression.name : call.expression;
+    prop = checker.getSymbolAtLocation(callee)?.declarations?.find(isMember);
+    kind = prop ? markOf(prop) : undefined;
   }
+  const memberName = String(prop?.name?.escapedText ?? prop?.name?.text ?? '');
   if (!kind) return undefined;
   // A table's name is read from the argument as written: the parameter's kind is only "text".
   // Iteration 3 (rule 13): a helper marked "@carriestable keys" names its tables as the keys of its first argument.

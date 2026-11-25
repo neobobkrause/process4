@@ -29,8 +29,6 @@ const PROTOCOL = ['then', 'toJSON', 'valueOf', 'toString', 'constructor'];
 const PRIMITIVE = ['toString', 'valueOf'];
 const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 const HOOKS = new Set(['before', 'after', 'beforeEach', 'afterEach']);
-/** The marks of the tables and carriers of calls by name (build text 2b, section 5). */
-const MARKS = new Set(['carriesop', 'carriestable', 'optable']);
 /** Facilities that are never on a facility list (study-references §1.5), each with the rule it breaks. */
 const NEVER = new Map([
   ['SymbolConstructor.for', 'S8'], ['SymbolConstructor.keyFor', 'S8'], ['eval', 'S9'], ['Function', 'S9'],
@@ -51,12 +49,14 @@ const FS = /^"node:fs(\/promises)?"\.(\w+)$/;
 const TWO_PATHS = new Set(['renameSync', 'copyFileSync', 'rename', 'copyFile', 'cp', 'cpSync', 'linkSync', 'symlinkSync']);
 const PROGRAMS = /^"node:child_process"\.(spawn|spawnSync|execFile|execFileSync|fork|exec|execSync)$/;
 const WILD = '\u0000';
+/** An item's kind in the uses file's words (build text 2c): the listing's kinds of plain data are types. */
+const itemKind = (k) => (k === 'kind' ? 'type' : k === 'handle kind' ? 'handle type' : k ?? 'item');
 
 /**
  * @param tree the product (model.mjs)
  * @param moduleId the module read
  * @param opts { facilities: the facility list (default: the product's, usesfile.mjs readFacilities) }
- * @returns {{ module, providers, uses, outside, orderFaults, copies, facilities }}
+ * @returns {{ module, providers, uses, outside, orderFaults, copies, marked, candidates, facilities }}
  */
 export function readReferences(tree, moduleId, opts = {}) {
   loadReader();
@@ -100,7 +100,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       const at = decl.name ? decl.name.end - 1 : decl.getStart(sf);
       let best = null;
       for (const r of l?.ranges ?? []) if (r.file === sf.fileName && r.start <= at && at < r.end && (!best || r.end - r.start < best.end - best.start)) best = r;
-      if (best) out = { module: m, item: best.entry, kind: l.entries[best.entry]?.kind ?? 'entry', listed: true, decl };
+      if (best) out = { module: m, item: best.entry, kind: itemKind(l.entries[best.entry]?.kind), listed: true, decl };
       else out = { module: m, item: `${rel(sf.fileName)}:${nameOf(decl)}`, kind: sf.isDeclarationFile ? 'declaration file' : 'not in the interface', listed: false, decl };
     }
     entries.set(decl, out);
@@ -289,17 +289,22 @@ export function readReferences(tree, moduleId, opts = {}) {
     }
     return name.replace(/^global\./, '');
   }
-  const classOf = (name) => facilityList?.entries?.[name] ?? null;
-  const isBoundaryModule = !!mod.entry.boundary;
+  /** A facility as the facility list names it: a module's name without its quotes (node:fs.readFileSync). */
+  const listName = (name) => name.replace(/^"([^"]+)"/, '$1');
+  /** Whether a facility stays in the process ('in') or reaches out ('out'), as the facility list says; null if not on it. */
+  const reachOf = (name) => facilityList?.reach?.get(listName(name)) ?? null;
+  const boundaryModules = facilityList?.boundary ?? new Set();
+  const isBoundaryModule = boundaryModules.has(mod.id);
   function facility(node, sym, { write = false } = {}) {
     const name = facilityName(sym);
     if (!name) return null;
-    inventory.add(name);
+    const shown = listName(name);
+    inventory.add(shown);
     const never = NEVER.get(name) ?? (REGEXP_STATIC.test(name) ? 'S8' : null) ?? ([...NEVER.keys()].find((k) => name.startsWith(`${k}.`)) ? NEVER.get([...NEVER.keys()].find((k) => name.startsWith(`${k}.`))) : null);
-    if (never) place(never, node, { what: `uses ${name}, which no product may use`, waitsOn: 'this module' });
-    else if (write) place('R14', node, { what: `writes ${name}, a member the host declares` });
-    else if (!classOf(name)) place('R14', node, { what: `uses ${name}, which is not on the facility list`, waitsOn: 'ARCH: the facility list' });
-    else if (classOf(name) === 'boundary' && !isBoundaryModule) place('R14', node, { what: `uses ${name}, a boundary facility, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
+    if (never) place(never, node, { what: `uses ${shown}, which no product may use`, waitsOn: 'this module' });
+    else if (write) place('R14', node, { what: `writes ${shown}, a member the host declares` });
+    else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, which is not on the facility list`, waitsOn: 'ARCH: the facility list' });
+    else if (reachOf(name) === 'out' && !isBoundaryModule) place('R14', node, { what: `uses ${shown}, which reaches out, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
     return name;
   }
   const calleeFacility = (call) => {
@@ -525,29 +530,47 @@ export function readReferences(tree, moduleId, opts = {}) {
   }
 
   // ---- conversions (R5, R6, R7, R11, R15, R16, R17): the tool relates both kinds itself, member by member ----
-  const isFresh = (e) => { while (e && ts.isParenthesizedExpression(e)) e = e.expression; return !!e && (ts.isObjectLiteralExpression(e) || ts.isArrayLiteralExpression(e) || ts.isArrowFunction(e) || ts.isFunctionExpression(e)); };
+  /** A value written in place, which no other module holds; an object written with another module's value spread
+   * into it is not (its hidden members come along, R17). */
+  const isFresh = (e) => {
+    while (e && ts.isParenthesizedExpression(e)) e = e.expression;
+    if (e && ts.isObjectLiteralExpression(e)) return !e.properties.some((p) => ts.isSpreadAssignment(p) && !isFresh(p.expression) && productKind(typeAt(p.expression) ?? { flags: 0 }));
+    return !!e && (ts.isArrayLiteralExpression(e) || ts.isArrowFunction(e) || ts.isFunctionExpression(e));
+  };
   const assignable = (a, b) => { try { return checker.isTypeAssignableTo(a, b); } catch { return true; } };
   const readonlyProp = (p) => !!(p.checkFlags & 8) || (p.declarations ?? []).some((d) => (ts.getCombinedModifierFlags(d) & ts.ModifierFlags.Readonly) || ts.getJSDocReadonlyTag?.(d));
   const isMethod = (p) => (p.declarations ?? []).some((d) => ts.isMethodSignature(d) || ts.isMethodDeclaration(d));
   const isReadonlyArray = (t) => ['ReadonlyArray'].includes(t.symbol?.name) || !!(checker.isTupleType(t) && t.target?.readonly);
-  function relate(S, T, e, node, how) {
+  /**
+   * One conversion (the sites are in process/research/uses-metadata-25nov/conversion-sites.md): the source side is used
+   * as `source` says (handed on, stored, or converted), the target side as a conversion; then, unless only checked
+   * (satisfies), the tool's own relation member by member, over each member of a union.
+   */
+  function relate(S, T, e, node, how, { source = 'conversion', check = true } = {}) {
     if (!S || !T || S === T) return;
     const sd = kindDecls(S), td = kindDecls(T);
     const involved = sd.length || td.length || isOwnKind(S) || isOwnKind(T);
     if (!involved) return;
     // R11: both sides of the conversion
     const route = viaOf(e, null);
-    for (const d of sd) addUse(entryOf(d), node, 'convert', route.via === entryOf(d).module ? 'direct' : route);
-    for (const d of td) addUse(entryOf(d), node, 'convert');
+    for (const d of sd) addUse(entryOf(d), node, source, route.via === entryOf(d).module ? 'direct' : route);
+    for (const d of td) addUse(entryOf(d), node, 'conversion');
     // a value handed to a slot of kind unknown, object, {} or any: every member it has is read
     if (T.flags & (ts.TypeFlags.Unknown | ts.TypeFlags.Any) || (isObj(T) && !checker.getPropertiesOfType(T).length && !T.getCallSignatures().length)) {
       for (const p of isObj(S) ? checker.getPropertiesOfType(S) : []) for (const d of p.declarations ?? []) addUse(entryOf(d), node, 'read', route);
     }
     // R15: a value the host declares, given a kind the product declares
-    if (isObj(S) && hostDeclared(S) && !hostDeclared(T) && (td.length || isOwnKind(T)) && !(S.flags & ts.TypeFlags.Primitive)) {
+    if (isObj(S) && hostDeclared(S) && !sd.length && !hostDeclared(T) && (td.length || isOwnKind(T)) && !(S.flags & ts.TypeFlags.Primitive)) {
       place('R15', node, { what: `${how}: gives ${checker.typeToString(S)}, which the host declares, a kind the product declares`, mayRefer: [ANY] });
     }
-    structure(S, T, e, node, how, 0);
+    if (!check) return;
+    // a union is converted member by member: each of its kinds to the kind of the target it stands in for
+    const ss = S.flags & ts.TypeFlags.Union ? S.types : [S];
+    const tt = T.flags & ts.TypeFlags.Union ? T.types.filter(isObj) : [T];
+    for (const s of ss) {
+      const t = tt.length === 1 ? tt[0] : tt.find((x) => assignable(s, x));
+      if (t) structure(s, t, ss.length > 1 ? null : e, node, how, 0);
+    }
   }
   function structure(S, T, e, node, how, depth) {
     if (depth > 2 || !isObj(S) || !isObj(T) || S === T) return;
@@ -603,11 +626,11 @@ export function readReferences(tree, moduleId, opts = {}) {
     }
   }
   /** The conversion of an expression to the kind expected where it stands. */
-  function conversionAt(e, how) {
+  function conversionAt(e, how, source = 'conversion') {
     let T;
     try { T = checker.getContextualType(e); } catch { T = undefined; }
     if (!T) return;
-    relate(typeAt(e), T, e, e, how);
+    relate(typeAt(e), T, e, e, how, { source });
   }
 
   // ---- implicitly invoked members (R11) ----
@@ -617,7 +640,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (!isObj(u)) continue;
       for (const p of checker.getPropertiesOfType(u)) {
         if (!names.some((n) => (n.startsWith('__@') ? p.escapedName.startsWith(n) : p.name === n))) continue;
-        for (const d of p.declarations ?? []) addUse(entryOf(d), node, 'implicit');
+        for (const d of p.declarations ?? []) addUse(entryOf(d), node, names.includes('__@iterator') ? 'iterate' : 'implicit member');
       }
     }
   }
@@ -635,8 +658,9 @@ export function readReferences(tree, moduleId, opts = {}) {
   function refType(id) {
     for (let p = id.parent; p; p = p.parent) {
       if (ts.isJSDocAugmentsTag?.(p) || ts.isJSDocImplementsTag?.(p) || ts.isHeritageClause(p)) return 'extends';
-      if (isJSDocNode(p) || ts.isTypeNode(p) && !ts.isExpressionWithTypeArguments(p)) return 'type';
-      if (ts.isImportDeclaration(p) || ts.isExportDeclaration(p) || ts.isImportEqualsDeclaration(p)) return 'import';
+      if (isJSDocNode(p) || ts.isTypeNode(p) && !ts.isExpressionWithTypeArguments(p)) return 'type named';
+      if (ts.isExportDeclaration(p)) return 're-export';
+      if (ts.isImportDeclaration(p) || ts.isImportEqualsDeclaration(p)) return 'import';
       if (ts.isStatement(p)) break;
     }
     let e = id;
@@ -644,7 +668,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const p = e.parent;
     if (p && ts.isCallExpression(p) && p.expression === e) return 'call';
     if (p && ts.isTaggedTemplateExpression(p) && p.tag === e) return 'call';
-    if (p && ts.isNewExpression(p) && p.expression === e) return 'new';
+    if (p && ts.isNewExpression(p) && p.expression === e) return 'construct';
     if (isAssignTarget(e)) return 'write';
     return 'read';
   }
@@ -670,7 +694,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (gen) {
       const named = [...gen[1].matchAll(/([\w./-]+\.\w+)/g)].map((x) => x[1]);
       if (!named.length) place('S11', sf.statements[0] ?? sf, { what: 'a generated file that does not name its generator and inputs' });
-      for (const n of named) for (const m of ownersOfPath(path.join(tree.root, n)) ?? []) if (m !== mod.id) addUse({ module: m, item: n, kind: 'file', listed: false }, sf.statements[0] ?? sf, 'generated');
+      for (const n of named) for (const m of ownersOfPath(path.join(tree.root, n)) ?? []) if (m !== mod.id) addUse({ module: m, item: n, kind: 'file', listed: false }, sf.statements[0] ?? sf, 'file');
     }
     // The checker's complaints: code that does not keep the standard's settings (S4), with the modules whose kinds they involve.
     for (const d of complaints.get(sf) ?? []) {
@@ -680,7 +704,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (d.code === 2307 || d.code === 7016) {
         const m = /'([^']+)'/.exec(msg)?.[1] ?? '';
         if (m.startsWith('.') || resolver.isOwn(m)) place('S1', node, { what: `an import the tool cannot resolve: ${m}`, mayRefer: modulesOfSpec(m, fileName) });
-        else { inventory.add(`"${m}"`); place('R14', node, { what: `uses "${m}", which the tool has no description of`, waitsOn: 'ARCH: the facility list' }); }
+        else { inventory.add(m); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list' }); }
         continue;
       }
       let stmt = node; while (stmt.parent && !ts.isStatement(stmt) && !ts.isSourceFile(stmt.parent)) stmt = stmt.parent;
@@ -736,7 +760,7 @@ export function readReferences(tree, moduleId, opts = {}) {
         else if (ns && lit) {
           // W[k] with k a written-out name or a choice of them: a use of each member it may name (S3)
           const exports = checker.getExportsOfModule(checker.getSymbolAtLocation(n.expression) ? resolve(checker.getSymbolAtLocation(n.expression)) : s);
-          for (const name of lit) for (const x of exports.filter((y) => y.name === name)) for (const d of resolve(x)?.declarations ?? []) addUse(entryOf(d), n, refType(n.argumentExpression) === 'type' ? 'type' : 'read', 'direct');
+          for (const name of lit) for (const x of exports.filter((y) => y.name === name)) for (const d of resolve(x)?.declarations ?? []) addUse(entryOf(d), n, 'namespace member', 'direct');
         }
         else if (!lit && productKind(typeAt(n.expression) ?? {})) {
           const t = typeAt(n.expression);
@@ -802,23 +826,20 @@ export function readReferences(tree, moduleId, opts = {}) {
       // the result of a call is a value of its kind (R11), received through the module it came from
       if ((ts.isCallExpression(n) || ts.isNewExpression(n)) && !inErrorAssertion(n.getStart(sf))) {
         const t = typeAt(n);
-        for (const d of kindDecls(t)) { const e = entryOf(d); addUse(e, n, 'value', viaOf(n, e.module)); }
+        for (const d of kindDecls(t)) { const e = entryOf(d); addUse(e, n, 'receive', viaOf(n, e.module)); }
       }
-      // ---- conversions: arguments, returns, initializers and assignments with a stated kind, fields written in place ----
-      if (ts.isCallExpression(n) || ts.isNewExpression(n)) for (const a of n.arguments ?? []) if (!inErrorAssertion(a.getStart(sf))) conversionAt(a, 'an argument');
-      if (ts.isReturnStatement(n) && n.expression) conversionAt(n.expression, 'a value handed back');
-      if (ts.isArrowFunction(n) && !ts.isBlock(n.body)) conversionAt(n.body, 'a value handed back');
-      if (ts.isVariableDeclaration(n) && n.initializer && (ts.getJSDocType(n) || (n.parent?.parent && ts.getJSDocType(n.parent.parent)))) relate(typeAt(n.initializer), typeAt(n.name), n.initializer, n, 'a value given a stated kind');
-      if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken && !ts.isObjectLiteralExpression(n.left) && !ts.isArrayLiteralExpression(n.left)) {
-        const s = ts.isPropertyAccessExpression(n.left) ? checker.getSymbolAtLocation(n.left.name) : checker.getSymbolAtLocation(n.left);
-        if (s) relate(typeAt(n.right), checker.getTypeOfSymbol(s), n.right, n, 'an assignment');
-      }
-      if (ts.isPropertyAssignment(n) && ts.isObjectLiteralExpression(n.parent)) conversionAt(n.initializer, `field ${n.name.getText()}`);
-      if (ts.isShorthandPropertyAssignment(n)) { const ct = checker.getContextualType(n.parent); const p = ct && checker.getPropertyOfType(ct, n.name.text); const vs = checker.getShorthandAssignmentValueSymbol(n); if (p && vs) relate(checker.getTypeOfSymbol(vs), checker.getTypeOfSymbol(p), n.name, n, `field ${n.name.text}`); }
+      // ---- conversions: every site where the checker relates one type to another (conversion-sites.md) ----
+      if (!inErrorAssertion(n.getStart(sf))) conversions(n);
       // a cast (R16; R2 where the value is of kind unknown)
       if (ts.isParenthesizedExpression(n) && ts.getJSDocTypeTag(n)) cast(n);
-      // a class built on another module's class: its overrides (R5), and the class it extends
+      // a class built on another module's class: its overrides (R5); the kinds it says it implements
       if ((ts.isClassDeclaration(n) || ts.isClassExpression(n))) overrides(n);
+      // a value of another module's kind thrown, and another module's error class caught
+      if (ts.isThrowStatement(n) && n.expression) for (const d of kindDecls(typeAt(n.expression))) addUse(entryOf(d), n.expression, 'throw', viaOf(n.expression, entryOf(d).module));
+      if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword && ts.isIdentifier(n.left)) {
+        const d = checker.getSymbolAtLocation(n.left)?.valueDeclaration;
+        if (d && ts.isVariableDeclaration(d) && d.parent && ts.isCatchClause(d.parent)) for (const x of resolve(checker.getSymbolAtLocation(ts.isPropertyAccessExpression(n.right) ? n.right.name : n.right))?.declarations ?? []) addUse(entryOf(x), n.right, 'catch');
+      }
       // ---- implicitly invoked members ----
       if (ts.isTemplateSpan(n)) implicit(typeAt(n.expression), [...PRIMITIVE, '__@toPrimitive'], n.expression);
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.PlusToken) for (const side of [n.left, n.right]) implicit(typeAt(side), [...PRIMITIVE, '__@toPrimitive'], side);
@@ -828,7 +849,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) implicit(typeAt(n.right), ['__@hasInstance'], n.right);
       // ---- comments: kinds outside K (R20), overloads (R10) ----
       if (isJSDocNode(n) && ts.isJSDoc(n)) for (const tag of n.tags ?? []) if (tag.tagName.text === 'overload') place('R10', tag, { what: 'an @overload signature, a claim the checker does not hold to the code', mayRefer: [] });
-      if ((ts.isConditionalTypeNode(n) || ts.isMappedTypeNode(n) || ts.isIndexedAccessTypeNode(n) || ts.isTemplateLiteralTypeNode(n) || ts.isInferTypeNode(n)) && !tableKind(n)) {
+      if ((ts.isConditionalTypeNode(n) || ts.isMappedTypeNode(n) || ts.isIndexedAccessTypeNode(n) || ts.isTemplateLiteralTypeNode(n) || ts.isInferTypeNode(n))) {
         const ids = []; forEachNode(n, (x) => { if (ts.isIdentifier(x)) ids.push(x); });
         place('R20', n, { what: `a kind outside the kinds the standard allows (${ts.SyntaxKind[n.kind]})`, mayRefer: modulesOf(ids.flatMap((x) => resolve(checker.getSymbolAtLocation(x))?.declarations ?? [])) });
       }
@@ -846,8 +867,10 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (ts.isPropertyAccessExpression(n) && n.name.text === 'env' && ts.isIdentifier(n.expression) && n.expression.text === 'process' && !isAssignTarget(n.parent)) {
         const p = n.parent;
         const name = p && ts.isPropertyAccessExpression(p) && p.expression === n ? p.name.text : p && ts.isElementAccessExpression(p) && ts.isStringLiteral(p.argumentExpression) ? p.argumentExpression.text : null;
-        const owner = name ? facilityList?.owners?.[`env:${name}`] : null;
-        if (owner !== mod.id && !(isBoundaryModule && !owner)) place('R12', n, { what: name ? `reads the setting ${name} from the environment` : 'reads the environment', mayRefer: owner ? [owner] : [ANY], waitsOn: owner ? `${owner}: an accessor for ${name}` : 'the owner of the setting: an accessor' });
+        // The environment reaches out: only a boundary module owns a setting (R12, R14), so a setting read elsewhere may
+        // be any earlier boundary module's.
+        const owners = [...boundaryModules].filter((m) => m !== mod.id && indexOf(m) < mod.index);
+        if (!isBoundaryModule) place('R12', n, { what: name ? `reads the setting ${name} from the environment` : 'reads the environment', mayRefer: owners.length ? owners : [ANY], waitsOn: owners.length === 1 ? `${owners[0]}: an accessor for ${name ?? 'the setting'}` : 'the owner of the setting: an accessor' });
       }
       // ---- R22: in tests, no real clock or timer, no fixed port ----
       if (isTest && (ts.isCallExpression(n) || ts.isNewExpression(n))) {
@@ -859,7 +882,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       // ---- R21: a module's evaluation starts nothing ----
       if (!isTest && (ts.isCallExpression(n) || ts.isNewExpression(n)) && atTopLevel(n)) {
         const f = calleeFacility(n);
-        if (f && (STARTS.test(f) || classOf(f) === 'boundary')) place('R21', n, { what: `starts ${f} when the module is loaded`, mayRefer: [] });
+        if (f && (STARTS.test(f) || reachOf(f) === 'out')) place('R21', n, { what: `starts ${f} when the module is loaded`, mayRefer: [] });
       }
     }, { jsDoc: true });
 
@@ -867,27 +890,108 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (mod.public.includes(fileName)) ownInterface(sf);
   }
 
+  /** The type of the parameter that takes argument i of a call (the element of a rest parameter). */
+  function paramTypeAt(sig, i) {
+    const ps = sig?.getParameters() ?? [];
+    if (!ps.length) return undefined;
+    const last = ps[ps.length - 1];
+    const rest = last.valueDeclaration && ts.isParameter(last.valueDeclaration) && last.valueDeclaration.dotDotDotToken;
+    if (i < ps.length - (rest ? 1 : 0)) return checker.getTypeOfSymbol(ps[i]);
+    if (!rest) return undefined;
+    const t = checker.getTypeOfSymbol(last);
+    return checker.isArrayType(t) ? checker.getTypeArguments(t)[0] : undefined;
+  }
+  function elementOf(t) { return t && (checker.isArrayType(t) || checker.isTupleType(t)) ? checker.getTypeArguments(t)[0] : t ? checker.getIndexTypeOfType?.(t, ts.IndexKind.Number) : undefined; }
+  function statedType(decl) { return ts.getJSDocType(decl) || decl.type || (ts.isVariableDeclaration(decl) && decl.parent?.parent && ts.getJSDocType(decl.parent.parent)); }
+  function signatureOf(call) { try { return checker.getResolvedSignature(call); } catch { return undefined; } }
   /**
-   * A kind of the tables and carriers of calls by name (design part 2, section 7, rule 5; build text 2b, section 5): in a
-   * declaration marked @carriesop, @carriestable or @optable, or built from a kind so marked. The tool reads these by
-   * their marks (carriers.mjs), and their written form needs indexed, mapped and text-pattern kinds, so R20 is not
-   * applied to them.
+   * Every site where a value passes from one type to another (process/research/uses-metadata-25nov/conversion-sites.md):
+   * arguments (spread, tagged templates, decorators and a stated this included), returns and arrow bodies, yield,
+   * initializers, parameter and destructuring defaults and class fields with a stated type, assignments and
+   * destructuring assignments, members and elements of literals written in place, spread into them, for-of variables
+   * with a stated type, and satisfies; casts and class members are cast() and overrides().
    */
-  function tableKind(node, depth = 0) {
-    for (let p = node; p; p = p.parent) {
-      if (ts.isJSDoc(p)) { if ((p.tags ?? []).some((t) => MARKS.has(t.tagName.text))) return true; break; }
-      if (ts.isStatement(p)) break;
+  function conversions(n) {
+    if (ts.isCallExpression(n) || ts.isNewExpression(n)) {
+      const sig = signatureOf(n);
+      (n.arguments ?? []).forEach((a, i) => {
+        if (ts.isSpreadElement(a)) { const t = paramTypeAt(sig, i); if (t) relate(elementOf(typeAt(a.expression)), t, null, a, 'a spread argument', { source: 'pass on' }); }
+        else conversionAt(a, 'an argument', 'pass on');
+      });
+      // a receiver handed to a function that states its this
+      const thisParam = sig?.thisParameter;
+      if (thisParam && ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression)) relate(typeAt(n.expression.expression), checker.getTypeOfSymbol(thisParam), n.expression.expression, n, 'a receiver', { source: 'pass on' });
     }
-    if (depth > 2) return false;
-    let hit = false;
-    forEachNode(node, (x) => {
-      if (hit || !ts.isIdentifier(x)) return;
-      for (const d of resolve(checker.getSymbolAtLocation(x))?.declarations ?? []) {
-        if (!ts.isJSDocTypedefTag(d)) continue;
-        if ((d.parent?.tags ?? []).some((t) => MARKS.has(t.tagName.text)) || (d.typeExpression && tableKind(d.typeExpression, depth + 1))) hit = true;
+    if (ts.isTaggedTemplateExpression(n) && ts.isTemplateExpression(n.template)) {
+      const sig = signatureOf(n);
+      n.template.templateSpans.forEach((sp, i) => { const t = paramTypeAt(sig, i + 1); if (t) relate(typeAt(sp.expression), t, sp.expression, sp.expression, 'a tagged template\'s value', { source: 'pass on' }); });
+    }
+    if (ts.isDecorator(n)) {
+      const t = paramTypeAt(signatureOf(n), 0);
+      const target = n.parent && (n.parent.name ?? n.parent);
+      // the value decorated: a class itself (its constructor and static side), or a member
+      const sym = target && checker.getSymbolAtLocation(target);
+      if (t && target) relate(sym ? checker.getTypeOfSymbol(sym) : typeAt(target), t, null, n, 'a decorated declaration', { source: 'pass on' });
+    }
+    if (ts.isReturnStatement(n) && n.expression) conversionAt(n.expression, 'a value handed back', 'pass on');
+    if (ts.isArrowFunction(n) && !ts.isBlock(n.body)) conversionAt(n.body, 'a value handed back', 'pass on');
+    if (ts.isYieldExpression(n) && n.expression) conversionAt(n.expression, 'a value yielded', 'pass on');
+    if (ts.isExportAssignment(n)) conversionAt(n.expression, 'the default export', 'pass on');
+    // initializers with a stated type: variables (for-of ones from what is iterated), parameters' defaults, class fields
+    if (ts.isVariableDeclaration(n) && statedType(n)) {
+      if (n.initializer) relate(typeAt(n.initializer), typeAt(n.name), n.initializer, n, 'a value given a stated type');
+      else if (n.parent?.parent && ts.isForOfStatement(n.parent.parent)) relate(elementOf(typeAt(n.parent.parent.expression)), typeAt(n.name), null, n, 'a for-of variable with a stated type', { source: 'store' });
+    }
+    if (ts.isParameter(n) && n.initializer && statedType(n)) relate(typeAt(n.initializer), checker.getTypeOfSymbol(checker.getSymbolAtLocation(n.name) ?? { flags: 0 }) ?? typeAt(n.name), n.initializer, n, 'a parameter\'s default');
+    if (ts.isPropertyDeclaration(n) && n.initializer) { const sy = n.symbol ?? checker.getSymbolAtLocation(n.name); if (sy) relate(typeAt(n.initializer), checker.getTypeOfSymbol(sy), n.initializer, n, 'a class field', { source: 'store' }); }
+    if (ts.isBindingElement(n) && n.initializer) relate(typeAt(n.initializer), typeAt(n.name), n.initializer, n, 'a default of a value taken apart', { source: 'store' });
+    // assignments: =, the logical assignments, and assignments that take a value apart
+    if (ts.isBinaryExpression(n) && [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken, ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken].includes(n.operatorToken.kind)) {
+      if (ts.isObjectLiteralExpression(n.left) || ts.isArrayLiteralExpression(n.left)) takenApart(n.left, typeAt(n.right), n);
+      else {
+        const s = ts.isPropertyAccessExpression(n.left) ? checker.getSymbolAtLocation(n.left.name) : checker.getSymbolAtLocation(n.left);
+        relate(typeAt(n.right), s ? checker.getTypeOfSymbol(s) : typeAt(n.left), n.right, n, 'an assignment', { source: 'store' });
       }
+    }
+    // members and elements of a literal written in place, and what is spread into it
+    if (ts.isObjectLiteralExpression(n.parent ?? n) && n.parent !== n) {
+      const ct = (() => { try { return checker.getContextualType(n.parent); } catch { return undefined; } })();
+      if (ct && !(ts.isBinaryExpression(n.parent.parent) && n.parent.parent.left === n.parent)) {
+        if (ts.isPropertyAssignment(n)) conversionAt(n.initializer, `field ${n.name.getText()}`, 'store');
+        if (ts.isShorthandPropertyAssignment(n)) { const p = checker.getPropertyOfType(ct, n.name.text); const vs = checker.getShorthandAssignmentValueSymbol(n); if (p && vs) relate(checker.getTypeOfSymbol(vs), checker.getTypeOfSymbol(p), n.name, n, `field ${n.name.text}`, { source: 'store' }); }
+        if (ts.isMethodDeclaration(n) && n.name) { const p = checker.getPropertyOfType(ct, n.name.getText()); if (p) relate(typeAt(n), checker.getTypeOfSymbol(p), n, n, `method ${n.name.getText()}`); }
+        if (ts.isSpreadAssignment(n)) relate(typeAt(n.expression), ct, n.expression, n, 'a value spread into an object', { source: 'store' });
+      }
+    }
+    if (ts.isArrayLiteralExpression(n.parent ?? n) && n.parent !== n && !(ts.isBinaryExpression(n.parent.parent) && n.parent.parent.left === n.parent)) {
+      if (ts.isSpreadElement(n)) { let ct; try { ct = checker.getContextualType(n.parent); } catch { ct = undefined; } const et = elementOf(ct); if (et) relate(elementOf(typeAt(n.expression)), et, null, n, 'a list spread into a list', { source: 'store' }); }
+      else if (!ts.isOmittedExpression(n)) conversionAt(n, 'an element of a list', 'store');
+    }
+    // satisfies: checked, the value keeps its own type
+    if (ts.isParenthesizedExpression(n)) {
+      const tag = ts.getJSDocSatisfiesTag?.(n);
+      if (tag?.typeExpression) relate(typeAt(n.expression), checker.getTypeFromTypeNode(tag.typeExpression.type), n.expression, n, 'satisfies', { check: false });
+    }
+  }
+  /** An assignment that takes a value apart ({ a, b: x } = v, [a, b] = v): each target receives a member of the value. */
+  function takenApart(pattern, S, node) {
+    if (!S) return;
+    if (ts.isObjectLiteralExpression(pattern)) for (const p of pattern.properties) {
+      const name = ts.isShorthandPropertyAssignment(p) || ts.isPropertyAssignment(p) ? p.name.getText() : null;
+      if (!name) continue;
+      const m = checker.getPropertyOfType(S, name);
+      if (!m) continue;
+      const target = ts.isShorthandPropertyAssignment(p) ? p.name : p.initializer;
+      const ts_ = ts.isShorthandPropertyAssignment(p) ? checker.getShorthandAssignmentValueSymbol(p) : checker.getSymbolAtLocation(target);
+      const T = ts_ ? checker.getTypeOfSymbol(ts_) : typeAt(target);
+      for (const d of m.declarations ?? []) addUse(entryOf(d), p, 'read');
+      relate(checker.getTypeOfSymbol(m), T, null, p, `member ${name} taken apart`, { source: 'store' });
+    }
+    else pattern.elements.forEach((el) => {
+      if (ts.isOmittedExpression(el) || ts.isSpreadElement(el)) return;
+      const s = checker.getSymbolAtLocation(el);
+      relate(elementOf(S), s ? checker.getTypeOfSymbol(s) : typeAt(el), null, el, 'an element taken apart', { source: 'store' });
     });
-    return hit;
   }
   function narrower(flow, declared) {
     if (assignable(flow, declared) && !assignable(declared, flow)) return true;
@@ -1007,7 +1111,7 @@ export function readReferences(tree, moduleId, opts = {}) {
         const key = `${c.kind}:${name}`;
         if (mod.public.some((f2) => program.getSourceFile(f2)) && listingOf(mod.id).entries[key]) continue; // its own table
         const owner = [...tree.modules].filter((m) => m.id !== mod.id && m.public.some((f2) => program.getSourceFile(f2))).find((m) => listingOf(m.id).entries[key]);
-        if (owner) addUse({ module: owner.id, item: key, kind: listingOf(owner.id).entries[key].kind, listed: true }, n, c.kind === 'op' ? 'call by name' : 'table by name');
+        if (owner) addUse({ module: owner.id, item: key, kind: itemKind(listingOf(owner.id).entries[key].kind), listed: true }, n, c.kind === 'op' ? 'operation by name' : 'table');
         else place('S7', n, { what: `a call by the name ${name}, which no module's table answers`, waitsOn: 'ARCH: the module that answers it' });
       }
     }
@@ -1017,7 +1121,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (which === 'module') {
         const a0 = args[0];
         if (!a0 || !ts.isStringLiteral(a0)) place('S12', n, { what: 'mock.module of a name the tool cannot read' });
-        else loadOf(a0.text, n, 'mock');
+        else loadOf(a0.text, n, 'import');
       }
       if (which === 'method') {
         const a0 = args[0], a1 = args[1];
@@ -1070,18 +1174,28 @@ export function readReferences(tree, moduleId, opts = {}) {
     }
     if (!assignable(S, T)) place('R16', n, { what: `a cast from ${checker.typeToString(S)} down to ${checker.typeToString(T)}`, mayRefer: [ANY] });
   }
+  /**
+   * A class's members against the class it extends, its own side and its static side (R5 for overrides), and the class
+   * against each kind its comment says it implements (@implements), member by member.
+   */
   function overrides(cls) {
+    const isStatic = (m) => !!(ts.getCombinedModifierFlags(m) & ts.ModifierFlags.Static);
     for (const h of cls.heritageClauses ?? []) if (h.token === ts.SyntaxKind.ExtendsKeyword) for (const t of h.types) {
       const base = typeAt(t);
+      const baseStatic = typeAt(t.expression);
       if (!base) continue;
       for (const m of cls.members) {
-        if (!m.name || !(ts.isMethodDeclaration(m) || ts.isPropertyDeclaration(m))) continue;
-        const bp = checker.getPropertyOfType(base, m.name.getText());
+        if (!m.name || !(ts.isMethodDeclaration(m) || ts.isPropertyDeclaration(m) || ts.isGetAccessor(m) || ts.isSetAccessor(m))) continue;
+        const bp = checker.getPropertyOfType(isStatic(m) ? baseStatic : base, m.name.getText());
         if (!bp) continue;
         for (const d of bp.declarations ?? []) addUse(entryOf(d), m.name, 'extends');
         const own = checker.getSymbolAtLocation(m.name);
         if (own) structure(checker.getTypeOfSymbol(own), checker.getTypeOfSymbol(bp), null, m, `the override ${m.name.getText()}`, 0);
       }
+    }
+    for (const tag of ts.getJSDocImplementsTags?.(cls) ?? []) {
+      const T = tag.class ? typeAt(tag.class) : undefined;
+      if (T) relate(checker.getTypeAtLocation(cls.name ?? cls), T, null, cls.name ?? cls, 'a class and a kind it implements');
     }
   }
   function ownInterface(sf) {
@@ -1151,7 +1265,11 @@ export function readReferences(tree, moduleId, opts = {}) {
     uses: usesOut,
     outside: [...outside.values()].sort((a, b) => byPlace(a, b) || a.rule.localeCompare(b.rule) || a.what.localeCompare(b.what)),
     orderFaults: [...orderFaults.values()].sort((a, b) => order(a, b) || byPlace(a, b)),
-    copies: [...copies.values()].sort((a, b) => byPlace(a, b) || String(a.provider).localeCompare(String(b.provider))),
+    // the uses file keeps the hand-written copies in JSON files (build text 2c); the marked copies are uses, and the
+    // candidates (written-out values equal to an earlier module's) are for the conversion to judge
+    copies: [...copies].filter(([k]) => k.startsWith('hand|')).map(([, v]) => v),
+    marked: [...copies].filter(([k, v]) => !k.startsWith('hand|') && v.marked).map(([, v]) => v).sort((a, b) => byPlace(a, b) || String(a.provider).localeCompare(String(b.provider))),
+    candidates: [...copies].filter(([k, v]) => !k.startsWith('hand|') && !v.marked).map(([, v]) => v).sort((a, b) => byPlace(a, b) || String(a.provider).localeCompare(String(b.provider))),
     facilities: [...inventory].sort(),
   };
 }
@@ -1271,7 +1389,7 @@ function readCopies({ tree, mod, files, checker, wheres, addUse, addUseAt, place
     if (!provider || !tree.byId.has(provider)) { place('S13', node, { what: `marks a copy of ${mark}, which names no module`, waitsOn: 'this module: the mark' }); return; }
     const top = topItem(provider, item);
     if (!top) { place('S13', node, { what: `marks a copy of ${provider}:${item}, which ${provider} does not export`, mayRefer: [provider], waitsOn: `${provider}: the item it marks` }); return; }
-    addUse({ module: provider, item: top, kind: 'copy of', listed: true }, node, 'copy');
+    addUse({ module: provider, item: top, kind: 'copy of', listed: true }, node, 'marked copy');
     if (indexOf(provider) > mod.index) return;
     const theirs = valueOf(provider, item);
     for (const w of wheres(node)) {
@@ -1322,14 +1440,15 @@ function readCopies({ tree, mod, files, checker, wheres, addUse, addUseAt, place
   // hand-written entries for copies in data files, kept as they are and read as uses.
   const dataUse = (provider, item, file, line) => {
     const side = sideOf(mod.entry, file) ?? 'code';
-    addUseAt({ module: provider, item: topItem(provider, item) ?? item, kind: 'copy of', listed: !!topItem(provider, item) }, { file, side, line }, 'copy');
+    addUseAt({ module: provider, item: topItem(provider, item) ?? item, kind: 'copy of', listed: !!topItem(provider, item) }, { file, side, line }, 'marked copy');
   };
   const hand = handCopies(readUses(tree.root, mod.id, { cfg: tree.cfg }));
   const handAt = new Set(hand.map((h) => `${h.file}|${h.pointer}`));
   for (const h of hand) {
-    const pm = parseMark(h.of);
-    if (pm && tree.byId.has(pm.provider)) dataUse(pm.provider, pm.item, h.file, h.line ?? 1);
-    copies.set(`hand|${h.file}|${h.pointer}`, h);
+    let line = 1;
+    try { const body = fs.readFileSync(path.join(tree.root, h.file), 'utf8'); const last = h.pointer.split('/').pop(); if (last) line = lineIn(body, JSON.stringify(last.replace(/~1/g, '/').replace(/~0/g, '~'))); } catch { /* the file is gone: the entry is kept as written */ }
+    if (tree.byId.has(h.provider)) dataUse(h.provider, h.item, h.file, line);
+    copies.set(`hand|${h.file}|${h.pointer}|${h.provider}|${h.item}`, h);
   }
   for (const f of otherFiles(tree, mod)) {
     const abs = path.join(tree.root, f);

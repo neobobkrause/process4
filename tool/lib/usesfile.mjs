@@ -1,20 +1,19 @@
-// A module's uses file (design part 2, section 7, "Who uses what"; build text 2, section 3): written by the tool, never
-// by hand, from the module's code and tests kept to the coding standard, at every push that changes the module
-// (commands.mjs, push). Its form:
-//   { "module", "written": { "commit", "tool" }, "providers": [earlier modules used, in order],
+// A module's uses file (design part 2, section 7, "Who uses what"; build text 2c, "The uses file"):
+// process/modules/<module>.uses.json, written by the tool, never by hand, from the module's code and tests (push, test,
+// uses; usescmd.mjs). Its form:
+//   { "module", "written": { "commit", "tool": <the tool's commit> }, "providers": [earlier modules used, in order],
 //     "uses": [ { provider, item, itemKind, type, route: "direct" | { via, item }, standard,
 //                 where: [ { file, side: "code", line, in } | { file, side: "test", line, test } ] } ],
-//     "outside": [ { rule, file, side, line, what, mayRefer: [modules] | ["*"], waitsOn, tests: [names] } ],
+//     "outside": [ { rule, file, side, line, mayRefer: [modules] | ["*"], waitsOn, tests: [names] } ],
 //     "orderFaults": [ { provider, item, itemKind, type, file, side, line, in | test } ],
-//     "copies": [ { provider, item, file, side, line, test?, marked?, value?, differs? } | hand-written { file, pointer, of } ],
-//     "facilities": [qualified names of the host facilities used] }
-// "*" in mayRefer stands for every module earlier than this one at the time it is read (the order can change).
-// The only hand-written part is a copy in a data file, an entry { file, pointer, of: "<module>:<item>" }, which the
-// tool keeps when it rewrites the file. Read and written here; worked out by notice/refs.mjs.
+//     "copies": [ { provider, item, file, pointer } ] }
+// "*" in mayRefer stands for every module earlier than this one at the time it is read (the order can change). A place
+// in a test that no test case reaches gives `in` in place of `test`. The only hand-written part is a copy in a JSON file,
+// a `copies` entry, which the tool keeps when it rewrites the file. Also here: declared uses, imports read from the text
+// for a module with no uses file yet, and the facility list.
 import fs from 'node:fs';
 import path from 'node:path';
 import { readAt } from './config.mjs';
-import { loadReader, ts, options, forEachNode } from './notice/ts.mjs';
 import { underPath } from './util.mjs';
 
 const modulesDir = (cfg) => `${(cfg.process_folder || 'process/').replace(/\/?$/, '/')}modules/`;
@@ -39,7 +38,7 @@ function configOf(root, ref) {
 
 /** The file's text: its keys in a fixed order, each listed item on a line of its own, so that a change reads as lines. */
 export function usesText(data) {
-  const KEYS = ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies', 'facilities'];
+  const KEYS = ['module', 'written', 'providers', 'uses', 'outside', 'orderFaults', 'copies'];
   const keys = [...KEYS.filter((k) => k in data), ...Object.keys(data).filter((k) => !KEYS.includes(k))];
   const lines = keys.map((k) => {
     const v = data[k];
@@ -60,28 +59,23 @@ export function writeUses(root, module, data, { cfg } = {}) {
 /** Do two uses files say the same, apart from when and by what they were written? */
 export const sameUses = (a, b) => !!a && !!b && usesText({ ...a, written: null }) === usesText({ ...b, written: null });
 
-/** The hand-written part of a uses file: its copies in data files ({ file, pointer, of }), kept when it is rewritten. */
-export const handCopies = (data) => (data?.copies ?? []).filter((c) => c && typeof c.of === 'string');
+/** The hand-written part of a uses file: its copies in JSON files ({ provider, item, file, pointer }), kept when it is rewritten. */
+export const handCopies = (data) => (data?.copies ?? []).filter((c) => c && ['provider', 'item', 'file', 'pointer'].every((k) => typeof c[k] === 'string'));
 
 // ---- imports, for a module with no uses file yet ----
 
-/** The product files a file imports: import and export from, import() and require() of a written name, @import and
- * import('...') in comments. A name the tool cannot read is passed to `cannot`. */
-export function importsOf(sf, cannot = () => {}) {
+/** The specifiers a file's text writes out: import and export from (and @import), import(), require(), import '…';
+ * and the calls of import() or require() with a name not written out (`cannot`). Read from the text, no reader. */
+const WRITTEN = [/\bfrom\s*(['"])([^'"\n]+)\1/g, /(?<![.\w$])import\s*\(\s*(['"`])([^'"`\n$]+)\1\s*\)/g, /(?<![.\w$])import\s*(['"])([^'"\n]+)\1/g, /(?<![.\w$])require\s*\(\s*(['"`])([^'"`\n$]+)\1\s*\)/g];
+const COMPUTED = /(?<![.\w$])(?:import|require)\s*\(\s*(?!['"`\s])[^)]/g;
+export function importsOf(text) {
+  const lineAt = (i) => text.slice(0, i).split('\n').length;
   const out = [];
-  const spec = (node, s) => { if (s && (ts.isStringLiteral(s) || ts.isNoSubstitutionTemplateLiteral(s))) out.push({ node, spec: s.text }); };
-  const visit = (n) => {
-    if ((ts.isImportDeclaration(n) || ts.isExportDeclaration(n)) && n.moduleSpecifier) spec(n, n.moduleSpecifier);
-    else if (ts.isJSDocImportTag?.(n)) spec(n, n.moduleSpecifier);
-    else if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument)) spec(n, n.argument.literal);
-    // import(...), and require(...) under that name (a require made by createRequire too)
-    else if (ts.isCallExpression(n) && (n.expression.kind === ts.SyntaxKind.ImportKeyword || (ts.isIdentifier(n.expression) && n.expression.text === 'require'))) {
-      const a0 = n.arguments[0];
-      if (a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0))) spec(n, a0); else cannot(n);
-    }
-  };
-  forEachNode(sf, visit, { jsDoc: true });
-  return out;
+  for (const re of WRITTEN) { re.lastIndex = 0; for (let m; (m = re.exec(text));) out.push({ spec: m[2], line: lineAt(m.index), text: m[0] }); }
+  const cannot = [];
+  COMPUTED.lastIndex = 0;
+  for (let m; (m = COMPUTED.exec(text));) cannot.push({ line: lineAt(m.index), text: text.slice(m.index, m.index + 60).split('\n')[0] });
+  return { specs: out.sort((a, b) => a.line - b.line), cannot };
 }
 
 /** The product's own package.json, or {}. */
@@ -89,60 +83,88 @@ export function ownPackage(root) {
   try { return JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')) || {}; } catch { return {}; }
 }
 
+const CONDITIONS = ['import', 'node', 'require', 'default'];
+/** A target of package.json's exports or imports map: a path, or the first of its conditions that gives one. */
+function target(t) {
+  if (typeof t === 'string') return t;
+  if (Array.isArray(t)) { for (const x of t) { const r = target(x); if (r) return r; } return null; }
+  if (t && typeof t === 'object') { for (const k of [...CONDITIONS, ...Object.keys(t)]) if (k in t) { const r = target(t[k]); if (r) return r; } }
+  return null;
+}
+/** A key of an exports or imports map looked up, with one `*` as a wildcard (Node's documented algorithm). */
+function lookUp(map, key) {
+  if (!map || typeof map !== 'object') return null;
+  if (key in map) return target(map[key]);
+  for (const [k, v] of Object.entries(map)) {
+    const star = k.indexOf('*');
+    if (star < 0) continue;
+    const pre = k.slice(0, star), post = k.slice(star + 1);
+    if (key.startsWith(pre) && key.endsWith(post) && key.length >= pre.length + post.length) {
+      const t = target(v);
+      if (t) return t.split('*').join(key.slice(pre.length, key.length - post.length));
+    }
+  }
+  return null;
+}
+
 /**
- * Resolves a specifier written in a product file to a product file: a written path; the product's own package name or
- * an imports-map name (`#...`), as the language reader resolves them. Null where it is from outside the product or
- * cannot be followed; `own` tells which.
+ * Resolves a specifier written in a product file to a product file: a written path; the product's own package name
+ * (through its `exports`, or without them as a path from the top) or an imports-map name (`#…`), by Node's documented
+ * algorithm (S1). Null where it is from outside the product or cannot be followed; `isOwn` tells which. No reader.
  */
 export function makeResolver(tree) {
   const pkg = ownPackage(tree.root);
   const own = typeof pkg.name === 'string' && pkg.name ? pkg.name : null;
   const isOwn = (spec) => spec.startsWith('#') || (!!own && (spec === own || spec.startsWith(`${own}/`)));
-  const seen = new Map();
-  const find = (spec, from) => {
-    try {
-      const r = ts.resolveModuleName(spec, from, options(), ts.sys).resolvedModule?.resolvedFileName;
-      if (r && !path.relative(tree.root, r).startsWith('..')) return path.resolve(r);
-    } catch { /* not resolved */ }
-    if (own && pkg.exports === undefined && spec.startsWith(`${own}/`)) return path.resolve(tree.root, spec.slice(own.length + 1));
-    return null;
+  const isFile = (f) => { try { return fs.statSync(f).isFile(); } catch { return false; } };
+  const fileAt = (rel) => {
+    const base = path.resolve(tree.root, rel);
+    return [base, `${base}.mjs`, `${base}.js`, `${base}.cjs`, `${base}.json`, path.join(base, 'index.mjs'), path.join(base, 'index.js')].find(isFile) ?? null;
+  };
+  const inside = (f) => (f && !path.relative(tree.root, f).startsWith('..') ? f : null);
+  const find = (spec) => {
+    if (spec.startsWith('#')) { const t = lookUp(pkg.imports, spec); return t && t.startsWith('.') ? inside(fileAt(t)) : null; }
+    const sub = spec === own ? '.' : `./${spec.slice(own.length + 1)}`;
+    if (pkg.exports !== undefined) {
+      const ex = pkg.exports;
+      const map = typeof ex === 'string' || Array.isArray(ex) || !Object.keys(ex || {}).some((k) => k.startsWith('.')) ? { '.': ex } : ex;
+      const t = lookUp(map, sub);
+      return t ? inside(fileAt(t)) : null;
+    }
+    return inside(sub === '.' ? fileAt(pkg.main || 'index.js') : fileAt(sub));
   };
   return {
     isOwn,
     resolve(spec, from) {
       if (spec.startsWith('.') || spec.startsWith('/')) return path.resolve(path.dirname(from), spec);
-      if (!isOwn(spec)) return null;
-      const key = `${path.dirname(from)}|${spec}`;
-      if (!seen.has(key)) seen.set(key, find(spec, from));
-      return seen.get(key);
+      return isOwn(spec) ? find(spec) : null;
     },
   };
 }
 
 /**
  * The other modules a module's files (code and tests) import, each with its places; and the imports the tool cannot
- * read or follow (`cannot`, with a why). Reads each file's text only (no checker).
+ * read or follow (`cannot`, with a why). Reads each file's text only: no reader is loaded.
  */
 export function importedModules(tree, mod, { only = null } = {}) {
-  loadReader();
   const resolver = makeResolver(tree);
   const imported = new Map();
   const cannot = [];
   const rel = (f) => path.relative(tree.root, f).split(path.sep).join('/');
   for (const f of mod.files) {
-    const sf = ts.createSourceFile(f, fs.readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
-    const at = (node) => `${rel(f)}:${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}`;
-    for (const { node, spec } of importsOf(sf, (node) => cannot.push({ at: at(node), why: 'an import of a name the tool cannot read', text: node.getText(sf).slice(0, 60) }))) {
+    const { specs, cannot: computed } = importsOf(fs.readFileSync(f, 'utf8'));
+    for (const c of computed) cannot.push({ at: `${rel(f)}:${c.line}`, why: 'an import of a name the tool cannot read', text: c.text });
+    for (const { spec, line, text } of specs) {
       const target = resolver.resolve(spec, f);
       if (!target) {
-        if (resolver.isOwn(spec)) cannot.push({ at: at(node), why: "an import by the product's own package name that the tool cannot follow to a file", text: node.getText(sf).slice(0, 60) });
+        if (resolver.isOwn(spec)) cannot.push({ at: `${rel(f)}:${line}`, why: "an import by the product's own package name that the tool cannot follow to a file", text });
         continue;
       }
       const other = tree.moduleOfFile(target);
       if (!other || other === mod.id) continue;
       if (only && !only.has(rel(f))) continue;
       if (!imported.has(other)) imported.set(other, []);
-      imported.get(other).push({ at: at(node), file: rel(f) });
+      if (!imported.get(other).some((x) => x.at === `${rel(f)}:${line}`)) imported.get(other).push({ at: `${rel(f)}:${line}`, file: rel(f) });
     }
   }
   return { imported, cannot };
@@ -183,17 +205,22 @@ export function sideOf(entry, rel) {
 
 // ---- the facility list (R14) ----
 
+/** Where the product's facility list is (build text 2c, "The facility list"), written by ARCH with the module list. */
+export const facilitiesPath = (cfg) => `${modulesDir(cfg)}facilities.json`;
+
 /**
- * The product's facility list (build text 2, section 10; R14): `language_reader.facilities` in the process config names
- * the file, by default `<process folder>/facilities.json`:
- *   { "versions": { "node", "typescript", ... }, "entries": { "<qualified name>": "in-process" | "boundary" },
- *     "owners": { "env:<NAME>": "<module>", ... } }
- * Null where the product has none yet: then no use is on it.
+ * The product's facility list (build text 2c; R14):
+ *   { "versions": { "node", "workerd" }, "boundary": [modules], "facilities": [ { "name": "node:fs.readFileSync", "reach": "in" | "out" } ] }
+ * Read as { file, versions, boundary: Set of modules, reach: Map of name to "in" or "out" }. Null where the product has
+ * none yet: then no facility is on it.
  */
 export function readFacilities(tree) {
-  const rel = tree.cfg.language_reader?.facilities ?? `${(tree.cfg.process_folder || 'process/').replace(/\/?$/, '/')}facilities.json`;
+  const rel = facilitiesPath(tree.cfg);
   try {
     const d = JSON.parse(fs.readFileSync(path.join(tree.root, rel), 'utf8'));
-    return { file: rel, entries: d.entries ?? {}, owners: d.owners ?? {}, versions: d.versions ?? {} };
+    return {
+      file: rel, versions: d.versions ?? {}, boundary: new Set(Array.isArray(d.boundary) ? d.boundary : []),
+      reach: new Map((Array.isArray(d.facilities) ? d.facilities : []).filter((f) => f && typeof f.name === 'string').map((f) => [f.name, f.reach === 'out' ? 'out' : 'in'])),
+    };
   } catch { return null; }
 }

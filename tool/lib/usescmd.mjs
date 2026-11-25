@@ -1,9 +1,12 @@
-// The uses file at work (design part 2, section 7, "Who uses what"; build text 1b, commands 2 and 28): `push` rewrites
-// the uses file of every module whose code or tests the push changes, from the code as pushed, and carries it in the
-// push; `uses <module>` prints what the tool reads in a module, for a conversion job, and writes nothing.
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+// The uses file at work (design part 2, sections 7 and 9; build text 1b, commands 2, 27 and 28; build text 2c): `push`,
+// and `test` where it merges the base in, rewrite the uses file of every module the branch changes against its base
+// (a job's: its own module) and, where the branch changes the module list, of the modules it touches and their users,
+// from the code at the commit pushed, and carry it in the push; `uses <module>` writes one module's uses file into the
+// checkout from the code there and prints what a conversion's first step lists.
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadConfig, loadModules } from './config.mjs';
 import { loadTree } from './notice/model.mjs';
 import { readReferences, ANY } from './notice/refs.mjs';
@@ -13,33 +16,82 @@ import { writeOut } from './notify.mjs';
 import { fail, git } from './util.mjs';
 
 const MODULE = /^[a-z0-9-]+$/;
-const TOOL_VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
-
-/** What the tool writes: the reading, with the commit it was read at and the tool that read it. */
-export function usesData(tree, moduleId, commit) {
-  const r = readReferences(tree, moduleId);
-  return {
-    module: r.module,
-    written: { commit, tool: `process4-tool ${TOOL_VERSION}, typescript ${readerVersion()}` },
-    providers: r.providers, uses: r.uses, outside: r.outside, orderFaults: r.orderFaults, copies: r.copies, facilities: r.facilities,
-  };
-}
-
-/** The modules whose files differ between two commits (either side's module list), in module order. */
-function changedModules(tree, root, from, to) {
-  const names = new Set();
-  const files = git(['diff', '--name-only', '--no-renames', from, to], { cwd: root }).split('\n').filter(Boolean);
-  for (const f of files) { const m = tree.moduleOfFile(join(tree.root, f)); if (m) names.add(m); }
-  return tree.modules.map((m) => m.id).filter((id) => names.has(id));
+const TOOL_DIR = dirname(fileURLToPath(new URL('../p4.mjs', import.meta.url)));
+let toolCommit = null;
+/** The tool's commit (build text 2c: the uses file's `written.tool`): the commit of the copy it runs from. */
+export function toolVersion() {
+  if (toolCommit) return toolCommit;
+  const r = git(['rev-parse', 'HEAD'], { cwd: TOOL_DIR, allowFail: true });
+  const version = JSON.parse(readFileSync(join(TOOL_DIR, 'package.json'), 'utf8')).version;
+  toolCommit = r.code === 0 && /^[0-9a-f]{40}$/.test(r.stdout.trim()) ? r.stdout.trim() : `process4-tool ${version}`;
+  return toolCommit;
 }
 
 /**
- * Before a push (build text 1b, command 2): rewrites, from HEAD as it will be pushed, the uses file of each module whose
- * code or tests the push changes (against the branch as it stands on origin, or, for a new branch, against the branch
- * pull requests go into), and of a job's own module, and commits the files that changed. Returns the modules written.
- * Adds no check of the file: it is written, never judged.
+ * The reading of one module and its uses file. The file holds what build text 2c states: the providers, the uses, the
+ * places outside the standard (rule, file, side, line, what they may refer to, what they wait on, their tests), the
+ * order faults and the hand-written copies in JSON files. The reading also holds what `uses` prints for a conversion:
+ * what each place is, the marked copies and their drift, the candidate restated facts, the host facilities used.
  */
-export function writeUsesFiles(ctx, branch, { job = null } = {}) {
+export function usesReading(tree, moduleId, commit) {
+  const r = readReferences(tree, moduleId);
+  const data = {
+    module: r.module,
+    written: { commit, tool: toolVersion() },
+    providers: r.providers,
+    uses: r.uses,
+    outside: r.outside.map(({ rule, file, side, line, mayRefer, waitsOn, tests }) => ({ rule, file, side, line, mayRefer, waitsOn, tests })),
+    orderFaults: r.orderFaults,
+    copies: r.copies,
+  };
+  return { data, reading: r };
+}
+/** The uses file of one module, as the tool writes it. */
+export const usesData = (tree, moduleId, commit) => usesReading(tree, moduleId, commit).data;
+
+/** Files changed between two commits. */
+const changedFiles = (root, from, to) => git(['diff', '--name-only', '--no-renames', from, to], { cwd: root }).split('\n').filter(Boolean);
+
+/**
+ * The modules whose uses files a branch's change asks to rewrite (design part 2, sections 7 and 9): for a job, its own
+ * module; otherwise each module whose code or tests differ from the base. Where the module list differs from the base
+ * (an entry, the order), also the modules it touches (an entry changed, added or removed; a file whose owner changed)
+ * and every module whose uses file names one of them, or a provider no longer in the list.
+ */
+function modulesToWrite(root, baseTree, headTree, base, head, job) {
+  const files = changedFiles(root, base, head);
+  const out = new Set();
+  const ownerAt = (tree, f) => tree?.moduleOfFile(join(tree.root, f)) ?? null;
+  if (job) { if (headTree.byId.has(job)) out.add(job); }
+  else for (const f of files) { const m = ownerAt(headTree, f); if (m) out.add(m); }
+  const dir = `${(headTree.cfg.process_folder || 'process/').replace(/\/?$/, '/')}modules/`;
+  const listChanged = files.some((f) => f.startsWith(dir) && (f.endsWith('.json') && !f.endsWith('.uses.json') && !f.endsWith('facilities.json') || f.endsWith('order.txt')));
+  if (!listChanged || !baseTree) return out;
+  const touched = new Set();
+  const ids = (t) => new Map(t.modules.map((m) => [m.id, JSON.stringify({ files: m.entry.files, tests: m.entry.tests, public: m.entry.public })]));
+  const before = ids(baseTree), after = ids(headTree);
+  for (const [id, e] of after) if (before.get(id) !== e) touched.add(id);
+  const gone = [...before.keys()].filter((id) => !after.has(id));
+  for (const id of gone) touched.add(id);
+  // a file whose owner changed: an item moved from one module to another
+  const all = git(['ls-tree', '-r', '--name-only', head], { cwd: root }).split('\n').filter(Boolean);
+  for (const f of all) { const a = ownerAt(baseTree, f), b = ownerAt(headTree, f); if (a !== b) { if (a) touched.add(a); if (b) touched.add(b); } }
+  for (const id of touched) if (headTree.byId.has(id)) out.add(id);
+  // every user whose uses file names a moved or renamed item: one that names a touched module, or one gone
+  for (const m of headTree.modules) {
+    const d = readUses(headTree.root, m.id, { cfg: headTree.cfg });
+    const named = new Set([...(d?.providers ?? []), ...(d?.uses ?? []).map((u) => u.provider), ...(d?.orderFaults ?? []).map((u) => u.provider)]);
+    if ([...touched].some((t) => named.has(t))) out.add(m.id);
+  }
+  return out;
+}
+
+/**
+ * Before a push, and in `test` after it merges the base in (build text 1b, commands 2 and 27): rewrites, from HEAD, the
+ * uses files the branch's change asks for (modulesToWrite) where they differ from what the files hold, and commits
+ * them. Returns the modules written. No check of a file is made.
+ */
+export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
   const root = ctx.root;
   const cfg = loadConfig(root, 'HEAD');
   if (!cfg || !loadModules(root, cfg, 'HEAD').length) return [];
@@ -51,32 +103,37 @@ export function writeUsesFiles(ctx, branch, { job = null } = {}) {
     if (sha && !has(sha)) git(['fetch', '-q', 'origin', `refs/heads/${b}`], { cwd: root, allowFail: true });
     return has(sha) ? sha : null;
   };
-  let from = tipOf(branch);
-  if (!from) {
-    const base = tipOf(cfg.tranche_branch) ?? tipOf('main');
-    const mb = base ? git(['merge-base', base, head], { cwd: root, allowFail: true }) : null;
-    from = mb?.code === 0 ? mb.stdout.trim() : null;
+  // the base: where the branch's change starts, against the branch pull requests go into
+  if (!base) {
+    const into = tipOf(cfg.tranche_branch) ?? tipOf('main');
+    const mb = into ? git(['merge-base', into, head], { cwd: root, allowFail: true }) : null;
+    base = mb?.code === 0 ? mb.stdout.trim() : null;
+  } else {
+    const mb = git(['merge-base', base, head], { cwd: root, allowFail: true });
+    base = mb.code === 0 ? mb.stdout.trim() : base;
   }
   const tmp = mkdtempSync(join(tmpdir(), 'p4-uses-'));
   const written = [];
   try {
-    const tree = loadTree(writeOut(root, head, tmp));
-    const mods = new Set(from ? changedModules(tree, root, from, head) : []);
-    if (job && tree.byId.has(job)) mods.add(job);
-    for (const id of tree.modules.map((m) => m.id).filter((x) => mods.has(x))) {
-      const data = usesData(tree, id, head);
-      const before = readUses(root, id, { cfg: tree.cfg, ref: 'HEAD' });
+    const headTree = loadTree(writeOut(root, head, tmp));
+    let baseTree = null;
+    if (base && base !== head && loadConfig(root, base) && loadModules(root, loadConfig(root, base), base).length) baseTree = loadTree(writeOut(root, base, tmp));
+    const mods = base ? modulesToWrite(root, baseTree, headTree, base, head, job) : new Set(job && headTree.byId.has(job) ? [job] : []);
+    for (const id of headTree.modules.map((m) => m.id).filter((x) => mods.has(x))) {
+      const data = usesData(headTree, id, head);
+      const before = readUses(root, id, { cfg: headTree.cfg, ref: 'HEAD' });
       if (sameUses(before, data)) continue;
-      written.push({ module: id, file: writeUses(root, id, data, { cfg: tree.cfg }), data });
+      written.push({ module: id, file: writeUses(root, id, data, { cfg: headTree.cfg }), data });
     }
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
   if (!written.length) return [];
+  const who = git(['config', 'user.email'], { cwd: root, allowFail: true }).stdout?.trim() ? [] : ['-c', 'user.name=Claude', '-c', 'user.email=noreply@anthropic.com'];
   git(['add', '--', ...written.map((w) => w.file)], { cwd: root });
-  git(['commit', '-q', '-m', `Uses files of ${written.map((w) => w.module).join(', ')}, written by the tool from ${head.slice(0, 10)}`, '--', ...written.map((w) => w.file)], { cwd: root });
+  git([...who, 'commit', '-q', '-m', `Uses files of ${written.map((w) => w.module).join(', ')}, written by the tool from ${head.slice(0, 10)}`, '--', ...written.map((w) => w.file)], { cwd: root });
   for (const w of written) {
-    ctx.log(`wrote ${w.file}: ${w.data.providers.length} provider(s), ${w.data.uses.length} use(s), ${w.data.outside.length} place(s) outside the standard, ${w.data.orderFaults.length} order fault(s), ${w.data.copies.length} cop${w.data.copies.length === 1 ? 'y' : 'ies'}`);
+    ctx.log(`wrote ${w.file}: ${w.data.providers.length} provider(s), ${w.data.uses.length} use(s), ${w.data.outside.length} place(s) outside the standard, ${w.data.orderFaults.length} order fault(s)`);
   }
   return written.map((w) => w.module);
 }
@@ -85,53 +142,52 @@ const placeText = (w) => `${w.file}:${w.line}${w.test ? ` test "${w.test}"` : w.
 const routeText = (r) => (r === 'direct' ? 'direct' : `via ${r.via} ${r.item}`);
 const mayText = (m) => (m.includes(ANY) ? 'every earlier module' : m.length ? m.join(', ') : 'no other module');
 
-/** The reading in printed form (build text 1b, command 28). */
-export function printedUses(d) {
-  const L = [`Uses of ${d.module}`];
-  L.push(`providers: ${d.providers.join(', ') || 'none'}`);
-  L.push(`uses (${d.uses.length}):`);
-  for (const u of d.uses) {
+/** What a conversion's first step lists (build text 2c, "The conversion", step 1), from a module's reading. */
+export function printedUses(r) {
+  const L = [`Uses of ${r.module}`];
+  L.push(`providers: ${r.providers.join(', ') || 'none'}`);
+  L.push(`references in standard form (${r.uses.length}):`);
+  for (const u of r.uses) {
     L.push(`  ${u.provider} ${u.item} (${u.itemKind}): ${u.type}, ${routeText(u.route)}${u.standard ? '' : ', not by a standard form'}`);
     for (const w of u.where) L.push(`      ${placeText(w)}`);
   }
   const byRule = new Map();
-  for (const o of d.outside) byRule.set(o.rule, (byRule.get(o.rule) ?? 0) + 1);
-  L.push(`outside the standard (${d.outside.length}${byRule.size ? `: ${[...byRule].sort().map(([r, n]) => `${r} ${n}`).join(', ')}` : ''}):`);
-  for (const o of d.outside) {
+  for (const o of r.outside) byRule.set(o.rule, (byRule.get(o.rule) ?? 0) + 1);
+  L.push(`places outside the standard (${r.outside.length}${byRule.size ? `: ${[...byRule].sort().map(([k, n]) => `${k} ${n}`).join(', ')}` : ''}):`);
+  for (const o of r.outside) {
     L.push(`  ${o.rule} ${o.file}:${o.line} (${o.side}) ${o.what}`);
     L.push(`      may refer to ${mayText(o.mayRefer)}; waits on ${o.waitsOn}${o.tests.length ? `; tests: ${o.tests.map((t) => `"${t}"`).join(', ')}` : ''}`);
   }
-  L.push(`order faults (${d.orderFaults.length}):`);
-  for (const o of d.orderFaults) L.push(`  ${o.provider} ${o.item} (${o.type}) at ${placeText(o)}: ${o.provider} is later in the order`);
-  L.push(`copies (${d.copies.length}):`);
-  for (const c of d.copies) {
-    if (c.of) { L.push(`  ${c.file}${c.pointer}: a copy of ${c.of} (hand-written)`); continue; }
-    L.push(`  ${c.provider} ${c.item} at ${placeText(c)}${c.pointer ? ` ${c.pointer}` : ''}${c.marked ? ` marked ${c.marked}` : ', unmarked: obtain it from its owner, or mark it'}${c.differs ? `; differs: ${JSON.stringify(c.differs.here)} here, ${JSON.stringify(c.differs.provider)} in ${c.provider}` : ''}`);
-  }
-  L.push(`host facilities used (${d.facilities.length}): ${d.facilities.join(', ') || 'none'}`);
+  L.push(`order faults, for ARCH (${r.orderFaults.length}):`);
+  for (const o of r.orderFaults) L.push(`  ${o.provider} ${o.item} (${o.type}) at ${placeText(o)}: ${o.provider} is later in the order`);
+  L.push(`marked copies (${r.marked.length}):`);
+  for (const c of r.marked) L.push(`  ${c.provider} ${c.item} at ${placeText(c)}, marked ${c.marked}${c.differs ? `; differs: ${JSON.stringify(c.differs.here)} here, ${JSON.stringify(c.differs.provider)} in ${c.provider}` : ''}`);
+  L.push(`copies in JSON files, kept as written (${r.copies.length}):`);
+  for (const c of r.copies) L.push(`  ${c.file}${c.pointer}: ${c.provider} ${c.item}`);
+  L.push(`candidate restated facts: written-out values exactly equal to an earlier module's (${r.candidates.length}):`);
+  for (const c of r.candidates) L.push(`  ${c.provider} ${c.item} at ${placeText(c)}${c.pointer ? ` ${c.pointer}` : ''}`);
+  const waits = [...new Set(r.outside.map((o) => o.waitsOn).filter((w) => !/^this module/.test(w)))];
+  L.push(`what the conversion needs first (${waits.length}):`);
+  for (const w of waits) L.push(`  ${w}`);
+  L.push(`host facilities used (${r.facilities.length}): ${r.facilities.join(', ') || 'none'}`);
   return L.join('\n');
 }
 
-// 28. uses <module> [--at <commit>] [--json]: reads only; writes nothing, to GitHub or to the checkout.
-export function usesCmd(ctx, moduleId, a) {
+// 28. uses <module>: reads the module's code and tests in the checkout, writes its uses file into the checkout, and
+// prints what a conversion's first step lists. Writes nothing to GitHub.
+export function usesCmd(ctx, moduleId) {
   if (!MODULE.test(moduleId || '')) fail('name the module');
-  const at = typeof a.at === 'string' ? a.at : 'HEAD';
-  const r = git(['rev-parse', '--verify', '-q', `${at}^{commit}`], { cwd: ctx.root, allowFail: true });
-  if (r.code !== 0) fail(`${at} is not a commit here`);
-  const sha = r.stdout.trim();
-  const base = mkdtempSync(join(tmpdir(), 'p4-read-'));
-  try {
-    const tree = loadTree(writeOut(ctx.root, sha, base));
-    if (!tree.byId.has(moduleId)) fail(`no module is named ${moduleId}`);
-    const want = tree.cfg.language_reader;
-    if (want?.version && want.version !== readerVersion()) ctx.log(`note: process.json names ${want.name ?? 'typescript'} ${want.version}; this copy of the tool reads with TypeScript ${readerVersion()}`);
-    const d = usesData(tree, moduleId, sha);
-    if (a.json) ctx.log(JSON.stringify(d, null, 2));
-    else {
-      ctx.log(`${printedUses(d)}\nread at ${sha.slice(0, 10)}; the file is ${usesPath(tree.cfg, moduleId)}, written by push`);
-    }
-  } finally {
-    rmSync(base, { recursive: true, force: true });
-  }
+  if (!existsSync(join(ctx.root, 'process.json'))) fail('this checkout has no process.json');
+  const tree = loadTree(ctx.root);
+  if (!tree.byId.has(moduleId)) fail(`no module is named ${moduleId}`);
+  const want = tree.cfg.language_reader;
+  if (want?.version && want.version !== readerVersion()) ctx.log(`note: process.json names ${want.name ?? 'typescript'} ${want.version}; this copy of the tool reads with TypeScript ${readerVersion()}`);
+  const head = git(['rev-parse', 'HEAD'], { cwd: ctx.root, allowFail: true });
+  const { data, reading } = usesReading(tree, moduleId, head.code === 0 ? head.stdout.trim() : null);
+  const before = readUses(ctx.root, moduleId, { cfg: tree.cfg });
+  const file = usesPath(tree.cfg, moduleId);
+  if (!sameUses(before, data)) writeUses(ctx.root, moduleId, data, { cfg: tree.cfg });
+  ctx.log(printedUses(reading));
+  ctx.log(`${sameUses(before, data) ? 'unchanged' : 'written'}: ${file}, from the code in the checkout; push carries it`);
   return 0;
 }
