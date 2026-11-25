@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
+import { writeNotice } from '../lib/noticecomments.mjs';
 import { mark } from '../lib/state.mjs';
 import { TEST_MARK } from '../lib/testrecord.mjs';
 import { git } from '../lib/util.mjs';
@@ -116,6 +117,49 @@ test('a job whose only work is notices is told; with other work it is ordinary a
   const job = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
   assert.equal(job.kind, 'told');
   assert.deepEqual(job.uses, [{ module: 'dates', entry: 'd' }]);
+});
+
+test('open --module copies each waiting notice\'s reasons for its module from the notice comments on the merged pull request', () => {
+  // The owner's decision B of 25 Nov 2026: the waiting-work entry names the notice; its reasons are on the merged pull request.
+  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  const day = { module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null };
+  const big = Array.from({ length: 30 }, (_, i) => ({ ...day, entry: `e${i}`, before: { handsBack: 'x'.repeat(3000) }, after: { handsBack: 'y'.repeat(3000) } }));
+  writeNotice(gh, 'o/product', 7, 'dates', [['report', [day]], ['orders', big]]);
+  writeNotice(gh, 'o/product', 9, 'dates', [['orders', [day]]]);
+  assert.ok(gh.s.comments.filter((c) => c.on === 7).length > 1);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [
+    { module: 'orders', kind: 'notice', from: 'dates', merged: 7 },
+    { module: 'orders', kind: 'notice', from: 'dates', merged: 8, uses: [{ module: 'dates', entry: 'old' }] },
+    { module: 'orders', kind: 'notice', from: 'dates', merged: 9 },
+    { module: 'report', kind: 'notice', from: 'dates', merged: 7 },
+  ] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  branch(ctx, 'job/orders/1');
+  open(ctx, { _: [], module: 'orders' });
+  const job = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
+  assert.equal(job.kind, 'told');
+  assert.deepEqual(job.work, ['notice from dates (pull request 7)', 'notice from dates (pull request 8)', 'notice from dates (pull request 9)']);
+  // Every part's reasons of this module, in order; an older entry that carries its reasons, as is; not another module's.
+  assert.deepEqual(job.uses, [...big, { module: 'dates', entry: 'old' }, day]);
+  const waiting = parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work;
+  assert.deepEqual(waiting.map((w) => w.module), ['report']);
+});
+
+test('open --module of a waiting notice with no reasons on its pull request fails plainly and opens nothing', () => {
+  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  branch(ctx, 'job/orders/1');
+  assert.throws(() => open(ctx, { _: [], module: 'orders' }), /the notice from dates \(pull request 7\) has no reasons for orders on its pull request; run notify 7 again, then open/);
+  assert.equal(gh.s.prs.length, 0);
 });
 
 test('open --title opens a draft into the tranche, or into main with --into-main', () => {

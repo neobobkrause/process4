@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { CONFIG_FILE, fetchLine, loadConfig, loadModules, needConfig, ownerOf, readAt, requiredCheck, requirementsFile } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
+import { noticeReasons } from './noticecomments.mjs';
 import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
@@ -235,7 +236,10 @@ export function open(ctx, a) {
   const job = { module, work: [...reqs, ...mine.map(describe)], kind };
   // Requirements not yet met that the tranche's scope leaves for later are named, so the job knows they are not its work.
   if (waits.length) job.not_this_tranche = waits;
-  if (notices.length) job.uses = notices.flatMap((w) => w.uses || []);
+  // Each notice's reasons for this module: from its entry where it carries them, else from the notice comments on its
+  // merged pull request (noticecomments.mjs).
+  const comments = new Map();
+  if (notices.length) job.uses = notices.flatMap((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
   const n = Number(name.match(JOB)[2]);
   const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
   ctx.gh.addComment(ctx.slug, pr.number, block(JOB_MARK, job));

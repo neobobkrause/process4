@@ -37,7 +37,16 @@ const paramNamesOf = (sig) => sig.getParameters().map((p) => (p.name.startsWith(
 
 export const throwKinds = (tag) => (tag.typeExpression?.type?.getText?.() ?? '').split('|').map((x) => x.trim()).filter(Boolean);
 
-export function makeLister(program, tree) {
+/**
+ * @param program the program the listings are read from
+ * @param tree the product
+ * @param plainKinds where given, a map of file -> that file's plain kinds as its declarations print them, kept by the
+ *   caller between programs of one product (notify, read in stages): a file's declarations depend only on the file and
+ *   what it imports, which every program that holds the file holds too, so they are written out once, not once per
+ *   program. Writing them out makes the reader check the whole file, which made notify on an early provider take most
+ *   of an hour (civicsmith, 25 Nov 2026).
+ */
+export function makeLister(program, tree, { plainKinds = null } = {}) {
   const checker = program.getTypeChecker();
   const C = makeCanon(checker, tree);
 
@@ -68,9 +77,27 @@ export function makeLister(program, tree) {
     return { file: sf.fileName, start: own.length ? own[0].pos : node.getStart(sf), end: node.end };
   }
 
+  /** One file's plain kinds (unions, plain kinds), from its declarations as written out. */
+  const plainOf = (f) => {
+    let v = plainKinds?.get(f);
+    if (!v) { v = declarationsOf(program, f).__plain ?? new Map(); plainKinds?.set(f, v); }
+    return v;
+  };
+  /** The plain kinds of every module whose public files are read (`has`), in module order: a later one of the same name wins. */
+  const plainOfAll = (has) => {
+    const out = new Map();
+    for (const m of tree.modules) for (const f of m.public) if (has(f)) for (const [k, v] of plainOf(f)) out.set(k, v);
+    return out;
+  };
   let plainEverywhere = null;
 
-  function list(mod) {
+  /**
+   * @param mod the module to list
+   * @param holds where given, the files the module's own program would hold (a program read for several modules at
+   *   once): the plain kinds written out where another module names them are those of these files only, as that
+   *   program would have them
+   */
+  function list(mod, { holds = null } = {}) {
     const entries = {};
     const ranges = [];
     const kindsIn = { accepts: new Map(), handsBack: new Map() }; // data kind key -> entries mentioning it
@@ -297,12 +324,9 @@ export function makeLister(program, tree) {
     for (const e of Object.values(entries)) e.bounds = [...new Set(e.bounds)].sort();
     // Iteration 4 (rule 18): each entry's declaration as TypeScript prints it.
     // plain kinds (unions, plain kinds) of every module the program reads, to write out where another module names them
-    if (!plainEverywhere) {
-      plainEverywhere = new Map();
-      for (const m of tree.modules) for (const f of m.public) if (program.getSourceFile(f)) for (const [k, v] of declarationsOf(program, f).__plain ?? []) plainEverywhere.set(k, v);
-    }
+    const plain = holds ? plainOfAll((f) => holds.has(f) && !!program.getSourceFile(f)) : (plainEverywhere ??= plainOfAll((f) => !!program.getSourceFile(f)));
     const decls = {};
-    for (const f of mod.public) Object.assign(decls, declarationsOf(program, f, plainEverywhere));
+    for (const f of mod.public) Object.assign(decls, declarationsOf(program, f, plain));
     for (const [name, e] of Object.entries(entries)) {
       if (name.startsWith('op:')) {
         const table = Object.entries(entries).find(([n, x]) => x.kind === 'operation table' && x.handsBack?.names?.includes(name.slice(3)))?.[0];

@@ -102,13 +102,12 @@
   "P07-accept-optional": {
    "series": "planned",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a confirmed \"accepts more\"), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "P08-newly-required": {
    "series": "planned",
@@ -424,13 +423,12 @@
   "P21-unfollowable-users-provider": {
    "series": "planned",
    "provider": "store",
-   "told": {
-    "reports": [
-     "store: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for store, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "P22a-first-job-comments-step": {
    "series": "planned",
@@ -716,13 +714,12 @@
   "A12-caught-error-makes-user-unfollowed": {
    "series": "adversarial",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a confirmed \"accepts more\"), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "A13-computed-member-renamed": {
    "series": "adversarial",
@@ -827,24 +824,22 @@
   "X04-includes-on-literal-list": {
    "series": "adversarial-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "X05-stale-write": {
    "series": "adversarial-independent",
    "provider": "store",
-   "told": {
-    "reports": [
-     "store: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for store, whose listing changed only in ways that tell nobody (a confirmed \"accepts more\"), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "X06-bound-reworded": {
    "series": "adversarial-independent",
@@ -933,7 +928,6 @@
      "bookings op:bookstatus: rooms now answers the same name"
     ],
     "reports": [
-     "rooms: not followed fully",
      "bookings: not followed fully"
     ]
    },
@@ -943,6 +937,9 @@
    ],
    "needs": [
     "billing"
+   ],
+   "rerecorded": [
+    "reports was told, now is told with other words: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
    ]
   },
   "X09-message-channel": {
@@ -1130,13 +1127,12 @@
   "Y10-map-has-get-provider-kind": {
    "series": "round3-independent",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "Y11-tests-grouped-with-it": {
    "series": "round3-independent",
@@ -1251,11 +1247,7 @@
   "Z07-handle-method-handed-on": {
    "series": "round4-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [
     "front"
    ],
@@ -1263,7 +1255,8 @@
     "front"
    ],
    "rerecorded": [
-    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)"
+    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)",
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a confirmed \"accepts more\"), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
    ]
   },
   "Z08-second-overload-hands-back": {
@@ -1402,26 +1395,22 @@
   "Z17-filter-boolean": {
    "series": "round4-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "Z18-object-groupby": {
    "series": "round4-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
    "needs": [],
    "rerecorded": [
-    "rooms's check refused in design 7 and does not now: its refusal rested on rule 49 (the methods of a plain handle do not use this), of the 23 refusals not taken"
+    "rooms's check refused in design 7 and does not now: its refusal rested on rule 49 (the methods of a plain handle do not use this), of the 23 refusals not taken",
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
    ]
   },
   "Z19-at-sign-in-bound-line": {
@@ -1543,24 +1532,22 @@
   "V09-pop-after-length-check": {
    "series": "round5-independent",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "V10-checked-cast-to-kind": {
    "series": "round5-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "V11-door-copy-in-two-steps": {
    "series": "round5-independent",
@@ -1590,13 +1577,12 @@
   "V13-states-named": {
    "series": "round5-independent",
    "provider": "bookings",
-   "told": {
-    "reports": [
-     "bookings: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "V14-overload-added": {
    "series": "round5-independent",
@@ -1706,13 +1692,12 @@
   "W08-cast-after-has": {
    "series": "round6-independent",
    "provider": "rooms",
-   "told": {
-    "reports": [
-     "rooms: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for rooms, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "W09-row-written-in-place": {
    "series": "round6-independent",
@@ -1766,13 +1751,12 @@
   "W16-store-gains-id": {
    "series": "round6-independent",
    "provider": "store",
-   "told": {
-    "reports": [
-     "store: not followed fully"
-    ]
-   },
+   "told": {},
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for store, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "W17-limit-read-through-namespace": {
    "series": "round6-independent",
@@ -1914,8 +1898,7 @@
      "rooms Rooms: kind renamed, shape unchanged"
     ],
     "reports": [
-     "rooms: not followed fully",
-     "bookings: not followed fully"
+     "rooms: not followed fully"
     ]
    },
    "refuses": [
@@ -1927,7 +1910,8 @@
     "front"
    ],
    "rerecorded": [
-    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)"
+    "front was told, now is not told: design 7 told, on \"accepts more\", a user that hands the function on as a value (rules 6 and 24), which design 8 does not take: accepting more tells no one (build text 2b, section 6)",
+    "reports was told, now is told with other words: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a confirmed \"accepts more\"), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
    ]
   },
   "U11-test-uses-notStrictEqual": {
@@ -2071,13 +2055,13 @@
     ],
     "front": [
      "door Door.call: cannot stand in"
-    ],
-    "reports": [
-     "bookings: not followed fully"
     ]
    },
    "refuses": [],
-   "needs": []
+   "needs": [],
+   "rerecorded": [
+    "reports was told, now is not told: it was told as not followed fully for bookings, whose listing changed only in ways that tell nobody (a new entry), a notice for nothing; a not-followed user is told only where a changed entry tells users (the owner's decision B of 25 Nov 2026)"
+   ]
   },
   "T11-bound-test-assertion-messages": {
    "series": "round8-independent",
@@ -2162,6 +2146,7 @@
   "one of the 23 refusals not taken": 28,
   "hand-on-as-a-value not taken": 3,
   "rule 21 (fifth cause of not followed fully) not taken": 2,
-  "fault D: deliberate error assertion exemption": 1
+  "fault D: deliberate error assertion exemption": 1,
+  "not followed fully on a change that tells nobody not taken": 17
  }
 }

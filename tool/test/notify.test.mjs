@@ -9,6 +9,7 @@ import { loadTree } from '../lib/notice/model.mjs';
 import { analyse, notice } from '../lib/notice/notice.mjs';
 import { check, commentsOnly } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
+import { NOTICE_LIMIT, NOTICE_MARK, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
 import { JOB_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
@@ -65,6 +66,8 @@ function mergedPR(root, gh, files, n = 7) {
 }
 
 const waitingWork = (gh) => gh.s.comments.map((c) => parseBlock(c.body, mark('waiting-work'))).find(Boolean)?.data;
+// The notice comments on pull request n, in the order written.
+const noticeComments = (gh, n) => gh.s.comments.filter((c) => c.on === n).map((c) => parseBlock(c.body, NOTICE_MARK)?.data).filter(Boolean);
 
 test('commands that do not read code never load the language reader', () => {
   const p4 = new URL('../p4.mjs', import.meta.url).href;
@@ -114,7 +117,7 @@ test('listing prints a module\'s listing at HEAD or at a named commit, and write
   assert.equal(git(['status', '--porcelain'], { cwd: root }), '');
 });
 
-test('notify tells the users of a changed entry and writes their reasons into waiting work, once per provider and user', () => {
+test('notify tells the users of a changed entry: their reasons on the merged pull request, waiting work naming the notice, once per provider and user', () => {
   const root = makeRepo(productFiles());
   const gh = fakeGitHub();
   const { issue, records } = create(gh, 'o/product', ['waiting-work'], () => {});
@@ -132,15 +135,23 @@ test('notify tells the users of a changed entry and writes their reasons into wa
   const work = waitingWork(gh).work;
   assert.equal(work.length, 3);
   assert.equal(work[0].kind, 'walk-flaw');
+  // The waiting-work entry only names the notice; its reasons are on the merged pull request.
   const orders = work.find((w) => w.module === 'orders');
-  assert.deepEqual({ ...orders, uses: undefined }, { module: 'orders', kind: 'notice', from: 'dates', merged: 7, uses: undefined });
-  const day = orders.uses.find((u) => u.entry === 'Day');
+  assert.deepEqual(orders, { module: 'orders', kind: 'notice', from: 'dates', merged: 7 });
+  const notices = noticeComments(gh, 7);
+  assert.deepEqual(notices.map((d) => [d.from, d.merged, d.part, Object.keys(d.users)]), [['dates', 7, 1, ['orders', 'report']]]);
+  assert.match(text, /the notice from dates is written on pull request 7 \(1 comment\(s\)\)/);
+  const uses = noticeReasons(gh, 'o/product', orders);
+  const day = uses.find((u) => u.entry === 'Day');
   assert.deepEqual(day, { module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null,
     before: { bounds: ['n: whole number, 1 to 31'] }, after: { bounds: ['n: whole number, 1 to 30'] } });
-  assert.deepEqual(orders.uses.map((u) => u.entry).sort(), ['Day', 'parseDay']);
-  // Run again for the same merge: its own entries are rewritten, not doubled.
+  assert.deepEqual(uses.map((u) => u.entry).sort(), ['Day', 'parseDay']);
+  // Run again for the same merge: its own entries and its own comments are rewritten, not doubled.
+  const count = gh.s.comments.length;
   notifyCmd(ctx, 7);
   assert.equal(waitingWork(gh).work.length, 3);
+  assert.equal(gh.s.comments.length, count);
+  assert.deepEqual(noticeComments(gh, 7), notices);
 });
 
 test('notify adds a notice to a told user\'s open job block, once, and the rest to waiting work', () => {
@@ -168,6 +179,8 @@ test('notify adds a notice to a told user\'s open job block, once, and the rest 
   assert.equal(b.words, 'words kept');
   assert.match(out.join('\n'), /message the job of orders \(pull request 20\): a notice from dates reached it/);
   assert.deepEqual(waitingWork(gh).work.map((w) => [w.module, w.from, w.merged]), [['report', 'dates', 7]]);
+  // Only the user with no open job has its reasons on the merged pull request.
+  assert.deepEqual(noticeComments(gh, 7).map((d) => Object.keys(d.users)), [['report']]);
   // A second run for the same merge adds nothing to the block.
   out.length = 0;
   notifyCmd(ctx, 7);
@@ -262,6 +275,59 @@ test('notify that runs out of memory reading the product says so plainly, tells 
     delete process.env.P4_READ_HEAP_MB;
   }
   assert.equal(waitingWork(gh).work, undefined);
+  assert.deepEqual(noticeComments(gh, 7), []);
+});
+
+test('a notice comment GitHub will not write fails with GitHub\'s own words; nobody is told and the notice is owed', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const add = gh.addComment;
+  gh.addComment = (slug, n, body) => {
+    if (n === 7) throw new Fail('GitHub refused: gh: Validation Failed (HTTP 422) body is too long (maximum is 65536 characters)');
+    return add(slug, n, body);
+  };
+  const { ctx } = ctxFor(root, gh);
+  assert.throws(() => notifyCmd(ctx, 7), (e) => e instanceof Fail
+    && e.message === 'could not write the notice from dates on pull request 7: GitHub refused: gh: Validation Failed (HTTP 422) body is too long (maximum is 65536 characters); nobody is told; the notice for pull request 7 is owed');
+  assert.equal(waitingWork(gh).work, undefined);
+});
+
+test('a notice too large for one comment is written in parts, each under the limit, and read back whole', () => {
+  const reason = (i, size) => ({ module: 'dates', entry: `e${i}`, changes: ['hands back differently'], lines: [`src/x.mjs:${i}`], through: null,
+    before: { handsBack: 'x'.repeat(size) }, after: { handsBack: 'y'.repeat(size) } });
+  // Three users: a small one, one whose reasons need several parts, and one with a reason too large for any part.
+  const users = [
+    ['orders', [reason(1, 100)]],
+    ['report', Array.from({ length: 40 }, (_, i) => reason(i, 2000))],
+    ['idle', [reason(99, 40000), reason(100, 10)]],
+  ];
+  const parts = noticeParts('dates', 7, users);
+  assert.ok(parts.length >= 3);
+  assert.deepEqual(parts.map((p) => p.part), parts.map((_, i) => i + 1));
+  for (const p of parts) assert.ok(block(NOTICE_MARK, p).length < NOTICE_LIMIT);
+  // Written as comments on the merged pull request and read back for each module: every reason, in order.
+  const gh = fakeGitHub();
+  writeNotice(gh, 'o/product', 7, 'dates', users);
+  assert.equal(noticeComments(gh, 7).length, parts.length);
+  const read = (module) => noticeReasons(gh, 'o/product', { module, kind: 'notice', from: 'dates', merged: 7 });
+  assert.deepEqual(read('orders'), users[0][1]);
+  assert.deepEqual(read('report'), users[1][1]);
+  // The reason too large on its own keeps its entry, changes and lines, which choose the related tests, but not its words.
+  const [big, small] = read('idle');
+  assert.deepEqual(big, { module: 'dates', entry: 'e99', changes: ['hands back differently'], lines: ['src/x.mjs:99'], through: null, cut: 'its before and after are left out: too large for one comment' });
+  assert.deepEqual(small, users[2][1][1]);
+  // A second writing of a smaller notice rewrites its own comments, adds none, and empties a part it no longer needs.
+  const count = gh.s.comments.length;
+  writeNotice(gh, 'o/product', 7, 'dates', [users[0]]);
+  assert.equal(gh.s.comments.length, count);
+  assert.deepEqual(read('orders'), users[0][1]);
+  assert.throws(() => read('report'), /has no reasons for report on its pull request; run notify 7 again, then open/);
+  // Another merge's or another provider's notice is not read.
+  assert.throws(() => noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'orders', merged: 7 }), /no reasons/);
+  // An older waiting entry that still carries its reasons is used as is.
+  assert.deepEqual(noticeReasons(gh, 'o/product', { module: 'orders', kind: 'notice', from: 'dates', merged: 9, uses: [{ module: 'dates', entry: 'old' }] }), [{ module: 'dates', entry: 'old' }]);
 });
 
 test('notify runs once for each module the merge changed, in module order', () => {
@@ -317,7 +383,7 @@ export function make(o) { return { size: () => ${ret === 'number' ? 1 : "'1'"} }
   assert.deepEqual(b.told[0].reasons.map((r) => `${r.entry}: ${r.changes}`), ['make: cannot stand in']);
 });
 
-test('not followed fully: a declared provider with no use found tells the user on any change, a new entry too', () => {
+test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {
   const root = mkdtempSync(join(tmpdir(), 'p4-nf-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-nf-'));
   const files = productFiles();
@@ -325,10 +391,16 @@ test('not followed fully: a declared provider with no use found tells the user o
   files['process/modules/idle.json'] = entry('idle', ['dates']);
   files['src/idle/index.mjs'] = 'export const idle = 1;\n';
   write(root, files);
-  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES('1 to 30')}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
   const r = notice(root, after, 'dates');
-  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['today: new entry']);
-  assert.deepEqual(r.told.map((t) => [t.user, t.reasons]), [['idle', [{ module: 'dates', notFollowed: ['declares dates but no use of it is found in its code'], through: null }]]]);
+  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['Day: bound changed', 'formatDay: bound changed', 'parseDay: bound changed', 'today: new entry']);
+  assert.deepEqual(r.told.find((t) => t.user === 'idle').reasons, [{ module: 'dates', notFollowed: ['declares dates but no use of it is found in its code'], through: null }]);
+  // A change that tells nobody (here a new entry alone) tells a user that is not followed fully nothing either: a notice
+  // for nothing (the owner's decision B of 25 Nov 2026).
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
+  const n = notice(root, after, 'dates');
+  assert.deepEqual(n.entries.map((e) => `${e.entry}: ${e.changes}`), ['today: new entry']);
+  assert.deepEqual(n.told, []);
 });
 
 test('check prints each disagreement with file and line, and exits 1', () => {
@@ -604,7 +676,7 @@ test('not followed fully: a reason names its first six places and how many more,
   files['process/modules/idle.json'] = entry('idle', ['dates']);
   files['src/idle/index.mjs'] = Array.from({ length: 9 }, (_, i) => `export const v${i} = JSON.parse('{}').f${i};\n`).join('');
   write(root, files);
-  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @returns {number} */\nexport function today() { return 1; }\n` });
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
   const r = notice(root, after, 'dates');
   const nf = r.told.find((t) => t.user === 'idle').reasons[0].notFollowed;
   const places = Array.from({ length: 6 }, (_, i) => `src/idle/index.mjs:${i + 1} JSON.parse('{}')`).join('; ');

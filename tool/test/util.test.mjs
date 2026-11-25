@@ -31,6 +31,15 @@ test('any other refusal is not tried again', () => {
   assert.equal(e.calls.length, 1);
 });
 
+test('a call allowed to fail answers null and keeps GitHub\'s words until the next call', () => {
+  const e = answers({ code: 1, stderr: 'gh: Validation Failed (HTTP 422)\nbody is too long' }, { code: 0, stdout: '{"ok":1}' });
+  const gh = makeGh({ exec: e.exec, wait: () => {} });
+  assert.equal(gh(['api', 'x'], { allowFail: true }), null);
+  assert.equal(gh.refused, 'gh: Validation Failed (HTTP 422) body is too long');
+  gh(['api', 'y']);
+  assert.equal(gh.refused, null);
+});
+
 test('arguments', () => {
   assert.deepEqual(parseArgs(['push', '--blocked', 'dates', 'why not']), { _: ['push', 'why not'], blocked: 'dates' });
   assert.deepEqual(parseArgs(['open', '--into-main', '--title', 't']), { _: ['open'], 'into-main': true, title: 't' });

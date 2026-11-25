@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import { stateRead, stateWrite } from '../lib/commands.mjs';
 import { parseBlock } from '../lib/github.mjs';
 import { LABEL, PRODUCT_RECORDS, laneRefusal, mark, noteEnded, parseRecordFile } from '../lib/state.mjs';
+import { Fail } from '../lib/util.mjs';
 import { ctxFor, fakeGitHub, makeRepo, productFiles } from './helpers.mjs';
 
 const file = (root, name, text) => { const p = join(root, name); writeFileSync(p, text); return p; };
@@ -45,6 +46,24 @@ test('a record whose comment is gone is made afresh', () => {
   gh.s.comments = gh.s.comments.filter((c) => !c.body.includes(mark('stop')));
   stateWrite(ctx, 'stop', { _: [], from: file(root, 's.json', '{"stopped":false}') });
   assert.equal(gh.s.comments.filter((c) => c.body.includes(mark('stop'))).length, 1);
+});
+
+test('a record GitHub will not write fails with GitHub\'s own words (build text 5, section 1)', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  stateWrite(ctx, undefined, { _: [], create: true });
+  const words = 'gh: Validation Failed (HTTP 422) body is too long (maximum is 65536 characters)';
+  // The rewrite is refused while the record's comment is still there: it stays as it was, and GitHub's words are said.
+  gh.editComment = () => null;
+  gh.refusal = () => words;
+  assert.throws(() => stateWrite(ctx, 'stop', { _: [], from: file(root, 's.json', '{"stopped":false}') }),
+    (e) => e instanceof Fail && e.message === `GitHub would not rewrite the stop record; it stays as it was. GitHub said: ${words}`);
+  // A record made afresh that GitHub will not take says GitHub's words too.
+  gh.s.comments = gh.s.comments.filter((c) => !c.body.includes(mark('stop')));
+  gh.addComment = () => { throw new Fail(`GitHub refused: ${words}`); };
+  assert.throws(() => stateWrite(ctx, 'stop', { _: [], from: file(root, 's.json', '{"stopped":false}') }),
+    (e) => e instanceof Fail && e.message === `GitHub would not write the stop record: GitHub refused: ${words}`);
 });
 
 test('no record of another name is written', () => {
