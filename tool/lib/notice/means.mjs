@@ -19,6 +19,11 @@
 //   closure, since a value can be built, and a setting read, by code that wrote state the item reads. A provider's
 //   own errors are not composed into its users' means: a provider's change tells its users, and theirs tell theirs
 //   when their own means change (the study's middle-module case, section 3.3).
+//   Exact where the language decides it (build text 5, section 6): an error raised inside a try block whose catch never
+//   names it, or by code that block calls to run at once, does not leave the item (throwsOf); a stream written out of
+//   the program by code outside the call does not reach it (SINKS); what the item's own code reads of what its caller
+//   handed it is its input, and does not take in the writers of those fields (paramReads); a call into a module proven
+//   to keep no state neither writes nor reads `ext` (statelessModule).
 // - A type error in the item's code under the standard's settings counts as a change: its errors, without positions,
 //   are part of its means, and while it has one, a change to its code is a change of its means (`code`, a digest of the
 //   code that runs during a call, comments left out).
@@ -40,6 +45,14 @@ const FS_WRITE = new Set(['writeFileSync', 'writeFile', 'appendFile', 'appendFil
 const STARTS = new Set(['spawn', 'spawnSync', 'fork', 'exec', 'execSync', 'execFile', 'execFileSync', 'Worker']);
 const TIMERS = new Set(['setTimeout', 'setInterval', 'setImmediate', 'queueMicrotask']);
 const STDERR = new Set(['error', 'warn', 'trace']);
+/** Node's modules that keep no state a call can change for a later one. */
+const KEEPS_NO_STATE = new Set(['path', 'url', 'crypto', 'buffer', 'string_decoder', 'querystring', 'punycode']);
+/** The host's facilities, named without an import, that keep state across calls. */
+const HOST_STATE = new Set(['process', 'globalThis', 'global', 'fetch', 'setTimeout', 'setInterval', 'setImmediate', 'clearTimeout', 'clearInterval',
+  'clearImmediate', 'queueMicrotask', 'require', 'module', 'exports', 'performance', 'WebSocket', 'Worker', 'BroadcastChannel', 'MessageChannel',
+  'Atomics', 'SharedArrayBuffer', 'FinalizationRegistry', 'WeakRef', 'localStorage', 'sessionStorage', 'navigator', 'caches', 'XMLHttpRequest', 'EventSource']);
+/** Channels that only carry out of the program: what is written to them is read by no code of the product. */
+const SINKS = new Set(['writes standard output', 'writes standard error', 'writes to its parent']);
 /** The reader's complaints about what it has no description of (check.mjs): not the item's own type errors. */
 const NOT_THE_CODES = new Set([2307, 7016, 2580, 2591, 2867, 2868]);
 const NODE_NAMES = /'(crypto|fetch|performance|Buffer|AbortController|AbortSignal|Blob|Response|Request|Headers|FormData|WebSocket|global|globalThis|require|module|exports|__dirname|__filename|setImmediate|clearImmediate)'/;
@@ -108,7 +121,7 @@ function makeCode(program, checker, tree, mod) {
   const byNode = new Map();
   const add = (node, top = false) => {
     if (byNode.has(node)) return byNode.get(node);
-    const p = { i: pieces.length, node, file: node.getSourceFile().fileName, top, member: memberNameOf(node), edges: new Set(), contains: new Set(), reads: new Set(), writes: new Set(),
+    const p = { i: pieces.length, node, file: node.getSourceFile().fileName, top, member: memberNameOf(node), edges: new Set(), kinds: new Map(), contains: new Set(), reads: new Set(), paramReads: new Set(), writes: new Set(), rejects: new Set(),
       thisUse: false, throws: new Set(), instances: new Set(), channels: new Set(), news: [], params: [], errors: [] };
     pieces.push(p);
     byNode.set(node, p);
@@ -122,6 +135,72 @@ function makeCode(program, checker, tree, mod) {
   const isPiece = (n) => byNode.has(n);
   /** The innermost piece holding a node. */
   const pieceOf = (n) => { for (let x = n; x; x = x.parent) if (byNode.has(x)) return byNode.get(x); return null; };
+  // M4, exact where the language decides it: an error raised while the code of a try block runs, inside the same piece,
+  // is caught where that try has a catch that never names the error it caught (so cannot hand it on). Such a block is
+  // "catching". An edge from a piece to another is a call where every reference that makes it is a call (`guarded`
+  // where every such call is inside a catching block of that piece), and otherwise a reference (`ref`): what is only
+  // referenced may run later, outside the block.
+  const catchingTry = new Map();
+  const isCatching = (t) => {
+    if (catchingTry.has(t)) return catchingTry.get(t);
+    let ok = !!t.catchClause;
+    const v = t.catchClause?.variableDeclaration;
+    if (ok && v) {
+      if (!ts.isIdentifier(v.name)) ok = false;
+      else {
+        const sym = checker.getSymbolAtLocation(v.name);
+        forEachNode(t.catchClause.block, (x) => { if (ok && ts.isIdentifier(x) && checker.getSymbolAtLocation(x) === sym) ok = false; return ok; });
+      }
+    }
+    catchingTry.set(t, ok);
+    return ok;
+  };
+  /** Whether code at a node runs inside a catching try block of the piece that holds it. */
+  const caughtAt = (node, p) => {
+    for (let x = node; x && x !== p.node; x = x.parent) if (x.parent && ts.isTryStatement(x.parent) && x.parent.tryBlock === x && isCatching(x.parent)) return true;
+    return false;
+  };
+  /**
+   * Whether an expression reads, member by member, what a piece's own caller handed it: its root is a parameter of the
+   * piece (or a name bound from one) with no default value, which could be the module's own state.
+   */
+  const fromParam = (e, p, depth = 0) => {
+    while (ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e) || ts.isParenthesizedExpression(e) || ts.isNonNullExpression?.(e)) e = e.expression;
+    if (!ts.isIdentifier(e) || !isFunctionPiece(p.node) || depth > 8) return false;
+    let d;
+    try { d = checker.getSymbolAtLocation(e)?.declarations?.[0]; } catch { d = undefined; }
+    let top = d;
+    while (top && (ts.isBindingElement(top) || ts.isObjectBindingPattern(top) || ts.isArrayBindingPattern(top))) {
+      if (ts.isBindingElement(top) && top.initializer) return false;
+      top = top.parent;
+    }
+    if (!top) return false;
+    if (ts.isParameter(top)) return top.parent === p.node && !top.initializer && !top.dotDotDotToken;
+    // a const of the piece's own, set from what it was handed (const r = req; const { req } = o)
+    return ts.isVariableDeclaration(top) && !!top.initializer && !!(top.parent.flags & ts.NodeFlags.Const) && pieceOf(top) === p && fromParam(top.initializer, p, depth + 1);
+  };
+  /** Where an object binding pattern reads from: what a piece's caller handed it, as fromParam says. */
+  const patternFromParam = (pattern, p) => {
+    let top = pattern;
+    while (top.parent && (ts.isBindingElement(top.parent) || ts.isObjectBindingPattern(top.parent) || ts.isArrayBindingPattern(top.parent))) {
+      if (ts.isBindingElement(top.parent) && top.parent.initializer) return false;
+      top = top.parent;
+    }
+    const holder = top.parent;
+    if (holder && ts.isParameter(holder)) return holder.parent === p.node && isFunctionPiece(p.node) && !holder.initializer && !holder.dotDotDotToken;
+    return !!holder && ts.isVariableDeclaration(holder) && !!holder.initializer && fromParam(holder.initializer, p);
+  };
+  const RANK = { guarded: 0, call: 1, ref: 2 };
+  /** An edge, with how it is made: the least sure of all the references that make it. */
+  const link = (p, q, kind) => { p.edges.add(q); const had = p.kinds.get(q); if (!had || RANK[kind] > RANK[had]) p.kinds.set(q, kind); };
+  /** How a name or member at a node is used: the callee of a call or `new` (guarded, inside a catching block), or a reference. */
+  const useKind = (e, p) => {
+    const par = e.parent;
+    const called = par && (ts.isCallExpression(par) || ts.isNewExpression(par)) && par.expression === e;
+    return !called ? 'ref' : caughtAt(e, p) ? 'guarded' : 'call';
+  };
+  /** Whether a piece's errors are raised while its call runs (not a promise's or a generator's later). */
+  const runsAtOnce = (q) => !isFunctionPiece(q.node) || !(q.node.asteriskToken || (q.node.modifiers ?? []).some((m) => m.kind === ts.SyntaxKind.AsyncKeyword));
   // Keys: file, the names of the enclosing pieces and the piece's own, and its place among pieces of that name.
   const keys = new Map();
   {
@@ -163,6 +242,7 @@ function makeCode(program, checker, tree, mod) {
     return { spec, name };
   };
   const inOwn = (d) => d && own.has(d.getSourceFile().fileName);
+  const stateless = new Map(); // module -> proven to keep no state (statelessModule)
   const fromProduct = (d) => d && !d.getSourceFile().isDeclarationFile && tree.moduleOfFile(d.getSourceFile().fileName);
   /** The pieces a declaration's name leads to when it is named: the function, the class and its constructor. */
   const targetsOf = (d) => {
@@ -268,7 +348,9 @@ function makeCode(program, checker, tree, mod) {
         // of an object built here); a class written here runs its field initializers and static parts when this one runs.
         // A member that is an item of its own (it fills a member of a listed kind, or of an exported class) is reached by
         // its users' calls, not when the object holding it is built (itemPieces, below).
-        p.edges.add(byNode.get(n));
+        // a function written here under a name runs only where that name is used (noteName); any other runs as it is used
+        const named = isFunctionPiece(n) && (ts.isFunctionDeclaration(n) || (ts.isVariableDeclaration(n.parent) && n.parent.initializer === n && ts.isIdentifier(n.parent.name)));
+        if (named) p.edges.add(byNode.get(n)); else link(p, byNode.get(n), 'ref');
         p.contains.add(byNode.get(n));
         // a class written inside this piece is defined when it runs: its fields are written then
         if (isClassPiece(n)) for (const m of n.members) if (ts.isPropertyDeclaration(m) && textOfName(m.name)) p.writes.add(`f:${textOfName(m.name)}`);
@@ -284,7 +366,7 @@ function makeCode(program, checker, tree, mod) {
       if (ts.isElementAccessExpression(n)) {
         const k = lit(n.argumentExpression) ?? (n.argumentExpression && ts.isNumericLiteral(n.argumentExpression) ? n.argumentExpression.text : null);
         if (k !== null) noteMember(n, k, p);
-        else { for (const q of fnMembers) p.edges.add(q); p[isWriteTarget(n) ? 'writes' : 'reads'].add('f:*'); }
+        else { for (const q of fnMembers) link(p, q, 'ref'); p[isWriteTarget(n) ? 'writes' : fromParam(n.expression, p) ? 'paramReads' : 'reads'].add('f:*'); }
       }
       if ((ts.isPropertyAssignment(n) || ts.isShorthandPropertyAssignment(n)) && ts.isObjectLiteralExpression(n.parent)) {
         const k = textOfName(n.name);
@@ -293,17 +375,168 @@ function makeCode(program, checker, tree, mod) {
       if (ts.isSpreadAssignment(n)) p.reads.add('f:*');
       if (ts.isBindingElement(n) && ts.isObjectBindingPattern(n.parent)) {
         const k = textOfName(n.propertyName ?? n.name);
-        if (k !== null) { p.reads.add(`f:${k}`); for (const q of members.get(k) ?? []) p.edges.add(q); }
-        else p.reads.add('f:*');
+        const into = patternFromParam(n.parent, p) ? p.paramReads : p.reads;
+        if (k !== null) { into.add(`f:${k}`); for (const q of members.get(k) ?? []) link(p, q, 'ref'); }
+        else into.add('f:*');
       }
       if (ts.isPropertyDeclaration(n) && textOfName(n.name)) p.writes.add(`f:${textOfName(n.name)}`);
-      if (ts.isThrowStatement(n) && n.expression) for (const x of thrownOf(n.expression, p)) p.throws.add(x);
+      if (ts.isThrowStatement(n) && n.expression && !caughtAt(n, p)) for (const x of thrownOf(n.expression, p)) p.throws.add(x);
       if (ts.isCallExpression(n)) noteCall(n, p, sf);
       if (ts.isNewExpression(n)) noteNew(n, p, sf);
       if (ts.isObjectLiteralExpression(n) && n.properties.some((x) => ts.isGetAccessor(x) || ts.isSetAccessor(x))) p.instances.add('an object with getters or setters');
       return true;
     };
     forEachNode(p.node, visit);
+  }
+
+  /**
+   * Whether another module of the product is proven to keep no state: nothing a call into it does can change what a
+   * later call into it hands back, so a call into it neither writes nor reads `ext`. Proven, from the files of it this
+   * program reads, when each holds at its top only imports, exports, functions, classes with no static state, and
+   * `const` declarations whose values are made without running code; no binding at its top is ever written, written
+   * into, or (where it holds a list or an object) handed on; nothing it writes outlives a call (it writes only into what
+   * a function made fresh itself, and into `this` only in a constructor: no closure, no object's later state, nothing
+   * it is handed); it names none of the host's facilities that keep state
+   * (process, timers, fetch, the global object); it imports only such modules of the product and Node's modules that keep
+   * none. Anything else is not proven, and a call into it reads and writes `ext` as before.
+   */
+  function statelessModule(mid) {
+    if (stateless.has(mid)) return stateless.get(mid);
+    stateless.set(mid, false); // a cycle is not proven
+    const m = tree.byId.get(mid);
+    const files = (m?.src ?? []).map((f) => program.getSourceFile(f)).filter(Boolean);
+    const ok = files.length > 0 && files.every((sf) => statelessFile(sf, mid));
+    stateless.set(mid, ok);
+    return ok;
+  }
+  function statelessFile(sf, mid) {
+    const topOf = (d) => {
+      if (!d || d.getSourceFile().fileName !== sf.fileName && tree.moduleOfFile(d.getSourceFile().fileName) !== mid) return false;
+      if (ts.isFunctionDeclaration(d) || ts.isClassDeclaration(d)) return ts.isSourceFile(d.parent);
+      return ts.isVariableDeclaration(d) && ts.isVariableStatement(d.parent?.parent) && ts.isSourceFile(d.parent.parent.parent);
+    };
+    const made = (e) => { // a value made without running code
+      while (ts.isParenthesizedExpression(e) || ts.isAsExpression?.(e) || ts.isSatisfiesExpression?.(e)) e = e.expression;
+      if (ts.isStringLiteral(e) || ts.isNumericLiteral(e) || ts.isBigIntLiteral(e) || ts.isNoSubstitutionTemplateLiteral(e)) return true;
+      if ([ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword, ts.SyntaxKind.NullKeyword].includes(e.kind)) return true;
+      if (ts.isRegularExpressionLiteral(e)) return !/[gy][a-z]*$/.test(e.text.slice(e.text.lastIndexOf('/') + 1));
+      if (ts.isIdentifier(e)) return true;
+      if (ts.isArrowFunction(e) || ts.isFunctionExpression(e)) return true;
+      if (ts.isPrefixUnaryExpression(e)) return made(e.operand);
+      if (ts.isBinaryExpression(e)) return made(e.left) && made(e.right);
+      if (ts.isTemplateExpression(e)) return e.templateSpans.every((x) => made(x.expression));
+      if (ts.isArrayLiteralExpression(e)) return e.elements.every((x) => !ts.isArrowFunction(x) && !ts.isFunctionExpression(x) && made(ts.isSpreadElement(x) ? x.expression : x));
+      if (ts.isObjectLiteralExpression(e)) return e.properties.every((x) => (ts.isPropertyAssignment(x) && !ts.isComputedPropertyName(x.name) && !ts.isArrowFunction(x.initializer) && !ts.isFunctionExpression(x.initializer) && made(x.initializer)) || ts.isShorthandPropertyAssignment(x));
+      if (ts.isPropertyAccessExpression(e)) return made(e.expression);
+      if (ts.isCallExpression(e) && e.expression.getText(sf) === 'Object.freeze') return e.arguments.every(made);
+      return false;
+    };
+    for (const st of sf.statements) {
+      if (ts.isImportDeclaration(st) || ts.isExportDeclaration(st)) {
+        const spec = st.moduleSpecifier && ts.isStringLiteral(st.moduleSpecifier) ? st.moduleSpecifier.text : null;
+        if (!spec) continue;
+        const to = program.getResolvedModuleFromModuleSpecifier?.(st.moduleSpecifier, sf)?.resolvedModule?.resolvedFileName;
+        const other = to && tree.moduleOfFile(path.resolve(to));
+        const builtin = spec.replace(/^node:/, '');
+        if (other) { if (other !== mid && !statelessModule(other)) return false; }
+        else if (!KEEPS_NO_STATE.has(builtin)) return false;
+        continue;
+      }
+      if (ts.isFunctionDeclaration(st)) continue;
+      if (ts.isClassDeclaration(st)) {
+        if (st.members.some((x) => ts.isClassStaticBlockDeclaration(x) || ((ts.getCombinedModifierFlags(x) & ts.ModifierFlags.Static) && !ts.isMethodDeclaration(x)))) return false;
+        let usesThis = false;
+        for (const x of st.members) if (ts.getCombinedModifierFlags(x) & ts.ModifierFlags.Static) forEachNode(x, (y) => { if (y.kind === ts.SyntaxKind.ThisKeyword) usesThis = true; return !usesThis; });
+        if (usesThis) return false;
+        continue;
+      }
+      if (ts.isVariableStatement(st)) {
+        if (!(st.declarationList.flags & ts.NodeFlags.Const)) return false;
+        if (st.declarationList.declarations.some((d) => !ts.isIdentifier(d.name) || !d.initializer || !made(d.initializer))) return false;
+        continue;
+      }
+      if (ts.isExpressionStatement(st) && ts.isStringLiteral(st.expression)) continue;
+      if (ts.isExportAssignment(st) && made(st.expression)) continue;
+      return false;
+    }
+    // nothing written that outlives a call: a write, a writing built-in or Object.assign only into a local of the same
+    // function made fresh there (an object or list written in place, a new built-in), and `this` only in a constructor
+    const fnOf = (n) => { for (let x = n.parent; x; x = x.parent) if (ts.isFunctionLike(x) && !ts.isTypeNode(x) && !isJSDocNode(x)) return x; return null; };
+    const freshLocal = (e, at) => {
+      while (ts.isParenthesizedExpression(e) || ts.isNonNullExpression?.(e)) e = e.expression;
+      if (e.kind === ts.SyntaxKind.ThisKeyword) { const f = fnOf(at); return !!f && ts.isConstructorDeclaration(f); }
+      if (!ts.isIdentifier(e)) return false;
+      let d;
+      try { d = checker.getSymbolAtLocation(e)?.declarations?.[0]; } catch { d = undefined; }
+      if (!d || fnOf(d) !== fnOf(at) || !fnOf(at)) return false;
+      if (ts.isParameter(d)) return false;
+      if (!ts.isVariableDeclaration(d) || !d.initializer) return false;
+      let i = d.initializer;
+      while (ts.isParenthesizedExpression(i) || ts.isAsExpression?.(i) || ts.isSatisfiesExpression?.(i)) i = i.expression;
+      return ts.isObjectLiteralExpression(i) || ts.isArrayLiteralExpression(i) || (ts.isNewExpression(i) && ts.isIdentifier(i.expression) && ['Map', 'Set', 'Array', 'Object', 'Date'].includes(i.expression.text));
+    };
+    const rootOf = (e) => { while (ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e) || ts.isParenthesizedExpression(e) || ts.isNonNullExpression?.(e)) e = e.expression; return e; };
+    let pure = true;
+    forEachNode(sf, (n) => {
+      if (!pure) return false;
+      if (isJSDocNode(n)) return false;
+      if ((ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n)) && isWriteTarget(n)) { if (!freshLocal(rootOf(n), n)) pure = false; }
+      else if (ts.isIdentifier(n) && isWriteTarget(n)) {
+        let d;
+        try { d = checker.getSymbolAtLocation(n)?.declarations?.[0]; } catch { d = undefined; }
+        if (!d || !fnOf(n) || fnOf(d) !== fnOf(n)) pure = false; // a name of an enclosing function's, or of the module's
+      } else if (ts.isCallExpression(n)) {
+        const c = n.expression;
+        if (ts.isPropertyAccessExpression(c) && MUTATORS.has(c.name.text) && !freshLocal(rootOf(c.expression), n)) pure = false;
+        if (['Object.assign', 'Object.defineProperty', 'Object.defineProperties', 'Object.setPrototypeOf', 'Reflect.set', 'Reflect.defineProperty'].includes(c.getText(sf)) && n.arguments[0] && !freshLocal(rootOf(n.arguments[0]), n)) pure = false;
+      }
+      return pure;
+    });
+    if (!pure) return false;
+    // every name of the file: no top-level binding written or written into, no list or object of one handed on, no
+    // facility of the host that keeps state
+    let ok = true;
+    forEachNode(sf, (n) => {
+      if (!ok) return false;
+      if (isJSDocNode(n) || ts.isTypeNode(n)) return false;
+      if (!ts.isIdentifier(n)) return true;
+      const par = n.parent;
+      if (ts.isPropertyAccessExpression(par) && par.name === n) return true;
+      let sym;
+      try { sym = checker.getSymbolAtLocation(n); } catch { sym = undefined; }
+      const d = sym?.declarations?.[0];
+      if (!d) return true;
+      if (d.getSourceFile().isDeclarationFile) { if (HOST_STATE.has(n.text) && !nodeImport(sym)) ok = false; return true; }
+      if (d === par || (ts.isVariableDeclaration(par) && par.name === n) || ((ts.isFunctionDeclaration(par) || ts.isClassDeclaration(par)) && par.name === n)) return true;
+      let target = sym;
+      if (sym.flags & ts.SymbolFlags.Alias) { try { target = checker.getAliasedSymbol(sym); } catch { return true; } }
+      if (ts.isImportSpecifier(par) || ts.isImportClause(par) || ts.isNamespaceImport(par) || ts.isExportSpecifier(par)) return true;
+      const td = target.declarations?.[0];
+      if (!topOf(td)) return true;
+      // a use of a top-level binding of the module: follow the members read from it to the outermost
+      let e = n;
+      while (e.parent && ((ts.isPropertyAccessExpression(e.parent) || ts.isElementAccessExpression(e.parent)) && e.parent.expression === e || ts.isParenthesizedExpression(e.parent) || ts.isNonNullExpression?.(e.parent))) e = e.parent;
+      if (isWriteTarget(e)) { ok = false; return false; }
+      const up = e.parent;
+      if (up && ts.isCallExpression(up) && up.expression === e) { if (ts.isPropertyAccessExpression(e) && MUTATORS.has(e.name.text)) ok = false; return true; }
+      if (!ts.isVariableDeclaration(td) || inert(up, e)) return true;
+      let t;
+      try { t = checker.getTypeAtLocation(e); } catch { t = undefined; }
+      if (!t || !(t.flags & (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike | ts.TypeFlags.BigIntLike | ts.TypeFlags.Undefined | ts.TypeFlags.Null))) ok = false;
+      return true;
+    }, { jsDoc: false });
+    return ok;
+  }
+  /** A place where a value is used without being handed on: compared, counted, copied, read or looped over. */
+  function inert(up, e) {
+    if (!up) return false;
+    if (ts.isBinaryExpression(up)) return ![ts.SyntaxKind.EqualsToken, ts.SyntaxKind.BarBarToken, ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.QuestionQuestionToken, ts.SyntaxKind.CommaToken].includes(up.operatorToken.kind);
+    if (ts.isPrefixUnaryExpression(up) || ts.isTypeOfExpression(up) || ts.isSpreadElement(up) || ts.isSpreadAssignment(up) || ts.isTemplateSpan(up)) return true;
+    if ((ts.isForOfStatement(up) || ts.isForInStatement(up)) && up.expression === e) return true;
+    if ((ts.isIfStatement(up) || ts.isWhileStatement(up) || ts.isSwitchStatement(up) || ts.isCaseClause(up)) && up.expression === e) return true;
+    if (ts.isConditionalExpression(up) && up.condition === e) return true;
+    if (ts.isElementAccessExpression(up) && up.argumentExpression === e) return true;
+    return false;
   }
 
   function noteName(n, p) {
@@ -329,23 +562,25 @@ function makeCode(program, checker, tree, mod) {
     if (ts.isParameter(par) && par.name === n) return;
     for (const d of decls) {
       if (inOwn(d)) {
-        for (const t of targetsOf(d)) if (t !== p) p.edges.add(t);
+        const kind = useKind(n, p);
+        for (const t of targetsOf(d)) if (t !== p) link(p, t, kind);
         const loc = bindingLoc(sym, p);
         if (loc) {
           if (isWriteTarget(n)) p.writes.add(loc);
           if (!isWriteTarget(n) || (par && !ts.isBinaryExpression(par)) || (ts.isBinaryExpression(par) && par.operatorToken.kind !== ts.SyntaxKind.EqualsToken)) p.reads.add(loc);
         }
       } else if (fromProduct(d) && sym.flags & ts.SymbolFlags.Value) {
-        // another module's value: state outside this module's code
-        p.reads.add('ext'); p.writes.add('ext');
+        // another module's value: state outside this module's code, unless that module is proven to keep none
+        if (isWriteTarget(n) || !statelessModule(fromProduct(d))) { p.reads.add('ext'); p.writes.add('ext'); }
       }
     }
   }
 
   function noteMember(e, name, p) {
-    for (const q of members.get(name) ?? []) if (q !== p) p.edges.add(q);
+    const kind = useKind(e, p);
+    for (const q of members.get(name) ?? []) if (q !== p) link(p, q, kind);
     const w = isWriteTarget(e);
-    p[w ? 'writes' : 'reads'].add(`f:${name}`);
+    p[w ? 'writes' : fromParam(e.expression, p) ? 'paramReads' : 'reads'].add(`f:${name}`);
     if (w && ts.isBinaryExpression(e.parent) && e.parent.operatorToken.kind !== ts.SyntaxKind.EqualsToken) p.reads.add(`f:${name}`);
     // channels and settings reached by name
     const text = e.getText();
@@ -372,8 +607,9 @@ function makeCode(program, checker, tree, mod) {
       if (full !== 'Object.assign') p.instances.add('properties defined');
     }
     if (full === 'Object.create' || full === 'Object.setPrototypeOf') p.instances.add('an object with a prototype');
-    if (full === 'Promise.reject' && c.arguments[0]) for (const x of thrownOf(c.arguments[0], p)) p.throws.add(x);
-    if (ts.isIdentifier(callee) && callee.text === 'reject' && c.arguments[0]) for (const x of thrownOf(c.arguments[0], p)) p.throws.add(x);
+    // a promise made rejected leaves as it is handed back, whatever block the call is in
+    if (full === 'Promise.reject' && c.arguments[0]) for (const x of thrownOf(c.arguments[0], p)) p.rejects.add(x);
+    if (ts.isIdentifier(callee) && callee.text === 'reject' && c.arguments[0]) for (const x of thrownOf(c.arguments[0], p)) p.rejects.add(x);
     // channels
     if (ts.isPropertyAccessExpression(callee) && callee.expression.getText() === 'console') p.channels.add(STDERR.has(name) ? 'writes standard error' : 'writes standard output');
     if (/^process\.stdout\./.test(full)) p.channels.add('writes standard output');
@@ -512,6 +748,29 @@ function makeCode(program, checker, tree, mod) {
     }
     return seen;
   };
+  /**
+   * M4 over the control closure, each piece reached as it runs: at once, or only inside a catching block (`caught`).
+   * A piece reached by a guarded call to code that runs at once is caught; what a caught piece calls to run at once is
+   * caught too; whatever is only referenced, or runs later (async, a generator), is not. A caught piece's own errors do
+   * not leave the item; a rejected promise it makes does.
+   */
+  const throwsOf = (seeds) => {
+    const mode = new Map();
+    const todo = [...seeds, ...(seeds.length ? implicit : [])].map((p) => [p, 'once']);
+    while (todo.length) {
+      const [p, m] = todo.pop();
+      const had = mode.get(p);
+      if (had === 'once' || had === m) continue;
+      mode.set(p, m);
+      for (const q of p.edges) {
+        if (p.contains.has(q) && itemPieces.has(q)) continue;
+        const k = p.kinds.get(q) ?? 'ref';
+        const caught = runsAtOnce(q) && (k === 'guarded' || (m === 'caught' && k === 'call'));
+        todo.push([q, caught ? 'caught' : 'once']);
+      }
+    }
+    return [...mode].flatMap(([p, m]) => [...(m === 'once' ? p.throws : []), ...p.rejects]);
+  };
   // The files that run in the same program as an item: those its interface files and its own file import, followed
   // file to file within the module. A file of the module that only runs as a program of its own (started by path) is
   // not among them: its code runs elsewhere, and writes nothing an item reads.
@@ -531,12 +790,15 @@ function makeCode(program, checker, tree, mod) {
     return seen;
   };
   /** The whole closure: control, start-up code, the writers of every location read and what reaches them, to a fixpoint. */
-  const whole = (fc) => {
+  // What an item's own pieces read of what its caller handed it is its input, whoever made it: the item's answer for
+  // that input does not depend on the code that wrote it (its writers' own means tell their users). What any other
+  // piece reads through its parameters may be the module's state, handed on, and pulls in that state's writers.
+  const whole = (fc, inputs = new Set()) => {
     const loaded = loadedWith([...fc].map((p) => p.file));
     const C = new Set([...fc, ...control(pieces.filter((p) => p.top && loaded.has(path.resolve(p.file))))]);
     for (;;) {
       const reads = new Set();
-      for (const p of C) for (const l of p.reads) reads.add(l);
+      for (const p of C) for (const l of [...p.reads, ...(inputs.has(p) ? [] : p.paramReads)]) reads.add(l);
       const W = new Set();
       for (const l of reads) for (const w of writersOf(l)) if (!C.has(w) && loaded.has(path.resolve(w.file))) W.add(w);
       if (!W.size) return C;
@@ -559,17 +821,19 @@ function makeCode(program, checker, tree, mod) {
   /** The computed parts of the means for an item whose code starts at the given pieces. */
   function factsOf(seeds, whole_) {
     const fc = control(seeds);
-    const all = whole(fc);
+    const all = whole(fc, whole_ ? new Set() : new Set(seeds));
     // `this`: in the item's own code, and in arrow functions written inside it, which share its `this`
     const own = new Set(seeds);
     const todo = [...seeds];
     while (todo.length) for (const q of todo.pop().edges) if (ts.isArrowFunction(q.node) && !own.has(q)) { own.add(q); todo.push(q); }
     return {
-      throws: sortedOf(fc, (p) => [...p.throws]),
+      throws: [...new Set(throwsOf(seeds))].sort(),
       instances: sortedOf(all, (p) => [...p.instances]),
       needsThis: [...own].some((p) => p.thisUse && !p.top),
       writesArguments: sortedOf(seeds.filter((p) => isFunctionPiece(p.node)), (p) => [...written.get(p)].map((i) => `argument ${i + 1}`)),
-      channels: sortedOf(all, (p) => [...p.channels]),
+      // M8: what runs during the call, all of it; what the closure adds beyond that (code that wrote state the item
+      // reads), only what can reach that state: a stream written out, which no code of the product reads back, cannot
+      channels: sortedOf(all, (p) => [...p.channels].filter((c) => fc.has(p) || !SINKS.has(c))),
       typeErrors: sortedOf(fc, (p) => p.errors),
       code: digestOf(fc),
       ...(whole_ ? { wholeModule: true } : {}),
@@ -580,6 +844,12 @@ function makeCode(program, checker, tree, mod) {
   const setItemPieces = (set) => { for (const p of set) itemPieces.add(p); };
   return { pieces, byNode, members, keys, factsOf, setItemPieces, rel };
 }
+
+/** The key, on each item's means, of where it was read from: { side: { tree, moduleId, items, meta }, name }. */
+export const MEANS_SIDE = Symbol('p4.means.side');
+const SIDES = new WeakMap(); // tree -> moduleId -> the side last worked out
+/** The means last worked out for a module of a product (moduleMeans), or null. */
+export const meansSideOf = (tree, moduleId) => SIDES.get(tree)?.get(moduleId) ?? null;
 
 /**
  * The means of every item of one module, on one side of a change.
@@ -689,5 +959,20 @@ export function moduleMeans(tree, moduleId) {
     const by = Object.values(items).filter((x) => x.instances && JSON.stringify([x.accepts, x.handsBack]).includes(`"name":${tag}`));
     it.instances = [...new Set(by.flatMap((x) => x.instances))].sort();
   }
+  // Where each item was read from, kept out of sight (a symbol, not enumerable: no form or comparison shows it), so that
+  // comparing two items can ask the checker about the declarations themselves (notice.mjs, compareItem and makeConfirm).
+  const meta = {};
+  for (const [name, e] of Object.entries(listing.entries)) {
+    meta[name] = { kind: e.kind, ...(e.rowKind ? { rowKind: e.rowKind } : {}) };
+    if (e.kind === 'operation') {
+      const op = name.slice(3);
+      const table = Object.entries(listing.entries).find(([, t]) => t.kind === 'operation table' && t.handsBack?.names?.includes(op));
+      if (table) meta[name].table = table[0];
+    }
+  }
+  const side = { tree, moduleId, items, meta };
+  if (!SIDES.has(tree)) SIDES.set(tree, new Map());
+  SIDES.get(tree).set(moduleId, side);
+  for (const [name, it] of Object.entries(items)) Object.defineProperty(it, MEANS_SIDE, { value: { side, name } });
   return { module: moduleId, items, listing };
 }

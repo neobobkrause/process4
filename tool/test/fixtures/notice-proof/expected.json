@@ -20,7 +20,8 @@
   "meaning named by ARCH's placed work": 17,
   "now told: an item ARCH's placed work names": 36,
   "firstCommentsStep retired": 1,
-  "needs: a break found by running the user's own tests": 13
+  "needs: a break found by running the user's own tests": 13,
+  "told with other words: what changed, as the type checker finds it or worked out exactly": 41
  },
  "changes": {
   "P01-price-content": {
@@ -207,7 +208,6 @@
    "told": {
     "door": [
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
@@ -215,8 +215,6 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
@@ -225,7 +223,6 @@
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -240,7 +237,10 @@
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file names bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "door was not told, now is told: its uses file names bookings op:bookopen (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (hands back differently); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "front was not told, now is told: its uses file names bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "front was not told, now is told: its uses file names bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings Bookings.open: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "P06-answer-field-renamed": {
@@ -419,7 +419,6 @@
     "door": [
      "bookings op:bookcancel: hands back differently, channels, settings or files changed",
      "bookings op:bookopen: hands back differently, channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -430,7 +429,6 @@
      "bookings Booking: hands back differently",
      "bookings Bookings.cancel: hands back differently, channels, settings or files changed",
      "bookings Bookings.open: hands back differently, channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -454,7 +452,9 @@
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names bookings Booking (hands back differently); bookings op:bookcancel (hands back differently, channels, settings or files changed); bookings op:bookopen (hands back differently, channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was told, now is told with other words: the words are the parts of the means that changed; its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently, channels, settings or files changed); bookings Bookings.open (hands back differently, channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6); and \"not followed fully\" is retired with decision 3B",
     "door was not told, now is told: its uses file names bookings op:bookcancel (hands back differently, channels, settings or files changed); bookings op:bookopen (hands back differently, channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "P11-list-gains-name": {
@@ -579,7 +579,6 @@
     ],
     "bookings": [
      "money Amount: removed",
-     "money amount: hands back differently",
      "money: a place outside the standard"
     ],
     "door": [
@@ -587,14 +586,10 @@
     ],
     "meter": [
      "money Amount: removed",
-     "money amount: hands back differently",
      "money: a place outside the standard"
     ],
     "billing": [
      "money Amount: removed",
-     "money add: accepts more, hands back differently",
-     "money amount: hands back differently",
-     "money splitEvenly: accepts more, hands back differently",
      "money: a place outside the standard"
     ],
     "front": [
@@ -624,7 +619,10 @@
     "calendar was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "store was not told, now is told: its uses file lists places outside the standard (rules R1, S7) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "bookings is told with other words (what changed, 25 Nov): no longer money amount: hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "meter is told with other words (what changed, 25 Nov): no longer money amount: hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money add: accepts more, hands back differently; money amount: hands back differently; money splitEvenly: accepts more, hands back differently: the type checker finds its declarations the same before and after (a kind renamed, its shape kept), so it is unchanged (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "P14-meaning-changed-comment-updated": {
@@ -1325,13 +1323,16 @@
    "provider": "bookings",
    "told": {
     "door": [
+     "bookings op:bookquote: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "meter": [
      "bookings: a place outside the standard"
     ],
     "billing": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings createBookings: channels, settings or files changed",
+     "bookings op:bookquote: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
@@ -1339,6 +1340,7 @@
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
@@ -1352,7 +1354,10 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): now also bookings op:bookquote: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what the item reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join the item's (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "A03-reexported-function": {
@@ -2362,12 +2367,14 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -2380,7 +2387,9 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, code it reaches reads, field by name, fields that the code reading the store writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, code it reaches reads, field by name, fields that the code reading the store writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "Y06-channel-line-built-first": {
@@ -2558,10 +2567,6 @@
    "provider": "bookings",
    "told": {
     "door": [
-     "bookings op:bookcancel: channels, settings or files changed",
-     "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
-     "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "meter": [
@@ -2569,22 +2574,14 @@
     ],
     "billing": [
      "bookings Bookings: hands back differently",
-     "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
-     "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings Bookings: hands back differently",
-     "bookings op:bookcancel: channels, settings or files changed",
-     "bookings op:bookopen: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
      "bookings Bookings: hands back differently",
-     "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -2595,7 +2592,11 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookcancel: channels, settings or files changed; bookings op:bookopen: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed; bookings op:bookstatus: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings Bookings.cancel: channels, settings or files changed; bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed; bookings op:bookstatus: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "front is told with other words (what changed, 25 Nov): no longer bookings op:bookcancel: channels, settings or files changed; bookings op:bookopen: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings Bookings.cancel: channels, settings or files changed; bookings Bookings.open: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "Y11-tests-grouped-with-it": {
@@ -3395,7 +3396,6 @@
     "door": [
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -3405,7 +3405,6 @@
     "billing": [
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -3427,7 +3426,9 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "Z17-filter-boolean": {
@@ -3652,7 +3653,6 @@
      "money: a place outside the standard"
     ],
     "billing": [
-     "money Tally: cannot stand in",
      "money Tally.sum: hands back differently",
      "money: a place outside the standard"
     ],
@@ -3678,7 +3678,8 @@
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money Tally: cannot stand in: the type checker confirms that money Tally accepts more: the old constructor's arguments are accepted by the new, and what it builds is the same (its static sum is an item of its own, still told) (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "V02-bound-values-in-mapped-list": {
@@ -3856,17 +3857,12 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings bookingHandlers: channels, settings or files changed",
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings bookingHandlers: channels, settings or files changed",
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings createBookings: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -3881,7 +3877,10 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings bookingHandlers (channels, settings or files changed); bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings bookingHandlers (channels, settings or files changed); bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R6, S5) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings createBookings (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings bookingHandlers: channels, settings or files changed; bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "front is told with other words (what changed, 25 Nov): no longer bookings bookingHandlers: channels, settings or files changed; bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings createBookings: channels, settings or files changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "V07-write-with-callback": {
@@ -4089,31 +4088,18 @@
    "provider": "bookings",
    "told": {
     "door": [
-     "bookings op:bookcancel: hands back differently",
-     "bookings op:bookopen: hands back differently",
-     "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
     "meter": [
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings Booking: hands back differently",
-     "bookings Bookings.cancel: hands back differently",
-     "bookings Bookings.open: hands back differently",
-     "bookings op:bookstatus: hands back differently",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings Booking: hands back differently",
-     "bookings op:bookcancel: hands back differently",
-     "bookings op:bookopen: hands back differently",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings Booking: hands back differently",
-     "bookings Bookings.cancel: hands back differently",
-     "bookings Bookings.open: hands back differently",
      "bookings: a place outside the standard"
     ]
    },
@@ -4124,7 +4110,11 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently); bookings Bookings.open (hands back differently); bookings op:bookstatus (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings Booking (hands back differently); bookings op:bookcancel (hands back differently); bookings op:bookopen (hands back differently); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently); bookings Bookings.open (hands back differently); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings Booking (hands back differently); bookings Bookings.cancel (hands back differently); bookings Bookings.open (hands back differently); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookcancel: hands back differently; bookings op:bookopen: hands back differently; bookings op:bookstatus: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings Booking: hands back differently; bookings Bookings.cancel: hands back differently; bookings Bookings.open: hands back differently; bookings op:bookstatus: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "front is told with other words (what changed, 25 Nov): no longer bookings Booking: hands back differently; bookings op:bookcancel: hands back differently; bookings op:bookopen: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings Booking: hands back differently; bookings Bookings.cancel: hands back differently; bookings Bookings.open: hands back differently: the type checker finds its declarations the same before and after (the states given a kind of their own, the same values), so it is unchanged (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "V14-overload-added": {
@@ -4718,7 +4708,6 @@
      "money: a place outside the standard"
     ],
     "billing": [
-     "money splitEvenly: hands back differently",
      "money: a place outside the standard"
     ],
     "front": [
@@ -4739,7 +4728,8 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names money splitEvenly (hands back differently); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money splitEvenly: hands back differently: the type checker finds its declarations the same before and after (a list kind given a name, the same list), so it is unchanged (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "W15-export-list": {
@@ -4891,7 +4881,6 @@
     "door": [
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -4901,7 +4890,6 @@
     "billing": [
      "bookings Bookings.cancel: channels, settings or files changed",
      "bookings Bookings.open: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -4925,7 +4913,9 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U02-table-name-in-constant-rows-compact": {
@@ -4939,12 +4929,14 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
     "front": [
      "bookings: a place outside the standard"
     ],
     "reports": [
+     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -4957,7 +4949,9 @@
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): now also bookings Bookings.open: channels, settings or files changed: on the safe side: before the change, what open reads of the request it is handed no longer takes in the code that made it; after it, a helper it reaches reads, field by name, fields that the code reading the store now writes, so that code's channels join its own (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U03-coded-error-through-object-assign": {
@@ -5221,14 +5215,12 @@
      "rooms Rooms: removed",
      "rooms Rooms.add: removed",
      "rooms createRooms: hands back differently",
-     "rooms roomHandlers: cannot stand in",
      "rooms: a place outside the standard"
     ],
     "front": [
      "rooms Rooms: removed",
      "rooms Rooms.find: removed",
      "rooms createRooms: hands back differently",
-     "rooms roomHandlers: cannot stand in",
      "rooms: a place outside the standard"
     ],
     "reports": [
@@ -5252,7 +5244,9 @@
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names rooms Rooms (removed); rooms Rooms.add (removed); rooms createRooms (hands back differently); rooms roomHandlers (cannot stand in); and its uses file lists places outside the standard (rules R1, R14) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
-    "front was not told, now is told: its uses file names rooms Rooms (removed); rooms Rooms.find (removed); rooms createRooms (hands back differently); rooms roomHandlers (cannot stand in); and its uses file lists places outside the standard (rules R6) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)"
+    "front was not told, now is told: its uses file names rooms Rooms (removed); rooms Rooms.find (removed); rooms createRooms (hands back differently); rooms roomHandlers (cannot stand in); and its uses file lists places outside the standard (rules R6) that may refer to rooms, which hear of any change to rooms's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer rooms roomHandlers: cannot stand in: the type checker confirms that rooms roomHandlers accepts more: the old handle is assignable to the new one it now takes (design part 2, section 7; build text 5, section 6)",
+    "front is told with other words (what changed, 25 Nov): no longer rooms roomHandlers: cannot stand in: the type checker confirms that rooms roomHandlers accepts more: the old handle is assignable to the new one it now takes (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U11-test-uses-notStrictEqual": {
@@ -5346,7 +5340,6 @@
      "money Amount: plain data or instance changed",
      "money add: errors that can leave it changed, plain data or instance changed",
      "money amount: errors that can leave it changed, plain data or instance changed",
-     "money formatAmount: plain data or instance changed",
      "money splitEvenly: errors that can leave it changed, plain data or instance changed",
      "money: a place outside the standard"
     ],
@@ -5369,7 +5362,8 @@
     "meter was not told, now is told: its uses file names money Amount (plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "billing was not told, now is told: its uses file names money Amount (plain data or instance changed); money add (errors that can leave it changed, plain data or instance changed); money amount (errors that can leave it changed, plain data or instance changed); money formatAmount (plain data or instance changed); money splitEvenly (errors that can leave it changed, plain data or instance changed); and its uses file lists places outside the standard (rules R1, R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names money Amount (plain data or instance changed); and its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer money formatAmount: plain data or instance changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (money amount, which builds the amounts formatAmount is handed, and the errors it builds) (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "U14-inline-import-to-at-import": {
@@ -5564,16 +5558,16 @@
      "bookings: a place outside the standard"
     ],
     "billing": [
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings op:bookquote: meaning changed (named)",
      "bookings: a place outside the standard"
     ],
     "front": [
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings: a place outside the standard"
     ],
     "reports": [
-     "bookings createBookings: errors that can leave it changed, channels, settings or files changed",
+     "bookings createBookings: errors that can leave it changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -5587,7 +5581,10 @@
     "billing was not told, now is told: its uses file names bookings createBookings (errors that can leave it changed, channels, settings or files changed); bookings op:bookquote (meaning changed; named by ARCH's placed work); and its uses file lists places outside the standard (rules R1, R14) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file names bookings createBookings (errors that can leave it changed, channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "reports was not told, now is told: its uses file names bookings createBookings (errors that can leave it changed, channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "meaning: the items this change names stand for the meaning entries ARCH places in waiting work, since its title states the new value or meaning as its aim (study-changes.md, section 2.7)"
+    "meaning: the items this change names stand for the meaning entries ARCH places in waiting work, since its title states the new value or meaning as its aim (study-changes.md, section 2.7)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "front is told with other words (what changed, 25 Nov): no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings createBookings: errors that can leave it changed, channels, settings or files changed; now also bookings createBookings: errors that can leave it changed: the closure no longer takes in the code that calls money or calendar: a call into a module proven to keep no state writes nothing another piece reads (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "T03-unknown-room-refused-in-helper": {
@@ -5858,7 +5855,6 @@
      "bookings BookingOps: hands back differently",
      "bookings op:bookcancel: channels, settings or files changed",
      "bookings op:bookopen: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -5869,8 +5865,6 @@
      "bookings BookingHandlers: hands back differently",
      "bookings Bookings: hands back differently",
      "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
-     "bookings op:bookquote: channels, settings or files changed",
      "bookings op:bookstatus: channels, settings or files changed",
      "bookings: a place outside the standard"
     ],
@@ -5884,7 +5878,6 @@
     "reports": [
      "bookings Bookings: hands back differently",
      "bookings Bookings.cancel: channels, settings or files changed",
-     "bookings Bookings.open: channels, settings or files changed",
      "bookings: a place outside the standard"
     ]
    },
@@ -5895,7 +5888,10 @@
     "front was told, now is told with other words: the words are the parts of the means that changed; its uses file names bookings BookingHandlers (hands back differently); bookings Bookings (hands back differently); bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); and its uses file lists places outside the standard (rules R6) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6); and door Door.call (cannot stand in) is not a changed item: its means are the same; what changed was its written description",
     "door was not told, now is told: its uses file names bookings BookingOps (hands back differently); bookings op:bookcancel (channels, settings or files changed); bookings op:bookopen (channels, settings or files changed); bookings op:bookquote (channels, settings or files changed); bookings op:bookstatus (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, R16, R17, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
     "meter was not told, now is told: its uses file lists places outside the standard (rules R1, R14, R2, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file names bookings Bookings (hands back differently); bookings Bookings.cancel (channels, settings or files changed); bookings Bookings.open (channels, settings or files changed); and its uses file lists places outside the standard (rules R1, S4) that may refer to bookings, which hear of any change to bookings's files until converted (design part 2, section 7; build text 5, section 6)",
+    "door is told with other words (what changed, 25 Nov): no longer bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "billing is told with other words (what changed, 25 Nov): no longer bookings Bookings.open: channels, settings or files changed; bookings op:bookquote: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)",
+    "reports is told with other words (what changed, 25 Nov): no longer bookings Bookings.open: channels, settings or files changed: what the item reads of what its caller hands it is its input: the code that made that value is no longer in its closure (design part 2, section 7; build text 5, section 6)"
    ]
   },
   "T11-bound-test-assertion-messages": {

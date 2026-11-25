@@ -98,13 +98,13 @@ Listing of pricing
 - An entry has a sort (function, value, kind, handle kind, method, class, class member, operation table, operation, stored rows) and, as they apply: what it accepts, what it hands back, its bound lines, a message's channel, whether a member may be missing, and the reader's printed declaration of it with comments removed.
 - A kind of plain data is written out in full, fields in name order, with its name kept, in every entry that accepts it or hands it back, and its bound lines go with it. A handle kind is written by name. Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A plain constant's value is content: it is widened to its kind unless its comment states one.
 
-**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. With no difference the notice says `No item's means changed. Nobody is told.` Otherwise each item that differs gets one or more of these words:
+**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. Where what it accepts or hands back is written differently, the reader's checker is asked about the two declarations themselves, read in one program: a part it finds identical, and each side assignable to the other, is unchanged (a kind's name given, dropped or changed, a type parameter renamed, a handle kind renamed with the same members); anything the checker can tell apart is a change. With no difference the notice says `No item's means changed. Nobody is told.` Otherwise each item that differs gets one or more of these words:
 
 | Word | When | Told |
 |---|---|---|
 | `removed` | An item gone, or a name lost from a handle or table. A renamed item is this and a `new item` | Its users |
 | `new item` | An item only after | Nobody |
-| `accepts more` | The type checker, reading the old and new in one program, confirms the new stands in for the old: for a function, the new assignable to the old; for what a user hands in, the old to the new | Nobody |
+| `accepts more` | The type checker, reading the old and new in one program, confirms the new stands in for the old: for a function, method or class with one signature, the old arguments accepted by the new and what it hands back the same; for a generic or overloaded one, only what the written forms show as accepting more, with the new assignable to the old; for what a user hands in, the old to the new. Never where what it accepts holds a method, a class's object or "anything", which the checker relates both ways | Nobody |
 | `cannot stand in` | Removed, renamed, newly required or newly refused, or not confirmed as accepting more | Its users |
 | `hands back differently` | What it hands back, a message's channel, a member that may now be missing | Its users |
 | `bound changed` | A bound line added, removed or reworded | Its users |
