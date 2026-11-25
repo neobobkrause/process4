@@ -1,4 +1,4 @@
-Length: 238 lines. Last section: "8. Unproven, and not settled here".
+Length: 214 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
@@ -70,7 +70,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
 
 **Round.** A module's `state` is `has work`, `open`, `finished` or `blocked`. `finished` and `blocked` are worked out afresh from GitHub at each write: a job's pull request merged, or closed with its nothing-to-change record; a blocked record on an open one. An area's `outcome` is `not yet`, `clean`, `flawed` or `not walked`; a walk's is `not yet`, `without flaws` or `with flaws`, as ARCH writes it. `sessions` are the walking sessions, `live` until ARCH archives each; `copy` is the name and address of an external walker's deployment.
 
-Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` is `{ "tranche": "<this tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While `tranche` names this round's tranche, a requirement not yet met is work only where `holds` names it or its whole module, and every other requirement waits for a later tranche; notices, walk flaws and flaws a job reports are always work. ARCH rewrites it with `state write round` as the tranche goes on, and in the same act as a split moves requirement lines to a new module. No `scope`, or one naming another tranche, counts every requirement. `next-job` keeps it when it rewrites the record.
+Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` is `{ "tranche": "<this tranche>", "holds": ["<module> R<n>", "<module>", ...] }`. While `tranche` names this round's tranche, a requirement not yet met is work only where `holds` names it or its whole module, and a conversion only where `holds` names the module or one of its requirements; every other requirement and conversion waits for a later tranche; notices, walk flaws and flaws a job reports are always work. ARCH rewrites it with `state write round` as the tranche goes on, and in the same act as a split moves requirement lines to a new module. No `scope`, or one naming another tranche, counts every requirement. `next-job` keeps it when it rewrites the record.
 
 ```json
 { "tranche": "t1", "round": 2, "scope": { "tranche": "t1", "holds": ["orders R3", "dates"] },
@@ -81,13 +81,14 @@ Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` 
     "sessions": [ { "number": 1, "session": "session_01F", "live": true, "copy": null } ] } ] }
 ```
 
-**Waiting work.** What is placed against a module and waits for its next job: a notice, by its provider and merged pull request, a walk flaw by number and link, a flaw another module's job reported. A requirement not yet met is not here; it is read from the requirements file. A notice's uses are not kept here but in the notice comments on the merged provider's pull request (section 5). `open --module` copies a module's entries into its job block, reading each notice's uses from those comments, and takes them out of this record. An older entry that still carries `uses` is read as it is.
+**Waiting work.** What is placed against a module and waits for its next job: a notice, by its provider and merged pull request, a walk flaw by number and link, a flaw another module's job reported, and each item whose meaning ARCH names as changed by the work it places, with one line saying what it was and is now (`meaning`; the design, part 2, section 7). A requirement not yet met is not here; it is read from the requirements file. A notice's uses are not kept here but in the notice comments on the merged provider's pull request (section 5). `open --module` copies a module's entries into its job block, reading each notice's uses from those comments, and takes them out of this record. An older entry that still carries `uses` is read as it is.
 
 ```json
 { "work": [
   { "module": "orders", "kind": "notice", "from": "pricing", "merged": 40 },
   { "module": "orders", "kind": "walk-flaw", "flaw": "t1-2-I-1-3", "link": "<the comment's address>" },
-  { "module": "dates", "kind": "job-flaw", "from": "orders", "words": "a leap day is refused" } ] }
+  { "module": "dates", "kind": "job-flaw", "from": "orders", "words": "a leap day is refused" },
+  { "module": "pricing", "kind": "meaning", "item": "priceOf", "line": "pence was for one; is now for the whole quantity" } ] }
 ```
 
 **Handover.** The block, then what the successor needs, in plain words. `generation` is the
@@ -125,27 +126,26 @@ The process's repository has an issue of the same label and form, made by PROCES
 { "changes": [ { "change": "shorter job text", "pull_request": 12, "waits_for": "the owner's choice" } ] }
 ```
 
-## 5. The comments on pull requests: a job's three, and the notice's
+## 5. The comments on pull requests: a job's three, a conversion's report, a declaration, and the notice's
 
 Each has a hidden mark on its first line and one JSON block, one writing session, and is written and read only by the tool (the design, part 4, section 11).
 
 The job block, `<!-- process4-job -->`, is written by ARCH's session, first by `open --module <name>` from the waiting-work record and the requirements file, and again by `notify` for each notice that reaches the job while it is open:
 
 ```json
-{ "module": "orders", "work": ["notice from pricing (pull request 40)"], "kind": "told",
+{ "module": "orders", "work": ["notice from pricing (pull request 40)"], "kind": "told", "meaning": [],
   "notice_seq": 0, "notices": [ { "from": "pricing", "merged": 40 } ],
-  "uses": [ { "module": "pricing", "entry": "PriceArgs", "changes": ["bound changed"],
-              "lines": ["src/orders/lines.mjs:41", "test/orders/lines.test.mjs:17"], "through": null,
+  "uses": [ { "module": "pricing", "item": "PriceArgs", "found": "means", "changes": ["bound changed"], "why": null,
+              "route": "direct", "places": ["src/orders/lines.mjs:41 addLine", "test/orders/lines.test.mjs:17 lines > refuses 1000"],
               "before": { "bounds": ["quantity: whole number, 1 to 999"] },
               "after": { "bounds": ["quantity: whole number, 1 to 99"] } } ] }
 ```
 
 - `work` is the work placed: requirement numbers, notices, and flaws by number and link. The job's starting text carries none of it; it names the pull request.
 - `notice_seq` (absent is 0) counts the notices `notify` has added while the job is open, and `notices` holds each notice the block carries as `{ "from": <provider>, "merged": <pull request> }`, those `open --module` copied from waiting work among them, so a second run for the same merge adds nothing, whatever the job's state. Each notice `notify` adds puts its words in `work` and its reasons in `uses`; the kind stays as it was. A test record made before the latest notice no longer stands. An older block with no `notices` that names a notice in its `work` line counts as holding it.
-- `kind` is `told` only when notices are the module's only work. With other work as well it is `ordinary`: the block still carries the `uses`, which the job reads, and the whole module's tests run (the design, part 2, section 7). A block with no notice has no `uses`.
-- Each of `uses` is a reason of the proof's notice (proof: `tool/lib/notice.mjs:223-259`; the proof is the one build text 2, section 1 names). `module` is the provider, or a later module changed `through` the provider, which `through` then names. `entry` is the entry's name in that module. `changes` holds the proof's words (build text 2b, section 6); the three on the accepting side are one word, `cannot stand in`. `lines` are the places in the told module that use the entry.
-- A module the tool does not follow fully has, in place of that, the proof's reason `{ "module": "pricing", "notFollowed": ["<why>"], "through": null }`, with no lines (section 6).
-- **Decided here:** each reason also carries `before` and `after`, the parts of the entry that differ, taken from the same notice's own entry; and `lines` is the whole list. Gives: the job reads what changed, and section 7 has every place. Costs: the proof's notice kept only the first six lines for an entry, so the whole list in a notice is unproven. **Unproven:** the job block itself; nothing in the proof wrote or read one.
+- `kind` is `conversion` where the module's conversion is its work (none merged, within the scope): its work is the conversion alone, its other work waiting for its next job, since a conversion changes no behaviour. Otherwise it is `told` only when notices are the module's only work, and with other work as well `ordinary`: the block still carries the `uses`, which the job reads, and the whole module's tests run (the design, part 2, section 7). A block with no notice has no `uses`.
+- `meaning` holds each item ARCH named in the work placed, from the waiting-work `meaning` entries: `{ "item", "line" }`.
+- Each of `uses` is a reason: the provider; the changed `item`; `found`, `means`, `named` (in ARCH's placed work) or `declared` (on the provider's pull request); `changes`, the parts of the means that differ (build text 2b, section 6); `why`, a named or declared change's line; `route`; `places`, from the told module's uses file, the first six and `and N more`, so a notice is never lost for its size; `before` and `after`, the parts that differ. A place outside the standard gives `outside`, an order fault `orderFault`, each `<rule> <file>:<line>`; a module with no uses file, `noUsesFile`. **Unproven:** the job block and these reasons; not built.
 
 The job's record, `<!-- process4-job-record -->`, is written only by the job's session and holds one of three things:
 
@@ -158,6 +158,10 @@ The job's record, `<!-- process4-job-record -->`, is written only by the job's s
 - `blocked` is written by `push --blocked <module> "<why>"`, `unblocked` by `push --unblocked "<why>"` (where ARCH ended the block by its own decision; the job is then open and holds its slot), `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`. A later record rewrites the comment in place.
 - The tool reads `blocked.by` to make the job ready again when that module merges, and reads `nothing_to_change` on a pull request closed unmerged to count the module finished (the design, part 2, section 4). No test runs for that record.
 - **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's.
+
+The conversion's report, `<!-- process4-conversion -->`, is written by `ready` on a conversion job for the owner's review, from the uses file at the head and as `uses` reads the base: places outside the standard gone, by rule; copies; places still outside, with what each waits on; the time from opening to `ready`; the cost where it can be read: `{ "converted": { "S5": 3, "R1": 12 }, "copies": ["<file>:<line> <item>"], "waits": ["S5 <file>:<line>: <waitsOn>"], "time": "2h 10m", "cost": "unmeasured" }`.
+
+The declaration, `<!-- process4-meaning -->`, written by `push --meaning <item> "<was; is now>"` by the session that owns the pull request (the job; ARCH for its own), holds one line for each item whose meaning it changes: `{ "meaning": [ { "item": "priceOf", "line": "<was; is now>" } ] }`. `notify` reads it on the merged pull request.
 
 The test record, `<!-- process4-test-record -->`, is written only by the session that ran the tests, by `p4 test` (the job's; ARCH's for a pull request that is not a job's), and rewritten in place at each run:
 
@@ -173,41 +177,13 @@ The test record, `<!-- process4-test-record -->`, is written only by the session
 
 The notice comments, `<!-- process4-notice -->`, are on a merged provider's pull request, not a job's. `notify`, in ARCH's session, writes there the uses of each told user with no open job, once for each merge: each comment one JSON block `{ "from", "merged", "part", "users": { <module>: <its uses> } }`, under 60,000 characters, as many as needed, rewritten in place by a second run for the same merge. The waiting-work record names only the module, the provider and the merged pull request (section 2); `open --module` reads the uses from here.
 
-## 6. "Cannot follow": between modules, at the notice
+## 6. The means, and who is told: between modules, at the notice
 
-These are the proof's forms (proof: `tool/lib/usage.mjs`, `tool/lib/notice.mjs:223-259`, `PROOF_RESULT.md`). The proof's words for "cannot follow" are "not followed fully". The reader is the language reader the process config names, with its own type checker.
+**The means** of an item are the design's (part 2, section 7), worked out before and after a merge from the provider's files and its providers' stated types, by the reader the process config names. Its stated types, expanded with their names, and its bound lines are its listing (build text 2b, section 6). The parts worked out from its code (errors that can leave it, its providers' included; plain data or class instance; `this`; arguments it writes into; files, tables, settings, streams and start arguments) are worked out over its closure: those reached through an owner's reader are that reader's stated types. A type error in the item counts as a change.
 
-**Who is a user.** Every later module in the order, declared or not. Uses are read from the user's source and tests as they stood before the change; for the narrowing of a user not followed fully, below, names are read on both sides. A **use** of an entry of provider P by module U is a file and line in U that the reader resolves to that entry's declaration, or to a declaration inside it. These count:
+**The closure** is the rule of `process/research/uses-metadata-25nov/study-changes.md`, section 3.2, which follows both calls and data within the module. It may say "changed" for an equivalent rewrite, never "unchanged" for a different one.
 
-- a name in code or in a structured comment;
-- a member read, a member filled in an object, a member taken apart;
-- a value handed where a kind of P is expected, which uses the members it fills;
-- objects merged with `...`;
-- a call through a carrier (build text 2b, section 5) whose name is that entry's operation or table.
-
-A use of a provider that U does not declare is noted on the notice: `note: uses pricing without declaring it`.
-
-**Not followed fully.** For a provider P that U declares, any of four causes:
-
-1. U declares P and no use of P is found in its code.
-2. U reads or calls a value of unknown kind anywhere in its files, unless the value comes from outside the product.
-3. U calls by a name the tool cannot read, and P has operations.
-4. U names a table the tool cannot read, and P has tables.
-
-Each cause names at most its first six places, then `and N more`, so a notice is never lost for its size. U is then told:
-
-- of every change to a kind of P (a kind, handle kind, class, operation, table or table of operations) that tells any user;
-- of a changed function, method, value or class member only where U's files, before or after, name that entry (for a member, the member's name), or where U reaches P in a way the scan cannot read: an import the scan cannot follow anywhere in what U's files reach, P's whole exports taken (`import * as`, `import('…')`, `require('…')` of a file of P), or another module in that reach that re-exports or carries P, or hands the entry on as a value or takes P whole;
-- of nothing that tells no user: a confirmed accepts-more or a new entry.
-
-Accepted misses: a function handed in as a callback from a module U does not reach, and a name built from pieces. This is the design's part 2, section 7, point 2; the code is `tool/lib/notice/narrow.mjs`. The notice says so under the user, and the reason it carries is `{ "module": "pricing", "notFollowed": ["<why>", "told of <entries>"], "through": null }`, with no places:
-
-```
-  TOLD orders
-      not followed fully for pricing: reads or calls values of unknown kind: src/orders/report.mjs:13 source.list
-```
-
-Gives: the forms that ran. Costs: notices for nothing, since a module not followed fully is told of every changed kind, and of a changed function wherever it may use it; how many on a real product is unmeasured (the measures made so far are in the owner's decision record). A missed user is still possible, and the design accepts one (part 2, section 7). **Unproven:** the proven tool refused an import of a file that is not an interface file, a refusal the design does not take; following without that refusal is unproven. None of this has run on a real product.
+**Who is told.** The changed items of a merged module are those whose means differs, those removed, and those named in its job block's `meaning` or declared in its `process4-meaning` comment; not a new item, an item the checker confirms only accepts more, or an item's first means, at its conversion. `notify` then reads the later modules' uses files and tells, once each: every module whose file names a changed item, or a member of a changed type, by any route; every module with an order fault naming it; and, on any change to the provider's files whether or not an item changed, every module with a place outside the standard whose `mayRefer` names the provider and every later module with no uses file yet that imports it. A middle module that passes a value on is told only where its own file names the item. Each gets the reasons of section 5. **Unproven:** all of it; not built.
 
 ## 7. "Reaches": inside the told module
 
@@ -215,24 +191,24 @@ Gives: the forms that ran. Costs: notices for nothing, since a module not follow
 
 The related list, made on GitHub's merge of the pull request into its base, is every test file of the module that:
 
-- holds a place named in the job block's `uses`; or
+- holds a place a reason in the job block's `uses` names, a place outside the standard or an order fault among them, taking every place from the told module's uses file; or
 - reaches the piece that holds such a place; or
 - reaches a piece with a line this pull request changed; or
 - was itself added or changed by this pull request.
 
 **Losing the thread, one step wider each time:**
 
-1. Where a piece B the list needs is named anywhere in the module other than in a call the reader resolves (handed on as a value, kept in a table, called by a name with no comment tying it), every test file whose imports, followed from file to file, lead to B's file counts as reaching B.
+1. Where a piece B the list needs is named anywhere in the module other than in a call the reader resolves (handed on as a value, kept in a table), every test file whose imports, followed from file to file, lead to B's file counts as reaching B.
 2. Where a test file has an import the reader cannot resolve, that test file is related.
-3. Where a use is a `notFollowed` reason (section 6), every test file is related: the whole module's tests run.
+3. Where a reason is a module with no uses file (section 5), every test file is related: the whole module's tests run.
 
 `related <pr>` prints, for each file in the list, which of these put it there, and the files left out; the test record's `why` gives the counts. An empty list is a pass with no files. Files in the module's `walk/internal/` and `walk/external/` folders are never in the list.
 
-Gives: the list errs toward running a test file. Costs: where a module is one large file, or its tests all enter through one front file, the list is the whole module. **Unproven:** all of it. The proof followed between modules only; following inside one, and the tool knowing it has lost the thread, were never shown (the design, part 2, section 7).
+Gives: the list errs toward running a test file. Costs: where a module is one large file, or its tests all enter through one front file, the list is the whole module. **Unproven:** all of it: following inside a module, and the tool knowing it has lost the thread, were never shown (the design, part 2, section 7).
 
 ## 8. Unproven, and not settled here
 
 1. Every form in sections 1 to 5 is built and has not run in a process in force. Not verified from GitHub's own pages: the size a comment holds, that a rewrite notifies no one, and that a locked issue still takes the sessions' writes. On a product, GitHub refused the write of a waiting-work record that repeated a notice's uses for each user, its reason not kept; the tool now keeps the notice comments and a job block under 60,000 characters each.
 2. Whether the owner can read the JSON records well enough on the page.
-3. The proof's forms are in section 5's `uses` and in section 6; what the proof showed, and that it was measured with 23 refusals the design does not take, is in build text 2, section 1. Section 7 has nothing from the proof: "What a told job does was not run."
+3. Sections 5's `uses`, 6 and 7 are not built; the proof's 150 changes are to be recorded again under them (build text 4, stage 4). The proof's own run is in build text 2, section 1: "What a told job does was not run."
 4. What is read of the shared state to show that an account switch lost no work is not written (build text 4, stage 7).

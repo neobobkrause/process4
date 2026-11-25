@@ -167,12 +167,13 @@ that has been changed." — 22 November 2026.
 2. **Error-condition tests.** A wrong-typed value a test passes on purpose inside an error assertion (`assert.throws`,
    `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither
    refusal: the tool reads it as "cannot tell".
-3. **Declared uses.** The check of declared uses reads a module's tests as well as its source, and reads imports by path,
-   `require`, and imports by the product's own name. It refuses a declared use of a module that is not before this one in
-   the order, so declaring a later module is no way to make a use of it pass. A declared use with no import it can see is
+3. **Declared uses.** A module's declared uses are the providers its uses file names, which the tool writes from the
+   module's code and tests under the coding standard (the subject "Who a change tells"). The check refuses a use of a
+   module that is not before this one in the order. A place outside the standard that may refer to a later module is
    "cannot tell". A job cannot settle a needed use of a later module in its own files: it reports to ARCH and is recorded
    blocked, other work goes on, and ARCH corrects the order, the module list or the boundary (design part 2, sections 1, 3,
-   6 and 8; build text 2, section 3). A reference made another way (a started process, a file read) is not seen by it.
+   6 and 8; build text 2c). The reading of declared uses from imports (the update of 24 November) is replaced by decision
+   C of 25 November.
 4. **What the reader leaves out.** The process config's `language_reader.exclude` names files the reader leaves out
    (vendored copies, committed built bundles), which no module then owns, checks or lists (build text 2, section 7). A file
    the language's own reader cannot walk is "cannot tell"; the tool's walks over a file do not overflow the stack on a very
@@ -186,7 +187,8 @@ existing check refuse one more thing, on his word; researched in
 `process/research/tests-referring-to-later-modules-22nov.md`). On civicsmith's real code `check` refused nearly every module,
 mostly on plain uncommented code (option 3B of three: 3A no change; 3B refuse only what a comment states; 3C refuse only
 changed lines; the proof's T14 re-recorded; researched in `process/research/check-on-real-code-22nov.md`). The update of 24
-November mended the declared-uses reading (`require`, the product's own name).
+November mended the declared-uses reading (`require`, the product's own name); decision C of 25 November
+replaced that reading with the uses file.
 
 **The owner's words.** On fault D: "Decision: B" — 19 November 2026.
 On a declared use of a later module: "decision: option B, as recommended" — 22 November 2026.
@@ -263,10 +265,10 @@ PROCESS #16's session, on the design document above).
    any code; where none changed it says so and reads nothing.
 2. For each changed module it works out each item's means before and after (design part 2, section 7), from that
    module's files and its providers' stated types, over the closure within the module. It adds the items ARCH's placed
-   work names and the job declares. Where no item changed, nobody is told and nothing else is read.
-3. Otherwise it reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
-   item, those with a place outside the standard that may refer to the changed module, and those with no uses file yet
-   that import it (the subject "Who a change tells").
+   work names and the job declares.
+3. It then reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
+   item; and, for any change to the module's files, whether or not an item changed, those with a place outside the
+   standard that may refer to it and those with no uses file yet that import it (the subject "Who a change tells").
 4. The commands that read a product's code (`listing`, `notify`, `check`) run with a memory allowance of three quarters of
    the machine's memory where node's default is less. Where a reading still does not fit, `notify` says so plainly, tells
    nobody, and names the notice owed, instead of crashing.
