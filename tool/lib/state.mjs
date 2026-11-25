@@ -123,8 +123,14 @@ export function writeRecord(gh, slug, issue, records, key, data, words = '') {
   if (had) {
     const r = gh.editComment(slug, had.id, body, { allowFail: true });
     if (r !== null) return body;
-    if (readAll(gh, slug, issue)[key]) fail(`GitHub would not rewrite the ${key} record; it stays as it was`);
+    // GitHub's own words with the failure (build text 5, section 1): a record too large says so.
+    const words = gh.refusal?.() || '';
+    if (readAll(gh, slug, issue)[key]) fail(`GitHub would not rewrite the ${key} record; it stays as it was${words ? `. GitHub said: ${words}` : ''}`);
   }
-  gh.addComment(slug, issue.number, body);
+  try {
+    gh.addComment(slug, issue.number, body);
+  } catch (e) {
+    fail(`GitHub would not write the ${key} record: ${e.message}`);
+  }
   return body;
 }

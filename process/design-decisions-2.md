@@ -677,3 +677,45 @@ first; C test a temporary merged copy). Researched in `process/research/test-on-
 **The owner's words.** "Decision: B, as recommended" — 25 November 2026 (in PROCESS #12's session). PROCESS first recorded
 those words for the entry "Merging goes on while a notice is worked out" and asked whether they also answered this item;
 his answer, the same day: "Yes, B covered the stale-branch item too" — 25 November 2026.
+
+### Subject: The notice after an early provider's merge: faster, harmless changes tell no one, no notice lost
+
+**The rule as it now stands.**
+
+1. **Faster, same answers.** `notify` works out the kinds each file declares once for each side (before and after) and
+   keeps them across its readings; it reads the later modules that can reach the change several to a reading, never the
+   whole product at once; and it reads a user's code after the change only where a changed entry is new or renamed,
+   operations or tables are in play, or the user's own files changed (build text 1b, command 11).
+2. **A change that tells no user tells a user the tool cannot follow fully nothing either.** Such a user counts as using
+   everything of the provider and is told of every change to its listing that tells any user; a confirmed accepts-more,
+   or a new entry, tells it nothing (design part 2, section 7, decision 2; build text 5, section 6).
+3. **No notice lost.** The reasons for told users with no open job are written once on the merged provider's pull request,
+   in `<!-- process4-notice -->` comments each under 60,000 characters, as many as needed; the waiting-work entry names
+   only the module, the provider and the merged pull request; `open --module` copies the reasons into the job block. A
+   write GitHub refuses ends with GitHub's own words (build text 5, section 2; build text 1b, commands 3 and 11).
+
+It corrected three measured faults on civicsmith, 25 Nov 2026: `notify` after record-grammar (third of 204 modules) took
+about 43 minutes and up to 8 GB, and once took down ARCH's session machine; its waiting-work write was refused, losing
+the notices of every told module with no open job (twice, after record-grammar and test-support); and an optional
+parameter added to test-support told 121 modules, each a told job running its whole tests. Measured by a worker on two
+made-up products shaped like civicsmith (200 modules, the provider third): 97% of the time was declaration emit redone
+for every user; with the change, 1,507 s and 3.2 GB to 36.8 s and 1.5 GB (the heavier), 137 s to 14 s (the lighter);
+the saved list it would have written there was 4.7 million characters. On the 150 recorded changes of the proof, all
+answers are the same except 17, each a user the tool cannot follow fully no longer told of a confirmed accepts-more (5)
+or a new entry (12), re-recorded in `expected.json` with the reason. The owner's uses-file idea (a file per module written
+at its job) was built and tested: same answers, but an early provider's merge makes every later file stale, so it adds
+little once (1) is in. It changed the tool (`listing.mjs`, `staged.mjs`, `notice.mjs`, `notify.mjs`, `commands.mjs`,
+`state.mjs`, `util.mjs`, `github.mjs`, new `noticecomments.mjs`; tests), design part 2 section 7, build texts 1b and 5.
+It removes notices for nothing and lost notices and makes no answer of the notice's rules worse; it adds no test, gate,
+review or stop. Not known: civicsmith's own time (estimated one to one and a half minutes; its code is heavier). A
+known limit: a job block that gathers several large notices could still pass a comment's size. Option B of three (A no
+change; B the three fixes; C fixes 1 and 3 only). Researched in `process/research/notify-slow-early-provider-25nov.md`,
+`waiting-work-too-large-25nov.md` and `not-followed-told-everything-25nov.md`.
+
+**The owner's words.** "Before we bring civicsmith over to the latest version, there seems to be a question about the
+amount of time it takes for the tool that notifies users that a provider has changed. This tool seems to take a VERY long
+time - unreasonably long. Research this to understand what we can do to make the tool go as fast as it can while doing
+the task correctly." — 25 November 2026 (conversation). "We know it's slow. We also know from looking at the code why it's
+slow. What we need to figure out is how to meet the tool's requirements much faster than how it does it now." — 25
+November 2026 (conversation). "Decision: B, as recommended" — 25 November 2026 (in PROCESS #12's session, on the options
+for this item).

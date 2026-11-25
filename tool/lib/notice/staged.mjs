@@ -10,12 +10,24 @@
 //    a module that may change; and, where operations or tables are in play, one that reaches a carrier (build text 2b,
 //    section 5) or a module that answers operations or owns tables. A module that is none of these cannot use it;
 // 3. the parsed files are kept between programs of one side; each program, and its type checker, goes before the next.
+// Made faster without changing an answer (the owner's decision B of 25 Nov 2026; an early provider's notice on
+// civicsmith took most of an hour):
+// 4. the later modules are read in batches of BATCH, one program for each batch, not one for each module; never the
+//    whole product in one program, which ran out of memory on civicsmith (23 Nov 2026);
+// 5. each file's plain kinds, written out from its declarations, are kept for the side (listing.mjs), not written out
+//    again for each program;
+// 6. the users' code after the change is read only where it can add a use: where operations or tables are in play,
+//    where an entry is new or renamed (a call by a new name is seen only after it), or where the user's own files
+//    changed; otherwise the uses read before the change are the uses.
 import fs from 'node:fs';
 import path from 'node:path';
 import { builtinModules } from 'node:module';
 import { ts, loadReader, options, makeProgram } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { makeUsage } from './usage.mjs';
+
+/** How many later modules one program reads at once. */
+export const BATCH = 20;
 
 const UNRESOLVED = Symbol('cannot follow');
 // Import specifiers written out: static imports and exports from, @import in comments, import("...") in code and in
@@ -105,15 +117,39 @@ function makeHost(side, libCache) {
 }
 
 /**
+ * The files a program built from `roots` alone would hold: the roots, and every file their imports resolve to, followed
+ * through the given program (the same reader, settings and files resolve each import the same way in any program).
+ */
+function heldBy(program, roots) {
+  const held = new Set();
+  const todo = [...roots];
+  while (todo.length) {
+    const f = todo.pop();
+    if (held.has(f)) continue;
+    held.add(f);
+    const sf = program.getSourceFile(f);
+    if (!sf) continue;
+    for (const spec of sf.imports ?? []) {
+      const to = program.getResolvedModuleFromModuleSpecifier(spec, sf)?.resolvedModule?.resolvedFileName;
+      if (to && !held.has(to)) todo.push(to);
+    }
+    for (const ref of sf.referencedFiles ?? []) todo.push(path.resolve(path.dirname(f), ref.fileName));
+  }
+  return held;
+}
+
+/**
  * The staged reader of one notice: what notice.mjs's noticeWith asks of a reading.
  * @param treeB the product before the change
  * @param treeA the product after it
  * @param differs (module, listing before, listing after) => whether the two listings differ (notice.mjs's comparison)
+ * @param addsNames (module, listing before, listing after) => whether an entry is new or renamed (a use by its name can
+ *   be seen only in the code after the change)
  */
-export function stagedReader(treeB, treeA, provider, confirm, differs) {
+export function stagedReader(treeB, treeA, provider, confirm, differs, addsNames) {
   loadReader();
   const libCache = new Map();
-  const side = (tree) => ({ tree, reach: makeReach(tree), parsed: new Map(), listings: new Map(), uses: new Map() });
+  const side = (tree) => ({ tree, reach: makeReach(tree), parsed: new Map(), plainKinds: new Map(), listings: new Map(), uses: new Map() });
   const S = { B: side(treeB), A: side(treeA) };
   for (const s of Object.values(S)) s.host = makeHost(s, libCache);
   const order = treeA.modules.map((m) => m.id);
@@ -122,6 +158,7 @@ export function stagedReader(treeB, treeA, provider, confirm, differs) {
   const candidates = new Set(); // later modules that can use what changed
   let flagged = []; // modules that may answer operations or own tables
   let opsInPlay = false;
+  let afterUses = true; // whether the users' code after the change was read for uses with side A's batches
 
   /** A module's listing on one side, from a program over its own source files and what they import. */
   function listing(s, id) {
@@ -130,7 +167,7 @@ export function stagedReader(treeB, treeA, provider, confirm, differs) {
     const mod = x.tree.byId.get(id);
     if (!mod) return undefined;
     const program = makeProgram(mod.src, x.host);
-    const l = makeLister(program, x.tree).list(mod);
+    const l = makeLister(program, x.tree, { plainKinds: x.plainKinds }).list(mod);
     x.listings.set(id, l);
     return l;
   }
@@ -154,6 +191,42 @@ export function stagedReader(treeB, treeA, provider, confirm, differs) {
   });
   const unresolvedIn = (id) => ['B', 'A'].some((s) => !!closureOf(s, id, 'files')?.unresolved);
   const reachesCarrier = (id) => ['B', 'A'].some((s) => [...(closureOf(s, id, 'files')?.files ?? [])].some((f) => S[s].reach.scan(f).carrier));
+
+  /**
+   * A user's uses on one side, from a program that holds its files: every listing read so far that may matter, in
+   * module order (the operations' and tables' owners as the whole reading finds them), those read before the side's
+   * batches and those of the modules up to the user.
+   */
+  function usesFrom(s, program, mod, before) {
+    const x = S[s];
+    const at = order.indexOf(mod.id);
+    const ls = new Map(order.filter((m) => x.listings.has(m) && (before.has(m) || order.indexOf(m) <= at) && (m === provider || through.has(m) || (opsInPlay && flagged.includes(m))))
+      .map((m) => [m, x.listings.get(m)]));
+    return makeUsage(program, x.tree, ls).usesOf(mod);
+  }
+
+  /** A user's uses after the change, read when first asked (point 6): one program over its own files. */
+  function usesAfter(id) {
+    const x = S.A;
+    if (x.uses.has(id) || !candidates.has(id) || !x.tree.byId.get(id)) return x.uses.get(id);
+    const mod = x.tree.byId.get(id);
+    x.uses.set(id, usesFrom('A', makeProgram(mod.files, x.host), mod, new Set()));
+    x.parsed.clear();
+    return x.uses.get(id);
+  }
+
+  /** Whether a module's own files differ before and after the change (a merge that changed it too). */
+  const ownChanged = new Map();
+  function filesChanged(id) {
+    if (!ownChanged.has(id)) {
+      const b = treeB.byId.get(id), a = treeA.byId.get(id);
+      const rel = (t, f) => path.relative(t.root, f);
+      const read = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+      ownChanged.set(id, !b || !a || b.files.length !== a.files.length
+        || a.files.some((f, i) => rel(treeA, f) !== rel(treeB, b.files[i]) || read(f) !== read(b.files[i])));
+    }
+    return ownChanged.get(id);
+  }
 
   /** Decides what to read, once the provider's listing has changed, and reads it: side B whole, then side A. */
   function prepare() {
@@ -182,20 +255,27 @@ export function stagedReader(treeB, treeA, provider, confirm, differs) {
       const declared = [...new Set([...(mod?.uses ?? []), ...(treeB.byId.get(id)?.uses ?? [])])];
       if (reaches(id, 'files', mayChange) || declared.some((u) => mayChange.has(u)) || unresolvedIn(id) || (opsInPlay && reachesCarrier(id))) candidates.add(id);
     }
+    // The code after the change adds a use only by a name new or renamed in it, by operations or tables, or where the
+    // user's own files changed (notice.mjs reads it then); otherwise it is not read for uses here.
+    afterUses = opsInPlay || addsNames(provider, listing('B', provider), listing('A', provider));
     for (const s of ['B', 'A']) {
       const x = S[s];
       if (opsInPlay) for (const id of flagged) listing(s, id);
-      for (const id of later) {
-        const isUser = candidates.has(id), isThrough = through.has(id);
-        const mod = x.tree.byId.get(id);
-        if (!mod || (!isUser && !isThrough)) continue;
-        const program = makeProgram(isUser ? mod.files : mod.src, x.host);
-        if (isThrough && !x.listings.has(id)) x.listings.set(id, makeLister(program, x.tree).list(mod));
-        if (isUser) {
-          // Every listing read so far that may matter, in module order: the operations' and tables' owners as the whole
-          // reading finds them.
-          const ls = new Map(order.filter((m) => x.listings.has(m) && (m === provider || through.has(m) || (opsInPlay && flag.has(m)))).map((m) => [m, x.listings.get(m)]));
-          x.uses.set(id, makeUsage(program, x.tree, ls).usesOf(mod));
+      // The listings read before this side's batches: a user is given these and those of the modules up to itself, as
+      // when the later modules were read one at a time, in order.
+      const before = new Set(x.listings.keys());
+      const readsUses = (id) => candidates.has(id) && (s === 'B' || afterUses);
+      const work = later.filter((id) => x.tree.byId.get(id) && (through.has(id) || readsUses(id)));
+      for (let b = 0; b < work.length; b += BATCH) {
+        const batch = work.slice(b, b + BATCH);
+        // Each module's own program would read its own files (its source alone, where it is only listed) and what they import.
+        const rootsOf = (id) => (candidates.has(id) ? x.tree.byId.get(id).files : x.tree.byId.get(id).src);
+        const program = makeProgram([...new Set(batch.flatMap(rootsOf))], x.host);
+        const lister = makeLister(program, x.tree, { plainKinds: x.plainKinds });
+        for (const id of batch) {
+          const mod = x.tree.byId.get(id);
+          if (through.has(id) && !x.listings.has(id)) x.listings.set(id, lister.list(mod, { holds: heldBy(program, rootsOf(id)) }));
+          if (readsUses(id)) x.uses.set(id, usesFrom(s, program, mod, before));
         }
       }
       x.parsed.clear();
@@ -212,11 +292,15 @@ export function stagedReader(treeB, treeA, provider, confirm, differs) {
     prepare,
     mayChangeThrough: (id) => through.has(id),
     isCandidate: (id) => candidates.has(id),
-    uses: (s, id) => S[s].uses.get(id),
+    /** A user's uses on one side; after the change, read when first asked where the batches did not read them. */
+    uses: (s, id) => (s === 'A' && !afterUses ? usesAfter(id) : S[s].uses.get(id)),
+    /** Whether the users' code after the change may add a use for this user (point 6). */
+    readsAfter: (id) => afterUses || filesChanged(id),
+    opsInPlay: () => opsInPlay,
     /** The listings after the change of every module that may answer operations, in module order. */
     opListings: (s) => new Map((opsInPlay ? flagged : []).concat([provider, ...through]).filter((id, i, a) => a.indexOf(id) === i)
       .sort((a, b) => order.indexOf(a) - order.indexOf(b)).map((id) => [id, listing(s, id)]).filter(([, l]) => l)),
     /** Lets go of the parsed files, once the reading is done. */
-    release() { for (const s of Object.values(S)) s.parsed.clear(); libCache.clear(); },
+    release() { for (const s of Object.values(S)) { s.parsed.clear(); s.plainKinds.clear(); } libCache.clear(); },
   };
 }

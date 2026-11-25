@@ -12,6 +12,7 @@ import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { block, parseBlock } from './github.mjs';
+import { writeNotice } from './noticecomments.mjs';
 import { JOB, JOB_MARK, describe as workLine } from './round.mjs';
 import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
@@ -142,8 +143,9 @@ function toOpenJobs(ctx, base, told, n) {
 }
 
 // 11. notify <pr>: for a merged pull request, the notice for each module whose files the merge changed, in module
-// order; each told user's reasons go into its open job's block, or, with no open job, into the waiting-work record,
-// for the module's next job.
+// order; each told user's reasons go into its open job's block, or, with no open job, into the notice comments on the
+// merged pull request (noticecomments.mjs), and the waiting-work record names the notice, for the module's next job
+// (the owner's decision B of 25 Nov 2026: the record held every reason and grew past what GitHub takes).
 export function notifyCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   if (!pr.merged_at || !pr.merge_commit_sha) fail(`pull request ${n} is not merged`);
@@ -186,6 +188,12 @@ export function notifyCmd(ctx, n) {
   if (!told.length) return 0;
   told = toOpenJobs(ctx, tranche, told, n);
   if (!told.length) return 0;
+  // The reasons first, on the merged pull request, one notice for each changed module; then the record that names them.
+  for (const from of [...new Set(told.map((t) => t.from))]) {
+    const parts = writeNotice(ctx.gh, ctx.slug, n, from, told.filter((t) => t.from === from).map((t) => [t.module, t.uses]));
+    ctx.log(`the notice from ${from} is written on pull request ${n} (${parts} comment(s))`);
+  }
+  told = told.map(({ uses, ...w }) => w);
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const had = records['waiting-work']?.data || {};
   // A second run for the same merge rewrites its own entries and keeps every other.

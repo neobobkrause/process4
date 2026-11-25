@@ -37,6 +37,9 @@ export function analyse(root) {
 export const PLACES_SHOWN = 6;
 export const firstPlaces = (places) => (places.length > PLACES_SHOWN ? [...places.slice(0, PLACES_SHOWN), `and ${places.length - PLACES_SHOWN} more`] : [...places]);
 
+/** An entry new or renamed by the change: a use by its name can be seen only in the code after it. */
+const addsName = (e) => e.changes.includes('new entry') || e.changes.includes('kind renamed, shape unchanged') || (!!e.names && e.names[0] !== e.names[1]);
+
 /** Telling changes: those that tell the users of the entry. */
 const TELLS = new Set(['removed', 'cannot stand in', 'hands back differently', 'bound changed', 'declaration changed (not classified)', 'parameters moved']);
 
@@ -256,7 +259,8 @@ export function notice(before, after, provider, confirm) {
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const tb = treeOf(before), ta = treeOf(after);
   if (!ta.byId.has(provider)) throw new Error(`no such module: ${provider}`);
-  const R = stagedReader(tb, ta, provider, makeConfirm({ tree: tb }, { tree: ta }, { perModule: true }), (id, b, a) => diffListings(id, b, a).length > 0);
+  const R = stagedReader(tb, ta, provider, makeConfirm({ tree: tb }, { tree: ta }, { perModule: true }), (id, b, a) => diffListings(id, b, a).length > 0,
+    (id, b, a) => diffListings(id, b, a).some(addsName));
   try {
     return noticeWith(R, provider);
   } finally {
@@ -274,6 +278,7 @@ function wholeReading(B, A, confirm) {
     prepare() {},
     mayChangeThrough: () => true,
     isCandidate: () => true,
+    readsAfter: () => true,
     uses: (s, id) => of(s).uses.get(id),
     opListings: (s) => of(s).listings,
   };
@@ -351,6 +356,9 @@ function noticeWith(R, provider) {
       }
     }
   }
+  // Read in stages, a user's code after the change is read for uses only where it can add one (staged.mjs, point 6):
+  // an entry new or renamed, an operation answered anew, or the user's own files changed.
+  const namesAfter = [...changed.values()].some((d) => d.some((e) => addsName(e) || e.changes.some((c) => c.endsWith('now answers the same name'))));
   for (const e of report.entries) { delete e.names; }
   report.interfaceChanged = changed.has(provider);
 
@@ -360,7 +368,7 @@ function noticeWith(R, provider) {
     const user = order[i];
     if (!R.isCandidate(user)) continue;
     const mod = A.tree.byId.get(user);
-    const ub = R.uses('B', user), ua = R.uses('A', user);
+    const ub = R.uses('B', user), ua = namesAfter || R.readsAfter(user) ? R.uses('A', user) : undefined;
     const reasons = [];
     for (const [m, diff] of changed) {
       if (A.tree.byId.get(m).index >= mod.index) continue;
@@ -377,8 +385,10 @@ function noticeWith(R, provider) {
         reasons.push({ module: m, entry: e.entry, changes: [...e.changes], lines: [...u.lines], through, ...partsThatDiffer(e) });
       }
       // Not followed fully (build text 5, section 6): for a provider U declares, any of four causes. Such a user
-      // counts as using everything of the provider, and is told on any change to its listing.
-      if (declared) {
+      // counts as using everything of the provider, and is told on any change to its listing that tells users: a
+      // change that tells nobody (a confirmed "accepts more", a new entry) tells it nothing either (the owner's
+      // decision B of 25 Nov 2026; civicsmith told 121 such users of an added optional parameter).
+      if (declared && diff.some((e) => e.tells !== 'nobody')) {
         const why = [];
         if (!useB?.size && !useA?.size) why.push(`declares ${m} but no use of it is found in its code`);
         if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${firstPlaces(ub.anything).join('; ')}`);

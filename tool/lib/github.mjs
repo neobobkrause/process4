@@ -50,6 +50,8 @@ export function makeGitHub(gh = realGh) {
     comments: (slug, n) => pages(`repos/${slug}/issues/${n}/comments?per_page=100`),
     addComment: (slug, n, body) => send('POST', `repos/${slug}/issues/${n}/comments`, { body }),
     editComment: (slug, id, body, opts) => send('PATCH', `repos/${slug}/issues/comments/${id}`, { body }, opts),
+    // GitHub's own words for the last call allowed to fail that failed, or ''.
+    refusal: () => gh.refused || '',
     issuesByLabel: (slug, label) => (api(`repos/${slug}/issues?state=open&labels=${encodeURIComponent(label)}&per_page=100`) || [])
       .filter((i) => !i.pull_request),
     createLabel: (slug, name, color, description) => send('POST', `repos/${slug}/labels`, { name, color, description }, { allowFail: true }),

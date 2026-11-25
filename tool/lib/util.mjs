@@ -37,8 +37,10 @@ export const TRANSIENT = /HTTP 5\d\d|ECONNRESET|ETIMEDOUT|EAI_AGAIN|connection r
 // GitHub through the gh program, REST only. Every call obeys the rate-limit answer: it waits
 // and tries again up to four times, then fails (build text 1, section 3). GitHub does not
 // always say how long; a minute is GitHub's own advice for its secondary limit.
+// A call allowed to fail answers null; GitHub's own words for that failure are kept, as gh.refused, until the next call.
 export function makeGh({ exec = (args, input) => run('gh', args, { input }), wait = sleep } = {}) {
   return function gh(args, opts = {}) {
+    gh.refused = null;
     let r;
     for (let tries = 0; ; tries++) {
       r = exec(args, opts.input);
@@ -49,8 +51,9 @@ export function makeGh({ exec = (args, input) => run('gh', args, { input }), wai
       wait(RATE.test(text) ? (after ? Number(after[1]) : 60) * 1000 : 5000 * (tries + 1));
     }
     if (r.code !== 0) {
-      if (opts.allowFail) return null;
-      fail(`GitHub refused: ${(r.stderr || r.stdout).trim().split('\n').slice(0, 3).join(' ')}`);
+      const words = (r.stderr || r.stdout).trim().split('\n').slice(0, 3).join(' ');
+      if (opts.allowFail) { gh.refused = words; return null; }
+      fail(`GitHub refused: ${words}`);
     }
     const s = r.stdout.trim();
     if (!s) return null;

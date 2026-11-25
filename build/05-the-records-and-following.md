@@ -79,11 +79,11 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
     "sessions": [ { "number": 1, "session": "session_01F", "live": true, "copy": null } ] } ] }
 ```
 
-**Waiting work.** What is placed against a module and waits for its next job: a notice with its uses (section 5), a walk flaw by number and link, a flaw another module's job reported. A requirement not yet met is not here; it is read from the requirements file. `open --module` copies a module's entries into its job block and takes them out of this record.
+**Waiting work.** What is placed against a module and waits for its next job: a notice, by its provider and merged pull request, a walk flaw by number and link, a flaw another module's job reported. A requirement not yet met is not here; it is read from the requirements file. A notice's uses (section 5) are not kept here: `notify` writes them once on the merged provider's pull request, in comments marked `<!-- process4-notice -->`, each one JSON block `{ "from", "merged", "part", "users": { <module>: <its uses> } }` and each under 60,000 characters, as many as needed, rewritten in place by a second run for the same merge (the owner's decision B of 25 Nov 2026: one notice of an early provider told nearly every later module, and the record, which repeated each changed kind for each user, passed the size a comment holds). `open --module` copies a module's entries into its job block, reading each notice's uses from those comments (an older entry that still carries `uses` is used as it is), and takes them out of this record.
 
 ```json
 { "work": [
-  { "module": "orders", "kind": "notice", "from": "pricing", "merged": 40, "uses": [] },
+  { "module": "orders", "kind": "notice", "from": "pricing", "merged": 40 },
   { "module": "orders", "kind": "walk-flaw", "flaw": "t1-2-I-1-3", "link": "<the comment's address>" },
   { "module": "dates", "kind": "job-flaw", "from": "orders", "words": "a leap day is refused" } ] }
 ```
@@ -189,14 +189,14 @@ A use of a provider that U does not declare is noted on the notice: `note: uses 
 3. U calls by a name the tool cannot read, and P has operations.
 4. U names a table the tool cannot read, and P has tables.
 
-Each cause names at most its first six places, then `and N more` (the owner's decision of 24 Nov 2026), so a notice is never lost for its size. U is then told on any change to P's listing, also on a new entry or an accepts-more that tells no other user (the design, part 2, section 7, decision 2). The notice says so under the user, and the reason it carries is `{ "module": "pricing", "notFollowed": ["<why>", "<why>"], "through": null }`, with no places:
+Each cause names at most its first six places, then `and N more` (the owner's decision of 24 Nov 2026), so a notice is never lost for its size. U is then told of every change to P's listing that tells any user; a confirmed accepts-more or a new entry, which tells no user, tells U nothing either (the design, part 2, section 7, decision 2; the owner's decision B of 25 Nov 2026). The notice says so under the user, and the reason it carries is `{ "module": "pricing", "notFollowed": ["<why>", "<why>"], "through": null }`, with no places:
 
 ```
   TOLD orders
       not followed fully for pricing: reads or calls values of unknown kind: src/orders/report.mjs:13 source.list
 ```
 
-Gives: the forms that ran. Costs: notices for nothing; in the proof 54 of design 7's 111 notices for nothing went to one module with cause 2. A missed user is still possible, and the design accepts one (part 2, section 7). **Unproven:** the proven tool refused an import of a file that is not an interface file, a refusal the design does not take; following without that refusal is unproven. None of this has run on a real product.
+Gives: the forms that ran. Costs: notices for nothing; in the proof 54 of design 7's 111 notices for nothing went to one module with cause 2 (17 of the 150 recorded answers lost such a notice with decision B of 25 Nov 2026, each written in the proof's expected answers). A missed user is still possible, and the design accepts one (part 2, section 7). **Unproven:** the proven tool refused an import of a file that is not an interface file, a refusal the design does not take; following without that refusal is unproven. None of this has run on a real product.
 
 ## 7. "Reaches": inside the told module
 
