@@ -1,9 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { test } from 'node:test';
-import { decideScope, runTests } from '../lib/scope.mjs';
+import { decideScope, runModules } from '../lib/scope.mjs';
 import { git } from '../lib/util.mjs';
 import { commit, config, makeRepo, productFiles } from './helpers.mjs';
 
@@ -69,22 +66,22 @@ test('a base with no process config is judged by the head\'s, and says so', () =
   assert.equal(decideScope(none.root, { base: none.base, baseRef: 'tranche', branch: 'work/x', draft: false }).scope, 'nothing');
 });
 
-test('run tests passes when every command exits 0, fails otherwise, and writes a summary', () => {
+test('the module tests pass when every command exits 0, fail otherwise, and count what ran', () => {
   const { root, base } = merged({ 'src/orders/index.mjs': USES, 'test/orders/a.test.mjs': passing });
-  const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
-  assert.equal(runTests(root, s, { log: () => {}, summary }), true);
-  assert.match(readFileSync(summary, 'utf8'), /orders: exit 0; 1 file\(s\)[\s\S]*tests 1, pass 1, fail 0[\s\S]*Passed\./);
+  const [r] = runModules(root, s);
+  assert.equal(r.ok, true);
+  assert.deepEqual([r.name, r.code, r.files.length, r.tests, r.passed, r.failed], ['orders', 0, 1, 1, 1, 0]);
   commit(root, { 'test/orders/b.test.mjs': failing });
   const s2 = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
-  assert.equal(runTests(root, s2, { log: () => {}, summary }), false);
+  assert.equal(runModules(root, s2).every((x) => x.ok), false);
 });
 
-test('a module with no test files passes, and the summary says none ran', () => {
+test('a module with no test files passes, and none ran', () => {
   const { root, base } = merged({ 'src/orders/index.mjs': USES });
-  const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
-  assert.equal(runTests(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false }), { log: () => {}, summary }), true);
-  assert.match(readFileSync(summary, 'utf8'), /orders: no test files; none ran/);
+  const [r] = runModules(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false }));
+  assert.equal(r.ok, true);
+  assert.equal(r.code, null);
 });
 
 test('product code runs without the token variables', () => {
@@ -94,19 +91,20 @@ test('product code runs without the token variables', () => {
   });
   process.env.GH_TOKEN = 'secret-for-test';
   try {
-    assert.equal(runTests(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false }), { log: () => {}, summary: null }), true);
+    assert.equal(runModules(root, decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false })).every((x) => x.ok), true);
   } finally { delete process.env.GH_TOKEN; }
 });
 
-test('run tests runs the tool\'s check before a module\'s tests, and a disagreement fails the run', () => {
+test('the module tests run the tool\'s check before a module\'s tests, and a disagreement fails them', () => {
   // orders imports dates without declaring it: the check refuses that. (A declared use no code makes is "cannot
-  // tell" since the owner's decision of 24 Nov 2026, so it no longer serves as the disagreement here.)
+  // tell", so it does not serve as the disagreement here.)
   const { root, base } = merged({
     'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: [] },
     'src/dates/index.mjs': 'export const d = 1;\n',
     'src/orders/index.mjs': "import { d } from '../dates/index.mjs';\nexport const o = d;\n", 'test/orders/a.test.mjs': passing });
-  const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
-  assert.equal(runTests(root, s, { log: () => {}, summary }), false);
-  assert.match(readFileSync(summary, 'utf8'), /orders: check found a disagreement[\s\S]*Failed\./);
+  const [r] = runModules(root, s);
+  assert.notEqual(r.check.code, 0);
+  assert.equal(r.code, 0);
+  assert.equal(r.ok, false);
 });

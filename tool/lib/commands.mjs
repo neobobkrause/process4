@@ -12,11 +12,11 @@ import {
 } from './state.mjs';
 import { fail, git, underPath } from './util.mjs';
 import { DROP } from './scope.mjs';
-import { noticeSeq, recordStands, testRecordOf } from './testrecord.mjs';
+import { noticeAfterTests, recordNeed, recordStands } from './testrecord.mjs';
 import { recordsOf, scopeForPR } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf,
   moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
@@ -200,7 +200,7 @@ function newestJobBranch(ctx, module) {
 
 function printJob(ctx, cfg, pr) {
   ctx.log(`pull request ${pr.number}: ${pr.html_url}`);
-  const job = ctx.gh.comments(ctx.slug, pr.number).map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean);
+  const job = jobBlockOf(ctx.gh.comments(ctx.slug, pr.number));
   if (!job) return;
   ctx.log('job block:');
   ctx.log(JSON.stringify(job.data, null, 2));
@@ -257,7 +257,7 @@ export function open(ctx, a) {
 // marks nothing and says why. In the process repository every pull request is into main: its scope is nothing.
 export function ready(ctx, n) {
   const before = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
-  // Nothing to mark: said plainly (the owner's decision of 25 Nov 2026, "Mark-ready: as recommended").
+  // Nothing to mark: said plainly, ending ok (build text 1b, command 4).
   if (before.merged_at) { ctx.log(`pull request ${n} is merged; there is nothing to mark ready`); return 0; }
   if (before.state === 'closed') { ctx.log(`pull request ${n} is closed; there is nothing to mark ready`); return 0; }
   if (before.draft === false) { ctx.log(`pull request ${n} is ready already; nothing marked`); return 0; }
@@ -265,10 +265,9 @@ export function ready(ctx, n) {
   const st = recordStands(record?.data, before.head.sha, jobBlock);
   if (st.ok) ctx.log(st.why);
   else {
-    const s = scopeForPR(ctx, before, { jobBlock, related: false });
-    if (s.scope !== 'nothing') fail(`not marked ready: ${st.why} (scope ${s.scope}, because ${s.why})`);
-    if (noticeSeq(jobBlock) > 0) fail(`not marked ready: ${st.why} (scope nothing, but ${noticeSeq(jobBlock)} notice(s) reached the job)`);
-    ctx.log(`no test record needed: scope nothing, because ${s.why}`);
+    const need = recordNeed(scopeForPR(ctx, before, { jobBlock, related: false }), jobBlock);
+    if (need.needed) fail(`not marked ready: ${st.why} (${need.why})`);
+    ctx.log(`no test record needed: ${need.why}`);
   }
   ctx.gh.markReady(ctx.slug, n);
   const pr = ctx.gh.getPR(ctx.slug, n);
@@ -282,13 +281,12 @@ export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   const { jobBlock, record } = recordsOf(ctx, n);
   const st = recordStands(record?.data, pr.head.sha, jobBlock);
-  // Where there is no record, say whether one is needed: a pull request whose scope is nothing (into main, no module
-  // file changed, and so on) and that no notice reached needs none, as `ready` judges it.
+  // Where there is no record, say whether one is needed, as `ready` judges it (recordNeed).
   let none = null;
-  if (!record && !noticeSeq(jobBlock)) {
-    try { const s = scopeForPR(ctx, pr, { jobBlock, related: false }); if (s.scope === 'nothing') none = s.why; } catch { /* say only what the record says */ }
+  if (!record) {
+    try { const need = recordNeed(scopeForPR(ctx, pr, { jobBlock, related: false }), jobBlock); if (!need.needed) none = need.why; } catch { /* say only what the record says */ }
   }
-  if (none) ctx.log(`test record: none needed: scope nothing, because ${none}`);
+  if (none) ctx.log(`test record: none needed: ${none}`);
   else ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
   const d = record?.data;
   if (d) ctx.log(`  ${d.result} at ${String(d.commit).slice(0, 10)}: ${d.passed} passed, ${d.failed} failed, scope ${d.scope}, notice ${d.notice_seq}, ${d.fails_total} failed run(s) in all, written ${d.written}`);
@@ -313,15 +311,13 @@ function notesInForce(ctx) {
   return liveNotes(readAll(ctx.gh, ctx.slug, issue)['standing-notes']?.data);
 }
 
-// A job's merge waits for the modules it uses (the owner's decision of 24 Nov 2026, item 3). First its tests must
+// A job's merge waits for the modules it uses (design part 2, section 8; build text 1b, command 6). First its tests must
 // stand after every notice that reached it: refused (exit 1) when a notice came after they ran. Then the modules it
 // uses, directly or through others, earlier in the order, read at the tranche branch's newest commit and at the job's
 // head commit (the union): each with an open job that is not blocked holds it. Returns the jobs it waits for, as lines.
 function jobWaits(ctx, pr, module) {
-  const comments = ctx.gh.comments(ctx.slug, pr.number);
-  const jobBlock = comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || null;
-  const record = testRecordOf(comments)?.data || null;
-  if (noticeSeq(jobBlock) > (Number(record?.notice_seq) || 0)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
+  const { jobBlock, record } = recordsOf(ctx, pr.number);
+  if (noticeAfterTests(record?.data, jobBlock)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
   const issue = findIssue(ctx.gh, ctx.slug);
   const view = readView(ctx, { records: issue ? readAll(ctx.gh, ctx.slug, issue) : {} });
   if (!view.modules.some((m) => m.name === module)) return [];
@@ -474,7 +470,7 @@ export function finishedCmd(ctx, module) {
 // Resolves "latest": the newest commit of the process repository's main branch (the version a move to
 // latest adopts), read by git from the address process.json already names. Read-only; prints the commit
 // and whether it differs from the pinned one. ARCH uses it so a version move needs no commit id (build
-// text 1b, command 25; the owner's decision C, 19 Nov 2026).
+// text 1b, command 25).
 export function latestVersion(ctx) {
   const cfg = needConfig(ctx.root);
   const repo = cfg.process?.repository;

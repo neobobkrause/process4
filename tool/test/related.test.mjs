@@ -5,7 +5,7 @@ import { relatedList } from '../lib/notice/related.mjs';
 import { relatedCmd } from '../lib/notify.mjs';
 import { block } from '../lib/github.mjs';
 import { JOB_MARK } from '../lib/round.mjs';
-import { decideScope, runTests } from '../lib/scope.mjs';
+import { decideScope, runModules } from '../lib/scope.mjs';
 import { git } from '../lib/util.mjs';
 import { commit, config, ctxFor, fakeGitHub, makeRepo } from './helpers.mjs';
 
@@ -162,16 +162,15 @@ test('decideScope: an empty related list passes at once and says so', () => {
   assert.equal(s.left_out.length, 4);
 });
 
-test('the run\'s summary gives each related file\'s rule and the files left out', () => {
+test('the related scope gives each related file\'s rule and the files left out, and runs only the related files', () => {
   const { root, base } = merged({ 'src/orders/sum.mjs': SUM.replace('a + b, 0', 'b + a, 0') });
   const s = scopeOf(root, base, told([]));
-  const out = [];
-  assert.equal(runTests(root, s, { log: (x) => out.push(x), summary: '', check: () => ({ code: 0, stdout: '', stderr: '' }) }), true);
-  const text = out.join('\n');
-  assert.match(text, /Scope: \*\*related\*\*/);
-  assert.match(text, /- related: test\/orders\/bill\.test\.mjs: reaches a piece with a line this pull request changed/);
-  assert.match(text, /- left out: test\/orders\/apply\.test\.mjs, test\/orders\/day\.test\.mjs, test\/orders\/plain\.test\.mjs/);
-  assert.match(text, /- orders: exit 0; 1 file\(s\): test\/orders\/bill\.test\.mjs/);
+  assert.equal(s.scope, 'related');
+  assert.deepEqual(s.modules[0].related, [{ file: 'test/orders/bill.test.mjs', reasons: ['reaches a piece with a line this pull request changed'] }]);
+  assert.deepEqual(s.modules[0].left_out, ['test/orders/apply.test.mjs', 'test/orders/day.test.mjs', 'test/orders/plain.test.mjs']);
+  const [r] = runModules(root, s, { check: () => ({ code: 0, stdout: '', stderr: '' }) });
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.files, ['test/orders/bill.test.mjs']);
 });
 
 test('related <pr> lists the same from the session, from the merged result of the pull request, and runs nothing', () => {
@@ -197,25 +196,6 @@ test('related <pr> lists the same from the session, from the merged result of th
   relatedCmd(ctx, pr.number);
   assert.match(out.join('\n'), /an ordinary job of orders: the required run runs its whole module/);
   void join;
-});
-
-test('run scope reads the job block from the comment part one\'s workflow wrote to a file', async () => {
-  const { main } = await import('../p4.mjs');
-  const { mkdtempSync, writeFileSync, readFileSync } = await import('node:fs');
-  const { tmpdir } = await import('node:os');
-  const { root, base } = merged({ 'src/orders/sum.mjs': SUM.replace('a + b, 0', 'b + a, 0') });
-  const dir = mkdtempSync(join(tmpdir(), 'p4-jb-'));
-  writeFileSync(join(dir, 'jb.txt'), block(JOB_MARK, told([])));
-  const out = [];
-  const args = ['run', 'scope', '--base', base, '--base-ref', 'tranche', '--branch', 'job/orders/2', '--draft', 'false', '--out', join(dir, 's.json')];
-  assert.equal(main([...args, '--job-block', join(dir, 'jb.txt')], { root, log: (x) => out.push(x) }), 0);
-  assert.equal(JSON.parse(readFileSync(join(dir, 's.json'), 'utf8')).scope, 'related');
-  assert.match(out.join('\n'), /test\/orders\/bill\.test\.mjs: reaches a piece with a line this pull request changed/);
-  // No file, or an empty one (the comment could not be read): the whole module.
-  for (const jb of [join(dir, 'none.txt'), (writeFileSync(join(dir, 'empty.txt'), ''), join(dir, 'empty.txt'))]) {
-    main([...args, '--job-block', jb], { root, log: () => {} });
-    assert.equal(JSON.parse(readFileSync(join(dir, 's.json'), 'utf8')).scope, 'whole module');
-  }
 });
 
 test('the shim reads the job block and the test record with its read-only token, and widens no permission', async () => {

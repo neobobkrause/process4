@@ -2,12 +2,11 @@
 // The Process4 tool: one program, a fresh process for each command, run from the read-only copy.
 // Usage: node <copy>/tool/p4.mjs <command> [arguments]
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { totalmem } from 'node:os';
 import { getHeapStatistics } from 'node:v8';
 import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
-import { decideScope, runTests } from './lib/scope.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
 import { walkOpen, walkClose, walkWrite, walkRead, walkText, walkAreas } from './lib/walk.mjs';
 import { releasePrepare, releasePublish } from './lib/release.mjs';
@@ -36,7 +35,7 @@ const prOf = (ctx, a) => {
 
 // A block as the required run's workflow wrote it to a file: the comment's body, or its JSON alone. None when
 // the file is absent or empty, or holds no block. The job block (JOB_MARK) and the test record (TEST_MARK).
-function readBlockFile(file, mark = JOB_MARK) {
+function readBlockFile(file, mark) {
   if (typeof file !== 'string' || !existsSync(file)) return null;
   const text = readFileSync(file, 'utf8').trim();
   if (!text) return null;
@@ -44,7 +43,6 @@ function readBlockFile(file, mark = JOB_MARK) {
   if (b) return b.data;
   try { return JSON.parse(text); } catch { return null; }
 }
-const readJobBlock = (file) => readBlockFile(file, JOB_MARK);
 
 const commands = {
   branch: (ctx, a) => c.branch(ctx, a._[0], a.into),
@@ -75,30 +73,13 @@ const commands = {
   'walk read': (ctx, a) => walkRead(ctx, a._[0], a._[1]),
   'walk text': (ctx, a) => walkText(ctx, a._[0]),
   'walk areas': (ctx) => walkAreas(ctx),
-  // On GitHub's machines only (build text 1, section 5).
-  'run scope': (ctx, a) => {
-    const s = decideScope(ctx.root, { base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true, jobBlock: readJobBlock(a['job-block']) });
-    if (typeof a.out === 'string') writeFileSync(a.out, JSON.stringify(s));
-    ctx.log(`scope: ${s.scope}, because ${s.why}; config from ${s.config_from}`);
-    for (const m of s.modules) {
-      ctx.log(`  ${m.name}: ${m.files.length} test file(s)`);
-      for (const r of m.related || []) ctx.log(`    ${r.file}: ${r.reasons.join('; ')}`);
-      if (m.left_out) ctx.log(`    left out: ${m.left_out.join(', ') || 'none'}`);
-    }
-    return 0;
-  },
-  // The required run's one job: runs no test, reads the test record.
+  // The required run's one job, on GitHub's machines only (build text 1, section 5): runs no test, reads the test record.
   'run verdict': (ctx, a) => {
     if (typeof a.head !== 'string' || !/^[0-9a-f]{40}$/.test(a.head)) fail('say --head <the head commit>');
     return verdict(ctx.root, {
       base: a.base, baseRef: a['base-ref'], branch: a.branch, draft: a.draft === 'true' || a.draft === true, head: a.head,
-      jobBlock: readJobBlock(a['job-block']), record: readBlockFile(a['test-record'], TEST_MARK), log: ctx.log,
+      jobBlock: readBlockFile(a['job-block'], JOB_MARK), record: readBlockFile(a['test-record'], TEST_MARK), log: ctx.log,
     });
-  },
-  'run tests': (ctx, a) => {
-    if (typeof a.scope !== 'string') fail('say --scope <file>');
-    if (!runTests(ctx.root, JSON.parse(readFileSync(a.scope, 'utf8')), { log: ctx.log })) fail('a module\'s tests failed');
-    return 0;
   },
 };
 
@@ -123,7 +104,7 @@ export const HELP = {
   'state read': 'state read [<record>] [--repository <owner/name>]: prints one record of the shared state, or all.',
   'state write': 'state write <record> --from <file> [--create [--process]]: rewrites one record in place; --create makes the issue and its empty records once.',
   listing: 'listing <module> [--at <commit>]: writes the product at that commit (default HEAD) into a folder outside the working tree and prints the module\'s interface listing; writes nothing to GitHub.',
-  notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into its open job\'s block (printing that ARCH messages the job), or with no open job into the waiting-work record.',
+  notify: 'notify <pr>: for a merged pull request, prints the notice for each module whose files the merge changed, in module order, and writes each told user\'s reasons into its open job\'s block (printing that ARCH messages the job), or with no open job into notice comments on the merged pull request, which the waiting-work record names.',
   check: 'check <module> [--files <list>]: prints each disagreement of declared uses with imports and with the order (a declared use of a module not before this one), of a structured comment with its code, and of the code with a provider\'s stated interface, with file and line; exit 1 if any.',
   related: 'related <pr>: lists a told job\'s related test files, each with the rule that put it there, and the files left out, from the merged result of the pull request into its base; runs nothing.',
   'walk open': 'walk open <internal|external>: opens the walk issue, titled with the tranche, round and kind, and writes its number into the round record.',
@@ -132,9 +113,7 @@ export const HELP = {
   'walk read': 'walk read <issue> [<flaw>]: prints the walk issue\'s comments, or one flaw.',
   'walk text': 'walk text <session>: prints a walking session\'s starting instructions, filled with names and addresses only.',
   'walk areas': 'walk areas: lists the round\'s candidate internal and external areas from changed modules\' step headers and requirement endings, for ARCH to choose from.',
-  'run scope': 'run scope --base <sha> --base-ref <b> --branch <b> --draft <true|false> [--job-block <file>] [--out <file>]: decides the scope of a checked-out merge of a pull request, as test decides it, and prints it; for a job branch, the file holds its job block.',
-  'run verdict': 'run verdict --base <sha> --base-ref <b> --branch <b> --draft <true|false> --head <sha> [--job-block <file>] [--test-record <file>]: on GitHub\'s machines only, the required run: runs no test; passes where the scope is nothing, or where the test record stands for the head commit; fails otherwise, saying why.',
-  'run tests': 'run tests --scope <file>: runs the tests in a scope that run scope wrote; the required run no longer uses it.',
+  'run verdict': 'run verdict --base <sha> --base-ref <b> --branch <b> --draft <true|false> --head <sha> [--job-block <file>] [--test-record <file>]: on GitHub\'s machines only, the required run: runs no test; passes where no test record is needed (scope nothing and no notice reached the job; a draft passes at once), or where the test record stands for the head commit; fails otherwise, saying why.',
 };
 
 // GitHub is reached only for commands that need it; `run`, `listing` and `check` read the checkout alone.
@@ -179,7 +158,7 @@ export function main(argv, overrides) {
 }
 
 // The commands that read a product's code may read the whole product twice, which on a large product needs more
-// memory than node gives by default (civicsmith, 23 Nov 2026). They run with most of the machine's memory: the
+// memory than node gives by default (build text 1b, command 11, "Limits"). They run with most of the machine's memory: the
 // node flag that allows it, or null where the default already allows that much or the run already carries it.
 const READS_CODE = new Set(['listing', 'notify', 'check']);
 export function heapFlag(name, { total = totalmem(), limit = getHeapStatistics().heap_size_limit, env = process.env } = {}) {

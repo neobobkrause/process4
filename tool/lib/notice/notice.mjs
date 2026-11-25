@@ -31,9 +31,9 @@ export function analyse(root) {
 }
 
 /**
- * The places a "not followed fully" reason names: the first six, then "and N more" as one more place (the owner's
- * decision of 24 Nov 2026). Such a user runs its whole module's tests, so the places choose nothing; they only explain,
- * and a reason without bound made a waiting-work record too large to write, losing the notice.
+ * The places a "not followed fully" reason names: the first six, then "and N more" as one more place. Such a user runs
+ * its whole module's tests (design part 2, section 7, the three points), so the places choose nothing; they only
+ * explain, and the bound keeps the reason a size a comment can hold.
  */
 export const PLACES_SHOWN = 6;
 export const firstPlaces = (places) => (places.length > PLACES_SHOWN ? [...places.slice(0, PLACES_SHOWN), `and ${places.length - PLACES_SHOWN} more`] : [...places]);
@@ -51,7 +51,7 @@ function renameHandles(c, map) {
 }
 
 /**
- * An unknown kind becoming known tells no one (the owner's decision B of 25 Nov 2026): where the reader inferred
+ * An unknown kind becoming known tells no one (design part 2, section 7, "What counts as a change"): where the reader inferred
  * "anything" before and the comments now state a kind, the running code is the same; only what the reader knows
  * changed, as in a module's first comments step (design part 2, section 7). `known(before, after)` is the canonical form
  * before with each "anything" replaced by the kind stated at the same place after, so that only the other differences
@@ -441,15 +441,15 @@ function noticeWith(R, provider) {
       }
       // Not followed fully (build text 5, section 6): for a provider U declares, any of four causes. Such a user is
       // told of a change to the provider's listing that tells users: a change that tells nobody (a confirmed "accepts
-      // more", a new entry) tells it nothing (the owner's decision B of 25 Nov 2026), and a changed function, method,
-      // value or class member only where narrow.mjs finds it may use it (decision 3B of 25 Nov 2026).
+      // more", a new entry) tells it nothing, and a changed function, method, value or class member only where
+      // narrow.mjs finds it may use it (design part 2, section 7, rule 2 for the tool).
       if (declared && diff.some((e) => e.tells !== 'nobody')) {
         const why = [];
         if (!useB?.size && !useA?.size) why.push(`declares ${m} but no use of it is found in its code`);
         if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${firstPlaces(ub.anything).join('; ')}`);
         if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${firstPlaces(ub.unreadOps).join(', ')}`);
         if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${firstPlaces(ub.unreadTables).join(', ')}`);
-        // Decision 3B of 25 Nov 2026 (narrow.mjs): of the changed function, method, value and class member entries, only
+        // The narrowing (narrow.mjs): of the changed function, method, value and class member entries, only
         // those the user's files name, or all where it reaches the provider in a way the scan cannot read, tell it.
         if (why.length) {
           const tells = (narrow ??= makeNarrow(B.tree, A.tree, { usesOf: (id) => R.uses('B', id) })).telling(user, m, diff.filter((e) => e.tells !== 'nobody'));
@@ -477,7 +477,7 @@ export function noticeText(r) {
     if (e.before?.accepts !== e.after?.accepts && (e.before?.accepts || e.after?.accepts)) L.push(`      accepts before: ${e.before?.accepts ?? '-'}\n      accepts after:  ${e.after?.accepts ?? '-'}`);
     if (e.before?.handsBack !== e.after?.handsBack && (e.before?.handsBack || e.after?.handsBack)) L.push(`      hands back before: ${e.before?.handsBack ?? '-'}\n      hands back after:  ${e.after?.handsBack ?? '-'}`);
     // The kinds of error raised, and a message's channel, are part of what is handed back: printed where they differ, so a
-    // "hands back differently" that comes from them is visible (civicsmith notify 1356 showed only the kinds).
+    // "hands back differently" that comes from them is visible.
     if (JSON.stringify(e.before?.throws ?? []) !== JSON.stringify(e.after?.throws ?? [])) L.push(`      raises before: ${JSON.stringify(e.before?.throws ?? [])}\n      raises after:  ${JSON.stringify(e.after?.throws ?? [])}`);
     if ((e.before?.channel ?? '') !== (e.after?.channel ?? '')) L.push(`      channel before: ${e.before?.channel ?? '-'}\n      channel after:  ${e.after?.channel ?? '-'}`);
     if (e.before?.optional !== e.after?.optional && e.after?.optional) L.push('      may now be missing');

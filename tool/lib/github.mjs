@@ -42,7 +42,7 @@ export function makeGitHub(gh = realGh) {
     },
     // GitHub's REST interface has no ready-for-review call, and `gh pr ready` uses GraphQL, which sessions cannot
     // reach (HTTP 403), so it is not tried: sessions reach it by their proxy's own route only, and a refusal there ends
-    // with GitHub's words (the owner's decision of 25 Nov 2026, "Mark-ready: as recommended").
+    // with GitHub's words (build text 1b, preamble: a refusal by GitHub is printed and never retried by another route).
     markReady: (slug, n) => {
       const r = gh(['api', '-X', 'POST', `repos/${slug}/pulls/${n}/ccr/ready_for_review`], { allowFail: true });
       if (r === null) fail(`GitHub would not mark pull request ${n} ready${gh.refused ? `: ${gh.refused}` : ''}`);

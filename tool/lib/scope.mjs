@@ -1,7 +1,6 @@
 // The scope of a pull request's tests, and the tests themselves (build text 1, section 5). The tests run once, in
 // the session that owns the work (`p4 test`, tool/lib/testrun.mjs); GitHub's required run only reads the record
-// (`run verdict`). `run scope` and `run tests` stay for reading a scope and for running it by hand.
-import { appendFileSync } from 'node:fs';
+// (`run verdict`).
 import { loadConfig, loadModules, ownerOf } from './config.mjs';
 import { relatedList } from './notice/related.mjs';
 import { NO_TOKENS, git, run, underPath } from './util.mjs';
@@ -96,8 +95,8 @@ function dropCheck(root, mergedBase, mainRef) {
   return first ? { ok: false, why: `${first} is not main's` } : { ok: true, count: changed.length };
 }
 
-// Runs each module's check and test command over its files, with the token variables removed. One code path for
-// `p4 test` in the session and `run tests`. Before each module's tests, the tool's `check` of that module (build
+// Runs each module's check and test command over its files, with the token variables removed, for `p4 test` in the
+// session (build text 1, section 5, "What runs"). Before each module's tests, the tool's `check` of that module (build
 // text 1, section 5), run from this same copy of the tool. `onStart`/`onEnd` report each module as it goes.
 // Returns [{ name, files, check: { code, out }, code, out, passed, failed, ok }]; `code` is null where no test file ran.
 const P4 = new URL('../p4.mjs', import.meta.url).pathname;
@@ -126,28 +125,4 @@ export function runModules(root, scope, { check = runCheck, onStart = () => {}, 
     onEnd(res);
   }
   return results;
-}
-
-export function runTests(root, scope, { log = console.log, summary = process.env.GITHUB_STEP_SUMMARY, check = runCheck } = {}) {
-  const lines = [`## module-tests`, '', `Scope: **${scope.scope}**, because ${scope.why}. Config read from ${scope.config_from}.`, ''];
-  const byName = new Map(scope.modules.map((m) => [m.name, m]));
-  const results = runModules(root, scope, {
-    check,
-    onStart: (m, line) => { if (m.files.length) log(`== ${m.name}: ${line}`); },
-    onEnd: (r) => { log(r.check.out); if (r.code !== null) log(r.out); },
-  });
-  const n = (x) => x ?? '?';
-  for (const r of results) {
-    const m = byName.get(r.name);
-    if (r.check.code !== 0) lines.push(`- ${r.name}: check found a disagreement (exit ${r.check.code})`);
-    for (const x of m.related || []) lines.push(`  - related: ${x.file}: ${x.reasons.join('; ')}`);
-    if (m.left_out) lines.push(`  - left out: ${m.left_out.length ? m.left_out.join(', ') : 'none'}`);
-    if (r.code === null) { lines.push(`- ${r.name}: no test files; none ran`); continue; }
-    lines.push(`- ${r.name}: exit ${r.code}; ${r.files.length} file(s): ${r.files.join(', ')}; tests ${n(r.tests)}, pass ${n(r.passed)}, fail ${n(r.failed)}`);
-  }
-  const ok = results.every((r) => r.ok);
-  lines.push('', ok ? 'Passed.' : 'Failed.');
-  if (summary) appendFileSync(summary, lines.join('\n') + '\n');
-  log(lines.join('\n'));
-  return ok;
 }

@@ -11,9 +11,9 @@ import { makeLister } from './notice/listing.mjs';
 import { describe, noticeText } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
-import { block, parseBlock } from './github.mjs';
-import { NOTICE_LIMIT, cutReason, writeNotice } from './noticecomments.mjs';
-import { JOB, JOB_MARK, describe as workLine } from './round.mjs';
+import { block } from './github.mjs';
+import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
+import { JOB, JOB_MARK, describe as workLine, jobBlockOf } from './round.mjs';
 import { noticeSeq } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail, git, run } from './util.mjs';
@@ -114,15 +114,15 @@ function readNotices(dirB, dirA, mods, n) {
   throw new Error(`reading the product failed:\n${err.trim().split('\n').slice(-12).join('\n')}`);
 }
 
-// A notice reaches a running job at once (the owner's decision of 24 Nov 2026, item 2): for each told user with an open
-// job pull request into the tranche branch, blocked or not, the notice goes into its job block, edited in place: its
-// work line, its reasons added to `uses`, `notice_seq` one higher (a test record made before it no longer stands), and
-// `notices` naming it by provider and merged pull request. The block's kind stays as it is. Three more rules (the
-// owner's decision B of 25 Nov 2026, after notify 1350 and 1356 on civicsmith):
+// A notice reaches an open job at once (design part 2, section 7; build text 1b, command 11): for each told user with
+// an open job pull request into the tranche branch, blocked or not, the notice goes into its job block, edited in
+// place: its work line, its reasons added to `uses`, `notice_seq` one higher (a test record made before it no longer
+// stands), and `notices` naming it by provider and merged pull request. The block's kind stays as it is. Also:
 // - no repeats: a told user whose job pull request of any state, open, merged or closed, already names the notice in
 //   its block's `notices` has it; nothing more is written for it;
-// - a job block stays under the size of one comment: where the notice's reasons would pass it, they go in without their
-//   before and after; where still too many, one reason in their place says so, and the whole module's tests run;
+// - a job block stays under the size of one comment, and the notice always goes in: its reasons are cut by
+//   fitReasons, down to one reason that runs the whole module's tests (and, where the block is full, its earlier uses
+//   cut or left out);
 // - a job merged or closed while its block was written did not carry the notice: the block is put back as it was, and
 //   the user counts as having no open job.
 // Returns the told users with no open job, whose notices wait for their next job.
@@ -133,10 +133,7 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
     && (p.state === 'open' || !mergedAt || !p.closed_at || p.closed_at >= mergedAt));
   const blocks = new Map();
   const blockOf = (pr) => {
-    if (!blocks.has(pr.number)) {
-      const c = ctx.gh.comments(ctx.slug, pr.number).find((x) => parseBlock(x.body, JOB_MARK));
-      blocks.set(pr.number, c ? { c, ...parseBlock(c.body, JOB_MARK) } : null);
-    }
+    if (!blocks.has(pr.number)) blocks.set(pr.number, jobBlockOf(ctx.gh.comments(ctx.slug, pr.number)));
     return blocks.get(pr.number);
   };
   const names = (b, t) => (Array.isArray(b?.data.notices) ? b.data.notices : []).some((x) => x.from === t.from && Number(x.merged) === n);
@@ -154,12 +151,12 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
     if (!pr) { rest.push(t); continue; }
     const b = blockOf(pr);
     if (!b) { ctx.log(`pull request ${pr.number} of ${t.module} has no job block; the notice from ${t.from} waits for its next job`); rest.push(t); continue; }
-    const { c, data, words } = b;
-    const bodyWith = (uses) => block(JOB_MARK, { ...data, work: [...(data.work || []), workLine(t)], uses: [...(data.uses || []), ...uses], notice_seq: noticeSeq(data) + 1, notices: [...(data.notices || []), { from: t.from, merged: n }] }, words);
+    const { comment: c, data, words } = b;
+    const bodyWith = (uses) => block(JOB_MARK, { ...data, work: [...(data.work || []), workLine(t)], uses, notice_seq: noticeSeq(data) + 1, notices: [...(data.notices || []), { from: t.from, merged: n }] }, words);
+    const held = data.uses || [];
     const reasons = t.uses || [];
-    const tooMany = { module: t.from, notFollowed: [`the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block; the whole module's tests run`], through: null };
-    const body = [reasons, reasons.map(cutReason), [tooMany]].map(bodyWith).find((x) => x.length < NOTICE_LIMIT);
-    if (!body) { ctx.log(`the job block of ${t.module} (pull request ${pr.number}) is too large to take the notice from ${t.from}; it waits for its next job`); rest.push(t); continue; }
+    const whole = (dropped) => ({ module: t.from, notFollowed: [`the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block${dropped ? `, which is full: its ${dropped} earlier reason(s) are left out` : ''}; the whole module's tests run`], through: null });
+    const body = bodyWith(fitReasons({ held, reasons, fits: (uses) => bodyWith(uses).length < NOTICE_LIMIT, whole }));
     const was = c.body;
     ctx.gh.editComment(ctx.slug, c.id, body);
     blocks.delete(pr.number);
@@ -171,15 +168,15 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
       rest.push(t);
       continue;
     }
-    ctx.log(`message the job of ${t.module} (pull request ${pr.number}): a notice from ${t.from} reached it${body === bodyWith(reasons) ? '' : ' (its reasons shortened to fit the job block)'}`);
+    ctx.log(`message the job of ${t.module} (pull request ${pr.number}): a notice from ${t.from} reached it${body === bodyWith([...held, ...reasons]) ? '' : ' (its reasons shortened to fit the job block)'}`);
   }
   return rest;
 }
 
 // 11. notify <pr>: for a merged pull request, the notice for each module whose files the merge changed, in module
 // order; each told user's reasons go into its open job's block, or, with no open job, into the notice comments on the
-// merged pull request (noticecomments.mjs), and the waiting-work record names the notice, for the module's next job
-// (the owner's decision B of 25 Nov 2026: the record held every reason and grew past what GitHub takes).
+// merged pull request (noticecomments.mjs), and the waiting-work record only names the notice, for the module's next
+// job (build text 1b, command 11).
 export function notifyCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   if (!pr.merged_at || !pr.merge_commit_sha) fail(`pull request ${n} is not merged`);
@@ -195,7 +192,7 @@ export function notifyCmd(ctx, n) {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
     // changed file names alone; only when one changed is the code read, by one tool and one reader, in stages: the
     // changed module's listing before and after, and only where it changed, the later modules that can use it, one
-    // at a time (a whole product read twice needs much memory: civicsmith, 23 Nov 2026).
+    // at a time, since a whole product read twice needs much memory (build text 1b, command 11, "How it reads").
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
@@ -254,13 +251,13 @@ export function checkCmd(ctx, moduleId, a) {
   return 0;
 }
 
-// 24. related <pr>: a told job's related tests, as the required run's step 3 picks them, made from the merged result
-// of the pull request's head into its base (git merge-tree, written out to a folder outside the working tree). It
-// only lists; it runs nothing and writes nothing to GitHub.
+// 24. related <pr>: a told job's related tests, as `p4 test` picks them (build text 1, section 5, step 5), made from
+// the merged result of the pull request's head into its base (git merge-tree, written out to a folder outside the
+// working tree). It only lists; it runs nothing and writes nothing to GitHub.
 export function relatedCmd(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   const module = pr.head.ref.match(JOB)?.[1] || fail(`pull request ${n} is not a job's (its branch is ${pr.head.ref})`);
-  const block = ctx.gh.comments(ctx.slug, n).map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean)?.data || fail(`pull request ${n} has no job block`);
+  const block = jobBlockOf(ctx.gh.comments(ctx.slug, n))?.data || fail(`pull request ${n} has no job block`);
   if (block.kind !== 'told') { ctx.log(`pull request ${n} is an ${block.kind || 'ordinary'} job of ${module}: the required run runs its whole module; there is no related list`); return 0; }
   const tip = (ref) => { git(['fetch', '-q', 'origin', ref], { cwd: ctx.root }); return git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }); };
   const baseSha = tip(`refs/heads/${pr.base.ref}`);
@@ -276,7 +273,7 @@ export function relatedCmd(ctx, n) {
     rmSync(base, { recursive: true, force: true });
   }
   ctx.log(`related tests of ${module} for pull request ${n}: ${pr.head.ref} at ${headSha.slice(0, 10)} merged into ${pr.base.ref} at ${baseSha.slice(0, 10)}`);
-  if (!r.files.length) ctx.log('The related list is empty: the required run passes at once.');
+  if (!r.files.length) ctx.log('The related list is empty: no test file runs, and p4 test still writes the test record a told job needs.');
   for (const f of r.files) ctx.log(`  ${f.file}: ${f.reasons.join('; ')}`);
   ctx.log(`  left out: ${r.leftOut.join(', ') || 'none'}`);
   return 0;

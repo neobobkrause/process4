@@ -226,6 +226,15 @@ test('the verdict passes at once where the scope is nothing: into main, a draft,
   assert.equal(verdict(j.root, opts(j, { baseRef: 'main' })), 0);
 });
 
+test('the verdict needs a record where a notice reached the job, as ready does, even with no module file changed; a draft passes at once', () => {
+  const m = merged({ 'README.md': 'y' });
+  const jobBlock = { module: 'orders', kind: 'ordinary', notice_seq: 1 };
+  assert.throws(() => verdict(m.root, opts(m, { jobBlock })), new RegExp(`no pass recorded for ${m.head}; run p4 test`));
+  assert.equal(verdict(m.root, opts(m, { jobBlock, draft: true })), 0);
+  const rec = { commit: m.head, notice_seq: 1, scope: 'nothing', why: 'w', files: [], passed: 0, failed: 0, result: 'pass', fails_total: 0, written: 'x' };
+  assert.equal(verdict(m.root, opts(m, { jobBlock, record: rec })), 0);
+});
+
 test('the verdict passes where the record stands for the head, and fails where it is missing, stale or behind a notice', () => {
   const m = merged({ 'src/orders/index.mjs': USES });
   const summary = join(mkdtempSync(join(tmpdir(), 'p4-sum-')), 'summary.md');
