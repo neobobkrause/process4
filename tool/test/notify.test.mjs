@@ -487,6 +487,30 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.entry === 'raw')));
 });
 
+test('a name two interface files export for two things is two entries, each told to its own users (civicsmith test-support)', () => {
+  const gen = (ret) => `/** @param {string} s @returns {${ret}} */\nexport function generate(s) { return ${ret === 'number' ? 's.length' : 's'}; }\n`;
+  const files = (a, b) => ({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nua\nub\n',
+    'process/modules/p.json': entry('p', [], { public: ['src/p/a.mjs', 'src/p/b.mjs', 'src/p/index.mjs'] }),
+    'process/modules/ua.json': entry('ua', ['p']),
+    'process/modules/ub.json': entry('ub', ['p']),
+    'src/p/a.mjs': a, 'src/p/b.mjs': b,
+    // The same thing exported again from a second file stays one entry.
+    'src/p/index.mjs': "export { generate as make } from './a.mjs';\nexport { generate as make2 } from './a.mjs';\n",
+    'src/ua/index.mjs': "import { generate } from '../p/a.mjs';\n/** @returns {string} */\nexport const one = () => generate('x');\n",
+    'src/ub/index.mjs': "import { generate } from '../p/b.mjs';\n/** @returns {string} */\nexport const two = () => String(generate('x'));\n",
+  });
+  const root = mkdtempSync(join(tmpdir(), 'p4-same-'));
+  write(root, files(gen('string'), gen('string')));
+  assert.deepEqual(Object.keys(analyse(root).listings.get('p').entries).sort(), ['make', 'make2', 'src/p/a.mjs:generate', 'src/p/b.mjs:generate']);
+  const after = mkdtempSync(join(tmpdir(), 'p4-same-'));
+  write(after, files(gen('number'), gen('string')));
+  const r = notice(root, after, 'p');
+  assert.deepEqual(r.entries.map((e) => e.entry).sort(), ['make', 'make2', 'src/p/a.mjs:generate']);
+  assert.deepEqual(r.told.map((t) => t.user), ['ua']);
+});
+
 test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {
   const root = mkdtempSync(join(tmpdir(), 'p4-nf-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-nf-'));

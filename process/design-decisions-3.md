@@ -50,3 +50,19 @@ Option B of three (A no change; B all three; C the second and third only). Resea
 
 **The owner's words.** "Decision: B, as recommended" — 25 November 2026 (in PROCESS #12's session, on the three fixes put
 to him together).
+
+### Subject: One name exported by two interface files for two things is two entries
+
+**The rule as it now stands.** An entry of an interface listing is named by its name within its module. Where two of a
+module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the
+file as the module list writes it; the same thing exported again from a second file stays one entry; a name exported once
+is named as before (build text 2b, section 6; `list` in `tool/lib/notice/listing.mjs`, with a test).
+
+It corrected a measured fault met on civicsmith (ARCH #18 via coordinator #9, 25 Nov 2026; reported by pdf-reader #2 and
+#3): test-support's five files each export `generate`, the listing kept one, so `notify 1340` told pdf-reader of a change to
+another file's `generate`; reproduced, a change to the earlier file's `generate` told nobody, missing its user. The proof's
+150 recorded answers are unchanged. It adds no test, gate, review or stop. Option 4B of two (4A no change, civicsmith's ARCH
+renames the exports; 4B the correction). Researched in `process/research/same-name-entries-25nov.md`. Products receive it
+with their next move.
+
+**The owner's words.** "Decision:4b" — 25 November 2026 (a comment on his standing page, on option 4B).

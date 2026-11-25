@@ -103,17 +103,26 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
     const kindsIn = { accepts: new Map(), handsBack: new Map() }; // data kind key -> entries mentioning it
     const note = (side, kctx, entryName) => { for (const k of kctx.kinds.keys()) { if (!kindsIn[side].has(k)) kindsIn[side].set(k, []); kindsIn[side].get(k).push(entryName); } };
     const dataKinds = [];
-    for (const file of mod.public) {
+    const exportsOf = (file) => {
       const sf = program.getSourceFile(file);
-      if (!sf) continue;
-      const modSym = checker.getSymbolAtLocation(sf);
-      if (!modSym) continue;
-      for (const exp of checker.getExportsOfModule(modSym)) {
-        const sym = exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp;
+      const modSym = sf && checker.getSymbolAtLocation(sf);
+      return modSym ? checker.getExportsOfModule(modSym) : [];
+    };
+    const resolved = (exp) => (exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp);
+    // A name that two interface files export for two different things is two entries, each named with its file
+    // (`<file>:<name>`); otherwise the second would hide the first (civicsmith test-support's five `generate`s).
+    const things = new Map();
+    for (const file of mod.public) for (const exp of exportsOf(file)) {
+      if (!things.has(exp.name)) things.set(exp.name, new Set());
+      things.get(exp.name).add(resolved(exp));
+    }
+    for (const file of mod.public) {
+      for (const exp of exportsOf(file)) {
+        const sym = resolved(exp);
         const decl = sym.declarations?.[0];
         if (!decl) continue;
         const where = `${path.relative(tree.root, decl.getSourceFile().fileName)}:${lineOf(decl)}`;
-        const name = exp.name;
+        const name = things.get(exp.name).size > 1 ? `${path.relative(tree.root, file)}:${exp.name}` : exp.name;
         if (sym.flags & ts.SymbolFlags.TypeAlias) {
           const t = checker.getDeclaredTypeOfSymbol(sym);
           const bounds = tagsOf(decl, 'bound').map(tagText);
@@ -168,7 +177,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
           } else {
             const k = newCtx();
             const shape = C.canon(t, k, true);
-            k.kinds.delete(`${mod.id}.${name}`);
+            k.kinds.delete(`${mod.id}.${exp.name}`);
             entries[name] = { kind: 'kind', shape, bounds: [...bounds, ...nestedBounds(k)], where };
             // Iteration 2: a message kind states its channel; the channel is part of what it hands back.
             const msg = tagsOf(decl, 'message');
