@@ -38,6 +38,16 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
+<h2>Also urgent, choice 6: civicsmith's list of waiting work is full, and new notices are being lost</h2>
+<p>The record of work waiting for each module is kept in one comment on GitHub, and GitHub holds at most 65,536 characters in a comment. civicsmith's has grown to 1,937 entries, about 171,000 characters, mostly notices. So each notice still to run can still reach a module with an open job, but cannot be written down for any other module. That part is lost until this is mended. ARCH has stopped running notices meanwhile (67 merges are waiting) and goes on with other work. Nothing already recorded is lost, and running the notices again after the mend puts back what is missing.</p>
+<ul>
+<li><b>6A. No change.</b> Notices for modules with no open job stay lost while the record is full.</li>
+<li><b>6B. The record spreads over as many comments as it needs, and each entry drops old detail that its merged change already holds (recommended).</b> This is the same way the notices' own details are already kept. After it lands and civicsmith moves, ARCH re-runs the waiting notices. A tool change; PROCESS #14 builds it on your word.</li>
+<li><b>6C. Only shrink the entries.</b> Not enough: the record would still be about 115,000 characters.</li>
+</ul>
+</section>
+
+<section class="wait">
 <h2>Waiting for you: start PROCESS #14, then archive PROCESS #13</h2>
 <p>I have reached the fill level where a fresh PROCESS takes over. My handover is written, nothing is half done and everything is merged. PROCESS #14 picks up choices 2 and 5 below exactly where they stand. You can answer them before or after starting it.</p>
 <ol>
@@ -77,7 +87,7 @@ a{color:var(--accent)}
 <li><b>5B. Ask one handover earlier, and do not make the handover that is known to break (recommended).</b> You are asked for a fresh ROOT at 3 levels from the limit. At 2 levels, ROOT's planned refresh does not hand over. Instead the fresh-ROOT start goes on your page, the way my own refresh does. An unplanned handover, from a ROOT that died, still happens. Text only; no new step for you, only the same one asked for earlier.</li>
 <li><b>5C. Only the second half of 5B</b> (no earlier warning).</li>
 </ul>
-<p>What is left is choices 2 and 5. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B</b>, or another mix. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
+<p>What is left is choices 2 and 5. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B, 6B</b>, or another mix. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
