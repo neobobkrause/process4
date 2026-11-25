@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 22:20 UTC, by PROCESS #17. New: three corrections so no converted module is missed (first below). Also waiting: needless notices your rule calls for, and idle sessions being compacted.</p>
+<p class="updated">Updated 25 Nov 2026, about 22:35 UTC, by PROCESS #17. Waiting for you: whether "accepts more" should still tell modules that hand a function on (first below); needless notices your rule calls for; idle sessions being compacted.</p>
 </header>
 
 
@@ -34,19 +34,14 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: three corrections so no converted module is missed</h2>
-<p><b>The question.</b> Which of these three rule corrections should I make? They are put together because each closes misses the others do not, and none affects another.</p>
-<p><b>What was found.</b> I rewrote the proof product so its code keeps the standard, and replayed its 150 changes. The tool then missed 16 modules that needed telling; before, only code outside the standard was catching them. A study traced each one. If ARCH and the jobs name and declare every change of meaning as the rules ask, 15 of the 16 are told; but that rests on them never forgetting, and nothing checks it. Three faults in the tool, where it does not do what the rules already say, I am correcting now without asking you (a module started as a separate program is followed to its file and its start settings; a copied type that relabels another module's type is recorded; a test that builds its own copy of a provider's interface is told of its changes). Three rule changes remain, for you:</p>
-<ol>
-<li><b>A module's separate program.</b> In the proof, billing starts the meter's program and reads what it writes. If the meter changes how it writes its messages, adds a "ready" line, or writes refusals elsewhere, billing breaks, and nothing compared sees it. <b>Correction:</b> what the started program does counts as part of the function that starts it, so a change to the program tells that function's users. Measured: all 11 such misses caught, 4 more needless notices.</li>
-<li><b>"Accepts more" is not safe as built.</b> Your rule says accepting more tells no one when the type checker confirms it. But a function that gains an optional parameter breaks a module that hands it to another function as a callback (the callback is then given an extra value, such as a list position, that lands in the new parameter). The checker cannot see this; it is a proven hole, not a guess. The same happens with a record that gains an optional field, for a module that passes in its own wider record. <b>Correction:</b> a confirmed "accepts more" still tells the modules that hand the function on, or build their own value of what it accepts. Measured: the one such miss caught, no more needless notices on the proof (the record case has no example there; unmeasured).</li>
-<li><b>Two parameters of the same kind swapping places.</b> The types do not change, so nothing is compared as changed. <b>Correction:</b> parameter names count as part of what a function accepts. Measured: both misses caught, 2 more needless notices. What it does not cover: a swap that keeps the old names (that still rests on the job declaring it), and a plain rename now tells users needlessly.</li>
-</ol>
+<h2>Waiting for you: "accepts more" can still break a module</h2>
+<p><b>The question.</b> Should a change the type checker confirms as "accepts more" still tell the modules that hand the function on, or build their own value of what it accepts?</p>
+<p><b>Why.</b> A job may add an optional parameter, or an optional field to what a function accepts, without ARCH, because accepting more tells no one. But a module that hands that function on as a callback can break (the callback is then given an extra value that lands in the new parameter), and so can a module that passes in its own wider record. The type checker cannot see this; the job cannot, because it does not see how later modules use it; ARCH is not involved. Only the tool can, from that module's uses file. Shown in the proof; the record case has no example there. With this and three tool faults I am correcting (they do not change a rule), the proof's code kept to the standard has no miss that ARCH, the jobs and the tool together cannot catch, judged by the rules rather than measured: the proof does not act out what ARCH and the jobs would declare.</p>
 <ul>
-<li><b>0. No change.</b> These misses rest on ARCH and the jobs naming every change of meaning; one they overlook breaks a user unseen until its next job or a walk.</li>
-<li><b>All three (recommended).</b> On the converted proof: no misses (with the tool corrections), about 7 more needless notices of about 280. You may also choose any of 1, 2 and 3 alone.</li>
+<li><b>0. No change.</b> Such breaks are found at the broken module's next job or a walk.</li>
+<li><b>A. Tell those modules (recommended).</b> No more needless notices on the proof.</li>
 </ul>
-<p>To choose, reply in my session starting with "Decision:", for example "Decision: all three". You may also set these aside.</p>
+<p>To choose, reply in my session starting with "Decision:". You may also set this aside.</p>
 </section>
 
 <section class="wait">
