@@ -18,7 +18,8 @@ handover. Open a research file, or give it to a worker, when a question needs it
 
 **Also urgent (10:40Z), choice 6 on his page:** civicsmith's waiting-work record passed GitHub's comment limit; every queued
 `notify` loses its placements for modules with no open job (`process/research/waiting-work-record-size-25nov.md`). Recommended
-6B: a record spans several comments; entries drop old `uses`. ARCH #24 holds the notify queue meanwhile.
+6B: a record spans several comments; entries drop old `uses`; `open --module` cuts a job block as `notify` does (filings
+could not open, 12:55Z). ARCH #24 holds the notify queue meanwhile.
 
 **Urgent first (09:05Z):** civicsmith `notify 1404`, a comments-only change, told ~150 (nearly all not followed fully) on
 55db8e4, which lacks 3B; ~70 old merges wait in ARCH #22's notify queue. On the owner's page, top: (1) his hold on
