@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 04:25 UTC, by PROCESS #13.</p>
+<p class="updated">Updated 25 Nov 2026, about 04:50 UTC, by PROCESS #13. Three choices below, put together because they act on the same thing: who is told after a change.</p>
 </header>
 
 <section class="wait">
@@ -34,9 +34,28 @@ a{color:var(--accent)}
 </ol>
 </section>
 
-<section class="card">
-<h2>Coming next: a narrower rule for modules the tool cannot fully follow</h2>
-<p>Today one changed function in civicsmith's test helpers told about 125 modules: about 5 really call it, and about 120 were told only because the tool cannot fully follow their plain JavaScript, so they "count as using everything". Each such told check costs about $1.75 and nearly all close with nothing to change. I am measuring a narrower rule (a changed function tells such a module only where its code names that function, or reaches the helpers in a way the tool cannot read). Nothing changes without your word; I will put the options here with the numbers, "no change" among them.</p>
+<section class="wait">
+<h2>Waiting for you: three choices about who is told after a change</h2>
+<p><b>The problem.</b> civicsmith's notices are still telling far too many modules. Two merges today told 197 and about 125 modules. Each told module costs a short check, about $1.40 to $1.90 and 2 minutes, and nearly all end with nothing to change: roughly $300 and $200 for those two merges alone. Three causes, each with its own choice. They work together: 1 and 2 cut most of the first kind of case (a module being described for the first time), 3 cuts most of the second (a helper few modules call).</p>
+
+<p><b>1. Two tool faults against your decision B of today.</b> (a) A told check opened from the waiting list was not recognised as having already had its notice, so a re-run told jurisdictions, signatures and connection-grammar a second time. (b) The tool printed some function headings with their brackets lost, so a kind stated for the first time still counted as a change, which your decision B said it should not. Both are corrected and tested, ready in pull request 275; the 150 answers recorded when the method was proven are unchanged.</p>
+<ul>
+<li><b>1A. No change.</b></li>
+<li><b>1B. Merge the correction (recommended).</b> It only makes the tool do what you already decided.</li>
+</ul>
+
+<p><b>2. A first written error or limit counts as a change.</b> When a module's code gets its first comment saying which error a function can raise, or its first stated limit on a value, the tool treats that as a change and tells every user, even where the code did not change. Your rule is that a change to those words means the interface changed. A first description of code that stayed the same is the case it does not quite fit. How much of the 197 this is, is not yet measured; I have asked civicsmith's ARCH for the exact lines.</p>
+<ul>
+<li><b>2A. No change.</b> Every first error or limit tells, as now.</li>
+<li><b>2C. A first error or limit tells no one where that function's own code is unchanged (recommended).</b> Where the code changed too, as when test-support's helper began raising a new error, it tells as now. A risk: a first limit written to tighten a function whose code did not change, which then tells no one. Not yet built; I would build it and prove it on the 150 recorded answers before merging.</li>
+</ul>
+
+<p><b>3. Modules the tool cannot fully follow are told of everything.</b> Today one changed helper function told about 125 modules: about 5 call it; about 120 were told only because the tool cannot fully follow their plain JavaScript. Measured by a worker: under the narrower rule, a changed function tells such a module only where its own files name that function, or where it reaches the helpers by a route the tool cannot read (an import it cannot follow, or another module handing the function on). A changed kind still tells them all. On the 150 recorded answers, 8 change, all one module told for nothing, and none misses a module that needed a change. On a made-up product shaped like civicsmith, a changed function told 7 instead of 50. Two rare misses would be accepted, as the design already accepts some: a function passed in as a callback from elsewhere, and a name built from pieces. Not known: how many of civicsmith's 120 stay told because of imports the tool cannot read.</p>
+<ul>
+<li><b>3A. No change.</b></li>
+<li><b>3B. The narrower rule (recommended).</b> It changes your decision 2 of the notice's rules.</li>
+</ul>
+<p>To answer, type in my session (or as a comment here), for example: <b>Decision: 1B, 2C, 3B</b>, or any other mix, or no change. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
