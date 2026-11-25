@@ -42,7 +42,7 @@ Each role reads one harness part, 07 or 08. The combined figure is given with 07
 
 Every set is under 175,000 bytes; the largest is a job's at 170,742, about 4,258 under the maximum. Whether a set stays under it once the product's own documents are added cannot be said: their sizes are not known, and the design sets no size for a record of decisions. A lane's and PROCESS's research is background, read through an index (design part 5, section 3), so it does not count in the set. Build text 3 keeps each page of the walks' documents under the single-text maximum.
 
-The build texts are kept with the design in the process's repository, and a session reads those its starting text names (part 0, section 5). A job reads four because it writes structured comments, its entry's `uses`, the `[met]` mark and walk steps, and reads its job block, whose forms are only there. Each role that writes a record of the shared state reads build text 5, where the records' forms are.
+The build texts are kept with the design in the process's repository, and a session reads those its starting text names (part 0, section 5). A job reads five because it writes structured comments, code to the coding standard, the `[met]` mark and walk steps, and reads its job block, whose forms are only there. Each role that writes a record of the shared state reads build text 5, where the records' forms are.
 
 ## 3. What the earlier process recorded about starting texts
 

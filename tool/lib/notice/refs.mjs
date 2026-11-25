@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { ts, loadReader, makeStandardProgram, forEachNode, lineOf, tagsOf, tagText, HOST_DESCRIPTION, NODE_DESCRIPTION } from './ts.mjs';
+import { ts, loadReader, makeStandardProgram, forEachNode, lineOf, tagsOf, tagText } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { carrierOf } from './carriers.mjs';
 import { isTestCall } from './check.mjs';
@@ -42,7 +42,6 @@ const REGEXP_STATIC = /^RegExpConstructor\.(\$\d|\$_|input|lastMatch|lastParen|l
 const CHANNELS = new Set(['"node:diagnostics_channel".channel', '"node:worker_threads".BroadcastChannel', '"node:worker_threads".setEnvironmentData', '"node:worker_threads".getEnvironmentData', 'NodeProcess.on', 'NodeProcess.once', 'NodeProcess.emit']);
 /** Activity a module's evaluation must not start (R21), and what a test may not rely on (R22). */
 const STARTS = /^(setTimeout|setInterval|setImmediate|NodeProcess\.on|NodeProcess\.once|"node:worker_threads"\.Worker|"node:child_process"\..*|"node:fs"\..*|"node:fs\/promises"\..*|fetch|.*\.listen|.*\.on)$/;
-const CLOCKS = /^(DateConstructor\.now|PerformanceNow|performance\.now|NodeProcess\.hrtime|Date)$/;
 const TIMERS = new Set(['setTimeout', 'setInterval', 'setImmediate']);
 const REFLECT_WRITES = new Set(['ObjectConstructor.assign', 'ObjectConstructor.defineProperty', 'ObjectConstructor.defineProperties', 'ObjectConstructor.setPrototypeOf', 'Reflect.set', 'Reflect.defineProperty', 'Reflect.setPrototypeOf', 'Reflect.deleteProperty']);
 const REFLECT_READS = new Set(['ObjectConstructor.keys', 'ObjectConstructor.values', 'ObjectConstructor.entries', 'ObjectConstructor.assign', 'JSON.stringify', 'structuredClone', 'StringConstructor', 'ObjectConstructor.fromEntries']);
@@ -326,7 +325,6 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (ts.isTemplateExpression(e)) return cross([[e.head.text], ...e.templateSpans.flatMap((s) => [evaluate(s.expression, file, depth + 1), [s.literal.text]])]);
     if (ts.isBinaryExpression(e) && e.operatorToken.kind === ts.SyntaxKind.PlusToken) return cross([evaluate(e.left, file, depth + 1), evaluate(e.right, file, depth + 1)]);
     if (ts.isConditionalExpression(e)) { const a = evaluate(e.whenTrue, file, depth + 1), b = evaluate(e.whenFalse, file, depth + 1); return a && b ? [...a, ...b] : null; }
-    if (ts.isMetaProperty(e.parent ?? e) && false) return null;
     if (ts.isPropertyAccessExpression(e)) {
       if (ts.isMetaProperty(e.expression) && e.expression.keywordToken === ts.SyntaxKind.ImportKeyword) {
         if (e.name.text === 'url') return [fileUrl(file)];
