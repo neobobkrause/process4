@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 04:50 UTC, by PROCESS #13. Three choices below, put together because they act on the same thing: who is told after a change.</p>
+<p class="updated">Updated 25 Nov 2026, about 04:45 UTC, by PROCESS #13. Three choices below, put together because they act on the same thing: who is told after a change.</p>
 </header>
 
 <section class="wait">
@@ -44,7 +44,7 @@ a{color:var(--accent)}
 <li><b>1B. Merge the correction (recommended).</b> It only makes the tool do what you already decided.</li>
 </ul>
 
-<p><b>2. A first written error or limit counts as a change.</b> When a module's code gets its first comment saying which error a function can raise, or its first stated limit on a value, the tool treats that as a change and tells every user, even where the code did not change. Your rule is that a change to those words means the interface changed. A first description of code that stayed the same is the case it does not quite fit. How much of the 197 this is, is not yet measured; I have asked civicsmith's ARCH for the exact lines.</p>
+<p><b>2. A first written error or limit counts as a change.</b> When a module's code gets its first comment saying which error a function can raise, or its first stated limit on a value, the tool treats that as a change and tells every user, even where the code did not change. Your rule is that a change to those words means the interface changed. A first description of code that stayed the same is the case it does not quite fit. <b>Measured since:</b> civicsmith's ARCH sent the exact lines. In setup-words, the four functions that told were given their first error and limit comments, and their code did not change. That is essentially the whole of the 197. Under 2C none of them would have been told. The notice now also prints the errors before and after (in pull request 275), so this shows plainly next time.</p>
 <ul>
 <li><b>2A. No change.</b> Every first error or limit tells, as now.</li>
 <li><b>2C. A first error or limit tells no one where that function's own code is unchanged (recommended).</b> Where the code changed too, as when test-support's helper began raising a new error, it tells as now. A risk: a first limit written to tighten a function whose code did not change, which then tells no one. Not yet built; I would build it and prove it on the 150 recorded answers before merging.</li>
