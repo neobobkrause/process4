@@ -22,8 +22,19 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:55 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. Below: the design of who uses what, being reworked on your points, with one question; and the choice about idle sessions being compacted.</p>
+<p class="updated">Updated 25 Nov 2026, about 16:55 UTC, by PROCESS #15. Below: the steps to drop civicsmith's refactoring tranche; the design of who uses what, being reworked on your points; and the choice about idle sessions being compacted.</p>
 </header>
+
+<section class="wait">
+<h2>Waiting for you: drop civicsmith's refactoring tranche, for a clean start</h2>
+<p>Agreed. Dropping the tranche is a decision about civicsmith, so it is made in civicsmith's coordinator session, not here. civicsmith's ARCH then carries it out with the drop command already in civicsmith's version.</p>
+<p><b>What the drop does.</b> civicsmith's code and tests go back to exactly what main holds, and the work branch starts again from there. The refactoring plan, ARCH's decisions, the requirements, the module list and the lanes' work are kept, so the refactoring can restart from its plan. The ten requirements this tranche marked met go back to "not yet met". The 99 changes that never told their users, and the 938 waiting notices, go with it. Nothing else changes.</p>
+<ol>
+<li>Open <b>https://claude.ai/code</b> and open the session named <b>civicsmith coordinator #9</b>.</li>
+<li>Type: <div class="draft">Decision: drop tranche t2, the refactoring tranche, so that civicsmith returns to a clean state. The refactoring restarts from its plan once the provider/user fix is in and confirmed as correct.</div></li>
+<li>The coordinator records your words and tells ARCH; ARCH replies when the drop is merged. You should then see the coordinator say civicsmith's work branch matches main's code.</li>
+</ol>
+</section>
 
 <section class="wait">
 <h2>Being reworked on your points: who uses what, and civicsmith's path</h2>
@@ -35,7 +46,7 @@ a{color:var(--accent)}
 <li><b>No sample:</b> build the real design and tool, run the real pass in parallel, and stop after the first 5 to 8 modules for you to see the effort and how faithful each file is.</li>
 <li><b>The record:</b> your decisions will rewrite the existing entries on who is told in place, retiring the earlier rulings this replaces, not add new ones beside them.</li>
 </ul>
-<p><b>One question.</b> You wrote that it makes sense to abandon the refactoring work done so far and finish this fix first. Shall I record that as a decision? If so, reply here with "Decision:" and your words. Nothing is done to civicsmith until the fix is built in any case.</p>
+<p><b>The first pass, as you put it:</b> the finished tool and job instructions, run on 8 real modules; their files are kept once we confirm they are correct, the effort is acceptable, and they really meet the provider/user requirements.</p>
 <p>My reading of one line: "should simply be by trying a few modules" I take as "should not". Tell me if I have it wrong.</p>
 </section>
 

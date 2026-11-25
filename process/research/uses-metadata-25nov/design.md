@@ -157,3 +157,19 @@ interface change in JavaScript, what the tool can list mechanically, and the job
 tests, said at the top of their instructions; the five-module sample is dropped in favour of the real pass stopped after
 the first 5 to 8 modules for review; decisions recorded by rewriting the existing entries in place (the notice subjects in
 `design-decisions-2.md`), not by new ones.
+
+The owner, later the same day (conversation, not marked):
+
+"I the plan is to abandon the refactoring work done so far and finish this fix first, then the decision should not be to not
+make any changes to civicsmith, the decision should be to delete the refactoring tranche so that we have a clean repo and
+can make a clean start when the fix is in and confirmed as correct.
+
+Running tests is throwaway work with not yet finalized code. I'm saying that we should develop finalized code and use that
+code on 8 real modules to create real metadata files which we'll keep once we confirm that the data is correct, the effort
+involved is acceptable, and the data really can be used to meet our provider/user dependency requirements."
+
+PROCESS #15: dropping civicsmith's tranche is a product decision, made through civicsmith's coordinator (design part 1 §4;
+part 3 §5), carried out by ARCH with the drop built 24 Nov, which civicsmith's version 55db8e4 already holds: main's code
+and tests come back; the plan, ARCH's decisions, requirement text, the module list and the lanes stay; the met marks t2 gave
+go back to not yet met. The steps for the owner are on his page. The first pass: the finished tool and job texts, run on 8
+real modules whose files are kept once correct, the effort acceptable and the files shown to meet the requirement.
