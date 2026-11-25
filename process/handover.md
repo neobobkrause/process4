@@ -21,6 +21,11 @@ set aside while this is designed. Design it in full with workers (the list at th
 to him with options; nothing is built before his marked decision. It reverses his own rule in design part 2 §7 point 1
 ("No list is kept by hand"): say so plainly.
 
+## Also waiting: a process fault from civicsmith (15:05Z)
+
+civicsmith ARCH #26 was compacted without asking for a refresh; its fill read 0 from inside. Recorded, not researched:
+`process/research/arch-compacted-fill-unread-25nov.md`. Research it and put options to the owner, "no change" among them.
+
 ## Earlier: the research it follows
 
 **Who is told after a change** (`process/research/who-is-told-25nov.md`, sections 3–5; prototype
