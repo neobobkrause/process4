@@ -5,14 +5,14 @@ Length: 161 lines. Last section: "7. Unproven, and not settled here".
 Written by Claude (PROCESS) on 19 Nov 2026, beside the seventh draft of the design
 (the eleven parts in `design/`, "the design"). **Status: proposed. Nothing here has
 run.** It answers item 11 of the design's part 10, section 2 ("The steps of an account
-switch, and what is read to show that it lost no work"), and build text 4, section 7,
-which left those steps unwritten. It adds no rule to the design, and no test, gate,
+switch, and what is read to show that it lost no work"), and build text 4, stage 7.
+It adds no rule to the design, and no test, gate,
 review or stop. It elaborates the design's part 4, section 7 ("the one way back") for the
 case of a switch of account; where it and the design differ, the design rules.
 
 Marks: **Decided here:** a choice of this text, which the owner or PROCESS can overrule.
 **Unproven:** never shown to work. The account switch failed once in the process before
-this one (the design, part 10, section 6), so every claim here is unproven until the
+this one (build text 4, stage 7), so every claim here is unproven until the
 trial (stage 7, item 15).
 
 ## 1. What an account switch is
@@ -98,8 +98,8 @@ account:
 1. ROOT fetches the newest copy of its branch and the process copy; it stops if it cannot
    (`starting_texts/root.md`, rule 1).
 2. ROOT reads the roles and lanes records. They name old-account sessions; this is a
-   restart. ROOT archives every session still named in the roles and lanes records and
-   every open job's session (the design, part 4, section 7). **Unproven:** whether a
+   restart. ROOT archives every session still named in the roles and lanes records but
+   PROCESS, and every open job's session (the design, part 4, section 7). **Unproven:** whether a
    session under the new account can archive a session that ran under the old one; where
    it cannot, those sessions are left to end on their own and ROOT notes it.
 3. ROOT starts the standing roles afresh — the watcher, ARCH and the coordinator — and
@@ -135,8 +135,8 @@ the Claude account, so each should read exactly as before the switch:
 **Decided here:** nothing is lost when the round record's open and blocked modules match
 GitHub's open pull requests and blocked records one for one, and every open pull request has
 a live new-account session against it. The coordinator puts this confirmation on the owner's
-standing page. **Unproven:** that this reads clean after a real switch; it did not once (the
-design, part 10, section 6).
+standing page. **Unproven:** that this reads clean after a real switch; it did not once (build
+text 4, stage 7).
 
 ## 6. Where this sits with the owner
 
@@ -144,14 +144,14 @@ design, part 10, section 6).
   particulars — which second GitHub account, which Cloudflare account, which hosts and
   tokens — are the owner's, from his new account (the design, part 7, section 4; part 9,
   section 3). This text does not name them.
-- The switch is rehearsed in trial stage 7 (build text 4, section 7; the design, part 10,
+- The switch is rehearsed in trial stage 7 (build text 4, section 3, stage 7; the design, part 10,
   section 4, item 15), which asks the owner for his acts in a second account. It is left to
   last because nothing else rests on it.
 
 ## 7. Unproven, and not settled here
 
 1. Everything here: the account switch has never been shown to lose no work, and failed
-   once in the process before this one (the design, part 10, section 6).
+   once in the process before this one (build text 4, stage 7).
 2. Whether a new-account session can archive an old-account session (section 4, step 2).
 3. Whether the new account's permission checker passes the roles' sanctioned cross-session
    and cross-repository acts at a real rate (the design, part 7, section 5, is probabilistic;

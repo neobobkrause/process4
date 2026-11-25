@@ -69,7 +69,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 | Lanes | Which session holds each of the product's lanes | ARCH. PROCESS keeps a like record of its own lanes in the process's repository |
 | Wakes | The time ROOT last woke | ROOT |
 | Stop | A stop on the owner's word, naming the account | The coordinator |
-| Standing notes | The owner's instructions now in force for running work: a held merge, a module put first, the slot number | The coordinator |
+| Standing notes | The owner's instructions now in force for running work: a held merge, a module put first, the slot number, a full external walk asked for | The coordinator |
 | Round | The tranche, its scope where one is recorded, the round, the areas named, the modules with work, and which are finished or blocked and why | ARCH's session, by the tool |
 | Waiting work | Notices, walk flaws and flaws reported by jobs, placed against modules with no open job | ARCH's session, by the tool |
 | Handover, one for each long-lived role | What that role's successor needs to carry on | The holder of the role |
@@ -99,7 +99,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 
 **Unproven:** all of it; it is rehearsed in the trial.
 
-- ROOT starts the watcher as its first act after fetching. The watcher has no other duty.
+- ROOT starts the watcher before the other roles, after fetching and, at a restart, archiving (section 11). The watcher has no other duty.
 - The watcher has its own scheduled wake. At each wake it reads the time ROOT last woke.
 - The watcher wakes hourly, half an hour after ROOT. If ROOT has missed two wakes, the watcher takes over. It writes itself into the roles record as ROOT, makes its own ROOT wake and removes the old ROOT's wake and its own watcher wake, starts a new watcher, tells the coordinator, and archives the old ROOT session if it still exists.
 - ARCH, the coordinator and PROCESS go on as they were. They name ROOT by role.
@@ -140,7 +140,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 
 - **Starting texts** are kept in the process's repository beside the tool, one for each role, at the product's fixed version. PROCESS writes and changes them, as a process change. The tool fills in a job's and a walking session's. This design is kept there too, in a folder of its own beside the build texts, and a session reads it from its copy of the process.
 - **Who directs whom.** The session that started a session directs it. The owner directs every session he speaks to. The coordinator's message carrying the owner's marked words is an instruction to ARCH.
-- **Naming a role to message it.** A session resolves a role to its current session address from the roles record, and a lane from the lanes record, and messages that address, never one it remembered (section 4, "sessions name roles, not session addresses"). A record in another repository cannot be read (part 7, section 3): the live PROCESS is found in the product's own roles record, and PROCESS finds each product's ROOT in its products registry (section 5). A role whose session the record does not yet name cannot be messaged until it is recorded.
+- **Naming a role to message it.** A session resolves a role to its current session address from the roles record, and a lane from the lanes record, and messages that address, never one it remembered (section 4, "sessions name roles, not session addresses"). A record in another repository cannot be read (part 7, section 3): the live PROCESS is found in the product's own roles record, and PROCESS finds each product's ROOT in its products registry (build text 5, section 4). A role whose session the record does not yet name cannot be messaged until it is recorded.
 - **Naming a session.** Every session carries a standard name, so the owner can see each one and its lineage. A session that holds a role is named `<product> <role> #<generation>`; PROCESS, which serves no one product, `PROCESS #<generation>`. The generation counts that role's sessions on that product — one for the first, one more at each refresh, replacement or takeover — and for a long-lived role it is kept in that role's handover record, so it continues across a full stop and never resets. A job, which holds no role, is named `<product> <module> #<n>`, `<n>` its job number (part 2, section 3); a walking session `<product> walk #<number>`, its walking-session number (part 3, section 3). A session that keeps a handover record names itself on start, from the generation there; ARCH names a job and a walking session when it starts them. How a name is set is in the harness part.
 - **ROOT's start.** The owner's plain prompt tells ROOT to fetch the process's copy and read ROOT's starting text. ROOT then reads the roles record. If it names sessions, this is a restart, and ROOT archives them first (section 7). ROOT makes its own scheduled wake; the watcher makes its own.
 - **A stopped session** is first woken by a message from ROOT. If it has not answered by ROOT's next wake, ROOT replaces it, or asks ARCH to where ARCH started it.

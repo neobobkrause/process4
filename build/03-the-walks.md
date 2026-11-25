@@ -1,6 +1,6 @@
 # Build text 3. How a walk is made
 
-Length: 198 lines. Last section: "9. The owner's to settle".
+Length: 197 lines. Last section: "9. The owner's to settle".
 
 Written by Claude on 18 Nov 2026. **Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. Reconciled the same day with build texts 1 and 2 and with the design; the tool's commands named here are in build text 1b, section 4.
 
@@ -48,8 +48,7 @@ The design fixes what an area is: for the internal walk a screen or a named grou
 2. For each, the tool lists the screen pages and journeys named in the headers of that module's steps (section 3) and in the endings of its requirement text (build text 2, section 4).
 3. A changed module that names none takes the areas of its users (the later modules whose uses files name it, build text 2c), and theirs in turn, until modules that name some are reached.
 4. That is the candidate list. ARCH adds an area where it doubts how a change will show (the design, part 3, section 3), and may take one away. Each added or removed area carries one line of reason.
-5. In the round that would end the tranche, ARCH adds the journeys the design's reading of part 3, section 5 calls for.
-6. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
+5. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
 
 Gives: the list is made the same way every round, and the judgment in it is visible. Costs: a deep module can pull in most of the product, and only ARCH's judgment trims that. **Unproven:** that requirement text and step headers name enough for the list to be right.
 
@@ -86,7 +85,7 @@ A walking session starts no workers. At the fill level it writes its last lines 
 
 **Decided here:** the process config holds two commands (build text 2, section 7, `walk`): the one that builds and serves the product on one machine, and the one that runs named steps against an address. A walking session reads them there: its starting text names the process config, and is filled in with names and addresses only (the design, part 4, section 11). Costs: two more entries in the process config; the design's list for it now names them (part 0, section 6).
 
-**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. Gives: room inside the about thirty minutes a session can run one thing. **Unproven:** all of this section.
+**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. Gives: room inside the time a session can run one thing (the design, part 7, section 1). **Unproven:** all of this section.
 
 ## 5. The external walk
 
