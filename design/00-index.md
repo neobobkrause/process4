@@ -62,7 +62,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.
 - **Module:** one part of the product, with its own code files, tests and requirements file. The product is one ordered list of modules, and a module may use only modules before it.
 - **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface.
-- **Interface:** what a module accepts and what it hands back. **Declared uses:** the modules a module states that it uses.
+- **Interface:** what a module accepts and what it hands back. **Means:** what a user's code depends on mechanically in a provider's item: its stated types, and the facts the tool works out from its code (part 2, section 7). **Uses file:** a module's record, written by the tool from its code and tests, of each earlier module and item it uses, and where. **Declared uses:** the providers a module's uses file names. **The coding standard:** the forms in which a module's code and tests may refer to an earlier module, and the rules on types, host facilities and order, under which the tool finds every use (part 2, section 7). **Conversion:** a module's first job under the coding standard.
 - **Job:** one session's work on one module, delivered as one pull request.
 - **Slot:** room for one job to run. Eight by default, counted across the account.
 - **Tranche:** one batch of product work, built on the tranche branch and reaching the main branch only as a whole.
