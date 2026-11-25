@@ -92,7 +92,7 @@ Listing of pricing
       throws: RangeError
 ```
 
-- An entry is named by its name within its module; the file and line beside it are not compared. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`).
+- An entry is named by its name within its module; the file and line beside it are not compared. Where two of the module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the file as the module list writes it; the same thing exported again from a second file stays one entry. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`).
 - An entry has a sort (function, value, kind, handle kind, method, class, class member, operation table, operation, stored rows) and, as they apply: what it accepts, what it hands back, its bound lines, the kinds of error it raises, a message's channel, whether a member may be missing, and the reader's printed declaration of it with comments removed, kept as a backstop.
 - A kind of plain data is written out in full, fields in name order, in every entry that accepts it or hands it back, and its bound lines go with it without the kind's name. A handle kind is written by name. A kind is accepted, handed back or both by where the module's entries use it.
 - Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A plain constant's value is content: it is widened to its kind unless its comment states one.
