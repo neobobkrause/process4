@@ -1,40 +1,10 @@
 # Build text 3. How a walk is made
 
-Length: 198 lines. Last section: "9. The owner's to settle".
+Length: 159 lines. Last section: "8. To try first in the trial repository, smallest first".
 
-Written by Claude on 18 Nov 2026. **Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. Reconciled the same day with build texts 1 and 2 and with the design; the tool's commands named here are in build text 1b, section 4.
+**Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. The tool's commands named here are in build text 1b, section 4. Its sections begin at 2.
 
-Marks: **Decided here:** a choice made in this text, with what it gives and costs. **Unproven:** never shown to work. **Owner's:** his to settle.
-
-## 1. What is recorded, and what is not
-
-**Measured, in the records of the process before this one.**
-
-- Its walks were a program, not sessions. One product module, a Playwright walker, had a local arm and a live arm (`evidence/levers_github_cloudflare_product.md`, section 7). The late runs recorded were on GitHub's machines.
-- The local arm ran the built product on the one machine, with a stand-in for the AI model, no deployment and no secret; its time limit was 45 minutes (`working/trial_plan_facts.md`, J11).
-- The live arm first took a fresh deployed copy through the product's own first-use door, invited a member, and kept the sign-in in a file outside the repository.
-- Steps: internal 238 and then 357 within one round; external 175 and then 157. Failures: internal 63 and then 96; external 1,691 and then 178, with 147 of 157 steps still failing (`evidence/product_side.md`). All 12 development deployments ended failed, 10 at the walk. No walk ever passed.
-- The two late runs of deployment with walk took 60 and 64 minutes. The deployment's share of that is not recorded.
-- The internal arm once left out page checks the live arm made, and 1,690 page faults were first seen live (`evidence/DECISIONS.md`).
-- The walker's reports and screenshots were committed: 13,017 files and 431 MB under one folder.
-- The owner, 8 Nov: "be careful that there aren't too many external walkers to cause the Cloudflare system to exceed limits of the account". The earlier setting was 85% of the tightest published limit. How many walkers the account bears was never measured.
-- The owner, 9 Nov: "The first run or two of the external system will run without without an AI account connected." A journey that uses AI was then reported as not walked, never as passed or failed.
-
-**Recorded about the product's documents** (`definition/process4_definition_v6.md`, line 273; `definition/process4_five_points.md`).
-
-- The owner, 14 Nov: "screens and journeys are kept in docs/development/ux-substrate/ in the product repo".
-- On the product's main branch the folder held 133 files, a Screens page and a Journeys page among them. On the building branch the Journeys page was removed on 6 Nov; the Screens page there is a copy of 28 Oct, with the data it is built from.
-- Three lists of journeys disagree: 27, 27 and 32. Of the 32, three begin at the website or the installer and six have steps only the AI assistant can do. Which list counts is settled (the owner, 20 November 2026): the UX design lane maintains the journey list, and that is the list to use.
-- Not recorded: how many screens there are, and how large either document is.
-
-**Seen today, on this session's machine only.** Headless Chrome driven by Playwright 1.63 opened a page served on the same machine in under a second, and an outside page through the machine's proxy. One try. A cloud environment has a list of allowed hosts.
-
-**Not measured.**
-
-- Any walk made by a session. The design says none ever was. One line of the evidence says the earlier process's walkers were sessions driving a browser; no report of such a walk was found.
-- A product built and served on a session's machine. The product in the records needs a newer Node than the machine examined had.
-- A session's browser reaching a development site.
-- How long a deployment takes from a session; what a walking session costs.
+Marks: **Decided here:** a choice made in this text, with what it gives and costs. **Unproven:** never shown to work.
 
 ## 2. Areas
 
@@ -48,8 +18,7 @@ The design fixes what an area is: for the internal walk a screen or a named grou
 2. For each, the tool lists the screen pages and journeys named in the headers of that module's steps (section 3) and in the endings of its requirement text (build text 2, section 4).
 3. A changed module that names none takes the areas of its users (the later modules whose uses files name it, build text 2c), and theirs in turn, until modules that name some are reached.
 4. That is the candidate list. ARCH adds an area where it doubts how a change will show (the design, part 3, section 3), and may take one away. Each added or removed area carries one line of reason.
-5. In the round that would end the tranche, ARCH adds the journeys the design's reading of part 3, section 5 calls for.
-6. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
+5. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
 
 Gives: the list is made the same way every round, and the judgment in it is visible. Costs: a deep module can pull in most of the product, and only ARCH's judgment trims that. **Unproven:** that requirement text and step headers name enough for the list to be right.
 
@@ -84,9 +53,9 @@ Gives: a step changes with the code it proves, under the rule that a job writes 
 
 A walking session starts no workers. At the fill level it writes its last lines in the walk issue, tells ARCH and stops, and ARCH gives the areas not yet walked to a fresh session (the design, part 4, section 11). It has no commit and no branch.
 
-**Decided here:** the process config holds two commands (build text 2, section 7, `walk`): the one that builds and serves the product on one machine, and the one that runs named steps against an address. A walking session reads them there: its starting text names the process config, and is filled in with names and addresses only (the design, part 4, section 11). Costs: two more entries in the process config; the design's list for it now names them (part 0, section 6).
+**Decided here:** the process config holds two commands (build text 2, section 7, `walk`): the one that builds and serves the product on one machine, and the one that runs named steps against an address. A walking session reads them there: its starting text names the process config, and is filled in with names and addresses only (the design, part 4, section 11). Costs: two more entries in the process config.
 
-**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. Gives: room inside the about thirty minutes a session can run one thing. **Unproven:** all of this section.
+**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. Gives: room inside the time a session can run one thing (the design, part 7, section 1). **Unproven:** all of this section.
 
 ## 5. The external walk
 
@@ -188,11 +157,3 @@ An area with no line, or marked not walked, means the walk is not finished. ARCH
 10. One journey that uses AI, once the owner has connected an account.
 
 Items 6 to 8 are the design's trial items 8 and 14 made smaller. A trial can break these choices; it cannot prove them.
-
-## 9. The owner's to settle
-
-1. **Which list of journeys counts — settled (the owner, 20 November 2026):** the UX design lane maintains the list of journeys; that is the list to use, and the owner does not approve it per tranche. The form of the two documents stays as section 2 decides: pages in the folder, one for each group of screens and each journey.
-2. **What "proper results" means for a journey that uses AI — settled (the owner, 20 November 2026):** an AI step is judged as a module test is judged (a different but still valid answer does not fail it), and the "what must be present" wording the `expects` line carries is set per journey by the UX design lane (section 5).
-3. **Whether a tranche can end while a journey that uses AI is left unwalked — settled (the owner, 20 November 2026): yes (option A).** When no AI account is connected, such journeys are recorded not walked and the tranche may still end; each is named not walked in the account after the round.
-4. **A flaw set aside by ARCH — settled (the owner, 20 November 2026): as recommended (option a).** ARCH may rule that a walker's entry is none of the three flaw kinds and set it aside, with the reason named in the account after the round (section 6, outcome 3).
-5. **Parts walked by hand — settled (the owner, 20 November 2026): as recommended (option a).** The walking session walks by hand, in its own words, whatever a page describes that no written step covers; a walk is not only its written steps (section 3).

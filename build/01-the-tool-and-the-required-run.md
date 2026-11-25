@@ -25,7 +25,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 
 ## 2. Where the tool lives, its language, and how a session gets it
 
-- **Where.** The process's repository has five folders: `tool/` (entry file `tool/p4.mjs`, libraries in `tool/lib/`, tests in `tool/test/`); `shims/`, with the workflow a product copies, `shims/module-tests.yml`, and the list of forbidden commands a product copies as its `.claude/settings.json`, `shims/claude-settings.json` (the design, part 6, section 2); `starting_texts/`, one text for each role (part 4, section 11), of which the tool fills in a job's and a walking session's; `design/`, the design's eleven parts; and `build/`, the build texts. PROCESS's own folder is a sixth.
+- **Where.** The process's repository holds, among others, five folders: `tool/` (entry file `tool/p4.mjs`, libraries in `tool/lib/`, tests in `tool/test/`); `shims/`, with the workflow a product copies, `shims/module-tests.yml`, and the list of forbidden commands a product copies as its `.claude/settings.json`, `shims/claude-settings.json` (the design, part 6, section 2); `starting_texts/`, one text for each role (part 4, section 11), of which the tool fills in a job's and a walking session's; `design/`, the design's eleven parts; and `build/`, the build texts. PROCESS's own folder is another.
 - **Decided here:** the language is plain JavaScript modules on Node 22 or newer, no build step. Gives: the carried-over code is reused; the reader that proved the notice is TypeScript's, a Node program; Node is on GitHub's machines and in the sessions. Costs: a product in another language still needs Node on the machine.
 - **Decided here:** the tool has one dependency, the `typescript` package at one exact version (5.6.3 was the version studied), named in `tool/package.json` with a lock file and installed with `npm ci` when the copy is fetched. Gives: both sides of a comparison use one reader version. Costs: the fetch needs the public package registry. Commands that do not read code must work without it.
 - **How a product names its version. Decided here:** the process config names the process repository's address and one full 40-character commit id of its main branch, beside the version's name (build text 2, section 7). No submodule entry and no branch name. Gives: one place names the version, and it reads the same on GitHub's machines and in a session. Costs: any pull request can change the line; the design already says nothing physical stops that (part 6, section 7).
@@ -54,7 +54,7 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 | `walk open`, `walk close` | Opening an issue in the product's repository; closing it |
 | `listing`, `uses`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `latest-version`, `walk areas`, `walk text`, `walk read` | Reading only |
 
-**Unproven:** every row. No approvals wording for Process4 is committed, and no act of this tool has been judged. Trial item 2 measures `merge`.
+**Unproven:** that the permission checker passes every row at a real rate. Trial item 2 measures `merge`.
 
 ## 5. The tests of a pull request, and the required run
 
