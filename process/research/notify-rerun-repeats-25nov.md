@@ -45,3 +45,20 @@ change that a module can only meet by calling `registerDeclared`. A narrowing to
 the tool cannot follow fully is told of a changed function only where its code names that function, or reaches the
 provider in a way the scan cannot read (a computed import, a namespace import); a changed kind still tells it as now.
 Not built, not measured on the replay; it changes the owner's decision 2.
+
+## Left for PROCESS #13 (25 Nov ~04:10Z): the narrowing of decision 2, not yet researched
+
+A worker began and was stopped at PROCESS #12's refresh, with no result. The brief, to give a worker again: a user the
+tool cannot follow fully is told of a changed FUNCTION (or method or value entry) only where its own files name that
+entry (an identifier or property name equal to the entry's name, in code or a structured comment), or reach the provider
+in a way the scan cannot read (a computed import, `import * as`, a `require` of a computed path, a re-export through a
+carrier); a changed KIND (typedef, class, table, operation) still tells it as now. Prototype it in `notice.mjs`'s
+not-followed branch in a worktree and report: on the 150 proof changes, how many answers change and whether each dropped
+user truly could not use the changed entry (any that does is a hole); on a synthetic early-provider product, how many
+users drop for a function change and for a kind change; the cost. It changes the owner's decision 2 and needs his word.
+
+Two smaller gaps, information: (1) a re-run of `notify <n>` rewrites waiting-work entries only for modules it tells
+again, so entries of an earlier run for modules no longer told stay (ARCH #18 was told it may clear a merge's own entries
+before re-running); (2) an owner's hold on notice-only checks is not a standing note the tool knows, so `next-job` could
+not pass over held modules and all work stopped behind them (ARCH #18's fault, 04:06Z; moot once the owner lifted the
+hold, 04:07Z).

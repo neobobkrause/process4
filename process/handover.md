@@ -3,55 +3,53 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 25 Nov 2026 ~02:35Z, by **PROCESS #12** (`session_018Bhcecv58XoNb6DvxuYkM3`), at a natural pause: nothing half
-done, everything merged. Your successor is **PROCESS #13**: read the generation in `handover-process` (12), name yourself
-`PROCESS #13` with set-session-title (your own session id), record generation 13 and your session there (the file must start
-with the JSON block; keep the registry as it stands), and message each ROOT in the registry your address. Read your own fill
-(`get_session`, `context_usage`; it reads 0 mid-turn, so judge by the work done). Refresh at the first natural pause after
-50 percent. Never `git add -A`; add paths by name.
+Last written: 25 Nov 2026 ~04:12Z, by **PROCESS #12** (`session_018Bhcecv58XoNb6DvxuYkM3`), at the owner's word ("refresh"),
+at a natural pause: nothing half done, everything merged. Your successor is **PROCESS #13**: read the generation in
+`handover-process` (12), name yourself `PROCESS #13` with set-session-title (your own session id), record generation 13 and
+your session there (the file must start with the JSON block; keep the registry as it stands), and message each ROOT in the
+registry your address. Read your own fill (`get_session`, `context_usage`; it reads 0 mid-turn, so judge by the work done).
+Refresh at the first natural pause after 50 percent. Never `git add -A`; add paths by name.
 
-**Your reading:** the design, build text 5, the three decision files, `process/README.md`, `process/research/README.md` (the
-index), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a worker, when a
-question needs it.
-
-**The record of decisions is now three files:** `design-decisions-3.md` (started 25 Nov) takes each new subject. Read
-all three. The owner's PROCESS start prompt names them.
+**Your reading:** the design, build text 5, the three decision files (`design-decisions.md`, `-2.md`, `-3.md`; new subjects
+go in `-3.md`), `process/README.md`, `process/research/README.md` (the index), `process/lanes/civicsmith/README.md`, and this
+handover. Open a research file, or give it to a worker, when a question needs it.
 
 ## START HERE
 
-**Nothing is being built. One thing waits for the owner, on his page:** typing in civicsmith's coordinator session
-`Instruction: move civicsmith to the latest Process4 version`, which brings civicsmith today's three decisions (below). He
-asked to hold the move until the notice tool was fixed; it is (pull request 264). After the move, the page tells him ARCH
-can: re-run `notify 1350` (test-support's optional parameter; should now tell no one, so the 121 told checks he paused, on
-his instruction typed in coordinator #7's session, can be withdrawn from waiting work by ARCH); re-run `notify 1339` and
-`1340` to recover the notices lost when the waiting-work write was refused; and run the notices ARCH #15 still owed (18,
-listed in civicsmith's `handover-arch`). Watch for the first `notify` on civicsmith after the move: its time, memory, and
-how many `<!-- process4-notice -->` comments it writes (about 100 on the made-up product; GitHub's write rate is untried).
+**civicsmith is on Process4 55db8e4** (all of 25 Nov's decisions, below). Its sessions: ROOT #9
+`session_018BhcefUXKE8xvUkaa9XjGi`, coordinator #9 `session_018BhcedNDzSLiPUv54snhat`, ARCH #18 `session_018BhceeSF76m9wXoZivYidA`.
+The owner lifted his hold on notice-only checks (04:07Z, typed in ARCH's session), so about 150 notice-only told jobs run
+8 at a time (about $1.75 each; most will close with nothing to change) and the refactoring tranche t2's round goes on to
+its walks. ARCH #18 was told (via coordinator #9) it may clear a merge's own old waiting-work entries before re-running
+`notify` for 1356, 1339, 1340, 1350 under the new rules.
 
-**Done by PROCESS #12, 25 Nov (all merged; entries in `design-decisions-2.md`, last three):**
-- Merging goes on while a notice is worked out (decision B; PR 255): ARCH starts `notify` in the background and keeps
-  merging; a user merged first gets a told job. Text only (ARCH rule 2, design part 2 §§3, 7, build 1b cmd 11).
-- A job's tests run on its branch brought up to the tranche (decision B, his "Yes, B covered the stale-branch item too";
-  PR 256): `p4 test` merges the base into the job branch and pushes first (`bringBaseIn`, `tool/lib/testrun.mjs`).
-- The notice after an early provider's merge (decision B; PR 264): the kinds a file declares worked out once per side and
-  kept, users read 20 to a program, the after side only where needed (1,507 s to 37 s on a made-up 200-module product,
-  answers identical); a not-followed user told only of a change that tells users (17 of 150 proof answers re-recorded,
-  all notices for nothing); reasons written as `<!-- process4-notice -->` comments on the merged pull request, waiting work
-  names the notice, `open --module` reads them; GitHub's words on a refused write. The owner's uses-file idea was built and
-  tested by the worker: same answers, little gain (an early merge makes every file stale); kept in the research.
-- The owner's page condensed to what waits; old "Done" items dropped (history is in the record and git).
+**First, for the owner: the narrowing of decision 2** (not yet researched; the brief is at the end of
+`process/research/notify-rerun-repeats-25nov.md`). test-support's merge 1350 tells about 125 modules because registerDeclared
+really changed (a new error kind) and about 120 modules the tool cannot follow fully "count as using everything"; only about
+5 call it. Give the brief to a worker, then put the options to him with numbers (A no change; B the narrowing). It changes
+his decision 2. Watch also: the first `notify` times on civicsmith after 55db8e4, and how many 1356 tells now.
 
-**Known limits left:** a job block gathering several large notices could pass a comment's size; a told job above the slot
-number with dozens told (ARCH started them at 8; information on the page in the research, no change proposed); the
-refactoring tranche draws in modules through job-reported flaws (by the rules; the owner told, no change asked).
+**Two small gaps (information, no options put):** a re-run of `notify` leaves an earlier run's entries for modules it no
+longer tells; an owner's hold on notice-only checks is not a standing note `next-job` can pass over (moot now).
 
-**Registry (in `handover-process`):** process3-probes ROOT #8 `session_018Bhcefa2wforoAh5zomFNh` (quiet); civicsmith ROOT #7
-`session_018BhceePQhUJcXt8W2pZGxx`, coordinator #7 `session_018BhcefEpYUAwGpc5yDxSCS`, ARCH #15 handed over at 02:08Z to
-ARCH #16 (address in civicsmith's roles record; ask the coordinator).
+**Done by PROCESS #12, 25 Nov (all merged; entries in `design-decisions-2.md`, last three, and `design-decisions-3.md`):**
+- Merging goes on while a notice is worked out (B; PR 255). A job's tests run on its branch brought up to the tranche
+  (B; PR 256, `bringBaseIn`).
+- The notice after an early provider's merge (B; PR 264): plain kinds worked out once per side, users read 20 to a program,
+  the after side only where needed (1,507 s to 37 s on a made-up product); a not-followed user told only of a change that
+  tells users; reasons as `<!-- process4-notice -->` comments on the merged pull request, waiting work names the notice.
+- `ready` says plainly where there is nothing to mark (PR 267). The record's third file begun.
+- The notice, second group (B; PR 271): an unknown kind ("anything") becoming stated tells no one (`known`, `knownDecl` in
+  `notice.mjs`); job blocks kept under 60,000 characters; a job merged while its block was written is put back and gets
+  a told job; GitHub's full refusal words; no repeated notice to a job of any state that carried it.
+- The owner's uses-file idea was built and tested by a worker: same answers, little gain once the speed fix is in.
+
+**Registry (in `handover-process`):** process3-probes ROOT #9 `session_018BhceeYSvKdwxWhuQiuUck` (quiet); civicsmith ROOT #9 as
+above.
 
 **Still to put to the owner, one at a time, when quiet:** who merges a product's set-up pull request into main (lane point
-11); civicsmith's installer takes no token, so the install and update before a release are his own Cloudflare sign-in.
-The read-only check count on civicsmith stays optional on his page.
+11); civicsmith's installer takes no token, so the install and update before a release are his own Cloudflare sign-in. The
+read-only check count on civicsmith stays optional on his page. Archive PROCESS #12 once PROCESS #13 runs.
 
 ## Start checks
 
