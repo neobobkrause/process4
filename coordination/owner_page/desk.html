@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 01:35 UTC, by PROCESS #12. One choice waits for you: the tool's speed. You asked to hold civicsmith's move until it is settled.</p>
+<p class="updated">Updated 25 Nov 2026, about 02:25 UTC, by PROCESS #12. One decision waits for you: the tool that tells other modules of a change. You asked to hold civicsmith's move until it is settled.</p>
 </header>
 
 <section class="card">
@@ -36,13 +36,20 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: make the tool that tells other modules of a change much faster, and stop it losing notices</h2>
-<p><b>The bottom line.</b> After record-grammar merged, the tool took about 43 minutes and 8 GB to work out who to tell, then could not save most of what it found. I recommend three changes to how it reads, plus keeping its saved list small. Estimated: from 43 minutes to a few minutes. Not yet shown: a helper is building them now and checking each against the 150 answers recorded when the method was first proven. Nothing is merged unless who gets told stays the same.</p>
-<p><b>Why it is slow, from the code.</b> It reads each of about 200 later modules on its own, from scratch, working out record-grammar and the shared lower modules again each time; it reads each one twice, before and after; and for a module it cannot fully follow, which is most of civicsmith's because it is plain JavaScript, it still reads every file to list every use, though such a module is told anyway and its job re-runs all its tests.</p>
+<h2>Waiting for you: one decision on the tool that tells other modules of a change (speed, lost notices, 121 modules told)</h2>
+<p><b>The bottom line.</b> One cause takes almost all the time, and fixing it keeps every answer the same. On a made-up product shaped like civicsmith the step fell from 25 minutes and 3.2 GB to 36 seconds and 1.7 GB, with all 150 recorded answers identical. For civicsmith's 43 minutes that suggests about one to one and a half minutes; an estimate, since civicsmith's code is heavier and was not opened.</p>
+<p><b>The cause.</b> For each later module the tool works out, from scratch, the kinds of everything that module reaches: about 74 modules each. On a product of 200 that same work is redone about 200 times. Kept once and reused, it is done once.</p>
 <ul>
 <li><b>A. No change.</b></li>
-<li><b>B. Three changes (recommended).</b> Stop reading a module at the first sign it cannot be fully followed, since it is told anyway. Read the "after" side only when the change adds new names. Read several modules at once, one per processor. And keep the saved list small, so GitHub takes it, and show GitHub's words if it ever refuses. Then run the step once more for record-grammar's merge, to recover the lost notices.</li>
-<li><b>C. B, and two more.</b> Share work across a batch of modules, and remember results for modules whose files did not change. More to build and prove; only if B is not enough.</li>
+<li><b>B. Three fixes together (recommended).</b>
+<ol>
+<li><b>Speed:</b> the worked-out kinds are kept and reused; the "after" side is read only when a change adds new names; one shared reading for each side. All 150 recorded answers identical.</li>
+<li><b>A harmless change tells no one:</b> a module the tool cannot fully follow is told of every change that could break it, but not of an optional addition or a brand-new part, as your rule "Accepting more tells no one" says. Of the 150 recorded answers, 17 change, every one a notice for nothing. This removes the 121 jobs test-support's change caused, and those like it.</li>
+<li><b>No notice lost:</b> the saved list was 4.7 million characters where GitHub takes 65,536, because each entry repeated the whole changed kind. The list keeps only who is told and where; the kind before and after is written once, on the merged change's own page, and copied into each job as it opens. If GitHub ever refuses a write, its own words are shown.</li>
+</ol>
+After civicsmith moves, ARCH runs the step again for record-grammar's and test-support's merges, to recover the lost notices.</li>
+<li><b>C. Fixes 1 and 3 only:</b> a module the tool cannot fully follow stays told of every change, harmless or not.</li>
+<li><b>Your uses-file idea:</b> tested and correct, but once fix 1 is in it adds little. After an early module changes, every later module's file is out of date, so the tool reads them all anyway. Not recommended now.</li>
 </ul>
 <p>To choose, comment on this item, for example <b>Decision: B, as recommended</b>. Nothing reaches civicsmith until you move it.</p>
 </section>
