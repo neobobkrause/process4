@@ -22,22 +22,27 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 17:00 UTC, by PROCESS #15. Below: the design of who uses what, being reworked on your points; and the choice about idle sessions being compacted. civicsmith's drop is under way.</p>
+<p class="updated">Updated 25 Nov 2026, about 17:15 UTC, by PROCESS #15. Two choices wait for you below: the reworked design for who uses what (I recommend C), and idle sessions being compacted (I recommend C). civicsmith's drop is under way.</p>
 </header>
 
 
 <section class="wait">
-<h2>Being reworked on your points: who uses what, and civicsmith's path</h2>
-<p>Thank you. I am reworking the design on your points before I put it to you again:</p>
+<h2>Waiting for you: the reworked design for who uses what</h2>
+<p><b>Bottom line.</b> I recommend choice C: a standard for how code may refer to an earlier module, so that the tool itself finds every use with certainty, plus each job's marking of what it changed, against a list the tool makes so nothing is left off. Then the first pass on 8 real civicsmith modules, and a stop for you to judge.</p>
+<p><b>Rigour from the language, as you asked.</b> A helper worked from JavaScript's own definitions, not from samples. The language allows references no tool can find with certainty, such as module names built while the program runs, or code built from text. So "find every use in whatever code is written" has no rigorous answer, and "find every use in code written to a standard" does. The standard has 13 rules. Imports name the module in plain text. Another module's files and programs are reached only through that module's own functions. Lookups by name go through a declared table. Every item a module offers states what it takes in and hands back, checked by the type checker; that last rule is what makes a value passed on through a middle module traceable. Two of the 13 rules are already yours. Under the standard the tool writes each module's uses file itself, so it cannot go stale. Code not yet in the standard is listed as such, and is told of every change, as today, until a job brings it in. Nothing new stops a job.</p>
+<p><b>Changes that must be told, from those that need not.</b> Before a job finishes, the tool lists every item of its module that may have changed: its own code, anything it reaches inside the module, or its description. On all 150 recorded changes this list missed none of the items that really changed. The job then marks each item: changes what it takes in, changes what it hands back, accepts more only, or unchanged. A short guide in its instructions covers three facts of JavaScript that turn an inward-looking change outward, and the tool flags those cases. An item left unmarked counts as changed. On the 150: 1 missed, against 45 today. If every job marked nothing, nobody would be missed; more modules would be told.</p>
+<p><b>Jobs that change no code run no tests</b>, said at the top of their instructions.</p>
+<p><b>Choice:</b></p>
 <ul>
-<li><b>Rigour from the language itself.</b> One helper is listing, from JavaScript's own definitions rather than from samples, every way one module's code can depend on another's. It is also weighing your idea of a standard: a short list of allowed ways to refer to an earlier module, with existing code changed to match. If the allowed ways are ones a tool can read with certainty, the tool can find every use itself, and the job's file becomes a checked record, not a guess.</li>
-<li><b>Telling outward changes from inward ones.</b> A second helper is defining exactly what counts as a change to what an item takes in or hands back in JavaScript. It is also working out what the tool can list mechanically so that no changed item is left off, and writing a short guide each job follows.</li>
-<li><b>No tests where no code changes:</b> said at the top of those jobs' instructions.</li>
-<li><b>No sample:</b> build the real design and tool, run the real pass in parallel, and stop after the first 5 to 8 modules for you to see the effort and how faithful each file is.</li>
-<li><b>The record:</b> your decisions will rewrite the existing entries on who is told in place, retiring the earlier rulings this replaces, not add new ones beside them.</li>
+<li><b>0. No change.</b> civicsmith cannot go on.</li>
+<li><b>A. A file each job writes, without a standard.</b> Rests on each job's care.</li>
+<li><b>B. The standard without the rule that items state their types.</b> The tool is certain for direct references; values passed through a middle module rest on the job.</li>
+<li><b>C. The full standard (recommended).</b> The tool is certain for every reference, except a few unsound corners of the type checker that are listed.</li>
 </ul>
-<p><b>The first pass, as you put it:</b> the finished tool and job instructions, run on 8 real modules; their files are kept once we confirm they are correct, the effort is acceptable, and they really meet the provider/user requirements.</p>
-<p>My reading of one line: "should simply be by trying a few modules" I take as "should not". Tell me if I have it wrong.</p>
+<p><b>Not proven:</b> how reliably real jobs mark their changes, and the cost of bringing civicsmith into the standard. Adding stated types to its modules is likely the largest cost, and it is unmeasured. The first pass measures both. If the types prove too costly, B is the fallback, and nothing already done is lost.</p>
+<p><b>The first pass, as you set it.</b> Build the finished design, instructions and tool; prove them on the tool's own tests and the 150 recorded changes, with the 13 newly found breaks added; move civicsmith to it once the drop is done; run jobs in parallel on the first 8 real modules; then stop. For each module you see the time and cost, its uses file, and whether that file serves the provider/user requirement. The files are kept once confirmed. Then you decide to go on, change the method, or abandon it.</p>
+<p><b>Your record.</b> Your decision will rewrite in place the existing entries on who is told, how the tool reads the product, how a notice reaches a module, and the merge wait. The earlier rulings, your choice 3B of this morning among them, are retired there, not left beside. It replaces your rule "No list is kept by hand".</p>
+<p>To choose, reply here starting with "Decision:", for example "Decision: C, with the first pass of 8". You may also set it aside or ask questions first. The full design is in <code>process/research/uses-metadata-25nov/design.md</code>.</p>
 </section>
 
 <section class="wait">
