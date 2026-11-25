@@ -2,7 +2,7 @@
 
 Length: 198 lines. Last section: "9. The owner's to settle".
 
-Written by Claude on 18 Nov 2026. **Status: proposed. Nothing here has run.** It stands beside the seventh draft of the design (`process4/definition/process4_definition_v7/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. Reconciled the same day with build texts 1 and 2 and with the design; the tool's commands named here are in build text 1b, section 4.
+Written by Claude on 18 Nov 2026. **Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. Reconciled the same day with build texts 1 and 2 and with the design; the tool's commands named here are in build text 1b, section 4.
 
 Marks: **Decided here:** a choice made in this text, with what it gives and costs. **Unproven:** never shown to work. **Owner's:** his to settle.
 
@@ -102,8 +102,8 @@ Gives: journeys that change data cannot disturb another session's journeys; fixe
 
 **Journeys that use AI.**
 
-- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked. A tranche may end with such journeys recorded not walked (the owner's decision A, 20 November 2026).
-- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision, 20 November 2026).** Costs: this is a session's judgment and can differ between sessions.
+- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked. A tranche may end with such journeys recorded not walked (the owner's decision).
+- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision).** Costs: this is a session's judgment and can differ between sessions.
 
 **How many sessions, and the account's limits. Decided here:**
 

@@ -28,7 +28,7 @@ trial (stage 7, item 15).
   reach a product's sessions, nor they PROCESS, across accounts, and cross-account
   PROCESS↔product coordination is not built. An account switch that moves a product PROCESS
   serves therefore moves PROCESS to the same account, keeping the two together; they are not
-  split across accounts (the owner's decision B, 20 November 2026). A future cross-account
+  split across accounts (the owner's decision). A future cross-account
   arrangement would need a coordination channel this process does not have.
 - It is **the one way back** (the design, part 4, section 7) with the owner's new-account
   acts done first: a full stop, then the owner's acts in the new account, then he starts
@@ -46,8 +46,8 @@ trial (stage 7, item 15).
   part 6, section 2).
 - The shared state, as comments on the shared-state issue on GitHub (the design, part 4,
   section 4); the round, waiting-work, standing-notes, lanes and handover records with it.
-- Each open job's branch, its pull request, its job block and its record (the design,
-  part 4, section 11; build text 5, section 5).
+- Each open job's branch, its pull request, its job block, its record and its test record
+  (the design, part 4, section 11; build text 5, section 5).
 
 **Changes, because it is account-bound:**
 
@@ -111,7 +111,7 @@ account:
    4, section 7; part 3, section 1).
 6. A process change that was mid-flight at PROCESS is resumed by the owner starting PROCESS
    in the process's repository, surfaced by the coordinator on the owner's standing page
-   (the design, part 4, section 5; part 6, section 7; the owner's decision C, 19 Nov 2026).
+   (the design, part 4, section 5; part 6, section 7).
 
 ## 5. What is read to show it lost no work
 

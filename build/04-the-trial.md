@@ -2,7 +2,7 @@ Length: 143 lines. Last section: "5. What the trial cannot show".
 
 # Process4 build text 4: the order of building and trying
 
-Written by Claude on 18 Nov 2026, beside the seventh draft of the design (`process4/definition/process4_definition_v7/`). **Status: proposed. Nothing here has run.** It adds no rule to the design. It puts in one order what the design's part 10, section 4 lists for the trial, what each stage builds of the tool (build text 1, section 7, which follows this text), the walk trials of build text 3 (section 8), and the trials of the shared state (`process4/working/design_work_18nov/shared_state_carrier.md`, section 7).
+Written by Claude on 18 Nov 2026, beside the design (`design/`). **Status: proposed. Nothing here has run.** It adds no rule to the design; where the two differ, the design rules. It puts in one order what the design's part 10, section 4 lists for the trial, what each stage builds of the tool (build text 1, section 7, which follows this text), the walk trials of build text 3 (section 8), and the trials of the shared state (`process4/working/design_work_18nov/shared_state_carrier.md`, section 7).
 
 Marks: **Decided here:** a choice of this text. **Unproven:** never shown to work.
 
@@ -47,17 +47,17 @@ Breaks, if it fails: the tool as each session's only door to GitHub (the design'
 
 ### Stage 1. The first piece of the tool
 
-Built, by the building session in the process's repository: the fetch line; `branch`, `push`, `open`, `ready`, `results`, `merge`; `state read`, and `state write` with `--create`; the required run with three of its five scopes (the tranche's pull request, no module code, whole module); the job's text; the tool's own tests for these. The process repository's own required run, `tool-tests`, reports on every pull request there and passes at once where no file of the tool changed: in the earlier process a pull request on which the required run never reported waited for ever.
+Built, by the building session in the process's repository: the fetch line; `branch`, `push`, `open`, `ready`, `results`, `merge`; `state read`, and `state write` with `--create`; `test`, and the required run's `run verdict`, with the scope steps for the tranche's pull request, a draft, no module code and a job's whole module (build text 1, section 5); the job's text; the tool's own tests for these. The process repository's own required run, `tool-tests`, reports on every pull request there and passes at once where no file of the tool changed: in the earlier process a pull request on which the required run never reported waited for ever.
 
 In the trial repository, a plain session started there writes the repository's first content as its first act, by the tool's `branch`, `push`, `open`, `ready` and `merge`: `process.json`, the module list, the workflow, and two made-up modules' entries with their requirements files. The base then has no process config, which build text 1, section 5 allows for. Its working branches, and the tranche branch itself, are made from the newest commit of main (the design, part 7, section 4, act 8), also where main already holds an earlier history: a tranche branch with a history of its own shares no history with main and cannot merge into it. That one session then plays ARCH: it makes the shared state (`state write --create`, in ROOT's place, since no ROOT is started before stage 2) and writes the records that `open --module` and, later, `next-job` need (build text 5, section 2).
 
 Tried:
 1. The required run reports under its one name and can be made required (his act 10). Whether it can be required before it has first run.
 2. Twenty merges or more made by the tool pass the permission checker (the design's trial item 2).
-3. A job, started by that session with the job text, writes its module and tests, marks ready, fixes a planted failure, and is merged with no review.
+3. A job, started by that session with the job text, writes its module and tests, runs them with `test`, fixes a planted failure, marks ready, and is merged with no review.
 4. Each starting text used here is accepted by the permission checker as naming the acts taken.
 
-Breaks, if it fails: merging by the tool with nobody watching; the two-part run that keeps the token from product code.
+Breaks, if it fails: merging by the tool with nobody watching; the tests run once in the job's session, and a required run that only reads their record and starts no product code.
 
 ### Stage 2. The shared state and the standing roles
 
@@ -81,7 +81,7 @@ Tried:
 2. A stop, a held merge, a module put first and a new slot number each work on his word, and the hourly wake does not undo a stop (item 6). This needs him for the stop and three short marked instructions.
 3. A job is replaced at its third failed run; a blocked job is made ready when the other module merges.
 4. An edit to his approvals, with a restart, carries the round on (item 11). This needs him for the edit.
-5. A process fault travels from a job to PROCESS: the coordinator reads PROCESS's record with `state read --repository`, and when PROCESS is not running surfaces starting it on the owner's standing page, who starts it in the process's repository; PROCESS is then refreshed by the owner starting its successor, and cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (item 10; the owner's decision C, 19 Nov 2026).
+5. A process fault travels from a job to PROCESS: the coordinator finds the live PROCESS in the product's own roles record (build text 5, section 4), and when PROCESS is not running surfaces starting it on the owner's standing page, who starts it in the process's repository; PROCESS is then refreshed by the owner starting its successor, and cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (item 10).
 
 ### Stage 4. The notice
 
@@ -91,9 +91,9 @@ Built: `listing`, `notify`, `check`, with the recorded changes of the notice's p
 
 Tried:
 1. A provider's interface change tells only the users of the changed entry, in a running round and not only on made-up changes replayed.
-2. A told job reads its uses from its pull request, changes what is needed, and the required run holds to the related tests.
+2. A told job reads its uses from its pull request, changes what is needed, and `test` runs only the related tests; the required run passes on its record.
 3. The tool says so when it has not followed a module fully, and that module's whole tests then run (build text 5, sections 6 and 7).
-4. A notice to a module whose job is open waits and becomes work for its next job.
+4. A notice to a module whose job is open reaches that job at once: it is added to the job block, ARCH tells the job, and the job runs its tests again before it can merge.
 
 ### Stage 5. The walks
 
@@ -110,7 +110,7 @@ Breaks, if it fails: walks made by sessions at all. The earlier process's walks 
 Built: the mechanical edit's scope; `release prepare`, `release publish`. In the made-up product: a made-up installer and a made-up updater.
 
 Tried:
-1. A mechanical edit across several modules merges once, with the touched modules' tests run and with none run (item 9). The second form is asked for by the one trial-only line of the process config (build text 2, section 7).
+1. A mechanical edit across several modules merges once, with the touched modules' tests run by ARCH's session (item 9; the design, part 2, section 9).
 2. The tranche branch merges into the main branch as a whole (item 8).
 3. A first trial release is made with `release prepare --development`: a pre-release with its tag, in the trial repository. The installer places it under fresh names in the development account, which is the "empty account" here. The updater then moves that copy to a newer release. Each is confirmed, and a release is prepared as far as his approval (item 12).
 4. His approval, typed in ARCH's own session, is accepted by the permission checker for publishing a release named as the trial's. **Decided here:** that release is prepared unpublished with `release prepare`, without `--development`, because a development release is published when it is made and needs no approval (the design, part 3, section 6). Gives: the typed approval has something to publish. Costs: one release that is public in form stands in the throwaway trial repository, and his trial wording of his approvals must allow it.
