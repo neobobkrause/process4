@@ -79,3 +79,16 @@ or `WORD_ROWS` nor reach setup-words by an unreadable route; since nearly every 
 save little on 1356. Its saving is on changes like 1350 (a function few call). Rough cost of 1356 at the observed rate:
 197 × about $1.55 ≈ $300, plus 1350's ~113 ≈ $175. Whether a bound written for the first time (no bound before) should count
 as "changed" is a separate question, not yet researched: build text 2b §6 is the place to read.
+
+### A bound written for the first time (PROCESS #13, 25 Nov ~04:25Z; not yet put to the owner)
+
+The first-comments exemption (design part 2 §7; `noticeWith` in `tool/lib/notice/notice.mjs`, `commentsOnly` in
+`check.mjs`) applies only where the module had no interface comments before AND the whole merge leaves running code the
+same. setup-words' 1356 met neither (it had some comments; it changed one word), as `notify-1356-anything-to-stated-25nov.md`
+found. Decision B of 25 Nov made an unknown kind becoming stated tell no one, but `bound changed` (build text 2b §6 table:
+"A bound line added, removed or reworded") still tells on a bound written where the entry had none. Possible option: a bound
+added to an entry that had no bound lines before is the entry being described, like a kind becoming known, and tells no one;
+a bound reworded or removed, or added beside existing bounds, still tells. Against it: the owner's decision 3 ("If those words
+are changing, then there must be a reason why. It must be that that interface is changing, right?") — a new bound can be a
+real tightening (a module that accepted 1 to 999 and now says 1 to 99 in its first bound line). Asked civicsmith ARCH #18
+(via coordinator #9, 04:25Z) how many of 1356's 197 are told only by such first bounds.
