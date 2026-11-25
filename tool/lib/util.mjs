@@ -38,6 +38,20 @@ export const TRANSIENT = /HTTP 5\d\d|ECONNRESET|ETIMEDOUT|EAI_AGAIN|connection r
 // and tries again up to four times, then fails (build text 1, section 3). GitHub does not
 // always say how long; a minute is GitHub's own advice for its secondary limit.
 // A call allowed to fail answers null; GitHub's own words for that failure are kept, as gh.refused, until the next call.
+// GitHub's whole refusal: gh's own line (standard error) and the message GitHub sent with it, which `gh api` prints on
+// standard output as JSON ({ message, errors }): "body is too long" is only there (notify 1356, 25 Nov 2026).
+export function refusalWords(r) {
+  const err = (r.stderr || '').trim().split('\n').slice(0, 3).join(' ');
+  const out = (r.stdout || '').trim();
+  let body = '';
+  try {
+    const j = JSON.parse(out);
+    const errors = (Array.isArray(j?.errors) ? j.errors : []).map((e) => (typeof e === 'string' ? e : e?.message || [e?.resource, e?.field, e?.code].filter(Boolean).join(' '))).filter(Boolean);
+    body = [j?.message, ...errors].filter(Boolean).join('; ');
+  } catch { body = out.split('\n').slice(0, 3).join(' '); }
+  if (!err) return body;
+  return body && !err.includes(body) ? `${err}; GitHub said: ${body}` : err;
+}
 export function makeGh({ exec = (args, input) => run('gh', args, { input }), wait = sleep } = {}) {
   return function gh(args, opts = {}) {
     gh.refused = null;
@@ -51,7 +65,7 @@ export function makeGh({ exec = (args, input) => run('gh', args, { input }), wai
       wait(RATE.test(text) ? (after ? Number(after[1]) : 60) * 1000 : 5000 * (tries + 1));
     }
     if (r.code !== 0) {
-      const words = (r.stderr || r.stdout).trim().split('\n').slice(0, 3).join(' ');
+      const words = refusalWords(r);
       if (opts.allowFail) { gh.refused = words; return null; }
       fail(`GitHub refused: ${words}`);
     }

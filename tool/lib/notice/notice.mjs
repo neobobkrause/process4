@@ -49,6 +49,56 @@ function renameHandles(c, map) {
   return JSON.parse(JSON.stringify(c), (k, v) => (v && v.k === 'handle' && map.has(v.name) ? { ...v, name: map.get(v.name) } : v));
 }
 
+/**
+ * An unknown kind becoming known tells no one (the owner's decision B of 25 Nov 2026): where the reader inferred
+ * "anything" before and the comments now state a kind, the running code is the same; only what the reader knows
+ * changed, as in a module's first comments step (design part 2, section 7). `known(before, after)` is the canonical form
+ * before with each "anything" replaced by the kind stated at the same place after, so that only the other differences
+ * are judged. Places are matched by field name, and lists item by item (the members of a union only where both have
+ * as many).
+ */
+export function known(b, a) {
+  if (b && typeof b === 'object' && !Array.isArray(b) && b.k === 'any' && a && typeof a === 'object' && !Array.isArray(a) && a.k !== undefined && a.k !== 'any') return a;
+  if (Array.isArray(b) && Array.isArray(a)) return b.map((x, i) => (i < a.length ? known(x, a[i]) : x));
+  if (!b || !a || typeof b !== 'object' || typeof a !== 'object' || Array.isArray(a)) return b;
+  if (b.k === 'union' && a.k === 'union' && b.of?.length !== a.of?.length) return b;
+  const out = {};
+  for (const [k, v] of Object.entries(b)) out[k] = k in a ? known(v, a[k]) : v;
+  return out;
+}
+
+/**
+ * The same for a declaration as the reader prints it: true where the two differ only at places where the one before
+ * says `any` and the one after states a kind there (each differing stretch of words is `any` before, one kind after).
+ */
+export function knownDecl(b, a) {
+  if (b === a) return true;
+  const words = (t) => t.match(/[A-Za-z_$][\w$]*|=>|\S/g) ?? [];
+  // A kind written in place of `any`: whole in itself (its brackets closed), with no list, member or statement begun.
+  const oneKind = (ws) => {
+    let depth = 0;
+    for (const w of ws) {
+      if ('([{<'.includes(w)) depth++;
+      else if (')]}>'.includes(w)) { if (--depth < 0) return false; }
+      else if (depth === 0 && [',', ';', ':', '='].includes(w)) return false;
+    }
+    return depth === 0;
+  };
+  const x = words(b), y = words(a);
+  if (x.length * y.length > 4_000_000) return false; // too long to align: judged as a difference
+  // the longest common run of words, then the stretches that differ
+  const L = Array.from({ length: x.length + 1 }, () => new Uint32Array(y.length + 1));
+  for (let i = x.length - 1; i >= 0; i--) for (let j = y.length - 1; j >= 0; j--) L[i][j] = x[i] === y[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  let i = 0, j = 0, gb = [], ga = [];
+  const stretchOk = () => { const ok = (!gb.length && !ga.length) || (gb.length === 1 && gb[0] === 'any' && ga.length > 0 && oneKind(ga)); gb = []; ga = []; return ok; };
+  while (i < x.length || j < y.length) {
+    if (i < x.length && j < y.length && x[i] === y[j]) { if (!stretchOk()) return false; i++; j++; }
+    else if (j < y.length && (i === x.length || L[i][j + 1] >= L[i + 1][j])) ga.push(y[j++]);
+    else gb.push(x[i++]);
+  }
+  return stretchOk();
+}
+
 /** Compares two listings of one module, entry by entry. */
 export function diffListings(moduleId, before, after) {
   const b = before.entries, a = after.entries;
@@ -62,7 +112,7 @@ export function diffListings(moduleId, before, after) {
     const eb = b[g];
     if (!['kind', 'handle kind'].includes(eb.kind)) continue;
     const match = fresh.find((f) => a[f].kind === eb.kind && !renamed.has(f) && [...renamed.values()].indexOf(f) < 0 &&
-      (eb.kind === 'kind' ? same(eb.accepts ?? eb.handsBack, a[f].accepts ?? a[f].handsBack) : same(eb.handsBack, a[f].handsBack)));
+      (eb.kind === 'kind' ? same(known(eb.accepts ?? eb.handsBack, a[f].accepts ?? a[f].handsBack), a[f].accepts ?? a[f].handsBack) : same(known(eb.handsBack, a[f].handsBack), a[f].handsBack)));
     if (match) { renamed.set(g, match); if (eb.kind === 'handle kind') handleMap.set(`${moduleId}.${g}`, `${moduleId}.${match}`); }
   }
   const renamedTo = new Set(renamed.values());
@@ -97,15 +147,18 @@ export function diffListings(moduleId, before, after) {
       }
       continue;
     }
+    // What the entry accepts and hands back before, with each "anything" that is a stated kind after read as that kind:
+    // only the other differences are judged (an unknown kind becoming known tells no one).
+    const ek = { ...eb, accepts: known(eb.accepts, ea.accepts), handsBack: known(eb.handsBack, ea.handsBack) };
     // Iteration 5 (rule 33): an added overload that keeps every old signature only accepts more.
     const sigPairs = (e) => e.accepts?.k === 'overloads' ? e.accepts.of.map((p, i) => JSON.stringify([p, e.handsBack.of[i]])) : e.accepts?.k === 'params' ? [JSON.stringify([e.accepts, e.handsBack])] : null;
-    const pb = sigPairs(eb), pa = sigPairs(ea);
-    if (pb && pa && (eb.accepts?.k === 'overloads' || ea.accepts?.k === 'overloads') && pb.every((x, i) => pa[i] === x) && same(eb.bounds, ea.bounds) && same(eb.throws ?? [], ea.throws ?? [])) {
+    const pb = sigPairs(ek), pa = sigPairs(ea);
+    if (pb && pa && (ek.accepts?.k === 'overloads' || ea.accepts?.k === 'overloads') && pb.every((x, i) => pa[i] === x) && same(eb.bounds, ea.bounds) && same(eb.throws ?? [], ea.throws ?? [])) {
       if (pa.length > pb.length) out.push({ entry: name, changes: ['accepts more'], tells: 'nobody', before: describe(eb), after: describe(ea), names: [name, name] });
       continue;
     }
     const changes = [];
-    const ba = renameHandles(eb.accepts, handleMap), bh = renameHandles(eb.handsBack, handleMap);
+    const ba = renameHandles(ek.accepts, handleMap), bh = renameHandles(ek.handsBack, handleMap);
     if (!same(ba, ea.accepts)) changes.push(standsIn(ba, ea.accepts) ? 'accepts more' : 'cannot stand in');
     if (!same(bh, ea.handsBack)) changes.push('hands back differently');
     if (!same(eb.bounds, ea.bounds)) changes.push('bound changed');
@@ -120,7 +173,7 @@ export function diffListings(moduleId, before, after) {
     if (!changes.length && eb.decl !== undefined && ea.decl !== undefined) {
       let bd = eb.decl;
       for (const [o, n] of renamed) bd = bd.replace(new RegExp(`\\b${o}\\b`, 'g'), n);
-      if (bd !== ea.decl) changes.push('declaration changed (not classified)');
+      if (!knownDecl(bd, ea.decl)) changes.push('declaration changed (not classified)');
     }
     if (!changes.length) continue;
     const names = [name, pairedMember.get(name) ?? name];

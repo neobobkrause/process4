@@ -12,6 +12,13 @@ export const NOTICE_MARK = 'process4-notice';
 export const NOTICE_LIMIT = 60000;
 
 const bodyOf = (data) => block(NOTICE_MARK, data);
+
+/** A reason without its before and after (the words of what changed); its entry, changes and lines, which choose the related tests, are kept. */
+export const cutReason = (r) => {
+  if (r.notFollowed || (r.before === undefined && r.after === undefined)) return r;
+  const { before, after, ...rest } = r;
+  return { ...rest, cut: 'its before and after are left out: too large for one comment' };
+};
 const fits = (data) => bodyOf(data).length < NOTICE_LIMIT;
 
 /**
@@ -40,9 +47,7 @@ export function noticeParts(from, merged, users) {
       if (tryAdd(module, [r])) continue;
       if (Object.keys(cur.users).length) start();
       if (tryAdd(module, [r])) continue;
-      const { before, after, ...rest } = r;
-      const cut = { ...rest, cut: 'its before and after are left out: too large for one comment' };
-      if (!tryAdd(module, [cut])) fail(`a reason of ${module} in the notice from ${from} is too large for one comment even without its before and after; the notice for pull request ${merged} is owed`);
+      if (!tryAdd(module, [cutReason(r)])) fail(`a reason of ${module} in the notice from ${from} is too large for one comment even without its before and after; the notice for pull request ${merged} is owed`);
     }
   }
   if (!Object.keys(cur.users).length && parts.length > 1) parts.pop();
