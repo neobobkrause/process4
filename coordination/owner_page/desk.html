@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 21:40 UTC, by PROCESS #17. New: a measured gap, 16 missed modules once code keeps the standard (under "Being built"); options will follow. Waiting for you: your answer on needless notices (A), and the choice about idle sessions being compacted.</p>
+<p class="updated">Updated 25 Nov 2026, about 22:20 UTC, by PROCESS #17. New: three corrections so no converted module is missed (first below). Also waiting: needless notices your rule calls for, and idle sessions being compacted.</p>
 </header>
 
 
@@ -34,18 +34,30 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: needless notices after conversion</h2>
-<p>You require no missed notices and no needless ones. Once modules are converted, two kinds of needless notice remain:</p>
+<h2>Waiting for you: three corrections so no converted module is missed</h2>
+<p><b>The question.</b> Which of these three rule corrections should I make? They are put together because each closes misses the others do not, and none affects another.</p>
+<p><b>What was found.</b> I rewrote the proof product so its code keeps the standard, and replayed its 150 changes. The tool then missed 16 modules that needed telling; before, only code outside the standard was catching them. A study traced each one. If ARCH and the jobs name and declare every change of meaning as the rules ask, 15 of the 16 are told; but that rests on them never forgetting, and nothing checks it. Three faults in the tool, where it does not do what the rules already say, I am correcting now without asking you (a module started as a separate program is followed to its file and its start settings; a copied type that relabels another module's type is recorded; a test that builds its own copy of a provider's interface is told of its changes). Three rule changes remain, for you:</p>
+<ol>
+<li><b>A module's separate program.</b> In the proof, billing starts the meter's program and reads what it writes. If the meter changes how it writes its messages, adds a "ready" line, or writes refusals elsewhere, billing breaks, and nothing compared sees it. <b>Correction:</b> what the started program does counts as part of the function that starts it, so a change to the program tells that function's users. Measured: all 11 such misses caught, 4 more needless notices.</li>
+<li><b>"Accepts more" is not safe as built.</b> Your rule says accepting more tells no one when the type checker confirms it. But a function that gains an optional parameter breaks a module that hands it to another function as a callback (the callback is then given an extra value, such as a list position, that lands in the new parameter). The checker cannot see this; it is a proven hole, not a guess. The same happens with a record that gains an optional field, for a module that passes in its own wider record. <b>Correction:</b> a confirmed "accepts more" still tells the modules that hand the function on, or build their own value of what it accepts. Measured: the one such miss caught, no more needless notices on the proof (the record case has no example there; unmeasured).</li>
+<li><b>Two parameters of the same kind swapping places.</b> The types do not change, so nothing is compared as changed. <b>Correction:</b> parameter names count as part of what a function accepts. Measured: both misses caught, 2 more needless notices. What it does not cover: a swap that keeps the old names (that still rests on the job declaring it), and a plain rename now tells users needlessly.</li>
+</ol>
 <ul>
-<li><b>A.</b> A module uses exactly the item that changed, but its own use isn't affected. No tool can decide that, and your rule "any change to either a provider's domain or range necessitates that its users be retested" calls for telling it. Its told job runs only its related tests and closes. <b>Do you accept A?</b></li>
-<li><b>B.</b> The tool being less precise than it could be. PROCESS #17 tightens it next, with no rule changed: matching member by member, including telling a new field only to modules that use the whole value; types written differently; facts worked out from the code; named meanings reaching modules that only pass the value on; "accepts more". Then it measures the result on a converted copy of the proof.</li>
+<li><b>0. No change.</b> These misses rest on ARCH and the jobs naming every change of meaning; one they overlook breaks a user unseen until its next job or a walk.</li>
+<li><b>All three (recommended).</b> On the converted proof: no misses (with the tool corrections), about 7 more needless notices of about 280. You may also choose any of 1, 2 and 3 alone.</li>
 </ul>
+<p>To choose, reply in my session starting with "Decision:", for example "Decision: all three". You may also set these aside.</p>
+</section>
+
+<section class="wait">
+<h2>Still waiting for you: needless notices that your rule calls for</h2>
+<p>On the converted proof, about 162 needless notices remain. 75 are a module using exactly what changed whose use is not affected (for example a limit lowered that it never comes near). No tool can decide that without running its tests, and your rule "any change to either a provider's domain or range necessitates that its users be retested" calls for telling it; its told job runs only its related tests and closes. <b>Do you accept these?</b> The other 87 come from limits on what the tool can prove (shared state, a whole record held but the changed part never touched), which I keep narrowing where it can be proven.</p>
 </section>
 
 <section class="card">
 <h2>Being built: who uses what, your two decisions</h2>
 <p>Your words, recorded exactly: "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job." (25 Nov, 18:51 UTC) and "Decision: use the simplification: the tool carries Node's and workerd's facility classification; ARCH names the boundary modules and classifies the packages its product uses." (20:26 UTC).</p>
-<p>The design, your record, the build texts, the job's and ARCH's instructions and the tool all sit together on one branch, <code>work/decision-c</code>, evolved in place, with no contradictions known. The tool's 224 tests pass. On the proof's 150 recorded changes plus 13 further breaks, 112 modules needed telling and none was missed, <b>but that was not the whole truth</b>: when the proof's code is rewritten to keep the standard (as civicsmith's will be), the needless notices fall from 846 to 281, and <b>16 modules that needed telling are missed</b>. Before, they were told only because code outside the standard hears of every change. Eleven are changes to how one module's separate program writes its output or must be started; two are two parameters of the same kind swapping places; three are known single cases. I am studying each now, and will bring you the causes and options. Nothing goes to main, and civicsmith does not move, until this is closed. A study with fresh eyes fixed 25 contradictions and folded duplicated rules, and the reading limits are comfortable again (a job reads 166,734 bytes of 175,000).</p>
+<p>The design, your record, the build texts, the job's and ARCH's instructions and the tool all sit together on one branch, <code>work/decision-c</code>, evolved in place, with no contradictions known. The tool's 224 tests pass. On the proof's 150 recorded changes plus 13 further breaks, 112 modules needed telling and none was missed, <b>but that was not the whole truth</b>: when the proof's code is rewritten to keep the standard (as civicsmith's will be), the needless notices fall from 846 to 281, and <b>16 modules that needed telling are missed</b>. Before, they were told only because code outside the standard hears of every change. Eleven are changes to how one module's separate program writes its output or must be started; two are two parameters of the same kind swapping places; three are known single cases. The causes and options are above. Nothing goes to main, and civicsmith does not move, until this is closed. A study with fresh eyes fixed 25 contradictions and folded duplicated rules, and the reading limits are comfortable again (a job reads 166,734 bytes of 175,000).</p>
 <p>Before it reaches main, as one pull request: the precision work above, and a fresh check that tool and texts agree. Then the trial, civicsmith's move on your instruction, and the first pass of 8 modules, which stops for your review.</p>
 </section>
 
