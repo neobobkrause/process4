@@ -1,0 +1,13 @@
+{
+  "name": "calendar",
+  "files": [
+    "calendar/src/"
+  ],
+  "tests": [
+    "calendar/test/"
+  ],
+  "public": [
+    "calendar/src/index.mjs"
+  ],
+  "uses": []
+}

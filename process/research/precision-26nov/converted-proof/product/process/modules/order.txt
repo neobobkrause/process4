@@ -1,0 +1,11 @@
+text-rules
+money
+calendar
+store
+rooms
+bookings
+door
+meter
+billing
+front
+reports

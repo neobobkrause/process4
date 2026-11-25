@@ -1,0 +1,13 @@
+{
+  "name": "money",
+  "files": [
+    "money/src/"
+  ],
+  "tests": [
+    "money/test/"
+  ],
+  "public": [
+    "money/src/index.mjs"
+  ],
+  "uses": []
+}

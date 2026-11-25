@@ -1,0 +1,19 @@
+{
+  "name": "front",
+  "files": [
+    "front/src/"
+  ],
+  "tests": [
+    "front/test/"
+  ],
+  "public": [
+    "front/src/index.mjs"
+  ],
+  "uses": [
+    "text-rules",
+    "store",
+    "rooms",
+    "bookings",
+    "door"
+  ]
+}
