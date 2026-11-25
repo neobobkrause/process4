@@ -26,7 +26,12 @@ office-readers (1343), reading-pipeline (1344) are "flaw from ARCH" for refactor
 and inquiry-grammar and ratification waiting, are flaws record-grammar's job reported, from `check` refusals on their code.
 No process fault, no refusal.
 
-**FIRST: a process fault arrived at 00:21Z, not yet put to the owner:** `p4 test` ran civicsmith provenance #1's tests on its
+**FIRST, the more pressing: a process fault at 00:47Z, not yet put to the owner:** `notify` after record-grammar's merge (third
+of 204 modules) ran 38 minutes and 8 GB without a notice on civicsmith; ARCH #15 holds six merges while it runs. Research in
+`process/research/notify-slow-early-provider-25nov.md` (questions, no options yet). Also there: the refactoring tranche
+drawing in modules through placed flaws (ten more jobs by 00:44Z): tell the owner plainly.
+
+**Then:** a process fault arrived at 00:21Z, not yet put to the owner:** `p4 test` ran civicsmith provenance #1's tests on its
 branch as pushed, without the tranche's newer commits, and the first run failed. It is PROCESS #11's own choice in the
 update. Research and options in `process/research/test-on-stale-branch-25nov.md`: find what failed on PR 1346 (ask
 coordinator #7), then put the options to the owner.
