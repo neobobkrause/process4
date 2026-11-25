@@ -95,9 +95,11 @@ test('accepting more is confirmed wherever the type checker proves it', () => {
     [fn(['{string} x'], 'number'), `/**\n * @param {string} x\n * @param {...number} more\n * @returns {number}\n */\nexport function f(x, ...more) { return more.length; }\n`],
     [fn(["{'a'} x"], 'number'), fn(["{'a' | 'b'} x"], 'number')],
     [fn(['{{a: string}} x'], 'number'), fn(['{{a: string, b?: number}} x'], 'number')],
-    // a function handed in: the old written form cannot show these; the checker proves them
+    // a function handed in that is now handed fewer or narrower arguments: the old written form cannot show these; the
+    // checker proves them
     [fn(['{(s: string | number) => void} x'], 'number'), fn(['{(s: string) => void} x'], 'number')],
-    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n: number) => void} x'], 'number')],
+    [fn(['{(s: string, n?: number) => void} x'], 'number'), fn(['{(s: string) => void} x'], 'number')],
+    [fn(['{{each: (s: string | number) => void}} x'], 'number'), fn(['{{each: (s: string) => void}} x'], 'number')],
     // generic: a parameter added
     [generic(), generic(' * @param {number} [n]\n').replace('f(x)', 'f(x, n)')],
     // a class member, a class's constructor (what it builds the same), a handle's member
@@ -111,6 +113,34 @@ test('accepting more is confirmed wherever the type checker proves it', () => {
 test('accepting more is never confirmed where the checker does not prove it', () => {
   // a function handed in that will be handed more than it took
   assert.deepEqual(changes(fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string | number) => void} x'], 'number')), ['f: cannot stand in']);
+  // a function handed in whose parameter list grows: the provider will hand it another argument, which breaks a user's
+  // function whose further parameter is optional, of another kind (misses.md, section 5, "the reverse"); the checker
+  // lets a function of fewer parameters stand where more are expected, so it would confirm each of these
+  const handedMore = [
+    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n: number) => void} x'], 'number')],
+    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, n?: number) => void} x'], 'number')],
+    [fn(['{(s: string) => void} x'], 'number'), fn(['{(s: string, ...n: number[]) => void} x'], 'number')],
+    [fn(['{{each: (s: string) => void}} x'], 'number'), fn(['{{each: (s: string, n: number) => void}} x'], 'number')],
+    [fn(['{Array<(s: string) => void>} x'], 'number'), fn(['{Array<(s: string, n: number) => void>} x'], 'number')],
+    [fn(['{((s: string) => void) | string} x'], 'number'), fn(['{((s: string, n: number) => void) | string} x'], 'number')],
+    // handed back a function that takes one of the user's: the user's is still handed in
+    [fn(['{string} x'], '(cb: (s: string) => void) => void', 'return () => {};'), fn(['{string} x'], '(cb: (s: string, n: number) => void) => void', 'return () => {};')],
+  ];
+  for (const [b, a] of handedMore) {
+    const got = changes(b, a);
+    assert.ok(got.length && got.every((x) => !x.includes('accepts more') && !x.includes('tells no one')), `${a}: ${got}`);
+    assert.ok(got.some((x) => x.includes('cannot stand in') || x.includes('hands back differently')), `${a}: ${got}`);
+  }
+  assert.deepEqual(changes(...handedMore[0]), ['f: cannot stand in']);
+  assert.match(why(...handedMore[1], 'f'), /handed more arguments/);
+  // a kind on the accepting side with a function member (a handle kind), whose method grows
+  const opts = (ps) => `/** @typedef {{label: string, onDone: (${ps}) => void}} Opts */\n/** @param {Opts} o @returns {void} */\nexport function g(o) {}\n`;
+  assert.deepEqual(changes(opts('s: string'), opts('s: string, n?: number')), ['Opts.onDone: cannot stand in']);
+  // a handle kind the user hands in (it implements it): a method of it that now takes another argument is called with
+  // one; a handle only handed out, whose method the user calls, accepts more
+  const handle = (ps, dir) => `/**\n * @typedef {Object} Clock\n * @property {(${ps}) => string} now\n */\n${dir === 'in' ? '/** @param {Clock} c @returns {string} */\nexport function stamp(c) { return c.now(); }\n' : '/** @returns {Clock} */\nexport function clock() { return { now: () => \'t\' }; }\n'}`;
+  assert.deepEqual(changes(handle('', 'in'), handle('zone?: string', 'in')), ['Clock.now: cannot stand in']);
+  assert.deepEqual(changes(handle('', 'out'), handle('zone?: string', 'out')), ['Clock.now: accepts more (tells no one)']);
   // a generic item, handed to the old as a whole, may hand back otherwise for some calls: only what the written forms
   // show as accepting more is confirmed
   assert.deepEqual(changes(generic('', '{string} '), generic('', '{string | number} ')), ['f: cannot stand in']);

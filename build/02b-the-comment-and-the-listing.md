@@ -104,7 +104,7 @@ Listing of pricing
 |---|---|---|
 | `removed` | An item gone, or a name lost from a handle or table. A renamed item is this and a `new item` | Its users |
 | `new item` | An item only after | Nobody |
-| `accepts more` | The type checker, reading the old and new in one program, confirms the new stands in for the old: for a function, method or class with one signature, the old arguments accepted by the new and what it hands back the same; for a generic or overloaded one, only what the written forms show as accepting more, with the new assignable to the old; for what a user hands in, the old to the new. Never where what it accepts holds a method, a class's object or "anything", which the checker relates both ways | Nobody |
+| `accepts more` | The type checker, reading the old and new in one program, confirms the new stands in for the old: for a function, method or class with one signature, the old arguments accepted by the new and what it hands back the same; for a generic or overloaded one, only what the written forms show as accepting more, with the new assignable to the old; for what a user hands in, the old to the new. Never where what it accepts holds a method, a class's object or "anything", which the checker relates both ways; nor where a function the user hands in (in what it accepts, or a method of a handle kind or class whose values a user supplies) may now be handed more arguments, which the checker lets through | Nobody |
 | `cannot stand in` | Removed, renamed, newly required or newly refused, or not confirmed as accepting more | Its users |
 | `hands back differently` | What it hands back, a message's channel, a member that may now be missing | Its users |
 | `bound changed` | A bound line added, removed or reworded | Its users |

@@ -298,6 +298,77 @@ export function standsIn(old, nu) {
   }
 }
 
+/**
+ * Whether, after the change, a function the user hands in may be handed more arguments than before (design part 2,
+ * section 7, rule 52): a function stated where the user supplies the value (`mine`: what an item accepts, and inside it
+ * what a function the user hands in hands back; flipped at each function's parameters) whose parameter list grows, by a
+ * parameter or a rest. The type checker lets a function with fewer parameters stand where more are expected, so it
+ * confirms the old accepted kind assignable to the new; but a user's function whose further parameter is optional, of
+ * another kind, was accepted before and is not now, and is handed the new argument where it runs. Never "accepts more".
+ * Handed fewer or narrower arguments is not this. Each alternative of a union or of overloads is set against the old
+ * ones; a function against the old functions at the same place, by its most parameters.
+ */
+export function handsMoreArguments(old, nu, mine = true) {
+  if (!old || !nu || typeof old !== 'object' || typeof nu !== 'object') return false;
+  const alts = (c) => (['union', 'and', 'overloads'].includes(c.k) ? c.of.flatMap(alts) : [c]);
+  const arity = (f) => (f.params.some((p) => p.rest) ? Infinity : f.params.length);
+  const olds = alts(old);
+  for (const n of alts(nu)) {
+    const like = olds.filter((o) => o.k === n.k);
+    if (n.k === 'fn' && mine && like.length && arity(n) > Math.max(...like.map(arity))) return true;
+    for (const o of like) {
+      switch (n.k) {
+        case 'params': case 'tuple':
+          for (let i = 0; i < Math.min(o.items.length, n.items.length); i++) if (handsMoreArguments(o.items[i].t, n.items[i].t, mine)) return true;
+          break;
+        case 'fn':
+          for (let i = 0; i < Math.min(o.params.length, n.params.length); i++) if (handsMoreArguments(o.params[i].t, n.params[i].t, !mine)) return true;
+          if (handsMoreArguments(o.ret, n.ret, mine)) return true;
+          break;
+        case 'obj':
+          for (const [name, np] of Object.entries(n.props)) if (o.props[name] && handsMoreArguments(o.props[name].t, np.t, mine)) return true;
+          for (const ni of n.index ?? []) for (const oi of o.index ?? []) if (handsMoreArguments(oi.t, ni.t, mine)) return true;
+          if (n.calls && o.calls && handsMoreArguments({ k: 'overloads', of: o.calls }, { k: 'overloads', of: n.calls }, mine)) return true;
+          break;
+        case 'arr': case 'promise':
+          if (handsMoreArguments(o.of, n.of, mine)) return true;
+          break;
+        default:
+      }
+    }
+  }
+  return false;
+}
+
+/**
+ * The handle kinds and classes of a module whose values a user may supply (`<module>.<name>`), from its items' means:
+ * a handle stated where the user supplies the value, as handsMoreArguments reads it; and, to a fixpoint, inside the
+ * methods of such a handle, which the provider calls and the user writes, with the sides flipped. Their methods are
+ * functions the user hands in.
+ */
+export function handlesHandedIn(items, moduleId) {
+  const out = new Set();
+  const walk = (c, mine) => {
+    if (!c || typeof c !== 'object') return;
+    if (Array.isArray(c)) { for (const x of c) walk(x, mine); return; }
+    if (c.k === 'handle' && mine) out.add(c.name);
+    if (c.k === 'fn') { for (const p of c.params) walk(p.t, !mine); walk(c.ret, mine); return; }
+    for (const v of Object.values(c)) if (v && typeof v === 'object') walk(v, mine);
+  };
+  const ownerOf = (name) => /^([^.#:]+)[.#]/.exec(name)?.[1];
+  let size = -1;
+  while (out.size !== size) {
+    size = out.size;
+    for (const [name, it] of Object.entries(items)) {
+      const params = it?.accepts?.k === 'params' ? it.accepts.items : [];
+      walk(it?.accepts, true);
+      walk(it?.handsBack, false);
+      if (ownerOf(name) && out.has(`${moduleId}.${ownerOf(name)}`)) walk({ k: 'fn', params, ret: it?.handsBack ?? null }, true);
+    }
+  }
+  return out;
+}
+
 // ---- writing a canonical form for people ----
 
 export function render(c) {

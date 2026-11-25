@@ -25,7 +25,7 @@ import { loadTree } from './model.mjs';
 import { ts, loadReader, makeStandardProgram, readerVersion } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { moduleMeans, meansSideOf, MEANS_SIDE } from './means.mjs';
-import { same, standsIn, render } from './canon.mjs';
+import { same, standsIn, render, handsMoreArguments, handlesHandedIn } from './canon.mjs';
 import { importedModules, readUses } from '../usesfile.mjs';
 
 /** A module's uses file on one side, its lists made lists (build text 2c), or null where it has none (or none that reads). */
@@ -77,7 +77,8 @@ export function known(b, a) {
  *   old kind is assigned to the new; for a generic or overloaded item, the new is assigned to the old as a whole, which
  *   only confirms what the written forms already show as accepting more.
  *   The checker relates a method's parameters both ways and lets "anything" through (its documented unsound points):
- *   where either side's accepted part holds a method, a class's object or "anything", nothing is confirmed.
+ *   where either side's accepted part holds a method, a class's object or "anything", nothing is confirmed. Nor where a
+ *   function the user hands in may now be handed more arguments (handedMore), which the checker lets through.
  * Never confirmed: what the checker does not prove. Asked once per pair of sides and module, for every item whose
  * written forms differ, in one program.
  */
@@ -93,6 +94,24 @@ export function makeConfirm(treeB, treeA, moduleId) {
 }
 
 const NOT_FOUND = 'the item cannot be found to ask the type checker';
+const HANDED_MORE = 'a function the user hands in may now be handed more arguments: the type checker lets one with fewer parameters stand where more are expected, but a user\'s function whose further parameter is optional, of another kind, was accepted before and is not now';
+
+/**
+ * Whether a function the user hands in may now be handed more arguments (canon.mjs, handsMoreArguments): one stated in
+ * what the item accepts, or the item itself where it is a method of a handle kind or class whose values a user may
+ * supply, which the provider calls. The checker would confirm either as accepting more; it is not.
+ */
+function handedMore(item, sb, sa) {
+  const ib = sb?.items[item], ia = sa?.items[item];
+  if (!ib || !ia) return false;
+  if (handsMoreArguments(ib.accepts, ia.accepts)) return true;
+  const owner = /^([^.#:]+)[.#]/.exec(item)?.[1];
+  if (!owner || ib.accepts?.k !== 'params' || ia.accepts?.k !== 'params') return false;
+  const moduleId = sa.moduleId ?? sb.moduleId;
+  const handedIn = (s) => { if (!s.handedIn) s.handedIn = handlesHandedIn(s.items, moduleId); return s.handedIn; };
+  if (![sb, sa].some((s) => handedIn(s).has(`${moduleId}.${owner}`))) return false;
+  return handsMoreArguments({ k: 'fn', params: ib.accepts.items, ret: null }, { k: 'fn', params: ia.accepts.items, ret: null });
+}
 const UNSOUND = "what it accepts holds a method, a class's object or \"anything\", which the type checker relates both ways: it cannot prove it";
 
 function buildConfirm(treeB, treeA, moduleId) {
@@ -179,6 +198,7 @@ function buildConfirm(treeB, treeA, moduleId) {
         r.more = { confirmed: false, why: !no ? UNSOUND : way === 'out' ? 'the type checker does not find the new item assignable to the old'
           : way === 'in' ? 'the type checker does not find the old kind assignable to the new' : 'the type checker does not find that the new item accepts everything the old did' };
       } else if (way === 'parts' && !r.same.handsBack) r.more = { confirmed: false, why: 'the type checker does not find the new item assignable to the old: what it hands back is not the same' };
+      else if (handedMore(x.item, sb, sa)) r.more = { confirmed: false, why: HANDED_MORE };
       else r.more = { confirmed: true };
     }
   }
