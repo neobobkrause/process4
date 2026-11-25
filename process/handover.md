@@ -16,6 +16,12 @@ handover. Open a research file, or give it to a worker, when a question needs it
 
 ## START HERE: two choices wait for the owner, on his page
 
+**PROCESS #14 (session_018BhcedkyhzaVi28AAStM22) is live** since 25 Nov ~13:10Z: named, generation 14 in `handover-process`,
+both ROOTs told. PROCESS #13 waits for the owner's archive click (on his page). **6B is built as a patch**,
+`process/research/waiting-work-record-size-25nov/6b.patch` (91 tests pass; what it does and the texts to change on his word
+are at the end of `waiting-work-record-size-25nov.md`); old `uses` are not dropped (they are the only copy). On his word for 6:
+`git apply` it, change the texts named there, record, run those tests, merge.
+
 **Also urgent (10:40Z), choice 6 on his page:** civicsmith's waiting-work record passed GitHub's comment limit; every queued
 `notify` loses its placements for modules with no open job (`process/research/waiting-work-record-size-25nov.md`). Recommended
 6B: a record spans several comments; entries drop old `uses`; `open --module` cuts a job block as `notify` does (filings
