@@ -200,7 +200,8 @@ test('no repeats: a told user whose job of any state already names the notice is
   gh.s.prs.push({ number: 21, state: 'closed', head: { ref: 'job/report.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
   const held = { module: 'orders', work: ['notice from dates (pull request 7)'], kind: 'told', notice_seq: 1, notices: [{ from: 'dates', merged: 7 }] };
   gh.addComment('o/product', 20, block(JOB_MARK, held));
-  gh.addComment('o/product', 21, block(JOB_MARK, { ...held, module: 'report' }));
+  // report's job was opened from waiting work before `open` wrote `notices`: its work line alone names the notice.
+  gh.addComment('o/product', 21, block(JOB_MARK, { module: 'report', work: ['notice from dates (pull request 7)'], kind: 'told' }));
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
@@ -480,6 +481,13 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   const r = notice(root, after, 'dates');
   assert.deepEqual([r.entries, r.told, r.changedModules], [[], [], []]);
   assert.equal(r.summary, 'The listing before and after is the same. Nobody is told.');
+  // A stated parameter that is a union keeps its parameter list's brackets in the printed declaration, so the
+  // declaration backstop lines it up with the one before and finds only "anything" stated (civicsmith notify 1356).
+  write(after, { ...files, 'src/dates/index.mjs': DATES() + '\n/**\n * @param {{n: number}|undefined} x\n * @returns {number|null}\n */\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
+  write(root, { ...files, 'src/dates/index.mjs': DATES() + '\nexport function raw(x) { if (!x) return null; return x.n; }\n' });
+  const u = notice(root, after, 'dates');
+  assert.deepEqual([u.entries, u.told], [[], []]);
+  write(root, files);
   // With another change in the same entry (a parameter newly required), that change still tells its users.
   write(after, { ...files, 'src/dates/index.mjs': DATES() + STATED.replace(' * @returns', ' * @param {number} y\n * @returns').replace('raw(x)', 'raw(x, y)') });
   const m = notice(root, after, 'dates');

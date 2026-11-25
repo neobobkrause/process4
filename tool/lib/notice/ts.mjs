@@ -99,7 +99,10 @@ export function declarationsOf(program, file, plainElsewhere = new Map()) {
       for (const e of st.exportClause.elements) add(e.name.text, print(st));
     }
   }
-  const unbracket = (t) => { let prev; do { prev = t; t = t.replace(/\(([^()]*\|[^()]*)\)/g, '$1'); } while (t !== prev); return t; };
+  // Brackets round a union are dropped, as the reader prints them only where they matter; a parameter list's are kept
+  // (a group with a ':' outside any inner brace or bracket), else `f(k: A | B): C` printed as `f k: A | B: C`.
+  const topColon = (g) => { let d = 0; for (const ch of g.replace(/=>/g, '  ')) { if ('{[<'.includes(ch)) d++; else if ('}]>'.includes(ch)) d--; else if (ch === ':' && d === 0) return true; } return false; };
+  const unbracket = (t) => { let prev; do { prev = t; t = t.replace(/\(([^()]*\|[^()]*)\)/g, (m, g) => (topColon(g) ? m : g)); } while (t !== prev); return t; };
   for (const k of Object.keys(out)) {
     // a plain kind of another module, named through import("..."), is written out too
     const wrap = (rhs) => (/[|&]|=>/.test(rhs) ? `(${rhs})` : rhs); // iteration 6: brackets only where they matter
