@@ -22,33 +22,34 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 04:45 UTC, by PROCESS #13. Three choices below, put together because they act on the same thing: who is told after a change.</p>
+<p class="updated">Updated 25 Nov 2026, about 06:40 UTC, by PROCESS #13. Choices 1, 3 and 4 are decided and built; choice 2 is left, now with measured options.</p>
 </header>
 
 <section class="wait">
-<h2>Waiting for you: four choices about who is told after a change</h2>
+<h2>Waiting for you: one choice left about who is told after a change</h2>
 <p><b>The problem.</b> civicsmith's notices are still telling far too many modules. Two merges today told 197 and about 125 modules. Each told module costs a short check, about $1.40 to $1.90 and 2 minutes, and nearly all end with nothing to change: roughly $300 and $200 for those two merges alone. Three causes, each with its own choice. They work together: 1 and 2 cut most of the first kind of case (a module being described for the first time), 3 cuts most of the second (a helper few modules call).</p>
 
 <p><b>1. Two tool faults against your decision B of today.</b> (a) A told check opened from the waiting list was not recognised as having already had its notice, so a re-run told jurisdictions, signatures and connection-grammar a second time. (b) The tool printed some function headings with their brackets lost, so a kind stated for the first time still counted as a change, which your decision B said it should not. Both are corrected and tested, ready in pull request 275; the 150 answers recorded when the method was proven are unchanged.</p>
-<p><b>Decided: 1B</b> (your comment, 25 Nov about 06:16 UTC). Recorded word for word; pull request 275 merges once its test check passes. civicsmith gets it when you move it, which can wait until you have answered 2 to 4 so it moves once.</p>
+<p><b>Decided: 1B</b> (your comment, 25 Nov about 06:16 UTC). Recorded word for word, built and merged (pull request 275). civicsmith gets it when you move it, which can wait until you have answered 2 to 4 so it moves once.</p>
 
 <p><b>2. A first written error or limit counts as a change.</b> When a module's code gets its first comment saying which error a function can raise, or its first stated limit on a value, the tool treats that as a change and tells every user, even where the code did not change. Your rule is that a change to those words means the interface changed. A first description of code that stayed the same is the case it does not quite fit. <b>Measured since:</b> civicsmith's ARCH sent the exact lines. In setup-words, the four functions that told were given their first error and limit comments, and their code did not change. That is essentially the whole of the 197. Under 2C none of them would have been told. The notice now also prints the errors before and after (in pull request 275), so this shows plainly next time.</p>
+<p><b>Measured since, on a third case.</b> civicsmith's membership module could not give its first descriptive comments a step of their own. Once a module has comments, the tool's check reads its guessed kinds as stated, and its own tests then need a small fix in the same change. So the design's "a first comments step tells no one" did not apply, and the comments alone told 140 modules. A worker measured three ways out, on the 150 recorded answers and on a made-up module shaped like membership (20 users):</p>
 <ul>
-<li><b>2A. No change.</b> Every first error or limit tells, as now.</li>
-<li><b>2C. A first error or limit tells no one where that function's own code is unchanged (recommended).</b> Where the code changed too, as when test-support's helper began raising a new error, it tells as now. A risk: a first limit written to tighten a function whose code did not change, which then tells no one. Not yet built; I would build it and prove it on the 150 recorded answers before merging.</li>
+<li><b>2A. No change.</b> Every first error or limit, and every first description, tells as now: 19 of the 20 users told.</li>
+<li><b>2C. A first error or limit tells no one where that function's own code is unchanged.</b> 15 of 20 still told, by two smaller routes: the type checker cannot confirm a class with a private field as accepting more, and the printed heading changes from a guessed kind to a stated one. 1 recorded answer changes, missing no one who needed telling.</li>
+<li><b>2C+. 2C, and on a function whose own code is unchanged those two smaller routes tell no one either (recommended).</b> 0 of 20 told. The same 1 recorded answer changes, missing no one. A change made inside a helper the function calls still tells. The risk: a first limit written to tighten a function whose code stays the same, or a narrowed parameter on unchanged code, tells no one; a user that breaks it is caught by its own check at its next job, not by a notice.</li>
+<li><b>2D. Any difference on a function whose own code is unchanged tells no one.</b> 0 of 20 told, but it silences 13 recorded limit changes your rule says should tell, and it misses a real change made inside a helper. Not recommended.</li>
 </ul>
 
 <p><b>3. Modules the tool cannot fully follow are told of everything.</b> Today one changed helper function told about 125 modules: about 5 call it; about 120 were told only because the tool cannot fully follow their plain JavaScript. Measured by a worker: under the narrower rule, a changed function tells such a module only where its own files name that function, or where it reaches the helpers by a route the tool cannot read (an import it cannot follow, or another module handing the function on). A changed kind still tells them all. On the 150 recorded answers, 8 change, all one module told for nothing, and none misses a module that needed a change. On a made-up product shaped like civicsmith, a changed function told 7 instead of 50. Two rare misses would be accepted, as the design already accepts some: a function passed in as a callback from elsewhere, and a name built from pieces. Not known: how many of civicsmith's 120 stay told because of imports the tool cannot read.</p>
 <ul>
-<li><b>3A. No change.</b></li>
-<li><b>3B. The narrower rule (recommended).</b> It changes your decision 2 of the notice's rules.</li>
+<li><b>Decided: 3B</b> (your comment, 25 Nov about 06:19 UTC). Recorded word for word; built and tested, with the 8 recorded answers re-recorded, each with its reason; pull request 283 merges once its test check passes.</li>
 </ul>
 <p><b>4. Five helper functions with one name count as one.</b> civicsmith's test helpers have five files that each offer a function called <code>generate</code>. The tool keeps only one of them, so a change to one file's <code>generate</code> tells the users of all five, and a change to another tells no one at all, which misses a module that needed telling. The correction keeps each as its own entry, named with its file; nothing else changes. Built and tested; all 150 recorded answers are unchanged. It also changes one sentence of the build text that describes the listing, which is why it waits for you.</p>
 <ul>
-<li><b>4A. No change.</b> civicsmith's ARCH could rename the five functions instead, a change to civicsmith's own code.</li>
-<li><b>4B. The correction (recommended).</b></li>
+<li><b>Decided: 4B</b> (your comment, 25 Nov about 06:19 UTC). Recorded word for word, built and merged (pull request 282).</li>
 </ul>
-<p>To answer, type in my session (or as a comment here), for example: <b>Decision: 1B, 2C, 3B, 4B</b>, or any other mix, or no change. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
+<p>What is left is choice 2. To answer, type in my session or comment here, for example: <b>Decision: 2C+</b>, or another of 2A, 2C, 2D. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
 </section>
 
 <section class="card">
