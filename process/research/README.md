@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 25 Nov 2026
+- `waiting-work-too-large-25nov.md` — `notify 1339` (43 min) told seven open jobs, then could not write waiting work (likely over GitHub's 65,536-character comment limit; most users "not followed fully"), so the other notices were lost; the tool drops GitHub's words on a failed write; options A to C, to be put with the speed options.
 - `merges-held-for-notify-25nov.md` — civicsmith ARCH holds nine ready jobs while `notify` runs after record-grammar's merge; what in the process makes it wait (design part 2 §7 "the notice reaches that job at once", ARCH rule 2's one-turn sequence); options A to C; the owner chose B (merging goes on, `notify` in the background), 25 Nov; raised by the owner.
 - `notify-slow-early-provider-25nov.md` — `notify` after record-grammar's merge ran 38 minutes and 8 GB on civicsmith without a notice; ARCH holds six merges meanwhile; research questions, no options yet; the tranche drawing in modules.
 - `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche; what failed (only `check`, on a field record-grammar's merged job had stated), the cost (a wasted run counted as failed); options A to C; the owner chose B (`p4 test` merges the tranche in first), 25 Nov.
