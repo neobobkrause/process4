@@ -11,7 +11,17 @@ fill (`get_session`, `context_usage`); refresh at the first natural pause after 
 or a research file, or give it to a worker, when a question touches it. A new decision rewrites its subject's entry in
 `design-decisions.md` or `-2.md` in place; a new subject goes where there is room, and in the index.
 
-## START HERE: one choice waits for the owner, on his page
+## START HERE: design the owner's proposal — each module records the providers it uses
+
+After the research below, the owner proposed (conversation, 25 Nov) that every module keep a file of the providers it and
+its tests use, written by a job that understands the code and kept current by every job, so finding users is a lookup:
+`process/research/uses-metadata-25nov.md` (his words in full, and PROCESS #14's first analysis). He wants a fix "rigorously
+understood" to fix the problems seen and those known but not yet seen, not another patch. PROCESS #14 told him option C is
+set aside while this is designed. Design it in full with workers (the list at the end of that file), record it, and put it
+to him with options; nothing is built before his marked decision. It reverses his own rule in design part 2 §7 point 1
+("No list is kept by hand"): say so plainly.
+
+## Earlier: the research it follows
 
 **Who is told after a change** (`process/research/who-is-told-25nov.md`, sections 3–5; prototype
 `who-is-told-25nov/proto.diff`, scratch, against b798e6a). The owner asked for this research himself. Options 0 (no
