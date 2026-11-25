@@ -4,6 +4,9 @@ PROCESS records its research here before it proposes a change (design part 6, se
 text). Research is background, not governing text (design part 5, section 3): PROCESS reads this index in full, and reads
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
+## 25 Nov 2026
+- `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche (PROCESS #11's own choice in the update); options A to C, not yet put to the owner.
+
 ## 24 Nov 2026
 - `move-with-new-workflow-24nov.md` — civicsmith's move to the update failed as one pull request (the new workflow ran the old tool the base names) and passed as two in order; options A and B (say the order).
 - `update-trial-process3-probes-24nov.md` — the update's trial on process3-probes: test records, the verdict on GitHub, a merge that waited, a notice reaching an open job; no fault; two things seen with no change; what it did not show.

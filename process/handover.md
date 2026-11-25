@@ -26,6 +26,11 @@ office-readers (1343), reading-pipeline (1344) are "flaw from ARCH" for refactor
 and inquiry-grammar and ratification waiting, are flaws record-grammar's job reported, from `check` refusals on their code.
 No process fault, no refusal.
 
+**FIRST: a process fault arrived at 00:21Z, not yet put to the owner:** `p4 test` ran civicsmith provenance #1's tests on its
+branch as pushed, without the tranche's newer commits, and the first run failed. It is PROCESS #11's own choice in the
+update. Research and options in `process/research/test-on-stale-branch-25nov.md`: find what failed on PR 1346 (ask
+coordinator #7), then put the options to the owner.
+
 **One thing for the owner, put to him by PROCESS #11 as information, no change proposed:** flaws a job reports are always
 work under D (as the owner chose), and here they come from `check` refusals of code older than the tranche, so they pull
 modules into the refactoring tranche one after another (record-grammar, then promotion, inquiry-grammar, ratification).
