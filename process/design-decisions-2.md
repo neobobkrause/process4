@@ -268,11 +268,11 @@ On accepting more: "Decision: remove the rule that accepting more tells no one; 
 its users." — 25 November 2026, 23:07 UTC (in PROCESS #17's session; researched in `process/research/precision-26nov/`,
 `misses.md` §3).
 On a job's record and a told job that changes nothing (in PROCESS #17's session, answering the two questions the design
-left open; PROCESS asked once whether to record them as decisions, and he answered "yes" — 25 November 2026, 23:11 UTC):
+left open; PROCESS asked once whether to record them as decisions, and he answered "yes" — 25 November 2026, about 23:11 UTC):
 "1. a job's record that a changed item's domain and range are the same take that item off the notice so long as all other
 changes are still properly factored into the decision of who to notify and who not to notify
 2. a told module that finds nothing to change, should not still run its related tests before it closes" — 25 November
-2026, 23:10 UTC.
+2026, about 23:10 UTC.
 
 ### Subject: How `notify` reads the product
 
