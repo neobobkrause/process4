@@ -81,6 +81,10 @@ list still reads "…for your decision": only he can rename it in a browser.
 
 ## Lessons
 
+- Do not keep re-running measurements on the proof as evidence (his words, 25 Nov ~22:45Z, in `precision-26nov/README.md`):
+  they rarely reflect the real workflow, cost tokens and time, and convince you of conclusions later found wrong. Reason
+  from the texts and the workflow context; measure only when he asks.
+
 - Judge a false result in the process's context (his words above): ask why the change is made and who knows. A measurement
   that replays changes as if no role or job acted overstates misses; never bring him backups for duties another role holds.
   A worker's widening can open a miss (the callback confirmation): check each against `misses.md` before joining.
