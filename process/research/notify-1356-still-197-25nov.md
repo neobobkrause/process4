@@ -59,3 +59,16 @@ null → string tells by the rules). Asked ARCH #18 (04:27Z) for the exact block
   decision 3 applies to a bound that describes code that did not change.
 - D. The narrowing of decision 2 (worker measuring): a user not followed fully is told of a changed function only where its
   files name it or reach the provider by a route the scan cannot read.
+
+## The split, settled by ARCH #18's quotes (25 Nov ~04:36Z)
+
+ARCH quoted the `notify 1356` blocks and `git show` of the declarations (merge 51436cfe89, first parent cf7a1adf9a). Before
+1356, `word` and `localize` had plain prose comments with no tags, `callsOf` a `/* */` comment; after, each has `@param`,
+`@returns`, a first `@throws {Error}` and (word, localize) a first `@bound`. "Function bodies of word and localize are
+unchanged by 1356." The printed reasons: localize and word "accepts more, bound changed, hands back differently"; callsOf
+and extract "hands back differently" with hands back `anything[]` → a stated list; no throws lines printed (the printout
+did not print them). By the reproduction above, the "anything → stated" differences tell no one; what tells is the first
+`@throws` (→ "hands back differently") and the first `@bound` (→ "bound changed"), on code that did not change. So cause 1
+is essentially the whole of 1356's 197, and option C (a first `@throws` or `@bound` on an entry whose own running code is
+unchanged tells no one) would have told none of them; cause 2 (the brackets) was not among 1356's printed reasons.
+The printout now shows the kinds of error raised, the channel and "may now be missing" where they differ (PR 275).
