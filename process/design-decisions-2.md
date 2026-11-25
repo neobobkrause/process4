@@ -265,10 +265,10 @@ PROCESS #16's session, on the design document above).
    any code; where none changed it says so and reads nothing.
 2. For each changed module it works out each item's means before and after (design part 2, section 7), from that
    module's files and its providers' stated types, over the closure within the module. It adds the items ARCH's placed
-   work names and the job declares. Where no item changed, nobody is told and nothing else is read.
-3. Otherwise it reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
-   item, those with a place outside the standard that may refer to the changed module, and those with no uses file yet
-   that import it (the subject "Who a change tells").
+   work names and the job declares.
+3. It then reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
+   item; and, for any change to the module's files, whether or not an item changed, those with a place outside the
+   standard that may refer to it and those with no uses file yet that import it (the subject "Who a change tells").
 4. The commands that read a product's code (`listing`, `notify`, `check`) run with a memory allowance of three quarters of
    the machine's memory where node's default is less. Where a reading still does not fit, `notify` says so plainly, tells
    nobody, and names the notice owed, instead of crashing.
