@@ -122,3 +122,25 @@ Done in commit 2 except where marked.
 
 Contradictions 19, 20, 21, 22, 23, 25 and 27 change a rule, or the status, and are his. Contradiction 2 (the facility list
 among the named files) was edited as a gap-filling fix; PROCESS should confirm it is not a rule change.
+
+## 6. Settled after PROCESS's review (commit "Tidy, part 3")
+
+PROCESS settled these as corrections of how decision C was written, under the owner's "Decision: B" to clean up Process4
+changing no rule; done on the branch after merging `work/decision-c` twice (its newer rule text kept where they overlap):
+
+- **19.** Part 2 §7: conversions start earliest in the order first, so a provider's conversion starts before its users';
+  each merges by the wait of section 8. No build text said more.
+- **25.** A drop puts back, with each module's code and tests, that module's uses file: design part 3 §5, build text 1b
+  command 26, and the record's "A tranche ends", item 3. The tool's `drop` (`tool/lib/commands.mjs`) still keeps
+  everything under the process folder as the tranche has it, uses files among them; the tool must follow.
+- **23.** Part 10 §2 item 6 no longer says the proof's forms win; it names build text 2 §1.
+- **27.** Build text 5 §6 states the closure; the research file is cited as its source.
+- **22.** `build/README.md` indexes each build text by section; design part 5 §3, `process/README.md`, the record's
+  "What PROCESS reads in full" and the starting-text index name it. `starting_texts/process.md` does not name it: PROCESS
+  reaches it through `process/README.md`, which it reads in full.
+- **2.** Confirmed.
+- **R1 to R6.** Corrected in the record; no quoted or dated words touched (R5: a note on what the labels 9.1 to 9.5 are).
+- **20 and 21** stay open with the owner.
+
+Measured after all of it: ARCH's reading set 167,648 bytes (7,352 under), a job's 166,661 (8,339 under); `work/decision-c`
+alone was reported by PROCESS at 175,316 and 175,013. Build text 5 is 23,524 bytes, under 24,000.

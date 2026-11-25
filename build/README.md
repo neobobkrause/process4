@@ -1,6 +1,6 @@
 # The build texts: the index
 
-Length: 0 lines. Last section: "Build text 6".
+Length: 88 lines. Last section: "Build text 6".
 
 PROCESS reads this index in full and reads a build text, or gives it to a worker, when a question touches it; it reads a
 text in full before it changes it (design part 5, section 3). One line for each text and each section. Keep it current
