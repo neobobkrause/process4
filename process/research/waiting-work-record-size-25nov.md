@@ -51,3 +51,38 @@ judgment, closes 1669 unmerged; a product matter, not PROCESS's to direct).
 A second instance (ARCH #26 via coordinator #9, 13:07Z, unchanged): "`open --module following` (branch job/following.1) failed
 the same way (GitHub 422, body over 65,536 characters); pull request 1674 opened as a draft with no job block. Both filings
 (1669) and following (1674) now stand open with no job, each holding a slot, and their later users' merges wait on them."
+
+## 6B built as a patch, ready to land (PROCESS #14, 25 Nov ~13:45Z)
+
+`waiting-work-record-size-25nov/6b.patch` (against main 3e3fe9e). Not in the tool until the owner's word. What it does:
+
+1. **A record in parts** (`tool/lib/state.mjs`: `recordParts`, `writeRecord`, `readAll`, `partMark`, `RECORD_LIMIT` 60,000).
+   Where a record's body fits one comment it is written as now. Otherwise its longest list (`work` for waiting work,
+   `modules` for the round) is spread over as many comments as it needs: the first comment holds the rest of the record,
+   the list's first items and `parts: N`; each further comment, marked `<!-- process4-record: <key>, part <i> -->`, holds
+   only the list's next items. Further parts are written first, then the first comment. A part no longer needed is
+   emptied (and is not read, since the first comment names how many there are); its comment is reused later. Reading
+   joins the parts and leaves `parts` out, so no command that reads a record changes. A part missing fails plainly; an
+   entry too large for one comment on its own fails plainly. The marks of further parts do not match the old tool's
+   record mark, so a product on an older version is not confused by them (and no older version writes them).
+2. **A starting job's block cut to fit** (`open` and `jobBlockBody` in `tool/lib/commands.mjs`), as notify cuts a running
+   job's: each notice's reasons whole where they fit; else every reason without its before and after; else the notices
+   with most reasons, one by one, each put as one "not followed" reason, which runs the whole module's tests. Worked out
+   before any pull request is opened; fails plainly, opening nothing, if even that does not fit.
+3. **A job's pull request left without its block** (civicsmith filings 1669, following 1674): `open --module` on that
+   branch now writes the block onto the open pull request, takes the notices out of waiting work, and opens no second
+   pull request. So ARCH repairs both with one `open` each after the move, without closing them.
+
+Not built, and not needed: dropping old `uses` from entries. With the record in parts its size has no bound to meet, and
+an entry's `uses` (written before decision B) is the only copy of that notice's reasons, since its merged pull request
+holds none; dropping it would lose them. The page's 6B is reworded to match.
+
+Tests: the changed files' tests (`state`, `commands`, `notify`, `round`, `walk`), 91 pass, among them four new: a record of
+1,937 entries in parts read back whole, shorter and longer again; a missing part and an oversized entry fail plainly; a
+starting block cut (30 reasons cut, a 20-reason notice put as one reason); a block-less pull request given its block. One
+existing assertion changed: `open`'s copy of a 180,000-character notice now goes in cut, as notify already does.
+
+On the owner's word: apply the patch; build text 5 §1 (a record in parts) and §5 (a starting block cut), build text 1b
+commands 3 and 11 (a sentence each), design part 4 §4 ("each record one comment" → "one comment, or more where it outgrows
+one"); record in `design-decisions-3.md`; run the same tests; merge. Then civicsmith moves; ARCH runs `open --module` on
+filings and following, and re-runs the held notifies.
