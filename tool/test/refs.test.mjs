@@ -466,7 +466,9 @@ test('u > lists every name', () => { assert.equal(all().split(',').length, 3); }
   const first = read(root, 'u');
   assert.deepEqual(places(first), [], 'no place but the facility list\'s own');
   assert.ok(first.outside.every((o) => o.rule === 'R14'), 'with no facility list, each host facility is listed');
-  const r = read(root, 'u', { facilities: ordinary(first) });
+  // the product's facility list, at the place the config names by default (build text 2c, section 12)
+  write(root, { 'process/facilities.json': { versions: { node: '22', typescript: '5.6.3' }, ...ordinary(first) } });
+  const r = read(root, 'u');
   assert.deepEqual(r.outside, []);
   assert.deepEqual(r.orderFaults, []);
   assert.deepEqual(r.copies, []);
