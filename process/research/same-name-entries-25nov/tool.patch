@@ -1,0 +1,82 @@
+diff --git a/tool/lib/notice/listing.mjs b/tool/lib/notice/listing.mjs
+index d9004a8..c75e73e 100644
+--- a/tool/lib/notice/listing.mjs
++++ b/tool/lib/notice/listing.mjs
+@@ -103,17 +103,26 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+     const kindsIn = { accepts: new Map(), handsBack: new Map() }; // data kind key -> entries mentioning it
+     const note = (side, kctx, entryName) => { for (const k of kctx.kinds.keys()) { if (!kindsIn[side].has(k)) kindsIn[side].set(k, []); kindsIn[side].get(k).push(entryName); } };
+     const dataKinds = [];
+-    for (const file of mod.public) {
++    const exportsOf = (file) => {
+       const sf = program.getSourceFile(file);
+-      if (!sf) continue;
+-      const modSym = checker.getSymbolAtLocation(sf);
+-      if (!modSym) continue;
+-      for (const exp of checker.getExportsOfModule(modSym)) {
+-        const sym = exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp;
++      const modSym = sf && checker.getSymbolAtLocation(sf);
++      return modSym ? checker.getExportsOfModule(modSym) : [];
++    };
++    const resolved = (exp) => (exp.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exp) : exp);
++    // A name that two interface files export for two different things is two entries, each named with its file
++    // (`<file>:<name>`); otherwise the second would hide the first (civicsmith test-support's five `generate`s).
++    const things = new Map();
++    for (const file of mod.public) for (const exp of exportsOf(file)) {
++      if (!things.has(exp.name)) things.set(exp.name, new Set());
++      things.get(exp.name).add(resolved(exp));
++    }
++    for (const file of mod.public) {
++      for (const exp of exportsOf(file)) {
++        const sym = resolved(exp);
+         const decl = sym.declarations?.[0];
+         if (!decl) continue;
+         const where = `${path.relative(tree.root, decl.getSourceFile().fileName)}:${lineOf(decl)}`;
+-        const name = exp.name;
++        const name = things.get(exp.name).size > 1 ? `${path.relative(tree.root, file)}:${exp.name}` : exp.name;
+         if (sym.flags & ts.SymbolFlags.TypeAlias) {
+           const t = checker.getDeclaredTypeOfSymbol(sym);
+           const bounds = tagsOf(decl, 'bound').map(tagText);
+@@ -168,7 +177,7 @@ export function makeLister(program, tree, { plainKinds = null } = {}) {
+           } else {
+             const k = newCtx();
+             const shape = C.canon(t, k, true);
+-            k.kinds.delete(`${mod.id}.${name}`);
++            k.kinds.delete(`${mod.id}.${exp.name}`);
+             entries[name] = { kind: 'kind', shape, bounds: [...bounds, ...nestedBounds(k)], where };
+             // Iteration 2: a message kind states its channel; the channel is part of what it hands back.
+             const msg = tagsOf(decl, 'message');
+diff --git a/tool/test/notify.test.mjs b/tool/test/notify.test.mjs
+index 101f247..8391e64 100644
+--- a/tool/test/notify.test.mjs
++++ b/tool/test/notify.test.mjs
+@@ -487,6 +487,30 @@ test('an unknown kind becoming known tells no one; any other difference in the s
+   assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.entry === 'raw')));
+ });
+ 
++test('a name two interface files export for two things is two entries, each told to its own users (civicsmith test-support)', () => {
++  const gen = (ret) => `/** @param {string} s @returns {${ret}} */\nexport function generate(s) { return ${ret === 'number' ? 's.length' : 's'}; }\n`;
++  const files = (a, b) => ({
++    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
++    'process/modules/order.txt': 'p\nua\nub\n',
++    'process/modules/p.json': entry('p', [], { public: ['src/p/a.mjs', 'src/p/b.mjs', 'src/p/index.mjs'] }),
++    'process/modules/ua.json': entry('ua', ['p']),
++    'process/modules/ub.json': entry('ub', ['p']),
++    'src/p/a.mjs': a, 'src/p/b.mjs': b,
++    // The same thing exported again from a second file stays one entry.
++    'src/p/index.mjs': "export { generate as make } from './a.mjs';\nexport { generate as make2 } from './a.mjs';\n",
++    'src/ua/index.mjs': "import { generate } from '../p/a.mjs';\n/** @returns {string} */\nexport const one = () => generate('x');\n",
++    'src/ub/index.mjs': "import { generate } from '../p/b.mjs';\n/** @returns {string} */\nexport const two = () => String(generate('x'));\n",
++  });
++  const root = mkdtempSync(join(tmpdir(), 'p4-same-'));
++  write(root, files(gen('string'), gen('string')));
++  assert.deepEqual(Object.keys(analyse(root).listings.get('p').entries).sort(), ['make', 'make2', 'src/p/a.mjs:generate', 'src/p/b.mjs:generate']);
++  const after = mkdtempSync(join(tmpdir(), 'p4-same-'));
++  write(after, files(gen('number'), gen('string')));
++  const r = notice(root, after, 'p');
++  assert.deepEqual(r.entries.map((e) => e.entry).sort(), ['make', 'make2', 'src/p/a.mjs:generate']);
++  assert.deepEqual(r.told.map((t) => t.user), ['ua']);
++});
++
+ test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {
+   const root = mkdtempSync(join(tmpdir(), 'p4-nf-'));
+   const after = mkdtempSync(join(tmpdir(), 'p4-nf-'));
