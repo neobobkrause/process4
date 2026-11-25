@@ -42,3 +42,13 @@ is about 43 minutes.
   prints GitHub's words when a write fails. Then re-run `notify 1339` once to recover the lost notices.
 - **C. Let a record span several comments** (waiting-work, then continuation comments), read back together. General,
   but against the design's rule that a record stays under the single-text maximum.
+
+## More, 01:40Z (civicsmith ARCH #15 via coordinator #7, unchanged)
+
+> "`p4 notify 1340` (test-support) told three open jobs and then again printed `GitHub would not rewrite the waiting-work
+> record; it stays as it was`, this time exiting 1. During `p4 notify 1350` (test-support, NODE_OPTIONS=--max-old-space-size=12000)
+> ARCH's container was restarted (exit 137 on a foreground command at the same moment; most likely memory). I resumed from
+> the shared state; the notice queue now runs at a 9000 MB cap."
+
+So the record write fails on a second early provider too (exit 1 as the tool means), and the reading's memory can take
+down the whole session machine, not only the reading's own process.
