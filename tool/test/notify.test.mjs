@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
-import { analyse, notice } from '../lib/notice/notice.mjs';
+import { analyse, notice, noticeText } from '../lib/notice/notice.mjs';
 import { check, commentsOnly } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
 import { NOTICE_LIMIT, NOTICE_MARK, cutReason, noticeParts, noticeReasons, writeNotice } from '../lib/noticecomments.mjs';
@@ -493,6 +493,19 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   const m = notice(root, after, 'dates');
   assert.deepEqual(m.entries.filter((e) => e.module === 'dates').map((e) => `${e.entry}: ${e.changes}`), ['raw: cannot stand in']);
   assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.entry === 'raw')));
+});
+
+test('a notice prints the kinds of error raised where they differ, so the reason a change tells is visible', () => {
+  // civicsmith notify 1356: a first @throws told every user, and the printout showed only the kinds, "anything" -> string.
+  const root = mkdtempSync(join(tmpdir(), 'p4-raises-'));
+  const after = mkdtempSync(join(tmpdir(), 'p4-raises-'));
+  const files = productFiles();
+  files['src/orders/index.mjs'] = `${ORDERS}\nimport { raw } from '../dates/index.mjs';\nexport const shown = () => raw('a');\n`;
+  write(root, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
+  write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/**\n * @param {string} x\n * @returns {string}\n * @throws {TypeError} when x is empty\n */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
+  const r = notice(root, after, 'dates');
+  assert.deepEqual(r.entries.map((e) => `${e.entry}: ${e.changes}`), ['raw: hands back differently']);
+  assert.match(noticeText(r), /raises before: \[\]\n {6}raises after: {2}\["TypeError"\]/);
 });
 
 test('not followed fully: a declared provider with no use found tells the user on any change that tells users; a new entry tells it nothing', () => {
