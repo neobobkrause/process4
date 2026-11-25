@@ -122,7 +122,7 @@ function makeCode(program, checker, tree, mod) {
   const add = (node, top = false) => {
     if (byNode.has(node)) return byNode.get(node);
     const p = { i: pieces.length, node, file: node.getSourceFile().fileName, top, member: memberNameOf(node), edges: new Set(), kinds: new Map(), contains: new Set(), reads: new Set(), paramReads: new Set(), writes: new Set(), rejects: new Set(),
-      thisUse: false, throws: new Set(), instances: new Set(), channels: new Set(), news: [], params: [], errors: [] };
+      thisUse: false, throws: new Set(), instances: new Set(), channels: new Set(), names: new Set(), news: [], params: [], errors: [] };
     pieces.push(p);
     byNode.set(node, p);
     return p;
@@ -310,6 +310,23 @@ function makeCode(program, checker, tree, mod) {
     return s ?? '?';
   };
 
+  /** A file of the module a literal names, relative to the file that names it (new URL('./x', import.meta.url)), or null. */
+  const fileNamed = (e, sf) => {
+    if (!ts.isIdentifier(e.expression) || e.expression.text !== 'URL' || !lit(e.arguments?.[0]) || e.arguments.length < 2) return null;
+    if (e.arguments[1].getText(sf) !== 'import.meta.url') return null;
+    const f = path.resolve(path.dirname(sf.fileName), lit(e.arguments[0]));
+    return own.has(f) ? f : null;
+  };
+  /**
+   * The part of Node's `process` a name or member stands for where it is imported from node:process (`import { env }`,
+   * `import * as proc` then `proc.env`): 'env', 'argv', 'stdin'..., or null.
+   */
+  const processPart = (x) => {
+    if (ts.isIdentifier(x)) { const imp = nodeImport(checker.getSymbolAtLocation(x)); return imp?.spec === 'process' && imp.name !== '*' ? imp.name : null; }
+    if (ts.isPropertyAccessExpression(x) && ts.isIdentifier(x.expression)) { const imp = nodeImport(checker.getSymbolAtLocation(x.expression)); return imp?.spec === 'process' && imp.name === '*' ? x.name.text : null; }
+    return null;
+  };
+
   /** What a thrown value is: its error class, and its code where one is set. */
   function thrownOf(e, p) {
     while (ts.isParenthesizedExpression(e) || ts.isAwaitExpression(e)) e = e.expression;
@@ -383,6 +400,7 @@ function makeCode(program, checker, tree, mod) {
       if (ts.isThrowStatement(n) && n.expression && !caughtAt(n, p)) for (const x of thrownOf(n.expression, p)) p.throws.add(x);
       if (ts.isCallExpression(n)) noteCall(n, p, sf);
       if (ts.isNewExpression(n)) noteNew(n, p, sf);
+      if (ts.isNewExpression(n)) { const f = fileNamed(n, sf); if (f) p.names.add(f); }
       if (ts.isObjectLiteralExpression(n) && n.properties.some((x) => ts.isGetAccessor(x) || ts.isSetAccessor(x))) p.instances.add('an object with getters or setters');
       return true;
     };
@@ -550,8 +568,15 @@ function makeCode(program, checker, tree, mod) {
     if (ts.isLabeledStatement(par) || ts.isBreakOrContinueStatement(par)) return;
     const raw = ts.isShorthandPropertyAssignment(par) && par.name === n ? checker.getShorthandAssignmentValueSymbol(par) : checker.getSymbolAtLocation(n);
     if (!raw) return;
-    // a name of Node's own modules: its channels are read from what is called (noteCall)
-    if (nodeImport(raw)) return;
+    // a name of Node's own modules: its channels are read from what is called (noteCall), and from node:process the
+    // settings and start arguments it reads (noteMember for a setting read by name)
+    if (nodeImport(raw)) {
+      const part = processPart(n);
+      if (part === 'argv') p.channels.add('start arguments');
+      else if (part === 'stdin') p.channels.add('reads standard input');
+      else if (part === 'env' && !((ts.isPropertyAccessExpression(par) || (ts.isElementAccessExpression(par) && lit(par.argumentExpression) !== null)) && par.expression === n)) p.channels.add('setting *');
+      return;
+    }
     const sym = resolve(raw);
     const decls = sym?.declarations ?? [];
     // the name a declaration gives, with its value: a write of the binding
@@ -587,6 +612,9 @@ function makeCode(program, checker, tree, mod) {
     if (/^process\.env(\.|\[)/.test(text) && ts.isPropertyAccessExpression(e) && e.expression.getText() === 'process.env') p.channels.add(`setting ${name}`);
     else if (ts.isElementAccessExpression(e) && e.expression.getText() === 'process.env') p.channels.add(`setting ${name}`);
     if (text === 'process.argv') p.channels.add('start arguments');
+    if (processPart(e.expression) === 'env') p.channels.add(`setting ${name}`);
+    if (ts.isPropertyAccessExpression(e) && processPart(e) === 'argv') p.channels.add('start arguments');
+    if (ts.isPropertyAccessExpression(e) && processPart(e) === 'stdin') p.channels.add('reads standard input');
     if (text === 'process.stdin') p.channels.add('reads standard input');
     if (text === 'process.exitCode') p.channels.add('exit code');
   }
@@ -773,7 +801,8 @@ function makeCode(program, checker, tree, mod) {
   };
   // The files that run in the same program as an item: those its interface files and its own file import, followed
   // file to file within the module. A file of the module that only runs as a program of its own (started by path) is
-  // not among them: its code runs elsewhere, and writes nothing an item reads.
+  // not among them: its code runs elsewhere, and writes nothing an item reads. It is in the closure as a file named by
+  // a literal (build text 5, section 6), for its channels alone (programOf, below).
   const imports = new Map();
   for (const sf of sfs) {
     const out = new Set();
@@ -783,9 +812,9 @@ function makeCode(program, checker, tree, mod) {
     }
     imports.set(sf.fileName, out);
   }
-  const loadedWith = (files) => {
+  const loadedWith = (files, alone = false) => {
     const seen = new Set();
-    const todo = [...mod.public, ...files].map((f) => path.resolve(f));
+    const todo = [...(alone ? [] : mod.public), ...files].map((f) => path.resolve(f));
     while (todo.length) { const f = todo.pop(); if (seen.has(f)) continue; seen.add(f); for (const g of imports.get(f) ?? []) todo.push(g); }
     return seen;
   };
@@ -811,6 +840,28 @@ function makeCode(program, checker, tree, mod) {
     }
   };
 
+  /**
+   * A file of the module named by a literal (`new URL('./worker.mjs', import.meta.url)`) is in the closure of the pieces
+   * that name it (build text 5, section 6), with the files it imports within the module and their start-up code, and
+   * what that reaches, as a program of its own: the files, settings, streams and start arguments it reads and writes are
+   * the item's channels. Its errors, values, `this` and type errors stay in its own process, and its code is not the
+   * item's. Where the item's own code starts a program during the call, every channel of each program its closure names
+   * counts, its streams included, which the starter reads; otherwise (a start-up statement names it), only what is not
+   * a stream out of the program.
+   */
+  const programOf = (from) => {
+    const P = new Set();
+    let files = new Set([...from].flatMap((p) => [...p.names]));
+    const seen = new Set();
+    while (files.size) {
+      const loaded = loadedWith([...files].filter((f) => !seen.has(f)), true);
+      for (const f of files) seen.add(f);
+      for (const q of control(pieces.filter((x) => x.top && loaded.has(path.resolve(x.file))))) P.add(q);
+      files = new Set([...P].flatMap((q) => [...q.names]).filter((f) => !seen.has(f)));
+    }
+    return P;
+  };
+
   const digestOf = (set) => {
     const h = crypto.createHash('sha256');
     for (const k of [...set].map((p) => `${keys.get(p)}=${shapeOf(p.node, (n) => isPiece(n), keyOf)}`).sort()) h.update(k).update('\n');
@@ -823,6 +874,9 @@ function makeCode(program, checker, tree, mod) {
     const fc = control(seeds);
     const all = whole(fc, whole_ ? new Set() : new Set(seeds));
     // `this`: in the item's own code, and in arrow functions written inside it, which share its `this`
+    const starts = [...fc].some((p) => [...p.channels].some((c) => c.startsWith('starts a program')));
+    const called = programOf(starts ? all : fc);
+    const reached = new Set([...programOf(all)].filter((p) => !called.has(p)));
     const own = new Set(seeds);
     const todo = [...seeds];
     while (todo.length) for (const q of todo.pop().edges) if (ts.isArrowFunction(q.node) && !own.has(q)) { own.add(q); todo.push(q); }
@@ -833,7 +887,8 @@ function makeCode(program, checker, tree, mod) {
       writesArguments: sortedOf(seeds.filter((p) => isFunctionPiece(p.node)), (p) => [...written.get(p)].map((i) => `argument ${i + 1}`)),
       // M8: what runs during the call, all of it; what the closure adds beyond that (code that wrote state the item
       // reads), only what can reach that state: a stream written out, which no code of the product reads back, cannot
-      channels: sortedOf(all, (p) => [...p.channels].filter((c) => fc.has(p) || !SINKS.has(c))),
+      channels: [...new Set([...sortedOf(all, (p) => [...p.channels].filter((c) => fc.has(p) || !SINKS.has(c))),
+        ...sortedOf(called, (p) => [...p.channels]), ...sortedOf(reached, (p) => [...p.channels].filter((c) => !SINKS.has(c)))])].sort(),
       typeErrors: sortedOf(fc, (p) => p.errors),
       code: digestOf(fc),
       ...(whole_ ? { wholeModule: true } : {}),

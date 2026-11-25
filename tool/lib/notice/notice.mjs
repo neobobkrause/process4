@@ -11,7 +11,8 @@
 //
 // Who is told (build text 5, section 6): a lookup in the later modules' uses files, with no user's code read. Each
 // module whose uses file names a changed item or a member of a changed type (by its provider and name, whatever the
-// route), or holds a marked copy of one; where a kind, handle kind or class changed member by member, only the uses
+// route), or holds a marked copy of one, or reads a kind an earlier module relabelled as its own from a changed kind
+// (an S4 place that lists what it `relabels`); where a kind, handle kind or class changed member by member, only the uses
 // that change reaches (a member added: the whole value's; one removed, changed or made optional: its readers' too), and
 // an item whose means differ only inside such kinds is told through them; a change of meaning alone is not told to a
 // module that only hands the value back to a later module that is told; and, on any change to the provider's files
@@ -572,6 +573,20 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   const itemsOf = (m) => byModule.get(m).map((c) => c.item);
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   const hitsOf = new Map();
+  // A kind a module wrote as a copy of an earlier module's kind (S4, a place listing what it `relabels`): a module that
+  // reads the copy reads the original through it, and hears of the original's changes (build text 5, section 6, "by
+  // any route"), until the copy is written as the original's kind.
+  const relabelled = new Map(); // `${module}|${its kind}` -> [{ provider, item }]
+  for (const id of order) {
+    for (const f of [usesOf(B, id), usesOf(A, id)].filter(Boolean)) {
+      for (const o of f.outside) {
+        if (o.rule !== 'S4' || typeof o.item !== 'string' || typeof o.relabels?.provider !== 'string' || typeof o.relabels?.item !== 'string') continue;
+        const k = `${id}|${o.item}`;
+        if (!relabelled.has(k)) relabelled.set(k, []);
+        if (!relabelled.get(k).some((r) => r.provider === o.relabels.provider && r.item === o.relabels.item)) relabelled.get(k).push(o.relabels);
+      }
+    }
+  }
   for (const user of order) {
     const before = [...byModule.keys()].filter((m) => indexOf(m) < indexOf(user));
     // An order fault is a use of a later module: the module that holds it may come before the changed one.
@@ -605,6 +620,17 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
           const hits = uses.filter((u) => u.provider === m && ((matches(c.item, u.item) && (!c.members || reaches(c, u)) && !(c.through && marks && CALLED.has(u.type)))
             || (c.handle && u.item === c.handle.item && (u.value === 'member' ? u.member === c.handle.member : u.value !== 'none'))));
           const marked = copies.filter((x) => x.provider === m && typeof x.item === 'string' && matches(c.item, x.item));
+          // the copy's readers: any use of it, whatever member, is a use of the original changed
+          const through = hits.length || marked.length ? [] : uses.filter((u) => u.provider !== m && indexOf(u.provider) < indexOf(user)
+            && (relabelled.get(`${u.provider}|${u.item.split(/[.#]/)[0]}`) ?? []).some((r) => r.provider === m && (matches(c.item, r.item) || matches(r.item, c.item))));
+          if (through.length) {
+            const reason = { module: m, item: c.item, found: c.found, ...(c.namedBy ? { namedBy: c.namedBy } : {}), changes: [...c.changes], why: c.why ?? null,
+              route: { via: through[0].provider, item: through[0].item.split(/[.#]/)[0] }, copy: `${through[0].provider} ${through[0].item.split(/[.#]/)[0]}`,
+              places: firstPlaces(through.flatMap((h) => h.where)), ...(c.before !== undefined ? { before: c.before, after: c.after } : {}) };
+            hitsOf.set(reason, { hits: through, marked: 0, user });
+            reasons.push(reason);
+            continue;
+          }
           if (!hits.length && !marked.length) continue;
           const route = hits.some((h) => h.route === 'direct' || !h.route) || !hits.length ? 'direct' : hits[0].route;
           const reason = { module: m, item: c.item, found: c.found, ...(c.namedBy ? { namedBy: c.namedBy } : {}), changes: [...c.changes], why: c.why ?? null, route,
@@ -661,7 +687,7 @@ export function noticeText(r) {
     L.push(`  TOLD ${t.user}`);
     for (const x of t.reasons) {
       const at = (x.places ?? []).join(', ');
-      if (x.item) L.push(`      uses ${x.module} ${x.item} (${x.changes.join(', ')}; found by ${[x.found, ...(x.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}) at ${at || 'no place named'}`);
+      if (x.item) L.push(`      uses ${x.module} ${x.item}${x.copy ? ` through ${x.copy}, a copy of it` : ''} (${x.changes.join(', ')}; found by ${[x.found, ...(x.namedBy ?? [])].map((f) => FOUND[f] ?? f).join(', ')}) at ${at || 'no place named'}`);
       else L.push(`      ${x.outside ? `outside the standard, ${x.outside}` : x.orderFault ? `order fault, ${x.orderFault}` : 'no uses file'}: ${x.why}`);
     }
   }

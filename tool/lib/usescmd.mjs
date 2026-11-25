@@ -48,7 +48,8 @@ export function classificationAt(commit) {
 
 /**
  * The reading of one module and its uses file. The file holds what build text 2c states: the providers, the uses, the
- * places outside the standard (rule, file, side, line, what they may refer to, what they wait on, their tests), the
+ * places outside the standard (rule, file, side, line, what they may refer to, what they wait on, their tests; for a
+ * kind written as a copy of another module's, the copy and the kind it copies), the
  * order faults and the hand-written copies in JSON files. The reading also holds what `uses` prints for a conversion:
  * what each place is, the marked copies and their drift, the candidate restated facts, the host facilities used.
  */
@@ -59,7 +60,7 @@ export function usesReading(tree, moduleId, commit) {
     written: { commit, tool: toolVersion() },
     providers: r.providers,
     uses: r.uses,
-    outside: r.outside.map(({ rule, file, side, line, mayRefer, waitsOn, tests }) => ({ rule, file, side, line, mayRefer, waitsOn, tests })),
+    outside: r.outside.map(({ rule, file, side, line, mayRefer, waitsOn, tests, item, relabels }) => ({ rule, file, side, line, ...(relabels ? { item, relabels } : {}), mayRefer, waitsOn, tests })),
     orderFaults: r.orderFaults,
     copies: r.copies,
   };

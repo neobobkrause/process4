@@ -1121,3 +1121,52 @@ test('a change of meaning alone is not told to a module that only hands the valu
   const n = kindNotice('/** @typedef {{ cents: number, euros: number }} Price */\n/** @returns {Price} */\nexport function price() { return { cents: 1, euros: 0 }; }\n', { files: withUsesFiles(base), named });
   assert.deepEqual(Object.keys(n.told), ['mid', 'last']);
 });
+
+test('a kind relabelled as a middle module\'s own (S4) is a place there, and its readers hear of the original\'s changes through it', () => {
+  const P = (field) => `/** @typedef {{ ${field}: number }} Amount */\n/** @param {number} n @returns {Amount} */\nexport function amount(n) { return { ${field}: n }; }\n`;
+  const mid = (price) => `import { amount } from '../p/index.mjs';\n/** ${price} */\n/** @returns {Price} */\nexport function quote() { return amount(5); }\n`;
+  const files = (price) => withUsesFiles({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nmid\nlast\n',
+    'process/modules/p.json': entry('p'), 'process/modules/mid.json': entry('mid', ['p']), 'process/modules/last.json': entry('last', ['mid']),
+    'src/p/index.mjs': P('cents'),
+    'src/mid/index.mjs': mid(price),
+    'src/last/index.mjs': "import { quote } from '../mid/index.mjs';\n/** @returns {string} */\nexport const show = () => String(quote().cents);\n",
+  });
+  // mid hands an Amount back as Price, its own copy of the kind: an S4 place that names both kinds
+  const copy = files('@typedef {{ cents: number }} Price');
+  const place = copy['process/modules/mid.uses.json'].outside.find((o) => o.rule === 'S4');
+  assert.deepEqual([place.item, place.relabels, place.mayRefer], ['Price', { provider: 'p', item: 'Amount' }, ['p']]);
+  // last names only mid's Price; it reads p's Amount through it, and hears of Amount's change
+  assert.ok(!copy['process/modules/last.uses.json'].uses.some((u) => u.provider === 'p'));
+  let n = kindNotice(P('minor'), { files: copy });
+  const through = n.r.told.find((t) => t.user === 'last').reasons.find((x) => x.item === 'Amount');
+  assert.deepEqual([through.copy, through.route], ['mid Price', { via: 'mid', item: 'Price' }]);
+  assert.match(noticeText(n.r), /uses p Amount through mid Price, a copy of it/);
+  assert.ok(n.r.told.find((t) => t.user === 'mid').reasons.some((x) => x.outside?.startsWith('S4')));
+  // Price kept to S4, written as the provider's kind: no place, and last names Amount itself
+  const kept = files("@typedef {import('../p/index.mjs').Amount} Price");
+  assert.ok(!kept['process/modules/mid.uses.json'].outside.some((o) => o.rule === 'S4' && o.relabels));
+  n = kindNotice(P('minor'), { files: kept });
+  assert.ok(n.told.last?.includes('Amount'));
+  assert.equal(n.r.told.find((t) => t.user === 'last').reasons.find((x) => x.item === 'Amount').copy, undefined);
+});
+
+test('a user that builds a value of a handle kind, a test implementing it without naming it, hears of a change to any of its members', () => {
+  const P = (ret, bound) => `/**\n * @typedef {Object} Clock\n * @property {() => ${ret}} now${bound ? `\n * @bound now: ${bound}` : ''}\n */\n/** @param {Clock} clock @returns {string} */\nexport function stamp(clock) { return String(clock.now()); }\n`;
+  const files = withUsesFiles({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nu\nh\n',
+    'process/modules/p.json': entry('p'), 'process/modules/u.json': entry('u', ['p']), 'process/modules/h.json': entry('h', ['p']),
+    'src/p/index.mjs': P('string', 'an instant'),
+    'src/u/index.mjs': "import { stamp } from '../p/index.mjs';\n/** @returns {string} */\nexport const at = () => stamp({ now: () => 'x' });\n",
+    'test/u/index.test.mjs': "import { stamp } from '../../src/p/index.mjs';\nstamp({ now: () => '2026-11-26T09:30:00.000Z' });\n",
+    'src/h/index.mjs': "import { stamp } from '../p/index.mjs';\n/** @returns {number} */\nexport const n = () => stamp.length;\n",
+  });
+  // u converts its own values to Clock (it refers to both kinds, build text 2c): a use of the whole value
+  assert.ok(files['process/modules/u.uses.json'].uses.some((u) => u.item === 'Clock' && u.type === 'conversion' && u.value === 'whole'));
+  // Clock.now's bound line changed (X03): u is told; h, which only calls stamp, hears of stamp only where stamp changed
+  assert.deepEqual(kindNotice(P('string', 'a day'), { files }).told, { u: ['Clock.now'] });
+  // what it hands back changed
+  assert.deepEqual(kindNotice(P('number', 'an instant'), { files }).told.u, ['Clock.now']);
+});

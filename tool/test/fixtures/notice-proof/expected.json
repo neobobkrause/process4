@@ -25,7 +25,9 @@
   "no longer told of an item told through a kind changed member by member": 0,
   "now also told of a changed method of a handle kind whose whole value it uses": 64,
   "told with other words: what changed, as the type checker finds it or worked out exactly": 20,
-  "told with other reasons and other words: the two joined": 29
+  "told with other reasons and other words: the two joined": 29,
+  "now also told of a kind it reads through an earlier module's relabelled copy": 1,
+  "now also told of a program its provider starts by a literal path: the program's channels": 8
  },
  "changes": {
   "P01-price-content": {
@@ -1838,6 +1840,7 @@
      "money: a place outside the standard"
     ],
     "front": [
+     "money Amount: cannot stand in, hands back differently, bound changed",
      "money: a place outside the standard"
     ],
     "reports": [
@@ -1865,7 +1868,8 @@
     "rooms was not told, now is told: its uses file lists places outside the standard (rules R14) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "door was not told, now is told: its uses file lists places outside the standard (rules R1, R16, R17, R2) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to money, which hear of any change to money's files until converted (design part 2, section 7; build text 5, section 6)",
+    "front, told with other reasons: now also told of money Amount (cannot stand in, hands back differently, bound changed): front reads bookings' Price, which bookings writes as a copy of money's Amount and hands Amount values out as (S4: never relabelled as an own kind); bookings' uses file lists the relabel as a place naming both kinds, so front reads Amount through the copy (build text 5, section 6, \"by any route\"; build text 2c, S4)"
    ]
   },
   "X01-optional-param-callback": {
@@ -2240,6 +2244,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -2256,7 +2261,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "X10-node-timer": {
@@ -2264,6 +2270,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -2278,7 +2285,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "Y01-method-error-kind": {
@@ -2527,6 +2535,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -2543,7 +2552,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "Y07-limit-outside-bound-test": {
@@ -2990,6 +3000,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -3006,7 +3017,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "Z05-amount-built-by-static-factory": {
@@ -3887,6 +3899,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -3903,7 +3916,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "V04-instance-built-in-a-conditional": {
@@ -4062,6 +4076,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -4076,7 +4091,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "V08-limit-read-from-json": {
@@ -4401,6 +4417,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -4417,7 +4434,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "W02-meter-ready-line": {
@@ -5250,6 +5268,7 @@
    "provider": "meter",
    "told": {
     "billing": [
+     "meter WORKER_FILE: channels, settings or files changed",
      "meter: a place outside the standard"
     ],
     "front": [
@@ -5266,7 +5285,8 @@
    "rerecorded": [
     "billing was not told, now is told: its uses file lists places outside the standard (rules R1, R14, S4, S6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
     "front was not told, now is told: its uses file lists places outside the standard (rules R6) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
-    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)"
+    "reports was not told, now is told: its uses file lists places outside the standard (rules R1, S4) that may refer to meter, which hear of any change to meter's files until converted (design part 2, section 7; build text 5, section 6)",
+    "billing, told with other reasons: now also told of meter WORKER_FILE (channels, settings or files changed): the file meter names by a literal, new URL('./worker.mjs', import.meta.url), is in the closure of the items that name it, with what it imports and its start-up code, as a program of its own: its channels (streams, settings, start arguments) are WORKER_FILE's, which billing starts (build text 5, section 6, the closure and \"a file named by a literal\")"
    ]
   },
   "U06-limit-lowered-in-json": {

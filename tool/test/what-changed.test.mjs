@@ -243,3 +243,29 @@ export function nested(o) { const { req } = o; return req.room; }
   // use and nested read only what their caller hands them; last reads the module's own state, which make writes
   assert.deepEqual(changes(p("'r'"), p('String(Math.random())')), ['last: channels, settings or files changed', 'make: channels, settings or files changed']);
 });
+
+test('a program of the module started by a literal path: its channels are its starter\'s; env and argv from node:process are read', () => {
+  const index = `import { spawn } from 'node:child_process';
+export const PROGRAM = new URL('./worker.mjs', import.meta.url).pathname;
+/** @param {(line: string) => void} onLine @returns {void} */
+export function start(onLine) { const c = spawn(process.execPath, [PROGRAM]); c.stdout.on('data', (/** @type {unknown} */ d) => onLine(String(d))); }
+/** @param {string} line @returns {string} */
+export function trim(line) { return line.trim(); }
+`;
+  const worker = (body) => ({ 'src/p/worker.mjs': `import { trim } from './index.mjs';\n${body}\n` });
+  const run = (b, a) => changes(index, index, { extraB: worker(b), extraA: worker(a) });
+  // a stream the program writes moves: what start hands on changes; trim, which starts nothing, is unchanged
+  assert.deepEqual(run("process.stdout.write(trim(' a '));", "process.stderr.write(trim(' a '));"), ['PROGRAM: channels, settings or files changed', 'start: channels, settings or files changed']);
+  // the program now needs a start argument or a setting, read through Node's process or imported from node:process:
+  // every item whose closure names the program hears of it (trim's start-up code names it too)
+  const needs = ['PROGRAM: channels, settings or files changed', 'start: channels, settings or files changed', 'trim: channels, settings or files changed'];
+  assert.deepEqual(run("process.stdout.write('a');", "process.stdout.write(process.argv[2] ?? 'a');"), needs);
+  assert.deepEqual(run("process.stdout.write('a');", "import { argv } from 'node:process';\nprocess.stdout.write(argv[2] ?? 'a');"), needs);
+  assert.deepEqual(run("process.stdout.write('a');", "import { env } from 'node:process';\nprocess.stdout.write(env.CURRENCY ?? 'a');"), needs);
+  assert.deepEqual(run("process.stdout.write('a');", "import * as proc from 'node:process';\nprocess.stdout.write(proc.env.CURRENCY ?? 'a');"), needs);
+  // what the program writes on the same stream, and its code, are not its starter's means (a rule the owner keeps)
+  assert.deepEqual(run("process.stdout.write('a');", "process.stdout.write('a\\n\\n');"), []);
+  // read in the module's own code, a setting imported from node:process is the item's
+  const own = (v) => `import { env } from 'node:process';\n/** @returns {string} */\nexport function currency() { return ${v}; }\n`;
+  assert.deepEqual(moduleMeans(product({ p: own("env.CURRENCY ?? 'EUR'") }), 'p').items.currency.channels, ['setting CURRENCY']);
+});

@@ -277,7 +277,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     uses.get(k).where.set(`${w.file}|${w.line}|${w.test ?? w.in}`, w);
   }
   /** A place outside the standard. mayRefer: the modules it may refer to ([] none, [ANY] every earlier module). */
-  function place(rule, node, { what, mayRefer = [ANY], waitsOn = 'this module', item } = {}) {
+  function place(rule, node, { what, mayRefer = [ANY], waitsOn = 'this module', item, relabels } = {}) {
     const sf = node.getSourceFile();
     const file = rel(sf.fileName);
     const line = lineOf(node);
@@ -286,7 +286,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const mayR = [...new Set(mayRefer)].filter((m) => m !== mod.id);
     const old = outside.get(k);
     if (old) { old.mayRefer = [...new Set([...old.mayRefer, ...mayR])]; return; }
-    outside.set(k, { rule, file, side, line, what, ...(item ? { item } : {}), mayRefer: mayR.includes(ANY) ? [ANY] : mayR, waitsOn, tests: side === 'test' ? testsAt(node) : [] });
+    outside.set(k, { rule, file, side, line, what, ...(item ? { item } : {}), ...(relabels ? { relabels } : {}), mayRefer: mayR.includes(ANY) ? [ANY] : mayR, waitsOn, tests: side === 'test' ? testsAt(node) : [] });
   }
   const modulesOf = (decls) => [...new Set(decls.map((d) => entryOf(d)?.module).filter(Boolean))];
 
@@ -610,6 +610,15 @@ export function readReferences(tree, moduleId, opts = {}) {
     // a value handed to a slot of kind unknown, object, {} or any: every member it has is read
     if (T.flags & (ts.TypeFlags.Unknown | ts.TypeFlags.Any) || (isObj(T) && !checker.getPropertiesOfType(T).length && !T.getCallSignatures().length)) {
       for (const p of isObj(S) ? checker.getPropertiesOfType(S) : []) for (const d of p.declarations ?? []) addUse(entryOf(d), node, 'read', route);
+    }
+    // S4: a value of another module's kind given a kind this module writes itself, a copy of it under another name
+    // (never `@typedef {Amount} Price`, which is the provider's kind): the copy's readers read the provider's kind
+    // through it, so the place names both (`relabels`), and they hear of its changes too (notice.mjs)
+    const ownAlias = isObj(T) && T.aliasSymbol && (T.aliasSymbol.declarations ?? []).some((d) => tree.moduleOfFile(d.getSourceFile().fileName) === mod.id && !d.getSourceFile().isDeclarationFile) ? T.aliasSymbol : null;
+    const original = ownAlias && isObj(S) ? [S.aliasSymbol, S.symbol].flatMap((x) => x?.declarations ?? []).map(entryOf).find((x) => x?.listed && KIND_ITEMS.has(x.kind)) : null;
+    if (original) {
+      place('S4', node, { what: `${how}: ${original.module}'s ${original.item} relabelled as this module's own kind ${ownAlias.name}`, mayRefer: [original.module],
+        waitsOn: `this module: ${ownAlias.name} written as ${original.module}'s kind`, item: ownAlias.name, relabels: { provider: original.module, item: original.item } });
     }
     // R15: a value the host declares, given a kind the product declares
     if (isObj(S) && hostDeclared(S) && !sd.length && !hostDeclared(T) && (td.length || isOwnKind(T)) && !(S.flags & ts.TypeFlags.Primitive)) {
