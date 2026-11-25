@@ -9,14 +9,18 @@ import { mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
 import { config, ctxFor, fakeGitHub, makeRepo } from './helpers.mjs';
 
-// orders uses pricing uses dates. orders names areas (a screen and a journey), the others name none.
+// orders uses pricing uses dates, as their uses files say. orders names areas (a screen and a journey), the others
+// name none.
+const usesFile = (module, providers) => ({ module, providers, uses: [], outside: [], orderFaults: [], copies: [] });
 function product(over = {}) {
   const root = makeRepo({
     'process.json': config({ walks_folder: 'lanes/ux/walks/' }),
     'process/modules/order.txt': 'dates\npricing\norders\n',
-    'process/modules/dates.json': { name: 'dates', files: ['src/dates/'], tests: ['test/dates/'], uses: [] },
-    'process/modules/pricing.json': { name: 'pricing', files: ['src/pricing/'], tests: ['test/pricing/'], uses: ['dates'] },
-    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: ['pricing'] },
+    'process/modules/dates.json': { name: 'dates', files: ['src/dates/'], tests: ['test/dates/'] },
+    'process/modules/pricing.json': { name: 'pricing', files: ['src/pricing/'], tests: ['test/pricing/'] },
+    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'] },
+    'process/modules/pricing.uses.json': usesFile('pricing', ['dates']),
+    'process/modules/orders.uses.json': usesFile('orders', ['pricing']),
     'process/modules/dates.md': '- **R1** [met] a day is 1 to 31.\n',
     'process/modules/pricing.md': '- **R1** [met] a price is whole pence.\n',
     'process/modules/orders.md': '- **R1** [met] the basket shows the total. (screen: Checkout / basket)\n- **R2** [met] a buyer can check out. (journey: Buy a thing step 2)\n',

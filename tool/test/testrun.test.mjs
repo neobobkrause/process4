@@ -112,8 +112,10 @@ test('p4 test first merges in the tranche\'s newer commits, pushes, and records 
   assert.equal(testCmd(j.ctx, j.pr.number), 0);
   const head = git(['rev-parse', 'HEAD'], { cwd: j.root });
   assert.notEqual(head, old);
-  assert.equal(git(['rev-parse', 'HEAD^1'], { cwd: j.root }), old);
-  assert.equal(git(['rev-parse', 'HEAD^2'], { cwd: j.root }), moved);
+  // pushed as push pushes it: the merge, then the job's module's uses file written from it
+  assert.equal(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: j.root }), 'process/modules/orders.uses.json');
+  assert.equal(git(['rev-parse', 'HEAD^^1'], { cwd: j.root }), old);
+  assert.equal(git(['rev-parse', 'HEAD^^2'], { cwd: j.root }), moved);
   assert.equal(git(['ls-remote', 'origin', 'refs/heads/job/orders/1'], { cwd: j.root }).split('\t')[0], head);
   const r = recordOf(j.gh);
   assert.deepEqual([r.commit, r.result], [head, 'pass']);

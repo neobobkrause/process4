@@ -8,8 +8,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { requiredCheck } from './config.mjs';
 import { block } from './github.mjs';
-import { jobBlockOf } from './round.mjs';
+import { JOB, jobBlockOf } from './round.mjs';
 import { pushPace } from './commands.mjs';
+import { writeUsesFiles } from './usescmd.mjs';
 import { DROP, decideScope, runModules } from './scope.mjs';
 import { TEST_MARK, noticeSeq, recordNeed, recordStands, testRecordOf } from './testrecord.mjs';
 import { fail, git } from './util.mjs';
@@ -97,6 +98,8 @@ export function bringBaseIn(ctx, pr) {
     git(['merge', '--abort'], { cwd, allowFail: true });
     fail(`${branch} does not merge cleanly into ${baseRef}; merge ${baseRef} into the branch first, resolve, push, then run test`);
   }
+  // pushed as push pushes it, uses file and all (build text 1b, command 27)
+  writeUsesFiles(ctx, branch, { job: branch.match(JOB)?.[1] ?? null, base: baseTip });
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${branch}`], { cwd });
   const head = git(['rev-parse', 'HEAD'], { cwd });

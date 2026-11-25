@@ -1,14 +1,12 @@
-// The modules a module uses, for merge (design part 2, section 8; build text 1b, command 6): the providers its uses file
-// names (the uses it lists, and the modules a place outside the standard may refer to), read at the tranche branch's
-// newest commit and at the job's head, and theirs in turn, each read from its own uses file at the same commits. A
-// module with no uses file yet, before its conversion, uses the earlier modules it imports (the import scan,
-// notice/imports.mjs). No language reader.
+// The modules a module uses, for merge (design part 2, section 8; build text 1b, command 6): the providers its uses
+// file names (usesfile.mjs), and for a module with no uses file yet the modules its code and tests import; closed over
+// those modules' own uses in turn. Read at the tranche branch's newest commit and at the job's head, the union. No
+// checker runs: a uses file is read as it stands, and imports are read from each file's text.
 import path from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { loadTree } from './notice/model.mjs';
-import { makeFollow } from './notice/imports.mjs';
-import { hasUsesFile, providersOf, readUsesFile } from './usesfile.mjs';
+import { declaredUses } from './usesfile.mjs';
 import { writeOut } from './notify.mjs';
 
 /**
@@ -18,27 +16,16 @@ import { writeOut } from './notify.mjs';
  */
 export function usesOf(trees, moduleId) {
   trees = [].concat(trees);
-  const follows = trees.map(() => null);
-  const order = orderOf(trees);
   const direct = new Map();
   const directOf = (id) => {
     if (direct.has(id)) return direct.get(id);
     const out = new Map();
-    trees.forEach((tree, i) => {
+    for (const tree of trees) {
       const mod = tree.byId.get(id);
-      if (!mod) return;
-      const u = readUsesFile(tree, id);
-      if (hasUsesFile(u)) {
-        for (const p of providersOf(u)) {
-          // a place outside the standard that cannot say which modules it may refer to: every earlier module
-          const named = p === '*' ? order.slice(0, order.indexOf(id)) : [p];
-          for (const m of named) if (m !== id && tree.byId.has(m) && !out.has(m)) out.set(m, p === '*' ? 'its uses file (a place outside the standard)' : 'its uses file');
-        }
-      } else {
-        follows[i] ??= makeFollow(tree);
-        for (const m of follows[i].importedModules(id)) if (!out.has(m)) out.set(m, 'imports (no uses file yet)');
-      }
-    });
+      if (!mod) continue;
+      const d = declaredUses(tree, mod);
+      for (const p of d.providers) if (p !== id && tree.byId.has(p) && !out.has(p)) out.set(p, d.from === 'uses file' ? 'its uses file' : 'imports');
+    }
     direct.set(id, out);
     return out;
   };
@@ -50,6 +37,7 @@ export function usesOf(trees, moduleId) {
     found.set(m, how);
     for (const [u, h] of directOf(m)) if (!found.has(u)) todo.push([u, `through ${m} (${h})`]);
   }
+  const order = orderOf(trees);
   return [...found].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).map(([module, how]) => ({ module, how }));
 }
 

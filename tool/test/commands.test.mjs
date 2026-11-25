@@ -47,7 +47,14 @@ test('push sends the current branch, never forced, and refuses the tranche and m
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   const sha = commit(root, { 'src/orders/index.mjs': 'export const o = 2;\n' });
   assert.equal(push(ctx, { _: [] }), 0);
-  assert.equal(remote(root, 'job/orders/1'), sha);
+  // The push carries the job's module's uses file, written by the tool from the code as pushed, in a commit of its own.
+  assert.equal(remote(root, 'job/orders/1'), git(['rev-parse', 'HEAD'], { cwd: root }));
+  assert.equal(git(['rev-parse', 'HEAD^'], { cwd: root }), sha);
+  assert.equal(git(['diff', '--name-only', sha, 'HEAD'], { cwd: root }), 'process/modules/orders.uses.json');
+  // Pushed again with nothing changed, it writes nothing more.
+  const tip = git(['rev-parse', 'HEAD'], { cwd: root });
+  assert.equal(push(ctx, { _: [] }), 0);
+  assert.equal(git(['rev-parse', 'HEAD'], { cwd: root }), tip);
   // Someone else's commit now stands there: the push is refused, never forced.
   const other = git(['commit-tree', 'HEAD^{tree}', '-p', 'main', '-m', 'other'], { cwd: root });
   git(['push', '-q', '--force', 'origin', `${other}:refs/heads/job/orders/1`], { cwd: root });
@@ -310,7 +317,7 @@ test('merge obeys the owner\'s hold, waits a minute after the last merge, and me
 
 // The owner's decision of 24 Nov 2026, item 3: a job merges once no job is open among the modules it uses.
 function usingProduct() {
-  const mod = (name, uses = []) => ({ name, files: [`src/${name}/`], tests: [`test/${name}/`], uses });
+  const mod = (name) => ({ name, files: [`src/${name}/`], tests: [`test/${name}/`] });
   const root = makeRepo({
     'process.json': config(),
     'package.json': { name: 'shop', type: 'module', exports: { '.': './src/orders/index.mjs', './tax': './src/tax/index.mjs' } },
@@ -318,7 +325,9 @@ function usingProduct() {
     'process/modules/base.json': mod('base'),
     'process/modules/tax.json': mod('tax'),
     'process/modules/dates.json': mod('dates'),
-    'process/modules/pricing.json': mod('pricing', ['dates']),
+    'process/modules/pricing.json': mod('pricing'),
+    // pricing imports nothing; its uses file names dates (a use the tool found by another route)
+    'process/modules/pricing.uses.json': { module: 'pricing', providers: ['dates'], uses: [], outside: [], orderFaults: [], copies: [] },
     'process/modules/orders.json': mod('orders'),
     'process/modules/late.json': mod('late'),
     'src/base/index.mjs': 'export const b = 1;\n',
@@ -339,7 +348,7 @@ function usingProduct() {
   return root;
 }
 
-test('merge of a job waits for an open job of each earlier module it uses: by its uses file, by import where it has none yet, and through others', () => {
+test('merge of a job waits for an open job of each earlier module it uses, by its uses file, by import where it has none, and through others', () => {
   const root = usingProduct();
   const gh = fakeGitHub();
   converted(gh, ['dates', 'orders']);

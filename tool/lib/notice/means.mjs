@@ -4,7 +4,7 @@
 //
 // - M1 to M3 and M9 (stated kinds expanded through every kind they name, names kept; named kinds; read-only; a value
 //   or a promise) and the marked bound lines come from the listing (listing.mjs), read with the coding standard's
-//   checker settings (ts.mjs, standardOptions).
+//   checker settings and its description of the host (ts.mjs, makeStandardProgram), the reading the uses file is written from.
 // - M4 to M8 are computed from the module's code, over a closure of its pieces (section 3.2 of the study):
 //   control edges (a name's declaration, any member of the same name, every member a computed access may reach, the
 //   members the language calls without a name (toString, valueOf, toJSON, then, next, return, throw, constructor and
@@ -26,7 +26,7 @@
 import crypto from 'node:crypto';
 import { builtinModules } from 'node:module';
 import path from 'node:path';
-import { ts, loadReader, makeProgram, standardOptions, forEachNode } from './ts.mjs';
+import { ts, loadReader, makeStandardProgram, forEachNode } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { carrierOf } from './carriers.mjs';
 
@@ -585,14 +585,13 @@ function makeCode(program, checker, tree, mod) {
  * The means of every item of one module, on one side of a change.
  * @param tree the product (loadTree)
  * @param moduleId the module
- * @param host where given, a compiler host whose parsed files are shared between programs of one side
  * @returns {{ module: string, items: Record<string, object>, listing: object }}
  */
-export function moduleMeans(tree, moduleId, { host } = {}) {
+export function moduleMeans(tree, moduleId) {
   loadReader();
   const mod = tree.byId.get(moduleId);
   if (!mod) throw new Error(`no module is named ${moduleId}`);
-  const program = makeProgram(mod.src, host, standardOptions());
+  const program = makeStandardProgram(mod.src);
   const checker = program.getTypeChecker();
   const listing = makeLister(program, tree).list(mod);
   const code = makeCode(program, checker, tree, mod);

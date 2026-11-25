@@ -1,7 +1,7 @@
 // Replays the recorded changes of the notice's proof (build text 1, section 6), converted to the Process4 forms in
 // fixtures/notice-proof/: the product, and each change as an overlay of the files it writes (proof: proof/trees.mjs).
-// Each module's uses file is written for the product before the change by the stand-in writer (usesfile-standin.mjs),
-// as each module's last job would have left it; a merge rewrites no other module's uses file, so the product after the
+// Each module's uses file is written for the product before the change by the tool's own writer (usescmd.mjs, through
+// usesfiles.mjs), as each module's last job would have left it; a merge rewrites no other module's uses file, so the product after the
 // change holds the same ones. A change's `meaning` ({ item, line }) stands for the items ARCH names in the work it placed.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -11,8 +11,8 @@ import { notice } from '../lib/notice/notice.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
 import { check } from '../lib/notice/check.mjs';
 import { makeProgram } from '../lib/notice/ts.mjs';
-import { usesFilePath } from '../lib/usesfile.mjs';
-import { writeUsesFiles } from './usesfile-standin.mjs';
+import { usesPath, usesText } from '../lib/usesfile.mjs';
+import { writeAllUses } from './usesfiles.mjs';
 
 export const FIXTURE = new URL('./fixtures/notice-proof/', import.meta.url).pathname;
 export const SERIES = ['planned', 'adversarial', 'adversarial-independent', 'round3-independent', 'round4-independent',
@@ -59,10 +59,10 @@ const usesCache = new Map();
 /** Each module's uses file, written into the product before the change and, the same, into the product after it. */
 function writeUses(before, after) {
   const key = digestOf(before);
-  if (!usesCache.has(key)) usesCache.set(key, writeUsesFiles(before));
-  else for (const [m, data] of Object.entries(usesCache.get(key))) fs.writeFileSync(path.join(before, usesFilePath(loadTree(before).cfg, m)), `${JSON.stringify(data, null, 2)}\n`);
+  if (!usesCache.has(key)) usesCache.set(key, writeAllUses(before));
+  else for (const [m, data] of Object.entries(usesCache.get(key))) fs.writeFileSync(path.join(before, usesPath(loadTree(before).cfg, m)), usesText(data));
   const cfg = loadTree(after).cfg;
-  for (const [m, data] of Object.entries(usesCache.get(key))) fs.writeFileSync(path.join(after, usesFilePath(cfg, m)), `${JSON.stringify(data, null, 2)}\n`);
+  for (const [m, data] of Object.entries(usesCache.get(key))) fs.writeFileSync(path.join(after, usesPath(cfg, m)), usesText(data));
 }
 
 /** The product before and after one change, in a fresh folder under `base`. */

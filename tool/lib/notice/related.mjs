@@ -13,7 +13,7 @@ import path from 'node:path';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
 import { git } from '../util.mjs';
-import { hasUsesFile, readUsesFile } from '../usesfile.mjs';
+import { readUses } from '../usesfile.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
 const isTestFile = (rel) => /\.test\.[^/]*$/.test(rel) && !WALK.test(rel);
@@ -82,8 +82,8 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
 
   // The whole module: where the module has no uses file yet, or a reason says its whole tests run (a module told with
   // no uses file, a notice too large for the job block), or a reason names no item the tool can look up.
-  const usesFile = readUsesFile(tree, module);
-  const whole = !hasUsesFile(usesFile) ? [`${module} has no uses file${usesFile?.unreadable ? ` that can be read (${usesFile.unreadable})` : ' yet'}`]
+  const usesFile = readUses(tree.root, module, { cfg: tree.cfg });
+  const whole = !usesFile || typeof usesFile !== 'object' ? [`${module} has no uses file yet`]
     : uses.filter((u) => u.noUsesFile || u.whole || !(u.item || u.outside || u.orderFault)).map((u) => (u.noUsesFile || u.whole ? String(u.noUsesFile || u.whole) : `a reason from ${u.module ?? 'a provider'} that names no item`));
   if (whole.length) {
     for (const t of tests) for (const w of whole) give(t, `${RULES.step3}: ${w}`);
@@ -189,7 +189,7 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
   const target = (file, line) => { if (!own.has(file)) return; const p = pieceAt(file, line); if (p) placeTargets.add(p); };
   for (const u of uses) {
     const items = u.item ? [u.item] : [];
-    const now = items.length ? usesFile.uses.filter((x) => x.provider === u.module && items.some((c) => named(c, x.item))).flatMap((x) => x.where) : [];
+    const now = items.length ? (Array.isArray(usesFile.uses) ? usesFile.uses : []).filter((x) => x && x.provider === u.module && typeof x.item === 'string' && items.some((c) => named(c, x.item))).flatMap((x) => (Array.isArray(x.where) ? x.where : [])) : [];
     if (now.length) { for (const w of now) target(w.file, Number(w.line) || 1); continue; }
     // a place of a reason, `<file>:<line> <function or test>`
     for (const at of u.places ?? []) {

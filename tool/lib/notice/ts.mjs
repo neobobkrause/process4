@@ -40,21 +40,29 @@ export const options = () => (loadReader(), {
 /** Reads the given files (and whatever they import) as one program. */
 export const NODE_DESCRIPTION = fileURLToPath(new URL('./node.d.ts', import.meta.url));
 
-export function makeProgram(files, host = undefined, o = options()) {
+export function makeProgram(files, host = undefined) {
+  const o = options();
   return ts.createProgram([...files, NODE_DESCRIPTION], o, host);
 }
 
 /**
- * The settings the means are read with (design part 2, section 7: the coding standard's type checker settings): strict,
- * with a caught error read as unknown, an index read as possibly missing, and an optional field that may be left out but
- * not set to undefined. Both sides of a comparison are read with these, by the same version (rule 6 for the tool).
+ * The reading under the coding standard (build text 2, section 10; design part 2, section 7): every reading's settings,
+ * with the checker's further strictness the standard names, and the rest of the tool's description of the host
+ * (host.d.ts: Node's modules a product names, and every untyped channel, such as JSON.parse, given the kind unknown).
+ * The uses file and the means are written from this reading only, both sides of a comparison by the same version (rule
+ * 6 for the tool); the check's two refusals keep options() as they are, so that no new refusal comes from these settings.
  */
+export const HOST_DESCRIPTION = fileURLToPath(new URL('./host.d.ts', import.meta.url));
 export const standardOptions = () => ({
   ...options(),
   useUnknownInCatchVariables: true,
   noUncheckedIndexedAccess: true,
   exactOptionalPropertyTypes: true,
 });
+export function makeStandardProgram(files, oldProgram = undefined) {
+  loadReader();
+  return ts.createProgram([...files, NODE_DESCRIPTION, HOST_DESCRIPTION], standardOptions(), undefined, oldProgram);
+}
 
 export const readerVersion = () => loadReader().version;
 

@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fetchLine, loadConfig, loadModules, needConfig, readAt, requirementsFile } from './config.mjs';
 import { readRecords, writeRecord } from './state.mjs';
 import { fail } from './util.mjs';
-import { hasUsesFile, providersOf, readUsesFile } from './usesfile.mjs';
+import { loadTree } from './notice/model.mjs';
+import { usersMap } from './usesfile.mjs';
 
 export const WALK_LABEL = 'process4-walk';
 const KINDS = new Set(['internal', 'external']);
@@ -139,13 +140,9 @@ export function walkAreas(ctx) {
   // Changed modules: the round's modules, plus those a notice was sent to (waiting-work).
   const changed = new Set((round.modules || []).map((m) => m.module));
   for (const w of records['waiting-work']?.data?.work || []) if (w.kind === 'notice') changed.add(w.module);
-  // Users of a module: the later modules whose uses files name it (a place outside the standard that may refer to any
-  // earlier module names every one); a module with no uses file yet, by the uses its entry in the module list declares.
-  const providers = new Map(modules.map((m) => {
-    const u = readUsesFile({ root: ctx.root, cfg }, m.name);
-    return [m.name, hasUsesFile(u) ? providersOf(u) : new Set(m.uses || [])];
-  }));
-  const usersOf = (name) => modules.filter((m) => m.order > (byName.get(name)?.order ?? Infinity) && (providers.get(m.name).has(name) || providers.get(m.name).has('*'))).map((m) => m.name);
+  // Users of a module: the modules whose declared uses name it (their uses files, or without one their imports).
+  let users = null;
+  const usersOf = (name) => (users ??= usersMap(loadTree(ctx.root))).get(name) ?? [];
 
   const internal = new Map(); const external = new Map(); // page -> Set of "module (source)"
   const add = (map, page, label) => { if (!page) return; if (!map.has(page)) map.set(page, new Set()); map.get(page).add(label); };

@@ -20,7 +20,10 @@ import {
   hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
-import { hasUsesFile, parseUsesFile, usesFilePath } from './usesfile.mjs';
+import { loadTree } from './notice/model.mjs';
+import { writeOut } from './notify.mjs';
+import { usesReading, writeUsesFiles } from './usescmd.mjs';
+import { isUsesPath, readUses } from './usesfile.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
@@ -100,7 +103,9 @@ function writeMeaning(ctx, n, added) {
 // to the same-named branch, never forced. --unblocked rewrites the job's record when a block ends by ARCH's decision
 // rather than by the blocking module's merge. --meaning (repeated) declares, on the branch's pull request, a change of
 // meaning under the same means (design part 2, section 7): each a changed item when the pull request merges. The words
-// given in order are the block's reason first, where --blocked is given, then one line for each --meaning.
+// given in order are the block's reason first, where --blocked is given, then one line for each --meaning. First the uses
+// file of each module the push changes, and of a job's own module, is rewritten from the code as pushed and committed,
+// so the push carries it (design part 2, section 7; usescmd.mjs). No check of the file is made.
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
@@ -112,6 +117,7 @@ export function push(ctx, a) {
   const lines = a._.slice(by ? 1 : 0);
   if (items.some((x) => x === true || !String(x)) || lines.length !== items.length || lines.some((l) => !String(l).trim())) fail('say --meaning <item> "<what it was; what it is now>", once for each item');
   const meaning = items.map((item, i) => ({ item: String(item), line: String(lines[i]).trim() }));
+  writeUsesFiles(ctx, name, { job: name.match(JOB)?.[1] ?? null });
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
@@ -162,7 +168,9 @@ export function drop(ctx, a) {
     || modules.some((m) => f === requirementsFile(c, m.name)));
 
   const differs = git(['diff', '--no-renames', '--name-only', '-z', main, tip], { cwd: ctx.root }).split('\0').filter(Boolean);
-  const files = differs.filter((f) => ownerOf(modules, f) && !kept(f));
+  // A module's uses file is written from its code (design part 2, section 7): it goes back to main's with that code.
+  const usesFile = (f) => cfgs.some((c) => isUsesPath(c, f));
+  const files = differs.filter((f) => usesFile(f) || (ownerOf(modules, f) && !kept(f)));
   if (!files.length) fail(`nothing to restore: no file a module owns differs between main and ${tranche}`);
 
   // main's version of each, into a separate index made from the tranche's tip.
@@ -313,31 +321,40 @@ export const CONVERSION_MARK = 'process4-conversion';
 
 /**
  * The conversion's report (build text 1b, command 4; build text 5, section 5), written once a conversion job is marked
- * ready, for the owner's review, and rewritten in place: from the module's uses file at the head, and at the base as the
- * job found it, the places outside the standard gone, by rule; the copies; the places still outside, with what each waits
+ * ready, for the owner's review, and rewritten in place: from the module's uses file at the head, and from the base as
+ * `uses` reads it, the places outside the standard gone, by rule; the copies; the places still outside, with what each waits
  * on; the time from the pull request's opening to `ready`; and the cost, "unmeasured" where it cannot be read.
  */
 function conversionReport(ctx, pr, module) {
-  const cfg = loadConfig(ctx.root);
-  const path = usesFilePath(cfg, module);
   const at = (ref) => { const f = git(['fetch', '-q', 'origin', ref], { cwd: ctx.root, allowFail: true }); return f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null; };
   const baseSha = at(`refs/heads/${pr.base.ref}`);
   const headSha = at(`refs/heads/${pr.head.ref}`) ?? pr.head.sha;
-  const head = parseUsesFile(readAt(ctx.root, path, headSha), module);
-  const base = baseSha ? parseUsesFile(readAt(ctx.root, path, baseSha), module) : null;
+  const cfg = loadConfig(ctx.root, headSha) ?? loadConfig(ctx.root);
+  const head = readUses(ctx.root, module, { cfg, ref: headSha });
+  // The base, read as `uses` reads it: the module's code there, under the coding standard (usescmd.mjs).
+  let base = null;
+  if (baseSha) {
+    const tmp = mkdtempSync(join(tmpdir(), 'p4-conversion-'));
+    try {
+      const tree = loadTree(writeOut(ctx.root, baseSha, tmp));
+      if (tree.byId.has(module)) base = usesReading(tree, module, baseSha).data;
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }
   const count = (u) => { const c = {}; for (const o of u?.outside ?? []) c[o.rule ?? '?'] = (c[o.rule ?? '?'] ?? 0) + 1; return c; };
   const was = count(base), now = count(head);
   const converted = {};
   for (const [rule, k] of Object.entries(was)) if (k > (now[rule] ?? 0)) converted[rule] = k - (now[rule] ?? 0);
   const mins = Math.max(0, Math.round((ctx.nowMs() - Date.parse(pr.created_at ?? new Date(ctx.nowMs()).toISOString())) / 60000));
   const data = {
-    converted: hasUsesFile(base) ? converted : 'unknown: the base holds no uses file of the module to compare with',
+    converted: base ? converted : 'unknown: the base could not be read',
     copies: (head?.copies ?? []).map((c) => `${c.file}${c.line ? `:${c.line}` : ''}${c.pointer ? ` ${c.pointer}` : ''} ${c.provider ? `${c.provider} ` : ''}${c.item ?? ''}`.trim()),
     waits: (head?.outside ?? []).map((o) => `${o.rule ?? '?'} ${o.file}:${o.line ?? ''}: ${o.waitsOn ?? 'nothing named'}`),
     time: `${Math.floor(mins / 60)}h ${mins % 60}m`,
     cost: 'unmeasured',
   };
-  if (!hasUsesFile(head)) data.note = `the head holds no uses file of ${module} that can be read${head?.unreadable ? ` (${head.unreadable})` : ''}`;
+  if (!head) data.note = `the head holds no uses file of ${module} that can be read`;
   const body = block(CONVERSION_MARK, data);
   const had = ctx.gh.comments(ctx.slug, pr.number).find((c) => parseBlock(c.body, CONVERSION_MARK));
   if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, pr.number, body);

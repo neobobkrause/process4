@@ -14,15 +14,25 @@
 // route), or holds a marked copy of one; and, on any change to the provider's files whether or not an item changed,
 // each module with a place outside the standard whose `mayRefer` names the provider, each module with an order fault
 // naming it (an earlier module, whose file is read too), and each later module with no uses file yet that imports it
-// (the import scan, imports.mjs). Each is told once, with the reasons of build text 5, section 5.
+// (its files' imports, read as text: usesfile.mjs). Each is told once, with the reasons of build text 5, section 5.
 import fs from 'node:fs';
 import { loadTree } from './model.mjs';
-import { ts, loadReader, makeProgram, readerVersion, standardOptions, tagsOf, tagText } from './ts.mjs';
+import { ts, loadReader, makeStandardProgram, readerVersion, tagsOf, tagText } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { moduleMeans } from './means.mjs';
 import { same, standsIn, render } from './canon.mjs';
-import { makeFollow } from './imports.mjs';
-import { hasUsesFile, readUsesFile } from '../usesfile.mjs';
+import { importedModules, readUses } from '../usesfile.mjs';
+
+/** A module's uses file on one side, its lists made lists (build text 2c), or null where it has none (or none that reads). */
+function usesOf(tree, module) {
+  const d = tree.byId.has(module) ? readUses(tree.root, module, { cfg: tree.cfg }) : null;
+  if (!d || typeof d !== 'object') return null;
+  const list = (x) => (Array.isArray(x) ? x.filter((y) => y && typeof y === 'object') : []);
+  return {
+    uses: list(d.uses).filter((u) => typeof u.provider === 'string' && typeof u.item === 'string').map((u) => ({ ...u, where: list(u.where) })),
+    outside: list(d.outside), orderFaults: list(d.orderFaults), copies: list(d.copies),
+  };
+}
 
 /** A reason keeps the first six places it names, and says how many more there are, so a notice keeps a size. */
 export const PLACES_SHOWN = 6;
@@ -108,7 +118,7 @@ export function makeConfirm(treeB, treeA, moduleId) {
   }
   return function confirm(item) {
     if (!program) {
-      program = makeProgram([...(treeB.byId.get(moduleId)?.public ?? []), ...(treeA.byId.get(moduleId)?.public ?? [])], undefined, standardOptions());
+      program = makeStandardProgram([...(treeB.byId.get(moduleId)?.public ?? []), ...(treeA.byId.get(moduleId)?.public ?? [])]);
       checker = program.getTypeChecker();
     }
     const o = typeOf(treeB, item);
@@ -259,7 +269,7 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
     const answers = (m) => m.src.some((f) => { try { return /@optable\b/.test(fs.readFileSync(f, 'utf8')); } catch { return false; } });
     for (const m of A.modules) {
       if (m.id === provider || !answers(m)) continue;
-      const l = makeLister(makeProgram(m.src, undefined, standardOptions()), A).list(m);
+      const l = makeLister(makeStandardProgram(m.src), A).list(m);
       for (const op of newOps) if (l.entries[op]) report.changed.push({ module: m.id, item: op, found: 'means', changes: [`${provider} now answers the same name`], tells: true, why: null, words: `${provider} now answers the operation ${op.slice(3)} too` });
     }
   }
@@ -270,7 +280,6 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   if (filesChanged && !byModule.has(provider)) byModule.set(provider, []);
   const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
   const indexOf = (id) => A.byId.get(id)?.index ?? B.byId.get(id)?.index ?? -1;
-  const follows = { A: null, B: null };
   const itemsOf = (m) => byModule.get(m).map((c) => c.item);
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   for (const user of order) {
@@ -278,24 +287,21 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
     // An order fault is a use of a later module: the module that holds it may come before the changed one.
     const faultable = [...byModule.keys()].filter((m) => m !== user);
     if (!before.length && !faultable.length) continue;
-    const ub = readUsesFile(B, user), ua = readUsesFile(A, user);
-    const files = [ub, ua].filter(hasUsesFile);
+    const files = [usesOf(B, user), usesOf(A, user)].filter(Boolean);
     const reasons = [];
     if (!files.length) {
       // No uses file yet (before the module's conversion): told of any change to the files of an earlier module it
       // imports, whether or not an item changed.
-      follows.A ??= makeFollow(A); follows.B ??= makeFollow(B);
-      const imported = new Set([...follows.A.importedModules(user), ...follows.B.importedModules(user)]);
-      const unreadable = [ub, ua].find((u) => u?.unreadable)?.unreadable;
+      const imported = new Set([A, B].flatMap((t) => (t.byId.has(user) ? [...importedModules(t, t.byId.get(user)).imported.keys()] : [])));
       for (const m of before.filter((x) => imported.has(x) && (x === provider ? filesChanged : true))) {
-        reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${user} has no uses file${unreadable ? ` that can be read (${unreadable})` : ' yet'} and imports ${m}`,
+        reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${user} has no uses file yet and imports ${m}`,
           noUsesFile: `${user} has no uses file yet: its whole tests run` });
       }
     } else {
       // The file before and after the change, read as one: each entry once.
       const once = (list) => [...new Map(list.map((x) => [JSON.stringify(x), x])).values()];
       const uses = files.flatMap((f) => f.uses);
-      const copies = once(files.flatMap((f) => (Array.isArray(f.copies) ? f.copies : [])));
+      const copies = once(files.flatMap((f) => f.copies));
       const outside = once(files.flatMap((f) => f.outside));
       const faults = once(files.flatMap((f) => f.orderFaults));
       for (const m of before) {
