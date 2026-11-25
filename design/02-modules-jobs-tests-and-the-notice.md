@@ -104,7 +104,7 @@ Which language reader the tool uses is a fact of the product, named in its proce
 ## 9. Changes that are not a job's
 
 - **The mechanical edit.** A worker in ARCH's session makes it as one change covering every affected module, and it is merged once; and the moment: when no job is open, between a round's last merge and its internal walk. ARCH's session tests it as section 6 says. A module where the change needs judgment gets its own job.
-- **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing. The owner has not confirmed this.
+- **A lane's folder.** A change that touches only files in a lane's own folder needs no module tests. Design documents do not need testing.
 - **Requirement text, the module list, and the process's named files.** These change no code and no tests, so their pull requests merge through the tool with no module tests run and no record of them.
 - **The required run.** There is one required run on GitHub, with one name. It reports on every pull request, judging it with the tool at the version its base branch names. It passes at once, needing no record of tests, when no module's code or tests changed; on the tranche's own pull request into the main branch; and on a dropped tranche's pull request whose every file is the main branch's own (part 3, section 5).
 - **The owner's approvals and forbidden commands** are committed by the owner alone (part 6).
