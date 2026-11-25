@@ -22,23 +22,36 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 19:05 UTC, by PROCESS #16. Your decision C is recorded and being built. Waiting for you: the choice about idle sessions being compacted.</p>
+<p class="updated">Updated 25 Nov 2026, about 21:00 UTC, by PROCESS #16. First: start PROCESS #17 (steps below). Then: your answer on needless notices, and the choice about idle sessions being compacted.</p>
 </header>
 
 
 
 
-<section class="card">
-<h2>Being built: who uses what, your decision C</h2>
-<p>Your words, recorded exactly (25 Nov, 18:51 UTC): "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."</p>
-<p>The design document is corrected and current: <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what</a>. It now carries the full set of rules, says exactly what "the means" is, and adds that every module job has its uses file rewritten by the tool at each push.</p>
-<p><b>How it lands, as you asked, with no contradictions:</b> every change is made where its rule already lives, and nothing reaches main until the design, your record, the build texts, the job's and ARCH's instructions and the tool all agree and the tool's tests pass. Until then the work sits on one branch, <code>work/decision-c</code>.</p>
+<section class="wait">
+<h2>Waiting for you: start PROCESS #17</h2>
+<p>I have reached the fill level where a fresh PROCESS takes over, at a natural pause: no helper running, everything pushed, my handover written.</p>
 <ol>
-<li><b>Your record and the design:</b> done on that branch. Five existing entries rewritten in place, and 3B retired with your words kept.</li>
-<li><b>Build texts and the job's and ARCH's instructions:</b> being rewritten.</li>
-<li><b>The tool:</b> being built in two parts at once. One part finds every reference and writes each module's uses file. The other works out what changed and who is told.</li>
-<li>Then the proof's 150 changes re-recorded, the trial on process3-probes, civicsmith's move on your instruction, and the first pass of 8 real modules, which stops for your review.</li>
+<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read, as your starting text says: the design in full, process/README.md, process/decisions-index.md, process/research/README.md, process/lanes/civicsmith/README.md, and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
+<li>It names itself <b>PROCESS #17</b>. Then archive the session named <b>PROCESS #16</b> (its menu, <b>Archive</b>).</li>
 </ol>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: needless notices after conversion</h2>
+<p>You require no missed notices and no needless ones. Once modules are converted, two kinds of needless notice remain:</p>
+<ul>
+<li><b>A.</b> A module uses exactly the item that changed, but its own use isn't affected. No tool can decide that, and your rule "any change to either a provider's domain or range necessitates that its users be retested" calls for telling it. Its told job runs only its related tests and closes. <b>Do you accept A?</b></li>
+<li><b>B.</b> The tool being less precise than it could be. PROCESS #17 tightens it next, with no rule changed: matching member by member, including telling a new field only to modules that use the whole value; types written differently; facts worked out from the code; named meanings reaching modules that only pass the value on; "accepts more". Then it measures the result on a converted copy of the proof.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>Being built: who uses what, your two decisions</h2>
+<p>Your words, recorded exactly: "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job." (25 Nov, 18:51 UTC) and "Decision: use the simplification: the tool carries Node's and workerd's facility classification; ARCH names the boundary modules and classifies the packages its product uses." (20:26 UTC).</p>
+<p>The design, your record, the build texts, the job's and ARCH's instructions and the tool all sit together on one branch, <code>work/decision-c</code>, evolved in place, with no contradictions known. The tool's 224 tests pass. On the proof's 150 recorded changes plus 13 further breaks, 112 modules needed telling and <b>none was missed</b>; the needless notices there come from the proof's code not keeping the standard. A study with fresh eyes fixed 25 contradictions and folded duplicated rules, and the reading limits are comfortable again (a job reads 166,734 bytes of 175,000).</p>
+<p>Before it reaches main, as one pull request: the precision work above, and a fresh check that tool and texts agree. Then the trial, civicsmith's move on your instruction, and the first pass of 8 modules, which stops for your review.</p>
 </section>
 
 <section class="wait">
@@ -62,6 +75,7 @@ a{color:var(--accent)}
 <li><b>civicsmith's refactoring tranche is dropped</b>, on your decision (carried out 25 Nov, 17:05 UTC): its code and tests are back to main's; the refactoring plan, the lanes' design work, the requirements and the module list are kept; 14 requirements that only the dropped tranche met are back to not yet met; no tranche is open until the provider/user fix is in and confirmed.</li>
 <li><b>Choice 5, the depth limit</b> (I recommend 5B): ask you for a fresh ROOT one handover earlier, and make no planned handover that is known to break. Text only. The trial product (process3-probes) needs a fresh ROOT from you now; its coordinator's page has the steps.</li>
 <li><b>Choice 6 waits</b> until who is told is corrected, as you said. Meanwhile civicsmith's notices for modules with no open job are not written down, and its filings and following jobs stay stuck; civicsmith's coordinator knows.</li>
+<li><b>Two questions from the tidy study,</b> for when you have a moment: which branch an urgent fix is built on, given that there is one lasting tranche branch; and whether the design should still call itself "proposed, nothing here has run", now that products run on it.</li>
 </ul>
 </section>
 
