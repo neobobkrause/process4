@@ -24,7 +24,7 @@ For a session to do, and to report.
 5. Each role's starting text. Drafted: eight texts in the build folder `starting_texts/`, each under 8,192 bytes. None has been put before the permission checker, and each has ten numbered rule lines or fewer, as part 4, section 11 counts them.
 6. The form of a structured comment and of an interface listing. Written: build text `02b-the-comment-and-the-listing.md`. The forms used when the notice's method was proven are in a repository this work could not open, and win where they differ.
 7. The form of the module list, a requirements file and the process config. Written in build text `02-the-forms.md`.
-8. The required test run. Written in build text `01-the-tool-and-the-required-run.md`. Not built.
+8. The required run. Written in build text `01-the-tool-and-the-required-run.md`. Not built.
 9. The walks. Written: build text `03-the-walks.md`. Nothing in it has run.
 10. Left unsettled by the forms text: helpers under one module's tests that another module imports, which the interface listing does not cover; one written form for messages between two separately running parts of a product; and how the owner's record of decisions is split when it outgrows the maximum.
 11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
@@ -44,7 +44,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **A walk ending without flaws.**
 - **A deployment made from a session** inside a round.
 - **The mechanical edit's one merge,** tested by ARCH's session.
-- **A job's tests run once in its own session,** as one command of up to two hours, and GitHub's required run reading the record of them; **a notice reaching a running job**; and **a merge that waits** for a job of a module it uses.
+- **A job's tests run once in its own session,** within the time a session can run one thing, and GitHub's required run reading the record of them; **a notice reaching a running job**; and **a merge that waits** for a job of a module it uses.
 - **The tranche branch merging into the main branch.**
 - **The release path:** an install, an update, and a release prepared as far as the owner's approval.
 - **A stop on the owner's word** that the hourly wake does not undo; a held merge; a module put first; a new slot number.
@@ -75,7 +75,7 @@ What the trial rehearses, each once unless a number is given:
 6. A stop, a held merge, a module put first and a new slot number each work on the owner's word, and the hourly wake does not undo a stop.
 7. Finished sessions, once archived, do not use up the account's room.
 8. Several walking sessions share one walk by area; a session makes a deployment and an external walk within a round; the tranche branch merges into the main branch.
-9. A mechanical edit across several modules merges once, tried with the touched modules' tests run and with none run.
+9. A mechanical edit across several modules merges once, with the touched modules' tests run by ARCH's session (part 2, section 9).
 10. A process fault travels from a job to PROCESS, and the owner starts PROCESS in the process's repository, surfaced by the coordinator on the owner's standing page (part 6, section 6). PROCESS is then refreshed by the owner starting its successor from the coordinator's standing page (part 4, section 5). Cross-repository messaging between PROCESS and the product's roles is exercised, with a non-substantive refusal re-attempted where one occurs (part 6, section 4).
 11. An edit to the approvals with a restart carries a round on.
 12. An install and an update are run and confirmed on a development account, and a release is prepared as far as the owner's approval.
