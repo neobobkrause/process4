@@ -17,14 +17,22 @@ question needs it.
 
 ## START HERE
 
-**Nothing is being built. One question is out, and its answer will come to PROCESS #11's session, not yours.** At the
-owner's word ("Yes, ask the coordinator", 25 Nov) PROCESS #11 asked civicsmith coordinator #7
-(`session_018BhcefEpYUAwGpc5yDxSCS`), ~00:05Z: does civicsmith's round record hold a tranche scope (decision D), written
-before the tranche's first job; and for each job started (capture #1, control-plane #4, record-grammar #2, test-support #3,
-an office-readers job), is its work in the scope or placed work; and any process fault. Why: record-grammar, test-support and
-office-readers were not expected from the refactoring's first steps. Ask the coordinator again from your session (the same
-four questions); report the answer to the owner plainly. If a job's work is outside the scope and is not placed work, that is
-a fault to research (the tool or ARCH's use of the scope); otherwise nothing.
+**Nothing is being built. The question to civicsmith coordinator #7 is answered (25 Nov ~00:11Z, read from its records):**
+the round record holds scope `{ tranche t2, holds: capture R115, R116; control-plane R74, R139, R140 }`, checked by
+coordinator #6 before it cleared the stop. capture #1 (PR 1337) and control-plane #4 (PR 1338) carry only those; control-plane's
+block lists 14 others under `not_this_tranche`, so D works as built. Every other job is placed work: test-support (1340),
+office-readers (1343), reading-pipeline (1344) are "flaw from ARCH" for refactoring step 3 (test moves); record-grammar
+(1339) is a flaw capture reported (its BundleInput comment omits fields; capture is recorded blocked by it); promotion (1345),
+and inquiry-grammar and ratification waiting, are flaws record-grammar's job reported, from `check` refusals on their code.
+No process fault, no refusal.
+
+**One thing for the owner, put to him by PROCESS #11 as information, no change proposed:** flaws a job reports are always
+work under D (as the owner chose), and here they come from `check` refusals of code older than the tranche, so they pull
+modules into the refactoring tranche one after another (record-grammar, then promotion, inquiry-grammar, ratification).
+Watch whether the chain grows; if it does and he wants it held, that is a new fault to research (e.g. ARCH placing such a
+flaw as waiting for a later tranche). Seen too, by design: `p4 results` on a draft job shows "no test record" while
+`module-tests` reads passed (a draft passes at once; `ready` needs the record); provenance's round entry open with no pull
+request yet (the known quirk).
 
 **Done by PROCESS #11, 24-25 Nov (all merged; entries in `design-decisions-2.md`, last three):**
 - The update (decision "the update plan as laid out"): pull requests 233, 234 — tests once in the job (`p4 test`, the test
