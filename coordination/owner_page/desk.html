@@ -22,139 +22,71 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 14:10 UTC, by PROCESS #14. The cleanup's four text steps are done; the tool step is running. Choices 2 and 5 come after it.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:00 UTC, by PROCESS #14. The cleanup is done. One choice waits: who is told after a change.</p>
 </header>
 
-<section class="card">
-<h2>Under way: the cleanup you chose</h2>
-<p><b>Decided: B and (ii)</b> (your words, 25 Nov about 13:45 UTC), recorded word for word. My reading is now the design, my handover and short indexes; the record of your decisions and the build texts are opened when a question touches them (merged, pull request 298).</p>
-<p>The cleanup changes no rule and no behaviour. It runs one area at a time, and each change is listed here when it merges:</p>
-<ol>
-<li><b>Done:</b> your record of decisions regrouped by subject: 66 entries became 32 subjects in two files, 114,000 bytes down to 84,000. I checked that all 78 of your quotations are there word for word (pull request 301).</li>
-<li><b>Done:</b> the design's 26 findings rewritten in place, each rule once in its home section (pull requests 300, 302, 305). For example, a dropped tranche's pull request is no longer tested in one part and untested in another, and a restarted ROOT no longer archives PROCESS.</li>
-<li><b>Done:</b> the build texts' 34 findings (pull request 304): the command list states who is told once, as the current rule; its 24 dated decision clauses are gone, the rules kept.</li>
-<li><b>Done:</b> the starting texts (pull request 303): ARCH's five-subject rule split in two; acts sessions take now named; four disagreements with the design corrected. Every text is under 6,100 bytes and ten rules.</li>
-<li><b>In progress:</b> the tool's duplicate code made one. Two places that break the design are corrected with it: a notice is no longer stopped for size, and a running job's notice is no longer held back when its details are full.</li>
-</ol>
-<p>The findings behind each step are in <code>process/research/cleanup-audit-25nov/</code>.</p>
+<section class="wait">
+<h2>Waiting for you: who is told after a change</h2>
+<p><b>Bottom line:</b> as you suspected, the way the tool decides which modules to tell is broken, and this is why civicsmith's notices overflow. It compares written descriptions of a module, not what really passes between modules, so describing unchanged code counts as a change. And when it cannot follow a module's plain JavaScript, it tells that module of nearly everything. Several coding faults make both worse. The research is in <code>process/research/who-is-told-25nov.md</code>.</p>
+<ul>
+<li><b>0. No change.</b> Each early merge keeps telling about 120 to 200 civicsmith modules, at about $1.40 to $1.90 each, nearly all ending with nothing to change.</li>
+<li><b>A. Describing unchanged code tells no one</b> (this is choice 2, 2C+). On a made-up product shaped like civicsmith: 192 modules told over seven changes become 114.</li>
+<li><b>B. Mend the coding faults</b>, so your narrowing (3B) works for every module, including those that import the product by its own name; one sentence added on module order. 192 become 126.</li>
+<li><b>C. A and B together (recommended).</b> 192 become 78, and every one of the 78 really uses what changed. On the 150 recorded answers of the proof, 2 change, neither a module that needed telling.</li>
+<li><b>D. C, and also narrow what a hard-to-follow module is told.</b> 54, but a higher risk of missing a module that needed telling; decide only after a measurement on civicsmith.</li>
+</ul>
+<p><b>Not yet known:</b> how far C goes on civicsmith itself; a read-only session there, which you would start, measures it before civicsmith moves. And one number to be explained before anything is built: the proof's records show 45 modules that needed a change and were not told, under today's tool and every option. I will find out whether any are real misses and tell you.</p>
+<p>To answer, type in PROCESS's session or comment here, for example: <b>Decision: C</b>.</p>
 </section>
 
 <section class="wait">
-<h2>Urgent: civicsmith may spend thousands on checks that find nothing</h2>
-<p>A change in civicsmith that only added comments (jurisdictions, its code identical) still told about 150 modules. The first two of those checks ended with nothing to change, at about $1.50 each. ARCH's queue holds about 70 more old changes, many of them adding comments. Left as it is, that could start thousands of such checks. civicsmith still runs the version from before your decisions today. 3B, already built, would likely cut most of these, but how many is not measured on civicsmith. Choice 2C+ below covers a change that only adds comments to code that did not change.</p>
-<p><b>What I recommend, in this order:</b></p>
+<h2>Waiting for you: start PROCESS #15, then archive PROCESS #14 and PROCESS #13</h2>
+<p>I have reached the fill level where a fresh PROCESS takes over. My handover is written, nothing is half done, everything is merged. PROCESS #15 picks up the choice above.</p>
 <ol>
-<li>In civicsmith's coordinator session, type: <b>Instruction: hold notice-only checks until civicsmith has moved to the latest Process4 version</b>. That stops the spending now. Other work goes on only if ARCH can pass over the held checks; last time it could not, and all work waited.</li>
-<li>Choice 2 below (I recommend <b>2C+</b>) is built after the cleanup, with the correction of who is told; you can decide it now or then.</li>
-<li>Then, in civicsmith's coordinator session: <b>Instruction: move civicsmith to the latest Process4 version</b>, and lift the hold.</li>
-</ol>
-<p>If you would rather not wait, move civicsmith now; it then has 3B at once, and the rest follows in a later move.</p>
-</section>
-
-<section class="card">
-<h2>Choice 6 waits, as you suggested</h2>
-<p>Choice 6 (civicsmith's list of waiting work, and a starting job's details, outgrowing one GitHub comment) waits until the way the tool decides which modules to tell is corrected. You think over-telling is why the notices overflow. The evidence agrees: nearly all of civicsmith's 1,937 waiting entries are notices, and most such checks end with nothing to change. The tool audit also found one cause not yet put to you: where a module imports another by the product's own name, the tool treats it as unreadable, so the narrowing you chose (3B) saves nothing for that module. Correcting it is not decided: I propose first measuring on civicsmith why each told module was told, then putting options to you, with choice 2, as one group. Meanwhile civicsmith's notices for modules with no open job are still not written down, and filings and following stay stuck; I have told civicsmith's coordinator.</p>
-</section>
-
-<section class="wait">
-<h2>Waiting for you, when convenient: archive PROCESS #13</h2>
-<p>PROCESS #14 is running (started by you, 25 Nov about 13:10 UTC) and has picked up choices 2, 5 and 6 exactly where they stood. Both products' ROOTs are told.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and find the session named <b>PROCESS #13</b> in the list.</li>
-<li>Open its menu and click <b>Archive</b>. It leaves the list of active sessions.</li>
-</ol>
-</section>
-
-<section class="wait">
-<h2>Waiting for you: two choices left</h2>
-<p><b>The problem.</b> civicsmith's notices are still telling far too many modules. Two merges today told 197 and about 125 modules. Each told module costs a short check, about $1.40 to $1.90 and 2 minutes, and nearly all end with nothing to change: roughly $300 and $200 for those two merges alone. Three causes, each with its own choice. They work together: 1 and 2 cut most of the first kind of case (a module being described for the first time), 3 cuts most of the second (a helper few modules call).</p>
-
-<p><b>1. Two tool faults against your decision B of today.</b> (a) A told check opened from the waiting list was not recognised as having already had its notice, so a re-run told jurisdictions, signatures and connection-grammar a second time. (b) The tool printed some function headings with their brackets lost, so a kind stated for the first time still counted as a change, which your decision B said it should not. Both are corrected and tested, ready in pull request 275; the 150 answers recorded when the method was proven are unchanged.</p>
-<p><b>Decided: 1B</b> (your comment, 25 Nov about 06:16 UTC). Recorded word for word, built and merged (pull request 275). civicsmith gets it when you move it, which can wait until you have answered 2 to 4 so it moves once.</p>
-
-<p><b>2. A first written error or limit counts as a change.</b> When a module's code gets its first comment saying which error a function can raise, or its first stated limit on a value, the tool treats that as a change and tells every user, even where the code did not change. Your rule is that a change to those words means the interface changed. A first description of code that stayed the same is the case it does not quite fit. <b>Measured since:</b> civicsmith's ARCH sent the exact lines. In setup-words, the four functions that told were given their first error and limit comments, and their code did not change. That is essentially the whole of the 197. Under 2C none of them would have been told. The notice now also prints the errors before and after (in pull request 275), so this shows plainly next time.</p>
-<p><b>Measured since, on a third case.</b> civicsmith's membership module could not give its first descriptive comments a step of their own. Once a module has comments, the tool's check reads its guessed kinds as stated, and its own tests then need a small fix in the same change. So the design's "a first comments step tells no one" did not apply, and the comments alone told 140 modules. A worker measured three ways out, on the 150 recorded answers and on a made-up module shaped like membership (20 users):</p>
-<ul>
-<li><b>2A. No change.</b> Every first error or limit, and every first description, tells as now: 19 of the 20 users told.</li>
-<li><b>2C. A first error or limit tells no one where that function's own code is unchanged.</b> 15 of 20 still told, by two smaller routes: the type checker cannot confirm a class with a private field as accepting more, and the printed heading changes from a guessed kind to a stated one. 1 recorded answer changes, missing no one who needed telling.</li>
-<li><b>2C+. 2C, and on a function whose own code is unchanged those two smaller routes tell no one either (recommended).</b> 0 of 20 told. The same 1 recorded answer changes, missing no one. A change made inside a helper the function calls still tells. The risk: a first limit written to tighten a function whose code stays the same, or a narrowed parameter on unchanged code, tells no one; a user that breaks it is caught by its own check at its next job, not by a notice.</li>
-<li><b>A further cost of waiting:</b> because a first comments step tells so many modules, civicsmith's ARCH now tells each job to leave its first comments for later. That breaks the job's own rule to write them first, and the extraction job reported it as a fault. Choice 2 removes the cause.</li>
-<li><b>2D. Any difference on a function whose own code is unchanged tells no one.</b> 0 of 20 told, but it silences 13 recorded limit changes your rule says should tell, and it misses a real change made inside a helper. Not recommended.</li>
-</ul>
-
-<p><b>3. Modules the tool cannot fully follow are told of everything.</b> Today one changed helper function told about 125 modules: about 5 call it; about 120 were told only because the tool cannot fully follow their plain JavaScript. Measured by a worker: under the narrower rule, a changed function tells such a module only where its own files name that function, or where it reaches the helpers by a route the tool cannot read (an import it cannot follow, or another module handing the function on). A changed kind still tells them all. On the 150 recorded answers, 8 change, all one module told for nothing, and none misses a module that needed a change. On a made-up product shaped like civicsmith, a changed function told 7 instead of 50. Two rare misses would be accepted, as the design already accepts some: a function passed in as a callback from elsewhere, and a name built from pieces. Not known: how many of civicsmith's 120 stay told because of imports the tool cannot read.</p>
-<ul>
-<li><b>Decided: 3B</b> (your comment, 25 Nov about 06:19 UTC). Recorded word for word, built and merged (pull request 283), with the 8 recorded answers re-recorded, each with its reason.</li>
-</ul>
-<p><b>4. Five helper functions with one name count as one.</b> civicsmith's test helpers have five files that each offer a function called <code>generate</code>. The tool keeps only one of them, so a change to one file's <code>generate</code> tells the users of all five, and a change to another tells no one at all, which misses a module that needed telling. The correction keeps each as its own entry, named with its file; nothing else changes. Built and tested; all 150 recorded answers are unchanged. It also changes one sentence of the build text that describes the listing, which is why it waits for you.</p>
-<ul>
-<li><b>Decided: 4B</b> (your comment, 25 Nov about 06:19 UTC). Recorded word for word, built and merged (pull request 282).</li>
-</ul>
-<p><b>5. A new one, from the trial product: the safety-net session runs out of depth one step early.</b> The harness lets a chain of sessions go 8 deep, and a session at depth 8 cannot start other sessions or set its hourly wake. Each time ROOT hands over to its stand-by, the chain grows one deeper. The design asks you for a fresh ROOT when ROOT is 2 levels from the limit. But ROOT's helpers sit one level below it, so by the next handover they are already at the limit. process3-probes' stand-by is at depth 8 now and cannot set its wake. ARCH there would also be unable to start jobs once restarted. The product is quiet, so nothing is lost yet. Its coordinator has already put a fresh ROOT on its own page for you; that is the cure for now.</p>
-<ul>
-<li><b>5A. No change.</b></li>
-<li><b>5B. Ask one handover earlier, and do not make the handover that is known to break (recommended).</b> You are asked for a fresh ROOT at 3 levels from the limit. At 2 levels, ROOT's planned refresh does not hand over. Instead the fresh-ROOT start goes on your page, the way my own refresh does. An unplanned handover, from a ROOT that died, still happens. Text only; no new step for you, only the same one asked for earlier.</li>
-<li><b>5C. Only the second half of 5B</b> (no earlier warning).</li>
-</ul>
-<p>What is left is choices 2 and 5; both are built after the cleanup. To answer, type in my session or comment here, for example: <b>Decision: 2C+, 5B</b>. After that, one move brings civicsmith everything at once: in civicsmith's coordinator session, type <b>Instruction: move civicsmith to the latest Process4 version</b>. Today's 197 checks will mostly be done before any of this lands; the saving is on every later merge.</p>
-</section>
-
-<section class="card">
-<h2>Optional: one read-only count on civicsmith</h2>
-<p>The mended check now sees two more kinds of import, so on civicsmith it may refuse some things it did not before, and it no longer refuses a declared use it cannot see. How many is not known. One read-only session counts it, changing nothing, and its report comes to me; I then tell you the numbers.</p>
-<ol>
-<li>Open <b>https://claude.ai/code</b> and start a new session with repository <b>neobobkrause/civicsmith-copy</b> only, branch <b>p4-tranche</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are a read-only reading session on neobobkrause/civicsmith-copy, for PROCESS of Process4. Change nothing: no commit, no
-push, no pull request, no comment, no record of the shared state; write files only under /tmp. Report at the end.
-
-1. git fetch origin p4-tranche, and work at the tip of origin/p4-tranche (detached). Note its commit id.
-2. OLD is Process4 commit 0eec86f2 (the version civicsmith was on before its move of 24 Nov; resolve the full id with
-   git ls-remote or after cloning). Read process.json and note process.commit too.
-3. Clone https://github.com/neobobkrause/process4 twice, outside the repository: /tmp/p4-old at OLD, and /tmp/p4-new at the
-   newest commit of its main (note that commit id; call it NEW). In each, cd tool and npm ci.
-4. For every module in the product&#x27;s module list (the names in process/modules/order.txt, or as process.json&#x27;s module list
-   says), run from the repository root, with a generous memory allowance where needed:
-     node /tmp/p4-old/tool/p4.mjs check &lt;module&gt;   &gt; /tmp/old-&lt;module&gt;.txt 2&gt;&amp;1
-     node /tmp/p4-new/tool/p4.mjs check &lt;module&gt;   &gt; /tmp/new-&lt;module&gt;.txt 2&gt;&amp;1
-   Each prints &quot;Check of &lt;module&gt;: N disagreement(s)&quot; or &quot;no disagreement found&quot;, one line per disagreement, and one line per
-   &quot;cannot tell&quot;. Run modules one at a time; a module that crashes or runs past 10 minutes is noted and skipped.
-5. Report, in plain words and short:
-   - the two commit ids and the tranche commit;
-   - modules passing under OLD and under NEW, out of how many;
-   - total disagreements under OLD and NEW, and the change;
-   - each module whose result changed: OLD count, NEW count, and the NEW disagreements grouped by kind with up to three
-     examples each (file:line and the line printed), especially refusals naming require(...) or an import by the
-     product&#x27;s own name;
-   - how many &quot;cannot tell&quot; lines say a declared use has no import seen;
-   - any crash, timeout or out-of-memory, with the module.
-Send the report by message to PROCESS (its session is named &quot;PROCESS #&lt;n&gt;&quot; in the account&#x27;s session list; the newest one)
-if your approvals allow; otherwise end your turn with it, and the owner passes it on.</div></li>
-<li>It works for a while (it runs the check on every module twice) and then sends me its report, or ends with it. If it ends with it, paste its report into my session.</li>
+<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
+<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read, as your starting text says: the design in full, process/README.md, process/decisions-index.md, process/research/README.md, process/lanes/civicsmith/README.md, and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
+<li>It names itself <b>PROCESS #15</b>. Then archive the sessions named <b>PROCESS #14</b> and <b>PROCESS #13</b> (each one's menu, <b>Archive</b>).</li>
 </ol>
 </section>
 
 <section class="card">
-<h2>Done recently</h2>
+<h2>Also waiting, when convenient</h2>
 <ul>
-<li><b>PROCESS #14 is running</b> (25 Nov about 13:10 UTC, on your start). Both products' ROOTs are told.</li>
-<li><b>The notice, second group</b> (your decision B, 25 Nov, pull request 271): a module that only now states a kind the tool had read as "anything" tells no one; no notice lost to size or a race; no repeated notice.</li>
-<li><b>civicsmith is on the latest notice fixes</b> (25 Nov, on your line): version 55db8e4, and you lifted the hold on notice-only checks.</li>
-<li><b>The tool that tells other modules of a change is fixed</b> (your decision B, 25 Nov, pull request 264): 25 minutes and 3.2 GB down to 37 seconds and 1.5 GB on a made-up product shaped like civicsmith.</li>
-<li><b>A job's tests run on its branch brought up to the tranche</b>, and <b>merges go on while the tool works out who to tell</b> (your decisions B, 25 Nov, pull requests 256 and 255).</li>
-<li><b>A tranche's scope, held by ARCH</b> (your decision D, 24 Nov, pull request 246). civicsmith runs its refactoring tranche on it.</li>
-<li><b>The order of a move that changes the test check</b> (your decision B, 24 Nov, pull request 242).</li>
-<li><b>The update</b> (your decision of 24 Nov, pull request 233): a job runs its tests once, in its own session; GitHub only reads the record; a provider's change reaches a running job at once; a ready job waits while a job of a module it uses is open. Tried cleanly on the trial product; civicsmith is on it.</li>
-<li><b>Your drop of tranche t1</b> (your decision C, 24 Nov, pull request 225).</li>
-<li>Earlier decisions are in the record of your decisions in the process's repository, each with your exact words.</li>
+<li><b>Choice 5, the depth limit</b> (I recommend 5B): ask you for a fresh ROOT one handover earlier, and make no planned handover that is known to break. Text only. The trial product (process3-probes) needs a fresh ROOT from you now; its coordinator's page has the steps.</li>
+<li><b>Choice 6 waits</b> until who is told is corrected, as you said. Meanwhile civicsmith's notices for modules with no open job are not written down, and its filings and following jobs stay stuck; civicsmith's coordinator knows.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>Done today: the cleanup you chose (B, and (ii))</h2>
+<p>No rule and no behaviour changed, except two places where the tool broke a rule the design already states. Each step's list of changes is in <code>process/research/cleanup-audit-25nov/</code>.</p>
+<ul>
+<li><b>Your record of decisions</b>: 66 entries became 32 subjects in two files, 114,000 bytes down to 84,000; all 78 of your quotations checked word for word.</li>
+<li><b>The design</b>: 26 findings rewritten in place, each rule once in its home section; for example a dropped tranche's pull request is no longer tested in one part and untested in another.</li>
+<li><b>The build texts</b>: 34 findings; the command list states the current rule for who is told once, and its 24 dated decision clauses are gone, the rules kept.</li>
+<li><b>The starting texts</b>: ARCH's five-subject rule split in two; acts sessions take now named; four disagreements with the design corrected.</li>
+<li><b>The tool</b>: duplicated code made one (212 lines out, 170 in); a notice is never stopped for size, and a running job's notice is never held back when its details are full. All 166 tests pass; the proof's 150 answers are unchanged.</li>
+<li><b>What PROCESS reads</b>: about 150,000 bytes, from 300,000, under the 175,000 maximum.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>To put to you later, one at a time</h2>
+<ul>
+<li>The design says civicsmith's coordinator keeps your one standing page, but PROCESS keeps this page for you too. Which should it be?</li>
+<li>The design says a session's background command may run two hours; only a cut at thirty minutes has ever been measured.</li>
+<li>A job's required reading is 170,742 bytes of the 175,000 maximum before it reads the product's own files.</li>
 </ul>
 </section>
 
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> is running its refactoring tranche (t2) under ARCH #26. Several of its jobs report they are paused until civicsmith moves to the latest version (reported by the jobs' own sessions, not checked here). Its coordinator keeps civicsmith's own page of what waits for you.</li>
-<li><b>The trial product</b> (process3-probes) is quiet: every requirement met, no job open. Its stand-by session is at the depth limit (choice 5); its coordinator's page asks you for a fresh ROOT.</li>
+<li><b>civicsmith</b> runs its refactoring tranche on Process4 version 55db8e4; several of its jobs report they are paused until it moves.</li>
+<li><b>The trial product</b> (process3-probes) is quiet; it needs a fresh ROOT from you (choice 5's cause).</li>
 <li><b>PROCESS</b> has no lane running.</li>
 </ul>
 </section>
 </main>
+
+</body></html>
