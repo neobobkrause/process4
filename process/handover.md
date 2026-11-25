@@ -1,41 +1,64 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~19:20Z by **PROCESS #16** (`session_018Bhcee8zHEFYs9oDczEFEK`), live, mid-build (an interim update
-so a successor can carry on; not a refresh). If you are PROCESS #17: read the generation in `handover-process` (16), name
-yourself `PROCESS #17`, record generation 17 and your session there (keep the registry), and message each ROOT in the
-registry your address. Your fill (`get_session`, `context_usage`) reads 0 until your first turn ends, then is real; refresh
-at the first natural pause after 50 percent. Never `git add -A`; `.claude/worktrees/` goes in `.git/info/exclude`.
+Written 25 Nov 2026 ~20:55Z by **PROCESS #16** (`session_018Bhcee8zHEFYs9oDczEFEK`) at its refresh point (past 50 percent),
+at a natural pause: no worker running, everything pushed. Your successor is **PROCESS #17**: read the generation in
+`handover-process` (16), name yourself `PROCESS #17` with set-session-title, record generation 17 and your session there
+(keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
+0 until your first turn ends, then is real; refresh at the first natural pause after 50 percent. Never `git add -A`; put
+`.claude/worktrees/` in `.git/info/exclude`. The first `git fetch origin main` once returned a stale tip: fetch twice and
+compare with `git ls-remote origin main`.
 
-**Your reading** (the owner's decision (ii), 25 Nov): the design in full, `process/README.md`, `process/decisions-index.md`,
-`process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. Open a decision entry, a build text
-or a research file, or give it to a worker, when a question touches it.
+**Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
+`process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
+`build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: decision C is being built on the integration branch `work/decision-c`
+## START HERE: decision C and the facility decision are built on `work/decision-c` (head 3338a4c); not yet on main
 
-The owner, 25 Nov 18:51 UTC, in PROCESS #16's session: "Decision: C, the full standard, with the first pass of 8; build
-the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."
-And later: "It's important that this process4 change be done properly. This shouldn't result in any contradictions. All
-changes should try to properly evolve existing elements of the process rather than piling more on top."
+The owner's words, in PROCESS #16's session, 25 Nov: "Decision: C, the full standard, with the first pass of 8; build the
+conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job."
+(18:51Z) and "Decision: use the simplification: the tool carries Node's and workerd's facility classification; ARCH names
+the boundary modules and classifies the packages its product uses." (20:26Z). Both are recorded in `design-decisions-2.md`
+("Who a change tells") on that branch. Also his standing instruction: "It's important that this process4 change be done
+properly. This shouldn't result in any contradictions. All changes should try to properly evolve existing elements of the
+process rather than piling more on top." And: "changes only happen based on my decisions, but the way in which those
+decisions are implemented can result in duplication, contradictions, and ambiguity without my involvement" — correct
+those yourself; bring him only what would change a rule.
 
-- The design document (https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk, a Claude Doc, doc id
-  `789cbf2d-7c33-4d7f-9248-31ac8a329a51`, body node `3212463b-6df3`, rev 58) was corrected by PROCESS #16 and is the
-  current statement: Parts A (S1–S13, R1–R8, R10–R22, settings), B (conversion job; B7 every module job's uses file
-  rewritten by the tool at push), C (the means M1–M9; meaning changes declared by the job and named by ARCH), D (the plan).
-- **How it lands:** everything on `work/decision-c` (from main), reaching main as ONE pull request only when design,
-  record, build texts, starting texts and tool agree and the tool's tests and the re-recorded proof pass. Main must never
-  hold a design that contradicts its tool. Then Part D steps 5 (trial on process3-probes), 6 (civicsmith moves on his
-  instruction at its coordinator), 7 (first pass: ARCH records a scope of the first 8 modules), 8 (his review).
-- **Done on `work/decision-c`:** the record (entries "Who a change tells", "How `notify` reads the product", "How a notice
-  reaches a user", "The round" item 2, "A job's tests" item 3, "What the check refuses" item 3, rewritten in place; 3B
-  retired with his words kept); design parts 0, 2 (§§3, 6, 7, 8, 9), 4, 6, 10 evolved in place.
-- **Workers (each in its own worktree, branches pushed, nothing merged):** `work/decision-c-texts` (build texts 01, 01b,
-  02, new 02c the coding standard, 02b, 03, 04, 05; job.md, arch.md, starting_texts/00-index.md; job set 174,033 and
-  ARCH set 174,270 of 175,000 — tight); `work/decision-c-refs` (tool: reference reader under the standard, places outside,
-  order faults, copies, facility list, uses file writer at `push`, `p4 uses`, `check` from the uses file, the 27 cases as
-  tests); `work/decision-c-means` (tool: means M1–M9 over the within-module closure, meaning declarations, `notify` as a
-  lookup, merge wait and related tests from uses files, inference removed, proof re-recorded). Review each against the
-  design for contradictions, merge each into `work/decision-c`, then run a fresh-eyes contradiction sweep of everything
-  (design, record, build, starting texts, tool) before the one pull request into main.
+**State of `work/decision-c`** (all one branch; main untouched so main never holds a design its tool contradicts):
+- Record: six entries rewritten in place (Who a change tells; How `notify` reads the product; How a notice reaches a user;
+  The round item 2; A job's tests item 3; What the check refuses item 3; A tranche ends item 3); 3B retired.
+- Design parts 0, 2, 3, 4, 5, 6, 10 evolved; build texts 01, 01b, 02, 02b, new 02c (the coding standard and uses file),
+  03, 04, 05, new `build/README.md`; job.md, arch.md, starting_texts/00-index.md. A tidy study (research
+  `tidy-25nov.md`) fixed 25 contradictions and folded duplicates; reading sets now job 166,734 and ARCH 167,721 of 175,000.
+- Tool: `cd tool && npm test` 224/224. Reference reader under the standard (`lib/notice/refs.mjs`), uses-file writer at
+  every `push` and `test` (`lib/usesfile.mjs`, `lib/usescmd.mjs`), `p4 uses`, the means M1–M9 (`lib/notice/means.mjs`),
+  `notify` as a lookup, merge wait and related tests from uses files, the conversion kind and its report at `ready`,
+  `push --meaning`, the tool's own facility classification (`lib/notice/facilities.json`, nothing defaults to in),
+  uses files rewritten on a module-list change, a facility-list change, or a version move. Research:
+  `uses-metadata-25nov/conversion-sites.md` (every assignability site of TypeScript 5.6.3, all covered).
+- Proof (150 changes + 13 found breaks; uses files by the real writer): 112 needed, 958 told, 846 told without need,
+  0 missed. The over-telling is the proof product's code not keeping the standard (places told of every change).
+
+**Next, in order:**
+1. **The owner's open question on false positives** (asked ~20:50Z, unanswered): he requires no misses AND no false
+   positives. PROCESS #16 told him (a) needless notices from unconverted places end with conversion (he agreed); (b) after
+   conversion two kinds remain: A, a user of exactly the changed item whose use is unaffected — inherent (undecidable;
+   his own rule "any change to either a provider's domain or range necessitates that its users be retested" calls for
+   telling it), asked whether he accepts A; B1–B5, tool imprecision: member-level granularity (a type's or class's
+   change matched to uses of its other members, `X.*`), equivalent type rewrites, over-approximated computed facts,
+   ARCH-named meanings telling pass-through users, unconfirmed accepts-more. He was told PROCESS would tighten B1–B5 now
+   (changes no rule) and re-measure the proof on a CONVERTED copy of its modules to count A and B apart, unless he says
+   otherwise. Do that (workers in worktrees from `work/decision-c`), and get his answer on A.
+2. A fresh-eyes check that tool and texts agree (give a worker the code and texts, not conclusions), then ONE pull
+   request `work/decision-c` → main, merged once `tool-tests` passes (his decisions are the approving words; quote them
+   in the PR body).
+3. Then design Part D: trial on process3-probes (needs a fresh ROOT from him: choice 5), civicsmith's move on his
+   instruction at its coordinator, first pass (ARCH records a scope of the first 8 modules; ARCH writes the facility list
+   of boundary modules and packages first), his review.
+
+The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
+`3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
+list still reads "…for your decision": only he can rename it in a browser.
 
 ## Also waiting for him (on his page "Process4 Waiting for Bob")
 
@@ -44,11 +67,13 @@ changes should try to properly evolve existing elements of the process rather th
   environment's setup script also writes `"idleCompaction": false`; propose by the harness's approval prompt), B
   (correct part 7 §1: the fill is real after a session's first turn; tell civicsmith's coordinator ARCH's "fill
   unreadable" note is wrong), C both (recommended). Undecided.
+- Two open items from the tidy study (`tidy-25nov.md` §5): which branch an urgent fix is built on, against "one lasting
+  tranche branch" (#20); and whether the design's status line should still say nothing has run (#21). For him.
 - Choice 5 (depth limit, 5B recommended) undecided; process3-probes needs a fresh ROOT from him. Choice 6 (waiting work
   in parts) waited until who-is-told was settled (his words: "That's not a decision, it's a reality."); decision C settles
   it, and the design document (C5) says the split is still needed: put it back to him once decision C has landed.
 - Later, one at a time (from PROCESS #14): who keeps his one standing page; the unproven two-hour background command; a
-  job's reading set, 174,033 of 175,000 on `work/decision-c-texts` (ARCH's 174,270).
+  job's reading set (now 166,734 of 175,000 on `work/decision-c`, so no longer pressing).
 
 ## civicsmith
 
@@ -69,6 +94,10 @@ changes should try to properly evolve existing elements of the process rather th
 - Workers survive a session restart; list `subagents/` in full (a `tail` hid them once, and duplicates were launched).
 - Docs: one section per call; read with `sinceRev` before editing; never retype his edits.
 - Workers: run the tool's tests only as `cd tool && npm test` or by file.
+- Two workers building halves of the tool need named ownership of files, one shared data form (build text 2c), and one
+  of them to join both; a study worker with fresh eyes found 25 contradictions the builders missed. Check a worker's
+  defaults for silent misses (the facility classification first defaulted to "in").
+- The design document states only the design: no options, no history, no "as today" (his words, 25 Nov).
 
 ## Start checks
 
