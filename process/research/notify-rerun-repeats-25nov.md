@@ -92,3 +92,28 @@ a bound reworded or removed, or added beside existing bounds, still tells. Again
 are changing, then there must be a reason why. It must be that that interface is changing, right?") — a new bound can be a
 real tightening (a module that accepted 1 to 999 and now says 1 to 99 in its first bound line). Asked civicsmith ARCH #18
 (via coordinator #9, 04:25Z) how many of 1356's 197 are told only by such first bounds.
+
+## The narrowing of decision 2, measured (a worker of PROCESS #13, 25 Nov ~04:40Z)
+
+Prototype (uncommitted; its diff and new file kept in `narrowing-decision-2-25nov/`): a user not followed fully is told of a
+changed function, value, method or class member only where (a) that entry's name appears as an identifier anywhere in the
+user's files, before or after, comments and strings included; or (b) the user reaches the provider in a way the scan cannot
+read: an unfollowable import in its reach, `import * as`, `import('…')` or `require('…')` of a provider file, or another
+module's `export … from` or carrier in its reach that reaches the provider. A changed kind (typedef, handle kind, class,
+operation, operation table, stored rows) tells as now.
+
+- **Proof replay, 150 changes:** 8 answers change, all one user (`reports`) losing a not-followed reason (P09, P22b, P27, A03,
+  A14, X03, U08, T02); each checked against `reports`' files and the proof's own `needs`: **no hole**. Users the proof says
+  needed a change and are not told: the same before and after. Time 35.9 s → 35.8 s.
+- **Synthetic, 50 plain-JS users of a provider third in the order, all cause 2:** a function change (`@throws` added) told
+  50 → 7 (5 callers, 1 namespace importer, 1 computed importer); a kind change 50 → 50. The narrowing costs 5–9 ms.
+- **Holes found outside the proof:** (1) the function handed on by another module as a value (`export const helpers = { reg:
+  registerDeclared }`) and called there, for a throws or bound change only — closed by an amendment: (b) also tells where a
+  module in the user's reach hands the changed entry on as a value or takes the provider's whole exports (`asValue` in
+  `usage.mjs`); 0 more told on the proof and the synthetic product; (2) a callback handed in from elsewhere (`function
+  boot(register)`); (3) a name built from pieces. (2) and (3) are accepted misses (the design accepts a missed user, part 2
+  §7), to be named in build text 5 §6.
+- **Not known:** how many of civicsmith's ~120 stay told through (b)'s "an unfollowable import anywhere in its reach" (a
+  widely imported loader with a computed import would keep many told). Seen on the first `notify` after it lands.
+- Adopting re-records the 8 proof answers in `expected.json`, each with its reason; the reason in a notice should name which
+  entries told the user.
