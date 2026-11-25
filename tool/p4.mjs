@@ -30,8 +30,8 @@ const prOf = (ctx, a) => {
   if (a._[0] != null) return pr(a);
   const branch = (typeof a.branch === 'string' && a.branch) || git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: ctx.root });
   if (branch === 'HEAD') fail('the checkout is detached; name the pull request by its number, or its branch with --branch <b>');
-  const found = ctx.gh.prForBranch(ctx.slug, branch);
-  return found?.number || fail(`no open pull request for the branch ${branch}; name it by its number`);
+  const found = ctx.gh.prForBranch(ctx.slug, branch) || ctx.gh.lastPRForBranch?.(ctx.slug, branch);
+  return found?.number || fail(`no pull request for the branch ${branch}; name it by its number`);
 };
 
 // A block as the required run's workflow wrote it to a file: the comment's body, or its JSON alone. None when

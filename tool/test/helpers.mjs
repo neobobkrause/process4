@@ -54,6 +54,7 @@ export function fakeGitHub(over = {}) {
     repo: () => ({ default_branch: 'main' }),
     getPR: (slug, n) => s.prs.find((p) => p.number === n),
     prForBranch: (slug, b) => s.prs.find((p) => p.state === 'open' && p.head.ref === b) || null,
+    lastPRForBranch: (slug, b) => s.prs.filter((p) => p.head.ref === b).slice(-1)[0] || null,
     closedPRs: (slug, base) => s.prs.filter((p) => p.state === 'closed' && p.base.ref === base),
     createPR: (slug, { head, base, title, draft }) => {
       const pr = { number: s.next++, state: 'open', draft, title, html_url: `https://gh/pr/${s.next - 1}`, head: { ref: head, sha: 'h'.repeat(40) }, base: { ref: base } };

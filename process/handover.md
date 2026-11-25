@@ -10,13 +10,12 @@ with the JSON block; keep the registry as it stands), and message each ROOT in t
 (`get_session`, `context_usage`; it reads 0 mid-turn, so judge by the work done). Refresh at the first natural pause after
 50 percent. Never `git add -A`; add paths by name.
 
-**Your reading:** the design, build text 5, the two decision files, `process/README.md`, `process/research/README.md` (the
+**Your reading:** the design, build text 5, the three decision files, `process/README.md`, `process/research/README.md` (the
 index), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a worker, when a
 question needs it.
 
-**`process/design-decisions-2.md` is full (59,696 bytes, the maximum is 60,000).** The next new subject starts
-`process/design-decisions-3.md` (say in its head that it continues the second, as the second does the first), and the
-owner's PROCESS start prompt on his page must then name it too.
+**The record of decisions is now three files:** `design-decisions-3.md` (started 25 Nov) takes each new subject. Read
+all three. The owner's PROCESS start prompt names them.
 
 ## START HERE
 

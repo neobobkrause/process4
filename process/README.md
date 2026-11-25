@@ -7,8 +7,8 @@ change (design part 6, section 5).
 
 ## What is kept here
 
-- `design-decisions.md` and `design-decisions-2.md` — the record of the owner's
-  decisions about the Process4 design, in two files; both are read. PROCESS is its only writer (design part 5, section 5). See that file
+- `design-decisions.md`, `design-decisions-2.md` and `design-decisions-3.md` — the record of the owner's
+  decisions about the Process4 design, in three files; all are read. PROCESS is its only writer (design part 5, section 5). See that file
   for how it is ordered and the rule that the owner's exact dated words are kept
   and never edited.
 - `handover.md` — an interim handover for the next PROCESS session. It is a

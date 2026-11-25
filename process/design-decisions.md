@@ -6,9 +6,9 @@ same step as each decision is recorded (design part 5, section 4).
 
 ## Where the record is kept
 
-The record is kept in two files, each under the single-text maximum (design part 5, section 2), and
-both are read: this one, and `design-decisions-2.md`, which holds the later subjects and takes each
-new one. An entry is rewritten in place in the file that holds it.
+The record is kept in three files, each under the single-text maximum (design part 5, section 2), and
+all are read: this one, `design-decisions-2.md`, and `design-decisions-3.md`, which holds the latest subjects and
+takes each new one. An entry is rewritten in place in the file that holds it.
 
 ## How this record works
 
