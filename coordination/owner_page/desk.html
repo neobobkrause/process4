@@ -22,14 +22,29 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 15:40 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. One choice for you below: sessions that sit idle are compacted. I am also designing your proposal for recording which providers each module uses.</p>
+<p class="updated">Updated 25 Nov 2026, about 15:45 UTC, by PROCESS #15. I have started and taken over from PROCESS #14. Two matters wait for you below: your proposal for who uses what, with civicsmith's path; and sessions that sit idle being compacted.</p>
 </header>
 
-<section class="card">
-<h2>Next: your proposal that each module records the providers it uses</h2>
-<p>You proposed that every module keep a file of the providers, and the items of each, that its code and tests use. A job that understands the code writes it first; every later job keeps it current. Finding a provider's users then becomes a lookup taking seconds, instead of the tool guessing from plain JavaScript, which is the main cause of the over-telling. I agree it addresses the root problem rather than patching it. Option C is set aside while it is designed.</p>
-<p>PROCESS #15 (me) is designing it in full and will put it to you with options. Two things the design must settle besides the file: whether an item really changed (describing unchanged code must not count), and that it replaces your earlier rule "No list is kept by hand". Your words and my first analysis are in <code>process/research/uses-metadata-25nov.md</code>. Nothing is built before your decision.</p>
-<p><b>civicsmith's refactoring, as you asked.</b> The design will include civicsmith's path: how its refactoring plan and the work already merged are kept, what giving every module its file costs, and whether to continue the refactoring or restart it after the fix. I have asked civicsmith's coordinator for the facts: the plan, where the work stands, what the told jobs have cost, and the size of the code. Nothing of civicsmith's is lost while it holds: its work is in its branches and pull requests. In my view no Process4 version available now fixes this flaw, so moving civicsmith now would not help; holding or moving stays your call.</p>
+<section class="wait">
+<h2>Waiting for you: your proposal for who uses what, and civicsmith's path</h2>
+<p><b>Bottom line.</b> Your idea is right, and it fixes half the problem. I recommend adopting it together with its other half (choice 1B), then restarting civicsmith's refactoring from main once it is built (choice 2, R2). The two choices go together.</p>
+<p><b>What I found.</b> Telling the right modules after a change needs two answers: who uses this item, and did this item really change. The tool guesses both today. Your file answers the first fully. Four helpers tried it on the 150 recorded test changes, writing each module's file the way a careful job would. Finding every user then took 45 thousandths of a second, against 50 seconds today and up to 40 minutes on civicsmith, and nothing was told merely because the tool could not follow the code. But the 45 "needed and missed" turned out to be about the second answer: in 43 of them, the code changed and its written description did not, so the tool saw no change. Usually the job changed code and forgot to update its own comment. Your files alone left 44 of the 45 missed.</p>
+<p><b>The other half, by your own reasoning.</b> Every reference was written with forethought, and so is every change: the job that makes a change knows what it changed. So each job would also state, in its pull request, which of its items changed what they accept or hand back. To stop a forgotten one, the tool lists every item whose code changed, and the job must answer for each; one left unanswered counts as changed. With both files, the trial missed 1 of the needed modules instead of 45. That one is a change your existing rule says tells no one ("accepting more"). It also found 13 real breaks that the test record had never listed; today's tool tells none of them.</p>
+<p><b>What it changes.</b> It replaces your rule "No list is kept by hand", and reshapes your choice 3B of this morning. About 700 lines of the tool's guessing go. Each module's job writes and keeps its own file, as it writes its tests. Nothing new can stop a job: the only check is the one that already compares a module's imports with the modules it says it uses. Not proven: how reliably jobs keep the files and statements accurate, and the cost on civicsmith.</p>
+<p><b>Choice 1: the fix.</b></p>
+<ul>
+<li><b>1-0. No change.</b> civicsmith cannot go on: its notices can no longer be written down, and 99 merged changes never told their users.</li>
+<li><b>1A. Your file only.</b> Ends the over-telling. Leaves the misses: in the trial, 44 of 45 still missed.</li>
+<li><b>1B. Your file, plus each job's statement of what it changed (recommended).</b> Ends the over-telling and the misses: in the trial, 1 missed.</li>
+</ul>
+<p><b>Choice 2: civicsmith's refactoring</b>, once the fix is built. civicsmith's ARCH measured where it stands. Of the plan's eight steps, step 1 and half of step 2 are built. Most of the 324 jobs since it began were answers to notices, about 163 of them closing with nothing to change. 99 merged changes never told their users, and 938 notices from the old method are waiting.</p>
+<ul>
+<li><b>2-0. No change:</b> hold, then carry on. Not workable as is: the old notices cannot be redone under the new method.</li>
+<li><b>R1. Keep the work.</b> Every module's first job writes its file and runs its module's tests once, to catch whatever the 99 untold changes broke; then the refactoring continues. Keeps everything; costs a test run in all 204 modules.</li>
+<li><b>R2. Restart from main (recommended).</b> Dropping the current batch keeps the plan, ARCH's decisions, the requirements and the module list, and puts back main's code. Every module's first job writes its file from main's code, where nothing is untold. Then the refactoring starts again at step 1. Loses step 1, half of step 2, and the comment work in 124 modules. Starts from a known state.</li>
+</ul>
+<p><b>Effort of writing every module's file</b> (estimate, not measured): 204 jobs, about $400 to $1,000 and 6 to 13 hours. I would measure five modules first.</p>
+<p>To choose, reply here starting with "Decision:", for example "Decision: 1B and R2". You may also set any of this aside or ask me questions first. The full design is in <code>process/research/uses-metadata-25nov/design.md</code>.</p>
 </section>
 
 <section class="wait">
