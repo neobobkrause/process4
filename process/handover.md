@@ -60,8 +60,10 @@ for the first pass to use the finished tool on 8 real modules whose files are ke
 
 - The owner typed at civicsmith's coordinator #9 (25 Nov ~16:55Z): "1. Decision: drop tranche t2, the refactoring
   tranche, so that civicsmith returns to a clean state. The refactoring restarts from its plan once the provider/user fix
-  is in and confirmed as correct." ARCH #27 (`session_018Bhcedh1q7Nb2FASGrj4Pq`) is carrying it out; confirm with the
-  coordinator, then update his page. civicsmith's hold stands. Its facts: `civicsmith-state.md`.
+  is in and confirmed as correct." Carried out (coordinator #9, 18:37Z): PRs 1680 (606 files back to main's, 18 removed) and 1681 (14
+  requirements back to not yet met); round and waiting work emptied; no tranche open until the fix is confirmed. Leftovers
+  ARCH named: some declared-uses lists trimmed by t2 may not match main's imports; seven requirement files' wording fixes
+  were matched to t2's code. His page says so. civicsmith's hold stands. Its facts: `civicsmith-state.md`.
 - Coordinator #9: `session_018BhcedNDzSLiPUv54snhat`.
 
 ## Lessons
