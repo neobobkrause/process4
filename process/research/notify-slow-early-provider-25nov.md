@@ -33,3 +33,41 @@ ARCH #15, passed unchanged by coordinator #7 at 00:47Z:
 The refactoring tranche is drawing in modules through placed flaws, as warned at 00:13Z: by 00:44Z jobs had also started
 for inquiry-grammar, ratification, provenance, promotion, reading-pipeline, interface-shell, lines, wizard-scripts,
 wizard-library and setup-words. Several are adding structured comments, which the check's refusals ask for.
+
+## PROCESS #12: why it is slow, from the code, and the faster ways (25 Nov ~01:35Z)
+
+Measured on civicsmith: `notify 1339` took about 43 minutes and 8 GB, and told nearly every later module, most as "not
+followed fully" (`waiting-work-too-large-25nov.md`). The owner, 25 Nov: "We know it's slow. We also know from looking at
+the code why it's slow. What we need to figure out is how to meet the tool's requirements much faster than how it does it
+now." So no further measuring of the slowness; the work is a faster design, held to the same answers.
+
+Why, from the code (`tool/lib/notice/staged.mjs`, `usage.mjs`, `ts.mjs`):
+1. Every later module that can reach the provider is read on its own: a fresh TypeScript program and type checker over
+   its files and everything they import. The provider and the shared lower modules are worked out again for each of
+   about 200 users.
+2. Each user is read twice, before and after, though the after side only serves new names (`useB ?? useA` in
+   notice.mjs).
+3. Plain JavaScript with `checkJs`: the checker infers kinds from function bodies across files, the costliest reading.
+4. For a user that declares the provider and is "not followed fully" (a value of unknown kind anywhere), the tool still
+   walks all its files to list every use, though such a user is told on any change and its job runs its whole tests.
+5. One reading at a time, on one core.
+
+The faster ways, each held to the 150 recorded answers of the proof (who is told must not change):
+- **Early stop.** For a user that declares the provider, stop at the first value of unknown kind: it is told, "not followed
+  fully", with that place. Its reasons then name the cause, not each use; its job runs its whole tests either way. On
+  civicsmith most users are of this kind, so most readings become short. Expected the largest gain; to be confirmed.
+- **The after side only when needed:** only where a changed entry is new, or operations or tables are in play. About half.
+- **In parallel:** the readings spread over the machine's cores, each in its own process with bounded memory. About the
+  number of cores.
+- **Shared work:** several users read in one program, so the provider's chain is worked out once per batch; bounded by
+  memory.
+- **Remembered results:** a user's result kept, keyed by the content of every file it reads, and reused at the next merge
+  where none changed.
+
+Options to put to the owner, with the record-size fault (`waiting-work-too-large-25nov.md`), as one group:
+- A. No change.
+- B. The first three ways (early stop, after side only when needed, in parallel), with waiting work kept small (its
+  option B) and GitHub's words printed on a failed write; then `notify 1339` run again to recover the lost notices.
+  Recommended. Estimated, not yet shown: 43 minutes to a few minutes on civicsmith.
+- C. B, and the last two ways (shared work, remembered results). More code and more to prove; worth it only if B is not
+  enough.
