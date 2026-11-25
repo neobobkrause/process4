@@ -1,0 +1,51 @@
+diff --git a/tool/lib/notice/notice.mjs b/tool/lib/notice/notice.mjs
+index 9715b07..7b2b93c 100644
+--- a/tool/lib/notice/notice.mjs
++++ b/tool/lib/notice/notice.mjs
+@@ -16,6 +16,10 @@ import { makeUsage } from './usage.mjs';
+ import { same, standsIn, render } from './canon.mjs';
+ import { commentsOnly } from './check.mjs';
+ import { stagedReader } from './staged.mjs';
++import { makeNarrow } from './narrow.mjs';
++
++/** PROTOTYPE switch, for measuring only: P4_NO_NARROW=1 answers as decision 2 stands. */
++const NO_NARROW = process.env.P4_NO_NARROW === '1';
+ 
+ /** Reads a whole product once: every module's listing and every module's uses, from one program. */
+ export function analyse(root) {
+@@ -417,6 +421,9 @@ function noticeWith(R, provider) {
+ 
+   // Who is told: every later module, declared or not. A module the staged reading did not read cannot use any module
+   // that changed: it is neither told nor named.
++  let narrow = null;
++  const narrowedOut = [];
++  report.narrowedOut = narrowedOut;
+   for (let i = pIndex + 1; i < order.length; i++) {
+     const user = order[i];
+     if (!R.isCandidate(user)) continue;
+@@ -447,7 +454,11 @@ function noticeWith(R, provider) {
+         if (ub?.anything.length) why.push(`reads or calls values of unknown kind: ${firstPlaces(ub.anything).join('; ')}`);
+         if (ub?.unreadOps.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('op:'))) why.push(`calls by a name the tool cannot read at ${firstPlaces(ub.unreadOps).join(', ')}`);
+         if (ub?.unreadTables.length && Object.keys(R.listing('A', m).entries).some((n) => n.startsWith('table:'))) why.push(`names a table the tool cannot read at ${firstPlaces(ub.unreadTables).join(', ')}`);
+-        if (why.length) reasons.push({ module: m, notFollowed: why, through });
++        // PROTOTYPE narrowing (narrow.mjs): of the changed function, method and value entries, only those the user's
++        // files name, or all where it reaches the provider in a way the scan cannot read; any other entry as before.
++        const tells = why.length && !NO_NARROW ? (narrow ??= makeNarrow(B.tree, A.tree, { usesOf: (id) => R.uses('B', id), amend: process.env.P4_NARROW_AMEND === '1' })).telling(user, m, diff.filter((e) => e.tells !== 'nobody')) : null;
++        if (why.length && (!tells || tells.length)) reasons.push({ module: m, notFollowed: why, through });
++        else if (why.length) narrowedOut.push({ user, module: m });
+       }
+     }
+     if (reasons.length) report.told.push({ user, reasons, undeclared: (ub?.undeclared ?? []).filter((p) => changed.has(p)) });
+diff --git a/tool/lib/notice/staged.mjs b/tool/lib/notice/staged.mjs
+index 74f47d2..7016768 100644
+--- a/tool/lib/notice/staged.mjs
++++ b/tool/lib/notice/staged.mjs
+@@ -98,7 +98,7 @@ export function makeReach(tree) {
+     }
+     return { files: seen, unresolved };
+   }
+-  return { closure, scan };
++  return { closure, scan, resolve };
+ }
+ 
+ /** Programs that share the files they have parsed, for one side; the lib files are shared by both sides. */
