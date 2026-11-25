@@ -3,65 +3,61 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 24 Nov 2026 ~20:20Z, by **PROCESS #11** (`session_018Bhced64Q8m7tFKd8HUrQ6`), at a natural pause, nothing
-half done, everything merged. Your successor is **PROCESS #12**: read the generation in `handover-process` (11), name
-yourself `PROCESS #12` with set-session-title (your own session id), record generation 12 and your session there (the file
-must start with the JSON block), and message each ROOT in the registry your address. Read your own fill (`get_session`,
-`context_usage`; it reads 0 mid-turn, so judge by the work done) after every owner turn. Refresh at the first natural
-pause after 50 percent. Never `git add -A`; add paths by name (helpers' worktrees under `.claude/worktrees/` are excluded
-locally in `.git/info/exclude`).
+Last written: 25 Nov 2026 ~00:10Z, by **PROCESS #11** (`session_018Bhced64Q8m7tFKd8HUrQ6`), at the owner's word
+("refresh"), at a natural pause: nothing half done, everything merged. Your successor is **PROCESS #12**: read the generation
+in `handover-process` (11), name yourself `PROCESS #12` with set-session-title (your own session id), record generation 12
+and your session there (the file must start with the JSON block; keep the registry as it stands), and message each ROOT in
+the registry your address. Read your own fill (`get_session`, `context_usage`; it reads 0 mid-turn, so judge by the work
+done). Refresh at the first natural pause after 50 percent. Never `git add -A`; add paths by name (helpers' worktrees under
+`.claude/worktrees/` are excluded locally in `.git/info/exclude`, a file a fresh container will not have).
 
 **Your reading:** the design, build text 5, the two decision files, `process/README.md`, `process/research/README.md` (the
 index), `process/lanes/civicsmith/README.md`, and this handover. Open a research file, or give it to a worker, when a
 question needs it.
 
-## START HERE: the update is built; its trial on process3-probes waits for the owner's two lines
+## START HERE
 
-The owner's "Decision: the update plan as laid out" (24 Nov) is recorded (`design-decisions-2.md`, last entry) and built:
-pull request 233 (tool, workflow `shims/module-tests.yml`, design parts 2, 4, 6, 7, 10, build texts 1, 1b, 2b, 5, the job's
-and ARCH's starting texts, the index) and 234 (`results` says when no test record is needed). The tool's full suite passed
-on GitHub. What it does, in one place: build text 1 section 5 and build text 1b commands 4, 6, 9, 11, 14, 15, 18, 27; the
-record forms in build text 5 section 5; `tool/lib/testrecord.mjs`, `testrun.mjs`, `uses.mjs`.
+**Nothing is being built. One question is out, and its answer will come to PROCESS #11's session, not yours.** At the
+owner's word ("Yes, ask the coordinator", 25 Nov) PROCESS #11 asked civicsmith coordinator #7
+(`session_018BhcefEpYUAwGpc5yDxSCS`), ~00:05Z: does civicsmith's round record hold a tranche scope (decision D), written
+before the tranche's first job; and for each job started (capture #1, control-plane #4, record-grammar #2, test-support #3,
+an office-readers job), is its work in the scope or placed work; and any process fault. Why: record-grammar, test-support and
+office-readers were not expected from the refactoring's first steps. Ask the coordinator again from your session (the same
+four questions); report the answer to the owner plainly. If a job's work is outside the scope and is not placed work, that is
+a fault to research (the tool or ARCH's use of the scope); otherwise nothing.
 
-Next, in order:
-1. **Done: the trial on process3-probes** ran cleanly (`process/research/update-trial-process3-probes-24nov.md`); its
-   ROOT is now #8 (`session_018Bhcefa2wforoAh5zomFNh`), coordinator #4 (`session_018Bhcedx7Rp4XRCUFihCwvp`), ARCH #4;
-   the registry in `handover-process` says so.
-2. **A read-only count on civicsmith** of the check's refusals, old version against new: the brief is
-   `process/research/civicsmith-check-count-brief-24nov.md`, on the owner's page. Information only, not a gate: the owner
-   may move civicsmith first (told so 24 Nov); if he does, name the old commit in the brief before it is run.
-3. **civicsmith moves** on the owner's line in its coordinator session; its workflow copy replaced the same way.
+**Done by PROCESS #11, 24-25 Nov (all merged; entries in `design-decisions-2.md`, last three):**
+- The update (decision "the update plan as laid out"): pull requests 233, 234 — tests once in the job (`p4 test`, the test
+  record, `run verdict`), notices to running jobs, merge waits, slots, the check mended, three fold-ins. Trial on
+  process3-probes ran cleanly (`process/research/update-trial-process3-probes-24nov.md`).
+- The order of a move whose workflow changes: two pull requests, version first (decision B, 242).
+- A tranche's scope recorded by ARCH in the round record (decision D, 246; `scopeOf`/`workOf`/`finished` in
+  `tool/lib/round.mjs`, `open` writes `not_this_tranche`; job's rule 1, ARCH's rule 6). Checked with civicsmith ARCH #13 before
+  the owner decided (`held-requirements-23nov.md`).
+- civicsmith moved to the update and to D (its sessions on 231cc45); its coordinator cleared the halt (as ARCH #14's summary reads; the owner's
+  words are in civicsmith's own record, not seen here); civicsmith tranche t2 (the refactoring) is running, ARCH #15.
 
-Known limits of the build (written in the texts): `merge` does not wait on an import the scan cannot follow (a computed
-one); the check does not read `require.resolve`, `#imports` or `createRequire(...)('<path>')`; refusal (b)'s receiving-side
-rule covers complaints 2322 and 2345 only. Not known: whether a background command goes on while a session waits between
-turns (the job waits within its turn); the re-run call and the verdict on real GitHub.
+**Registry (in `handover-process`):** process3-probes ROOT #8 `session_018Bhcefa2wforoAh5zomFNh` (coordinator #4
+`session_018Bhcedx7Rp4XRCUFihCwvp`; quiet, every requirement met); civicsmith ROOT #7 `session_018BhceePQhUJcXt8W2pZGxx`
+(started by the owner 24 Nov ~23:48Z, a restart that reset the depth), coordinator #7 `session_018BhcefEpYUAwGpc5yDxSCS`,
+ARCH #15 `session_018BhceeJmQKXN6gKvE9QViZ`.
 
-**Done by PROCESS #11 (all merged):** the update (233, 234); the owner's page (231, 232, 235): the 45-minute and draft-run
-items withdrawn as covered by the update, PROCESS #8, #9 and #10 archived by the owner. civicsmith ROOT #4 recorded PROCESS
-#11 (19:38Z); process3-probes ROOT #7 was messaged, no reply seen.
+**On the owner's page, still waiting:** nothing of his but optional: the read-only check count on civicsmith (brief
+`process/research/civicsmith-check-count-brief-24nov.md`, which names the old version 0eec86f). Archive PROCESS #11 once
+PROCESS #12 runs.
 
-**Since (24 Nov, PROCESS #11, all merged):** the trial ran cleanly (239); civicsmith moved to the update (its ARCH needed two
-pull requests, version then workflow: the owner's decision B writes that order down, 242); a tranche's scope recorded by ARCH
-in the round record (the owner's decision D, 246; tool `scopeOf`/`workOf`/`finished`, job's rule 1, ARCH's rule 6). Registry:
-process3-probes ROOT #8 `session_018Bhcefa2wforoAh5zomFNh`; civicsmith ROOT #5 `session_018BhceghTxHcQbupRs5sxhW`,
-coordinator #5 `session_018Bhcef3DYVByKnSKFGwN1g`, ARCH #13.
-
-**On the owner's page, still waiting:** his move line for civicsmith (to get D), then lifting civicsmith's halt; the
-read-only count is optional (brief names the old version 0eec86f).
+**Known limits, written in the texts:** `merge` does not wait on an import the scan cannot follow; the check does not read
+`require.resolve`, `#imports` or `createRequire(...)('<path>')`; not shown yet: a test run near two hours, a told job's related
+scope, a told job above the slot number, the re-run `p4 test` asks for. Seen with no change: `next-job` leaves a round entry's
+`pull_request` null until ARCH reconciles it.
 
 ## Start checks
 
 1. Environment **BioDefault**, `neobobkrause/process4` only; `~/.claude/settings.json` has `autoMode`.
 2. `node tool/p4.mjs state read` reads issue #33.
-3. Products registry, two products. Message each ROOT your session and generation (titles in the
-   account's session list; ROOTs refresh, so confirm the live one there):
-   - `process3-probes` (the trial): ROOT #7 `session_018Bhceg1d5SVx54aCGkzRe3`; coordinator #3
-     `session_018BhceeRZwDtL5rXcx3Mp5q`. Quiet, not stopped, every requirement met.
-   - `civicsmith` (repository neobobkrause/civicsmith-copy, branch `p4-tranche`): **civicsmith ROOT #4**
-     `session_018BhceeqiFSaXdPrichfP66` (from 23 Nov ~05:15Z); coordinator #4 `session_018BhcedBfypmJzpjT9Drkdq`;
-     ARCH #11 `session_018BhcegATtrs3QurPbq6bMb`; its shared-state issue is 1122. Tranche t1 dropped by the owner 24 Nov;
-     a refactoring (the "Civicsmith layers" plan) comes next, after this update.
+3. Products registry, two products: read it in `handover-process` (START HERE above gives each product's sessions as of
+   25 Nov ~00:10Z). Message each ROOT your session and generation; ROOTs refresh, so confirm the live one in the account's
+   session list. civicsmith is repository neobobkrause/civicsmith-copy, branch `p4-tranche`, shared-state issue 1122.
 4. **No live lane.** The civicsmith onboarding lane ended when ROOT started (design part 6 section 8); its
    last session (lane #2, `session_018BhceeTQKM67dJhV5dBPyh`) is archived; `lanes` says so. Its folder,
    `process/lanes/civicsmith/`, stays: conversion plan, the three readings, `later-module-tests.md`,
