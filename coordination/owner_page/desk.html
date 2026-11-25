@@ -70,6 +70,7 @@ a{color:var(--accent)}
 <li><b>2A. No change.</b> Every first error or limit, and every first description, tells as now: 19 of the 20 users told.</li>
 <li><b>2C. A first error or limit tells no one where that function's own code is unchanged.</b> 15 of 20 still told, by two smaller routes: the type checker cannot confirm a class with a private field as accepting more, and the printed heading changes from a guessed kind to a stated one. 1 recorded answer changes, missing no one who needed telling.</li>
 <li><b>2C+. 2C, and on a function whose own code is unchanged those two smaller routes tell no one either (recommended).</b> 0 of 20 told. The same 1 recorded answer changes, missing no one. A change made inside a helper the function calls still tells. The risk: a first limit written to tighten a function whose code stays the same, or a narrowed parameter on unchanged code, tells no one; a user that breaks it is caught by its own check at its next job, not by a notice.</li>
+<li><b>A further cost of waiting:</b> because a first comments step tells so many modules, civicsmith's ARCH now tells each job to leave its first comments for later. That breaks the job's own rule to write them first, and the extraction job reported it as a fault. Choice 2 removes the cause.</li>
 <li><b>2D. Any difference on a function whose own code is unchanged tells no one.</b> 0 of 20 told, but it silences 13 recorded limit changes your rule says should tell, and it misses a real change made inside a helper. Not recommended.</li>
 </ul>
 
