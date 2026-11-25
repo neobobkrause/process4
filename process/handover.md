@@ -3,7 +3,7 @@
 **Interim and pre-live.** The process repo's shared-state issue is #33; its `handover-process` record
 carries PROCESS liveness, the generation and the `products` registry. This file is the detailed handover.
 
-Last written: 25 Nov 2026 ~07:05Z, by **PROCESS #13** (`session_018BhcedHCN78Xtr7XLu33G2`), at its fill level (49 percent),
+Last written: 25 Nov 2026 ~07:05Z, brought up to date ~13:15Z on the owner's word ("refresh"), by **PROCESS #13** (`session_018BhcedHCN78Xtr7XLu33G2`), at its fill level (49 percent),
 at a natural pause: nothing half done, everything merged. Your successor is **PROCESS #14**: read the generation in
 `handover-process` (13), name yourself `PROCESS #14` with set-session-title (your own session id), record generation 14 and
 your session there (the file must start with the JSON block; keep the registry as it stands), and message each ROOT in the
@@ -19,7 +19,9 @@ handover. Open a research file, or give it to a worker, when a question needs it
 **Also urgent (10:40Z), choice 6 on his page:** civicsmith's waiting-work record passed GitHub's comment limit; every queued
 `notify` loses its placements for modules with no open job (`process/research/waiting-work-record-size-25nov.md`). Recommended
 6B: a record spans several comments; entries drop old `uses`; `open --module` cuts a job block as `notify` does (filings
-could not open, 12:55Z). ARCH #24 holds the notify queue meanwhile.
+1669 and following 1674 opened with no job block, 12:55Z and 13:07Z; each holds a slot and its users' merges wait). ARCH holds
+the notify queue meanwhile. Also on choice 2: ARCH defers jobs' first comments (its standing rule #24), which the extraction
+job reported as conflicting with job rule 2; 2C+ removes the cause.
 
 **Urgent first (09:05Z):** civicsmith `notify 1404`, a comments-only change, told ~150 (nearly all not followed fully) on
 55db8e4, which lacks 3B; ~70 old merges wait in ARCH #22's notify queue. On the owner's page, top: (1) his hold on
