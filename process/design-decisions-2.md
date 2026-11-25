@@ -205,7 +205,9 @@ so to him on the same thread).
    jobs and in every change ARCH makes to it. Who is told is a lookup of the changed items in the later modules' uses
    files, directly or through a middle module that passes the item on. A place outside the standard is told of every
    change of the modules it may refer to until a job converts it; a module with no uses file yet, of every change of an
-   earlier module it imports. A module's first job under the standard is its conversion. This replaces the rule that the
+   earlier module it imports. A module's first job under the standard is its conversion. Whether each facility of Node
+   and workerd stays inside the program or reaches outside it is fixed in the tool; ARCH names the product's boundary
+   modules and classifies the packages it uses, in its facility list. This replaces the rule that the
    tool infers uses from plain code and that no list is kept by hand (design part 2, section 7, rule 1), and retires
    decision 3B (below): no module is told only because the tool cannot follow it.
 2. **What changed** is each item's means, worked out before and after the merge: its stated types, expanded through every
@@ -256,6 +258,9 @@ these jobs." — 25 November 2026.
 On the design: "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification
 tool, and the tool that keeps each module's uses file current on every module job." — 25 November 2026, 18:51 UTC (in
 PROCESS #16's session, on the design document above).
+On who classifies host facilities: "Decision: use the simplification: the tool carries Node's and workerd's facility
+classification; ARCH names the boundary modules and classifies the packages its product uses." — 25 November 2026, 20:26
+UTC (in PROCESS #16's session, on the options: no change, ARCH keeps the whole list per product; or this simplification).
 
 ### Subject: How `notify` reads the product
 
