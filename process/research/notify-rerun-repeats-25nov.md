@@ -62,3 +62,20 @@ again, so entries of an earlier run for modules no longer told stay (ARCH #18 wa
 before re-running); (2) an owner's hold on notice-only checks is not a standing note the tool knows, so `next-job` could
 not pass over held modules and all work stopped behind them (ARCH #18's fault, 04:06Z; moot once the owner lifted the
 hold, 04:07Z).
+
+## Measured after 55db8e4 (civicsmith ARCH #18, passed unchanged by coordinator #9, 25 Nov ~04:16Z)
+
+> "The re-run of notify 1356 on tool 55db8e45 told 197 users, not few: 90 modules changed their listing, 178 entries changed
+> in a way that tells. The cause is a real change under the rules: setup-words' localize (and build, WORD_ROWS) gained stated
+> bounds ('bound changed'), and nearly every later module uses localize and passes it on; many users are also 'not followed
+> fully' (1,785 such lines). Six open told jobs were told and messaged; the rest went to waiting work. 1339's old entries
+> (138) were removed from waiting work before its re-run, now running. Observed cost so far of a notice-only told job that
+> closes with nothing to change: about $1.40-$1.70 and 2 minutes each (connection-grammar, bundler, ooxml)."
+
+PROCESS #13's reading: a changed stated bound is an interface change by the owner's own rule (design part 2 §7, decision 3:
+"If those words are changing, then there must be a reason why"), so 1356's 197 are told by the rules, not by the
+not-followed rule alone. The narrowing of decision 2 would remove only those of the 197 that neither name `localize`, `build`
+or `WORD_ROWS` nor reach setup-words by an unreadable route; since nearly every later module uses `localize`, it would likely
+save little on 1356. Its saving is on changes like 1350 (a function few call). Rough cost of 1356 at the observed rate:
+197 × about $1.55 ≈ $300, plus 1350's ~113 ≈ $175. Whether a bound written for the first time (no bound before) should count
+as "changed" is a separate question, not yet researched: build text 2b §6 is the place to read.
