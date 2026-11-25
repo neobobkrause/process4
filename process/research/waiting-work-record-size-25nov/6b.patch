@@ -1,0 +1,337 @@
+diff --git a/tool/lib/commands.mjs b/tool/lib/commands.mjs
+index d8d9a16..3c87033 100644
+--- a/tool/lib/commands.mjs
++++ b/tool/lib/commands.mjs
+@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
+ import { join } from 'node:path';
+ import { CONFIG_FILE, fetchLine, loadConfig, loadModules, needConfig, ownerOf, readAt, requiredCheck, requirementsFile } from './config.mjs';
+ import { block, parseBlock } from './github.mjs';
+-import { noticeReasons } from './noticecomments.mjs';
++import { NOTICE_LIMIT, cutReason, noticeReasons } from './noticecomments.mjs';
+ import {
+   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
+   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
+@@ -219,7 +219,10 @@ export function open(ctx, a) {
+       : here || fail('the checkout is detached; name the branch with --branch <b>');
+   if (module && name.match(JOB)?.[1] !== module) fail(`${name} is not a job branch of ${module}`);
+   const had = ctx.gh.prForBranch(ctx.slug, name);
+-  if (had) { printJob(ctx, cfg, had); return 0; }
++  // A job's pull request that opened while GitHub refused its job block (too large, before blocks were cut to fit) is
++  // given its block now; any other open pull request is only printed.
++  const blockless = had && module && !ctx.gh.comments(ctx.slug, had.number).some((c) => parseBlock(c.body, JOB_MARK));
++  if (had && !blockless) { printJob(ctx, cfg, had); return 0; }
+   if (!module && typeof a.title !== 'string') fail('say --module <name> or --title "<title>"');
+   const base = a['into-main'] ? 'main' : intoBranch(ctx, cfg, a.into);
+   if (!module) {
+@@ -239,12 +242,13 @@ export function open(ctx, a) {
+   // Each notice's reasons for this module: from its entry where it carries them, else from the notice comments on its
+   // merged pull request (noticecomments.mjs).
+   const comments = new Map();
+-  if (notices.length) job.uses = notices.flatMap((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
++  const reasons = notices.map((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
+   // The notices the job carries, by provider and merged pull request, so a re-run of notify knows it has them (no repeats).
+   if (notices.length) job.notices = notices.map((w) => ({ from: w.from, merged: Number(w.merged) }));
++  const body = jobBlockBody(job, notices, reasons);
+   const n = Number(name.match(JOB)[2]);
+-  const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
+-  ctx.gh.addComment(ctx.slug, pr.number, block(JOB_MARK, job));
++  const pr = had || ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
++  ctx.gh.addComment(ctx.slug, pr.number, body);
+   if (mine.length) {
+     writeRecord(ctx.gh, ctx.slug, issue, records, 'waiting-work', { ...records['waiting-work'].data, work: waiting.filter((w) => w.module !== module) });
+   }
+@@ -252,6 +256,26 @@ export function open(ctx, a) {
+   return 0;
+ }
+ 
++// A starting job's block, kept under the size of one comment as notify keeps a running job's (the owner's decision B of
++// 25 Nov 2026; choice 6): each notice's reasons go in whole where they fit; otherwise every reason loses its before and
++// after; where still too large, the notices with the most reasons, one by one, are each put as one reason saying so, which
++// runs the whole module's tests (build text 5, section 7). Fails plainly, before any pull request is opened, where even
++// that does not fit.
++export function jobBlockBody(job, notices, reasons) {
++  if (!notices.length) return block(JOB_MARK, job);
++  const bodyOf = (sets) => block(JOB_MARK, { ...job, uses: sets.flat() });
++  const tooMany = (w, r) => [{ module: w.from, notFollowed: [`the notice from ${w.from} (pull request ${Number(w.merged)}) has ${r.length} reasons, too many for the job block; the whole module's tests run`], through: null }];
++  let sets = reasons;
++  if (bodyOf(sets).length < NOTICE_LIMIT) return bodyOf(sets);
++  sets = reasons.map((r) => r.map(cutReason));
++  const order = reasons.map((r, i) => i).sort((a, b) => JSON.stringify(sets[b]).length - JSON.stringify(sets[a]).length);
++  for (const i of [-1, ...order]) {
++    if (i >= 0) sets = sets.map((r, j) => (j === i ? tooMany(notices[i], reasons[i]) : r));
++    if (bodyOf(sets).length < NOTICE_LIMIT) return bodyOf(sets);
++  }
++  return fail(`the job block of ${job.module} is too large for one comment even with each notice put as one reason; no pull request is opened`);
++}
++
+ // 4. ready <pr>: marks ready only where the test record stands for the head commit, or where nothing needs a record:
+ // the scope, judged as the required run's verdict judges it, is nothing and no notice has reached the job. Otherwise
+ // marks nothing and says why. In the process repository every pull request is into main: its scope is nothing.
+diff --git a/tool/lib/state.mjs b/tool/lib/state.mjs
+index c9939c3..0a0b5c2 100644
+--- a/tool/lib/state.mjs
++++ b/tool/lib/state.mjs
+@@ -15,6 +15,11 @@ const KEY = /^(roles|lanes|wakes|stop|standing-notes|round|waiting-work|changes|
+ export const checkKey = (key) => (KEY.test(key || '') ? key : fail(`no record is named ${key}`));
+ 
+ const keyOf = (body) => body?.split('\n')[0].match(/^<!-- process4-record: ([a-z0-9-]+) -->$/)?.[1] || null;
++// A record too large for one comment goes on in further comments, each marked with its part (build text 5, section 1).
++export const partMark = (key, part) => `process4-record: ${key}, part ${part}`;
++const partOf = (body) => { const m = body?.split('\n')[0].match(/^<!-- process4-record: ([a-z0-9-]+), part (\d+) -->$/); return m ? { key: m[1], part: Number(m[2]) } : null; };
++/** The most characters one record comment holds; GitHub takes 65,536. */
++export const RECORD_LIMIT = 60000;
+ 
+ // The lowest-numbered open issue with the label.
+ export function findIssue(gh, slug) {
+@@ -22,14 +27,36 @@ export function findIssue(gh, slug) {
+   return issues[0] || null;
+ }
+ 
+-// Every record of the issue: key -> { id, data, words }. One listing call.
++// Every record of the issue: key -> { id, data, words, more }. One listing call. A record written in parts (its first
++// comment's `parts` above one) is read back as one: each further part's list is added, in order, to the same list of
++// the first, and `parts` is left out of the data. `more` holds the further part comments' ids, by part.
+ export function readAll(gh, slug, issue) {
+   const out = {};
++  const parts = {};
+   for (const c of gh.comments(slug, issue.number)) {
++    const p = partOf(c.body);
++    if (p) {
++      parts[p.key] ??= {};
++      if (!parts[p.key][p.part]) parts[p.key][p.part] = { id: c.id, data: parseBlock(c.body, partMark(p.key, p.part))?.data };
++      continue;
++    }
+     const key = keyOf(c.body);
+     if (!key || out[key]) continue;
+     const b = parseBlock(c.body, mark(key));
+-    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '' };
++    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '', more: {} };
++  }
++  for (const [key, rec] of Object.entries(out)) {
++    for (const [part, p] of Object.entries(parts[key] || {})) rec.more[part] = p.id;
++    const n = Number(rec.data?.parts) || 1;
++    if (n <= 1) continue;
++    const { parts: _, ...data } = rec.data;
++    for (let i = 2; i <= n; i++) {
++      const p = parts[key]?.[i]?.data;
++      const field = p && Object.keys(p)[0];
++      if (!field || !Array.isArray(p[field])) fail(`the ${key} record is written in ${n} parts and part ${i} is missing; write the record again`);
++      data[field] = [...(Array.isArray(data[field]) ? data[field] : []), ...p[field]];
++    }
++    rec.data = data;
+   }
+   return out;
+ }
+@@ -115,22 +142,53 @@ export function create(gh, slug, keys, log) {
+   return { issue, records: have };
+ }
+ 
+-// Rewrites one record in place, or makes it where it has no comment yet (a gone comment is made
+-// afresh). Returns the body written.
++// The comments of one record: where its body fits one comment, that comment alone. Otherwise its longest list is spread
++// over as many comments as it needs, each under RECORD_LIMIT: the first holds the rest of the record, the list's first
++// items and `parts`; each further part holds only the list's next items. A record with no list, or one item too large
++// for a comment, fails plainly.
++export function recordParts(key, data, words = '') {
++  const one = block(mark(key), data, words);
++  if (one.length < RECORD_LIMIT) return [one];
++  const lists = Object.entries(data || {}).filter(([, v]) => Array.isArray(v)).sort((a, b) => JSON.stringify(b[1]).length - JSON.stringify(a[1]).length);
++  if (!lists.length) fail(`the ${key} record is ${one.length} characters, too large for one comment, and has no list to spread over more`);
++  const [field, items] = lists[0];
++  const chunks = [[]];
++  const first = (n, list) => block(mark(key), { ...data, [field]: list, parts: n }, words);
++  const later = (i, list) => block(partMark(key, i), { [field]: list });
++  for (const item of items) {
++    const i = chunks.length;
++    const cur = chunks[i - 1];
++    const body = i === 1 ? first(99, [...cur, item]) : later(i, [...cur, item]);
++    if (body.length < RECORD_LIMIT) { cur.push(item); continue; }
++    if (!cur.length || later(i + 1, [item]).length >= RECORD_LIMIT) fail(`an entry of the ${key} record is too large for one comment on its own`);
++    chunks.push([item]);
++  }
++  if (first(chunks.length, chunks[0]).length >= RECORD_LIMIT) fail(`the ${key} record is too large for one comment even with its list spread over more`);
++  return chunks.map((list, i) => (i === 0 ? first(chunks.length, list) : later(i + 1, list)));
++}
++
++// Rewrites one record in place, or makes it where it has no comment yet (a gone comment is made afresh). A record too
++// large for one comment is written in parts (recordParts): the further parts first, then the first comment, which names
++// how many parts there are; a further part no longer needed is emptied. Returns the body of the first comment.
+ export function writeRecord(gh, slug, issue, records, key, data, words = '') {
+-  const body = block(mark(key), data, words);
++  const bodies = recordParts(key, data, words);
+   const had = records[key];
+-  if (had) {
+-    const r = gh.editComment(slug, had.id, body, { allowFail: true });
+-    if (r !== null) return body;
+-    // GitHub's own words with the failure (build text 5, section 1): a record too large says so.
+-    const words = gh.refusal?.() || '';
+-    if (readAll(gh, slug, issue)[key]) fail(`GitHub would not rewrite the ${key} record; it stays as it was${words ? `. GitHub said: ${words}` : ''}`);
+-  }
+-  try {
+-    gh.addComment(slug, issue.number, body);
+-  } catch (e) {
+-    fail(`GitHub would not write the ${key} record: ${e.message}`);
++  const more = { ...(had?.more || {}) };
++  const put = (id, body, what, part) => {
++    if (id && gh.editComment(slug, id, body, { allowFail: true }) !== null) return;
++    const said = id ? gh.refusal?.() || '' : '';
++    const still = () => { try { const r = readAll(gh, slug, issue)[key]; return part ? !!r?.more[part] : !!r; } catch { return !part; } };
++    if (id && still()) fail(`GitHub would not rewrite the ${what}; it stays as it was${said ? `. GitHub said: ${said}` : ''}`);
++    try {
++      gh.addComment(slug, issue.number, body);
++    } catch (e) {
++      fail(`GitHub would not write the ${what}: ${e.message}`);
++    }
++  };
++  bodies.slice(1).forEach((body, i) => put(more[i + 2], body, `${key} record's part ${i + 2}`, i + 2));
++  put(had?.id, bodies[0], `${key} record`);
++  for (const [part, id] of Object.entries(more)) {
++    if (Number(part) > bodies.length) gh.editComment(slug, id, block(partMark(key, part), { emptied: [] }), { allowFail: true });
+   }
+-  return body;
++  return bodies[0];
+ }
+diff --git a/tool/test/commands.test.mjs b/tool/test/commands.test.mjs
+index 03c856e..d58e2a9 100644
+--- a/tool/test/commands.test.mjs
++++ b/tool/test/commands.test.mjs
+@@ -4,10 +4,10 @@ import { join } from 'node:path';
+ import { test } from 'node:test';
+ import { JOB_MARK, RECORD_MARK, branch, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
+ import { block, parseBlock } from '../lib/github.mjs';
+-import { writeNotice } from '../lib/noticecomments.mjs';
++import { cutReason, writeNotice } from '../lib/noticecomments.mjs';
+ import { mark } from '../lib/state.mjs';
+ import { TEST_MARK } from '../lib/testrecord.mjs';
+-import { git } from '../lib/util.mjs';
++import { Fail, git } from '../lib/util.mjs';
+ import { commit, config, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
+ 
+ function product() {
+@@ -144,7 +144,8 @@ test('open --module copies each waiting notice\'s reasons for its module from th
+   assert.equal(job.kind, 'told');
+   assert.deepEqual(job.work, ['notice from dates (pull request 7)', 'notice from dates (pull request 8)', 'notice from dates (pull request 9)']);
+   // Every part's reasons of this module, in order; an older entry that carries its reasons, as is; not another module's.
+-  assert.deepEqual(job.uses, [...big, { module: 'dates', entry: 'old' }, day]);
++  // Too large whole for one comment, the reasons go in without their before and after (choice 6).
++  assert.deepEqual(job.uses, [...big.map(cutReason), { module: 'dates', entry: 'old' }, day]);
+   // The notices it carries, so a re-run of notify skips it whatever its state (no repeats).
+   assert.deepEqual(job.notices, [{ from: 'dates', merged: 7 }, { from: 'dates', merged: 8 }, { from: 'dates', merged: 9 }]);
+   const waiting = parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work;
+@@ -432,3 +433,58 @@ test('latest-version prints the newest main commit of the process repository', (
+   assert.equal(latestVersion(second.ctx), 0);
+   assert.equal(second.out[1], 'already the pinned version');
+ });
++
++// Choice 6: a starting job's block is kept under the size of one comment, as notify keeps a running job's, and a job's
++// pull request that opened while GitHub refused its block gets its block at the next open.
++const limited = () => fakeGitHub({
++  addComment(slug, n, body) {
++    if (body.length > 65536) throw new Fail('GitHub refused: gh: Validation Failed (HTTP 422); Body is too long (maximum is 65536 characters)');
++    const c = { id: this.s.nextComment++, on: n, body }; this.s.comments.push(c); return c;
++  },
++});
++
++test('open --module cuts a starting job\'s block to fit one comment: before and after first, then the largest notices one by one', () => {
++  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
++  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
++  const gh = limited();
++  const { ctx } = ctxFor(root, gh);
++  const r = (i, size) => ({ module: 'dates', entry: `e${i}`, changes: ['bound changed'], lines: [`src/orders/index.mjs:${i}`, 'z'.repeat(size)], through: null, before: { handsBack: 'x'.repeat(2000) }, after: { handsBack: 'y'.repeat(2000) } });
++  // Notice 7: small reasons that fit once cut; notice 8: reasons too large even cut (their lines alone pass the limit).
++  writeNotice(gh, 'o/product', 7, 'dates', [['orders', Array.from({ length: 30 }, (_, i) => r(i, 10))]]);
++  writeNotice(gh, 'o/product', 8, 'dates', [['orders', Array.from({ length: 20 }, (_, i) => r(i, 3000))]]);
++  const f = join(root, 'ww.json');
++  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }, { module: 'orders', kind: 'notice', from: 'dates', merged: 8 }] }));
++  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
++  branch(ctx, 'job/orders/1');
++  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
++  const c = gh.s.comments.find((x) => parseBlock(x.body, JOB_MARK));
++  assert.ok(c.body.length < 60000);
++  const job = parseBlock(c.body, JOB_MARK).data;
++  assert.equal(job.uses.length, 31);
++  assert.ok(job.uses.slice(0, 30).every((u) => u.before === undefined && /left out/.test(u.cut)));
++  assert.deepEqual(job.uses[30].notFollowed, ['the notice from dates (pull request 8) has 20 reasons, too many for the job block; the whole module\'s tests run']);
++  assert.deepEqual(job.notices, [{ from: 'dates', merged: 7 }, { from: 'dates', merged: 8 }]);
++});
++
++test('open --module gives a job\'s pull request that has no block its block, and opens no second pull request', () => {
++  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
++  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
++  const gh = fakeGitHub();
++  const { ctx } = ctxFor(root, gh);
++  writeNotice(gh, 'o/product', 7, 'dates', [['orders', [{ module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null }]]]);
++  const f = join(root, 'ww.json');
++  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }] }));
++  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
++  branch(ctx, 'job/orders/1');
++  // As on civicsmith (filings, 1669): the pull request opened, and GitHub refused its block.
++  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
++  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
++  assert.equal(gh.s.prs.length, 1);
++  const blocks = gh.s.comments.filter((c) => c.on === pr.number && parseBlock(c.body, JOB_MARK));
++  assert.equal(blocks.length, 1);
++  assert.deepEqual(parseBlock(blocks[0].body, JOB_MARK).data.notices, [{ from: 'dates', merged: 7 }]);
++  // Its notice has left waiting work; a second open only prints the block.
++  assert.deepEqual(parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work, []);
++  open(ctx, { _: [], module: 'orders' });
++  assert.equal(gh.s.comments.filter((c) => c.on === pr.number && parseBlock(c.body, JOB_MARK)).length, 1);
++});
+diff --git a/tool/test/state.test.mjs b/tool/test/state.test.mjs
+index d4a3060..6a8fa38 100644
+--- a/tool/test/state.test.mjs
++++ b/tool/test/state.test.mjs
+@@ -4,7 +4,7 @@ import { join } from 'node:path';
+ import { test } from 'node:test';
+ import { stateRead, stateWrite } from '../lib/commands.mjs';
+ import { parseBlock } from '../lib/github.mjs';
+-import { LABEL, PRODUCT_RECORDS, laneRefusal, mark, noteEnded, parseRecordFile } from '../lib/state.mjs';
++import { LABEL, PRODUCT_RECORDS, RECORD_LIMIT, laneRefusal, mark, noteEnded, parseRecordFile, partMark, readRecords, recordParts } from '../lib/state.mjs';
+ import { Fail } from '../lib/util.mjs';
+ import { ctxFor, fakeGitHub, makeRepo, productFiles } from './helpers.mjs';
+ 
+@@ -123,3 +123,44 @@ test('a record file must begin with JSON', () => {
+   assert.deepEqual(parseRecordFile(''), { data: {}, words: '' });
+   assert.throws(() => parseRecordFile('plain words'), /must begin with one JSON value/);
+ });
++
++// Choice 6: a record too large for one comment (civicsmith's waiting work, 25 Nov 2026) is written in parts and read
++// back as one.
++test('a record too large for one comment is written in parts, each under the limit, and read back whole', () => {
++  const root = makeRepo(productFiles());
++  const gh = fakeGitHub();
++  const { ctx, out } = ctxFor(root, gh);
++  stateWrite(ctx, undefined, { _: [], create: true });
++  const work = Array.from({ length: 1937 }, (_, i) => ({ module: `m${i % 200}`, kind: 'notice', from: 'office-readers', merged: 1000 + i }));
++  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
++  const mine = () => gh.s.comments.filter((c) => c.body.split('\n')[0].includes(mark('waiting-work')));
++  assert.ok(mine().length > 2);
++  assert.ok(mine().every((c) => c.body.length < RECORD_LIMIT));
++  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work });
++  // Written again shorter, it takes fewer parts; a part no longer needed is emptied, and nothing of it is read.
++  const parts = mine().length;
++  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work: work.slice(0, 10) })) });
++  assert.equal(mine().length, parts);
++  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work: work.slice(0, 10) });
++  // And longer again, it reuses its comments.
++  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
++  assert.equal(mine().length, parts);
++  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work });
++  out.length = 0;
++  stateRead(ctx, 'waiting-work', { _: [] });
++  assert.match(out.join('\n'), /office-readers/);
++  assert.doesNotMatch(out.join('\n'), /"parts"/);
++});
++
++test('a record in parts with a part missing fails plainly; one item too large for a comment fails plainly', () => {
++  const root = makeRepo(productFiles());
++  const gh = fakeGitHub();
++  const { ctx } = ctxFor(root, gh);
++  stateWrite(ctx, undefined, { _: [], create: true });
++  const work = Array.from({ length: 1937 }, (_, i) => ({ module: `m${i}`, kind: 'notice', from: 'p', merged: i }));
++  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
++  gh.s.comments = gh.s.comments.filter((c) => !c.body.startsWith(`<!-- ${partMark('waiting-work', 2)} -->`));
++  assert.throws(() => readRecords(gh, 'o/product'), /the waiting-work record is written in \d+ parts and part 2 is missing; write the record again/);
++  assert.throws(() => recordParts('round', { modules: [{ why: 'x'.repeat(70000) }] }), /an entry of the round record is too large for one comment on its own/);
++  assert.throws(() => recordParts('stop', { words: 'x'.repeat(70000) }), /too large for one comment, and has no list/);
++});
