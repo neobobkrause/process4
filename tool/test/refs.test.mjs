@@ -11,7 +11,7 @@ import { loadTree } from '../lib/notice/model.mjs';
 import { loadReader, makeProgram, ts } from '../lib/notice/ts.mjs';
 import { check } from '../lib/notice/check.mjs';
 import { push } from '../lib/commands.mjs';
-import { usesCmd, usesData } from '../lib/usescmd.mjs';
+import { usesCmd, usesData, usesReading } from '../lib/usescmd.mjs';
 import { readUses, sameUses, usesPath, writeUses } from '../lib/usesfile.mjs';
 import { git } from '../lib/util.mjs';
 import { caseProduct, places, read, usesOf } from './refs-helpers.mjs';
@@ -836,7 +836,7 @@ test('push, where the branch changes the module list, rewrites the uses files of
   assert.ok(readUses(root, 'u', { ref: 'HEAD' }).uses.some((x) => x.provider === 'q' && x.item === 'two'), JSON.stringify(readUses(root, 'u', { ref: 'HEAD' }).uses));
 });
 
-test('a push that changes the facility list, or moves to a Process4 version that classifies facilities differently, rewrites every uses file', () => {
+test('a push that changes the facility list, or moves to another Process4 version, rewrites no uses file; a change to a module\'s code rewrites its own', () => {
   const files = {
     'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
     'process/modules/order.txt': 'p\nu\n',
@@ -854,23 +854,65 @@ test('a push that changes the facility list, or moves to a Process4 version that
   push(ctx, { _: [] });
   assert.ok(readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
   git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
-  // ARCH names u a boundary module: every module's uses file is rewritten in the same push, u's changes
+  const pushed = () => { const before = git(['rev-parse', 'HEAD'], { cwd: root }); push(ctx, { _: [] }); return git(['diff', '--name-only', before, 'HEAD'], { cwd: root }).split('\n').filter(Boolean); };
+  // ARCH names u a boundary module: no uses file is rewritten, though u's would now say otherwise
   git(['checkout', '-q', '-b', 'work/facilities'], { cwd: root });
   commit(root, { 'process/modules/facilities.json': { versions: { node: '22.12.0' }, boundary: ['u'], facilities: [] } });
-  push(ctx, { _: [] });
-  assert.deepEqual(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: root }).split('\n'), ['process/modules/u.uses.json']);
-  assert.ok(!readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
+  assert.deepEqual(pushed(), []);
+  assert.ok(readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
   git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
-  // A move to another Process4 version: a file written under a tool whose classification differs (here one this
-  // repository cannot read) is rewritten; one written under this tool's is left as it is.
+  // A move to another Process4 version: a file another tool wrote is left as it is (its `written.tool` is information)
   git(['checkout', '-q', '-b', 'work/move'], { cwd: root });
   const u = readUses(root, 'u', { ref: 'HEAD' });
   commit(root, { 'process/modules/u.uses.json': { ...u, written: { ...u.written, tool: 'f'.repeat(40) } } });
   git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
   commit(root, { 'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] }, process: { repository: 'https://github.com/o/process4', version: '4.1.0', commit: 'b'.repeat(40) } }) });
-  push(ctx, { _: [] });
-  assert.deepEqual(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: root }).split('\n'), ['process/modules/u.uses.json']);
+  assert.deepEqual(pushed(), []);
+  assert.equal(readUses(root, 'u', { ref: 'HEAD' }).written.tool, 'f'.repeat(40));
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  // a change to u's own code rewrites u's file, from the code and the facility list as they stand: u is a boundary
+  // module now, so its console use is no place
+  git(['checkout', '-q', '-b', 'work/u'], { cwd: root });
+  commit(root, { 'src/u/index.mjs': `${files['src/u/index.mjs']}// said\n` });
+  assert.deepEqual(pushed(), ['process/modules/u.uses.json']);
+  assert.ok(!readUses(root, 'u', { ref: 'HEAD' }).outside.some((o) => o.rule === 'R14'));
   assert.notEqual(readUses(root, 'u', { ref: 'HEAD' }).written.tool, 'f'.repeat(40));
+  // pushed again with nothing new: the file says the same, so it is not written again
+  assert.deepEqual(pushed(), []);
+});
+
+test('a note on a Node facility the tool does not know is printed by `uses` and not kept in the uses file', () => {
+  const root = makeRepo({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'u\n',
+    'process/modules/u.json': { name: 'u', files: ['src/u/'], tests: ['test/u/'], public: ['src/u/index.mjs'] },
+    // node:dgram: a module the tool's description of Node does not have; statfsSync: a member of node:fs it does not
+    // have; Proxy: the language's, which the classification leaves out on purpose (a place R14 keeps)
+    'src/u/index.mjs': `import dgram from 'node:dgram';
+import * as fs from 'node:fs';
+/** @returns {unknown} */
+export const sock = () => dgram.createSocket('udp4');
+/** @returns {unknown} */
+export const free = () => fs.statfsSync('/');
+/** @returns {object} */
+export const trap = () => new Proxy({}, {});
+`,
+  });
+  const tree = loadTree(root);
+  const { reading, data } = usesReading(tree, 'u', 'a'.repeat(40));
+  const notes = reading.outside.filter((o) => o.unknownHost).map((o) => `${o.rule} ${o.line}`);
+  assert.deepEqual(notes, ['R14 1', 'S4 6']);
+  // the file keeps every other place, Proxy's among them, and the places the unknown values make (R1, a value of kind any)
+  const kept = (list) => list.map((o) => `${o.rule} ${o.line}`);
+  assert.deepEqual(kept(data.outside), kept(reading.outside.filter((o) => !o.unknownHost)));
+  assert.ok(kept(data.outside).includes('R14 8') && kept(data.outside).includes('R1 4'), kept(data.outside).join(', '));
+  const { ctx, out } = ctxFor(root, fakeGitHub());
+  assert.equal(usesCmd(ctx, 'u'), 0);
+  const text = out.join('\n');
+  assert.match(text, /R14 src\/u\/index\.mjs:1 \(code\) uses node:dgram, which the tool has no description of \[a Node or workerd facility the tool does not know: not kept in the uses file\]/);
+  assert.match(text, /S4 src\/u\/index\.mjs:6 \(code\) the checker: Property 'statfsSync' does not exist .*\[a Node or workerd facility the tool does not know: not kept in the uses file\]/);
+  assert.match(text, /R14 src\/u\/index\.mjs:8 \(code\) uses Proxy, a facility of the host the tool's classification leaves out\n/);
+  assert.deepEqual(kept(readUses(root, 'u').outside), kept(data.outside));
 });
 
 // ---- the uses file ----
