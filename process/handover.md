@@ -1,6 +1,6 @@
 # PROCESS handover
 
-Written 26 Nov 2026 ~00:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (near its refresh point; fill ~46 percent). If you are its successor, you are **PROCESS #18**: read the generation in
+Written 26 Nov 2026 ~01:20Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (near its refresh point; fill ~46 percent). If you are its successor, you are **PROCESS #18**: read the generation in
 `handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
 (keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
 0 until your first turn ends, then is real. Never `git add -A`; put `.claude/worktrees/` in `.git/info/exclude`.
@@ -9,34 +9,24 @@ Written 26 Nov 2026 ~00:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqo
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
 `build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: `work/decision-c-design` holds the design, tool and texts; final checks running
+## START HERE: who is told of a change is on main (29c05fe); no product uses it yet
 
-Branch `work/decision-c-design` (head 6626d3e or later) = decision C + facility decision + the design of who is told
-(part 2 §6–8, rewritten on his request of 25 Nov ~22:55Z) + the tool and texts built to it + a footprint reduction.
-His decisions recorded there (`design-decisions-2.md` "Who a change tells" item 3 and words at its end;
-`design-decisions.md` "The reading values"): accepting more tells users (23:07Z); a job's `same` record and a told job
-that changes nothing runs no test (~23:11Z, on his "yes"); his 14 Nov domain/range words (verified in process3 2a43eb5);
-"Decision: 0" (26 Nov ~00:00Z): part 2 stays whole while no product runs on Codex. His words: "You don't need a decision
-to build it, though you do need a decision when we decide to use it." — so merging to main is on his recorded decisions;
-a product moves only on his instruction at its coordinator. "The need for rigor and accuracy must survive any footprint
-reduction." His page for reading part 2 §7–8: https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ (regenerate with
-`md2html.py`, kept in research `precision-26nov/` if the scratchpad is gone — else rewrite it).
+Merged 26 Nov ~01:14Z on the owner's "Decision: merge it" (pull request 347; the `changes` record holds his words). It
+holds decision C, the facility decision, the design of who is told (part 2 §6–8, his page
+https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ, made by `process/research/precision-26nov/md2html.py`), the tool
+(266/266), texts, and a footprint reduction (sets: job 171,412, ARCH 171,194, PROCESS ~162,000). His words: "You don't
+need a decision to build it, though you do need a decision when we decide to use it." A product moves only on his
+instruction at its coordinator.
 
-Done: design check (28 findings) and final check (13; five misses fixed: a middle module's own items changing with a
-provider's are declared by its told job, which then merges; re-exports; order faults without a uses file; new name
-through `export *`; conversion tells real changes); one writer per record (the job writes only its record; the required
-run reads it: `shims/module-tests.yml`); scope ignores comments/layout; footprint: 98 cuts (10,226 bytes); sets: job
-168,933, ARCH 169,040, PROCESS 162,072 (before texts3). Tool 266/266. Original proof 112/958/846/0.
-
-Running at 00:40Z 26 Nov: `work/decision-c-texts3` (texts for the tool's new flags: `push --notice <n>`, `run verdict
---job-record`, test record `modules`, `message`, new change words) and `work/decision-c-cutcheck` (verifies each cut lost
-nothing: `cut-check.md`). Next: restore anything a cut lost; join texts3; run `npm test`; then ONE pull request
-`work/decision-c-design` → main, body quoting his decisions; merge once `tool-tests` passes; update his page (the "Being
-built" card and the waiting items) and notify his phone. Then Part D (trial on process3-probes needs a fresh ROOT from
-him; civicsmith moves only on his instruction at its coordinator).
-
-Later, for him, one at a time: a job reads ~31,600 bytes it never acts on (footprint study item 4: a reading-set change);
-the idle-compaction choice; choice 5; the two tidy questions; who keeps his standing page.
+**Next, in order:**
+1. Part D: the trial on process3-probes needs a fresh ROOT from him (choice 5's cause; its coordinator's page has the
+   steps), then process3-probes moves to 29c05fe on his instruction there; then civicsmith on his instruction at its
+   coordinator; its first pass of 8 modules (ARCH records a scope of 8, writes the facility list first) stops for his
+   review. Write the trial's plan into build text 4 or research before starting it.
+2. Choice 6 (civicsmith's waiting-work record in parts) back to him, now that who is told is corrected
+   (`waiting-work-record-size-25nov.md`; the 6B patch may need rebasing onto 29c05fe).
+3. On his page, waiting: idle compaction (C recommended), choice 5, the two tidy questions; later one at a time: who keeps
+   his standing page, the two-hour background command, a job's ~31,600 unread-acted bytes (footprint item 4).
 
 The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
 `3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
