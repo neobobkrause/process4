@@ -46,6 +46,20 @@ a{color:var(--accent)}
 <p><b>No product uses it yet.</b> Next: the trial on the trial product, which needs a fresh ROOT from you; then civicsmith moves only when you tell its coordinator to move it, and its first pass of 8 modules stops for your review.</p>
 </section>
 
+<section class="wait">
+<h2>Waiting for you: ROOT keeps running out of depth</h2>
+<p><b>The question.</b> Should a new ROOT start at the top, so you no longer have to restart ROOT by hand?</p>
+<p><b>What happens.</b> The watcher does take over from ROOT. But ROOT started the watcher, and Claude Code counts every session another session starts as one level deeper. So each takeover puts ROOT one level deeper, and at 8 levels nothing can start sessions or set a wake. Only you starting a ROOT puts it back to the top. Measured: the trial product's ROOT is at level 7 and its watcher at 8, so it has been stopped since 25 Nov. civicsmith reached level 5, you restarted it, and it is now at 2. Most of civicsmith's takeovers come from moves to a new Process4 version (7 of 8); the trial product's come from ROOT filling up every 4 to 7 hours.</p>
+<ul>
+<li><b>0. No change.</b> You start a fresh ROOT whenever a product nears the limit.</li>
+<li><b>A. Warn one takeover earlier</b> (choice 5B). ROOT asks you before a takeover that would break. You still restart regularly. Text only.</li>
+<li><b>B. The next ROOT starts at the top (recommended).</b> At each takeover, the new ROOT is started by a one-time scheduled task rather than by the old ROOT. A session started that way has no parent, so it sits at the top. The chain never grows, and you never restart ROOT for depth. Not proven: one such session has been seen with no parent, but it was made another way and had no repository. So first I would make one test session from a scheduled task in Process4's own repository and check it, which needs your word because my approvals don't name scheduled tasks. If it fails, A stands.</li>
+<li><b>C. Fewer takeovers on a version move.</b> ROOT takes over only when the move changed what ROOT reads. Fewer, not none.</li>
+</ul>
+<p>To choose, reply in my session starting with "Decision:", for example "Decision: B, test first". Either way, the trial product needs a fresh ROOT from you now.</p>
+<p><b>Also seen:</b> an old wake of the trial product's watcher, "process3-probes watcher wake", still fires every hour at :17 into an empty session, fails, and once sent you a notification. You can delete it in your list of scheduled tasks, or the trial product's fresh ROOT can.</p>
+</section>
+
 <section class="card">
 <h2>Done: idle compaction is off</h2>
 <p>On your instruction ("Instruction: Turn idle compaction off", 26 Nov), the environment the sessions run in now tells every session started from now on not to compact itself while idle. You approved it in Claude Code's prompt; the design (part 7) and your record say so (merged as 1813890). Sessions already running keep the old behaviour until they are replaced. Not proven: that the setting works; the next idle hour of a fresh session will show it.</p>
@@ -57,7 +71,6 @@ a{color:var(--accent)}
 <h2>Also waiting, when convenient</h2>
 <ul>
 <li><b>civicsmith's refactoring tranche is dropped</b>, on your decision (carried out 25 Nov, 17:05 UTC): its code and tests are back to main's; the refactoring plan, the lanes' design work, the requirements and the module list are kept; 14 requirements that only the dropped tranche met are back to not yet met; no tranche is open until the provider/user fix is in and confirmed.</li>
-<li><b>Choice 5, the depth limit</b> (I recommend 5B): ask you for a fresh ROOT one handover earlier, and make no planned handover that is known to break. Text only. The trial product (process3-probes) needs a fresh ROOT from you now; its coordinator's page has the steps.</li>
 <li><b>Choice 6 comes back to you next</b>: who is told is now corrected. civicsmith's waiting-work record still needs splitting into parts before its notices for modules with no open job can be written down; I will put the options to you again.</li>
 <li><b>Two questions from the tidy study,</b> for when you have a moment: which branch an urgent fix is built on, given that there is one lasting tranche branch; and whether the design should still call itself "proposed, nothing here has run", now that products run on it.</li>
 </ul>

@@ -86,3 +86,16 @@ On the owner's word: apply the patch; build text 5 §1 (a record in parts) and �
 commands 3 and 11 (a sentence each), design part 4 §4 ("each record one comment" → "one comment, or more where it outgrows
 one"); record in `design-decisions-3.md`; run the same tests; merge. Then civicsmith moves; ARCH runs `open --module` on
 filings and following, and re-runs the held notifies.
+
+## 6B rebased onto main after decision C (26 Nov 2026, PROCESS #18)
+
+Commit e86eddc (local branch `work/choice6-records-in-parts-ready`, on main e0fff72; not pushed). A worker carried the
+patch onto today's forms: a notice too large for a starting job's block now goes in as one `whole` reason, the form and
+wording `notify` already uses ("the notice from X (pull request N) has K reasons, too many for the job block; the whole
+module's tests run"), which `related` already reads as the whole module; the two new tests now give the modules their
+conversion first (on main, notices count as work only after a module's conversion). The record in parts spreads the longest
+list: `work` for waiting work, `modules` for the round (a 900-module round wrote in 3 parts and read back the same). Tests:
+the five changed files 114/114; whole tool suite 270/270. Still to write on the owner's word: build text 5 §1 says the tool
+"refuses none for size" — a record with no list, or one entry too large for a comment alone, now fails plainly (§1 and §5,
+1b commands 3 and 11, design part 4 §4 as above). `state write` prints the first comment's size only. Decision C does not
+remove the need: entries still grow one per told module per notice, and the old entries keep their `uses`.
