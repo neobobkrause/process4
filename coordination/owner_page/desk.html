@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 16:45 UTC, by PROCESS #19. Done: your decision that a conversion tells no one. Waiting for you: your word on the tool corrections, then one move for civicsmith (below).</p>
+<p class="updated">Updated 26 Nov 2026, by PROCESS #19. Yours now: move civicsmith (below). Done: a conversion tells no one; the tool corrections merged as 70022da. Under way: only stated types and bounds tell.</p>
 </header>
 
 
@@ -57,16 +57,15 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: the tool corrections, then one move for civicsmith</h2>
-<p>Built and tested on working branches (all of the tool's own tests pass); none is merged without your word:</p>
+<h2>Done: the tool corrections; yours now: move civicsmith</h2>
+<p>Merged on your "Decision: A" as Process4 version 70022da; all 286 of the tool's own tests pass; your words are in your record. In civicsmith's coordinator session, type: <code>Instruction: move civicsmith to the latest Process4 version</code></p>
 <ol>
 <li><b>False changes:</b> the tool counted a type error that went away as a change, so a conversion that only stated types told every later importer (150 of 150 on a test product shaped like civicsmith). Corrected: only a new error, or changed code while an error stands, counts. This still matters after a conversion run, for ordinary merges.</li>
 <li><b>Notice size:</b> each told module's reasons carried a full copy of the changed item's types (up to 5 MB each). Now only the parts that changed: 120 MB down to 153 KB on the test, nobody's notice changed. The results come back in parts, and equal type parts are kept once, so a case that ran out of memory at 1 GB now holds about 23 MB.</li>
 <li><b>Two rule-reading faults:</b> the rule against passing a Node value off as the product's own type was read differently for the same thing written two ways; and <code>if (!x)</code> was read as changing <code>x</code>. Both corrected.</li>
 <li><b>Node features added by hand:</b> <code>process.versions</code>, the test library's <code>mock.property</code>, and one timer member. Describing Node from its published type files (option C) is left for later.</li>
 </ol>
-<p><b>Options:</b> 0, no change; A, merge all four as one version (recommended); or name the ones you want. Then, in civicsmith's coordinator session: <code>Instruction: move civicsmith to the latest Process4 version</code></p>
-<p><b>Being researched next:</b> what counts as an interface change (your words of 26 Nov on errors, values within the range and test prerequisites), whether a line left outside the coding standard should tell anyone, and the standard itself in the light of civicsmith's first 8 modules.</p>
+<p><b>Under way:</b> your "Decision: only a change of an item's stated types or bounds tells; new errors, other values within the range, side effects and test prerequisites do not." A helper is building it. Next to research: whether a line left outside the coding standard should tell anyone, and the standard itself in the light of civicsmith's first 8 modules.</p>
 </section>
 
 <section class="card">
