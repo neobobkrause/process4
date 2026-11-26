@@ -157,3 +157,30 @@ Bearing:
   dependency, about three times the reading time of each `uses`/`check`/`notify` run, and a rename of every host
   facility that tells every converted module once. Recommended: N now, C not.
 Group now: A, G1, G2, H, J (widened), N. Recommended: all six.
+
+## A seventh report, which STOPS two jobs: ooxml #4 (PR 1719) and csv-reader #5 (PR 1720), via ARCH #32, ~23:53Z
+
+Both: `node.d.ts:116` declares `declare class TextDecoder { decode(b?: Uint8Array): string; }`: no constructor
+parameters (label, {fatal, ignoreBOM}), no `encoding`, no `decode(input, {stream})`, not on globalThis. Once the module
+states its types, `p4 check` REFUSES its own correct code as "(a) a comment disagrees with this module's code: Expected
+0 arguments, but got 2" (ooxml.mjs, two places; csv-reader index.mjs:1071, 1080, 1309, 1433, 1544, entry.test.mjs:60,
+text.test.mjs:369). `p4 test` runs the check, so neither job can pass; both keep their branches. ooxml also reports:
+`Blob`, `DecompressionStream`, `ReadableStream`, `crypto.subtle`, workerd's `crypto.DigestStream`, `node:zlib` and the
+language's `IteratorResult` `done`/`value` undescribed; R17 looking up a symbol-keyed member by its internal name
+(`__@asyncIterator@NNNN`, `refs.mjs` ~766), so every object with `[Symbol.asyncIterator]` given a stated type is a place;
+and the check counts TypeScript's 2531 "Object is possibly 'null'" as a refusal while 2532/18047/18048 are "cannot
+tell" (`check.mjs:59` lacks 2531). ARCH: "the same family: the tool's description of Node and workerd is incomplete.
+One corrected version would settle all of them."
+
+Bearing:
+- This is a stop nothing called for (design part 4 §10): a refusal of correct code that rests only on the tool's
+  description of the host. The owner's rule (part 2 §6) allows refusing code only where it disagrees with a structured
+  comment or a provider's stated interface; the host's description is neither a mark of the module nor a provider.
+- **H widened:** a checker complaint that rests only on a host gap is "cannot tell" in `check`, never a refusal, as it
+  is already not kept in the uses file. Then no later gap can stop a job.
+- **N widened:** TextDecoder in full (as csv-reader states it, WHATWG), Blob, ReadableStream, DecompressionStream,
+  crypto.subtle, workerd's DigestStream, node:zlib, and the ~40 names of the earlier reports; IteratorResult classified.
+- **J widened:** R17's symbol-keyed lookup; 2531 read as 2532 is.
+- C (published types) would close Node's gaps but not workerd's (a third package, @cloudflare/workers-types). Still not
+  recommended now; with H widened a gap can no longer stop work, only leave places for a later pass.
+Group now: A, G1, G2, H, J, N, each widened as above. H and N unblock ooxml and csv-reader.
