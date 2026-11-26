@@ -57,11 +57,12 @@ export const most = () => MAX + m();
 
 test('E1, E2: a told job that changes no code but declares its own items that change with the provider\'s merges with no test, and its merge tells their users', () => {
   const files = withUsesFiles(product({ 'src/dates/index.mjs': DATES(5, '0 to 9'), 'src/orders/index.mjs': ORDERS, 'src/report/index.mjs': REPORT }));
-  // the provider's change tells orders alone: report's uses file names only orders' MAX and m
+  // the provider's change tells orders alone, of lim's bound (LIMIT's value within its stated type tells no one: the
+  // owner's decision of 26 November): report's uses file names only orders' MAX and m
   const [b, a] = sides(files, { ...files, 'src/dates/index.mjs': DATES(6, '0 to 8') });
   const first = notice(b, a, 'dates');
   assert.deepEqual(Object.keys(toldOf(first)), ['orders']);
-  assert.deepEqual(toldOf(first).orders, ['dates LIMIT: value changed', 'dates lim: bound changed']);
+  assert.deepEqual(toldOf(first).orders, ['dates lim: bound changed']);
 
   // orders' told job: the change reaches MAX's value and m's bound, so it declares both and finds nothing to change
   const root = makeRepo({ ...files, 'src/dates/index.mjs': DATES(6, '0 to 8') });
@@ -121,7 +122,7 @@ test('E1: a told job that declares nothing and whose uses file is unchanged is c
 });
 
 // E3 and E7: a module with no uses file.
-const PARSE = (extra = '') => `/** @param {string} t @returns {number} */\nexport function parseDay(t) {${extra} return Number(t); }\n`;
+const PARSE = (extra = '', ret = 'number') => `/** @param {string} t @returns {${ret}} */\nexport function parseDay(t) {${extra} return Number(t); }\n`;
 
 test('E3: a later module with no uses file is told when it imports the provider through a module that re-exports it', () => {
   for (const reexport of ["export { parseDay } from '../dates/index.mjs';\n", "export * from '../dates/index.mjs';\n"]) {
@@ -136,8 +137,8 @@ test('E3: a later module with no uses file is told when it imports the provider 
     assert.ok(r.told.some((t) => t.user === 'report'), `${reexport}: ${JSON.stringify(toldOf(r))}`);
     const why = r.told.find((t) => t.user === 'report').reasons.find((x) => x.module === 'dates').why;
     assert.match(why, /report has no uses file yet and imports through orders, which re-exports dates/);
-    // with its uses file, it is told through the route, as before (E6)
-    const [b2, a2] = sides(base, { ...base, 'src/dates/index.mjs': PARSE(" if (!t) throw new RangeError('empty');") });
+    // with its uses file, it is told through the route of a change of a stated type, as before (E6)
+    const [b2, a2] = sides(base, { ...base, 'src/dates/index.mjs': PARSE('', 'number | null') });
     assert.ok(notice(b2, a2, 'dates').told.some((t) => t.user === 'report'));
   }
 });
@@ -180,16 +181,16 @@ test('E8: a new item that changes what a name already used resolves to (two item
   assert.deepEqual(notice(b2, a2, 'dates').changed, []);
 });
 
-test('the insides only: a --same item tells no one, and neither does what takes in a change only through it', () => {
+test('the insides only: a --same item tells no one', () => {
   const f = withUsesFiles(product({
     'src/dates/index.mjs': PARSE(),
     'src/orders/index.mjs': "import { parseDay } from '../dates/index.mjs';\n/** @param {string} t @returns {number} */\nexport function orderDay(t) { return parseDay(t) + 1; }\n",
     'src/report/index.mjs': "import { orderDay } from '../orders/index.mjs';\n/** @returns {number} */\nexport const r = () => orderDay('1');\n",
   }));
-  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': PARSE(" if (t === 'never') throw new RangeError('no');") });
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': PARSE().replace('@returns {number} */', '@returns {number} @bound the answer: zero or more */') });
   const told = notice(b, a, 'dates');
-  assert.deepEqual(told.changed.map((c) => `${c.module} ${c.item}`), ['dates parseDay', 'orders orderDay', 'report r']);
-  assert.deepEqual(Object.keys(toldOf(told)), ['orders', 'report']);
+  assert.deepEqual(told.changed.map((c) => `${c.module} ${c.item}: ${c.changes}`), ['dates parseDay: bound changed']);
+  assert.deepEqual(Object.keys(toldOf(told)), ['orders']);
   const same = notice(b, a, 'dates', { sameAs: [{ item: 'parseDay', why: "no caller hands it 'never'" }] });
   assert.deepEqual(same.changed.map((c) => `${c.module} ${c.item} ${c.tells}`), ['dates parseDay false']);
   assert.deepEqual(same.told, []);
