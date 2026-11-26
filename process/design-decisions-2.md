@@ -518,3 +518,25 @@ question for later: describe Node from its published types rather than by hand. 
 for Bob" on option A, sent to PROCESS #18.
 On the second group (the four corrections put in PROCESS #19's session and on his page, option A to merge all four as one
 version): "Decision: A" — 26 November 2026, typed in PROCESS #19's session.
+
+### Subject: Development velocity
+
+**The rule as it now stands.** Every design and implementation choice, for Process4 and for each product, weighs what it
+does to development velocity: the time and cost it adds to the work, at the product's real size, now and at every later
+version. A choice that slows development needs a reason that outweighs that cost; caution alone is not one. It is a
+working principle in design part 1, section 6, and a known weakness in section 7: a choice made without weighing its
+effect on development velocity, whose sign is a session about to fix a file's form, what sets off an act, a test, or a
+rule other roles' work depends on, and which the session meets by working out from the texts the time and cost the
+choice adds to each role's work at the real product's size, and saying so with the proposal.
+
+Why: on 26 November the owner found, one after another, choices whose cost no one had followed through: a uses file
+holding the tool's own gaps, so that each Process4 version rewrote all 203 of civicsmith's files (about an hour a push);
+lines the tool could not classify told of every earlier module; conversions read as changes, flooding notices; errors
+and side effects counted as interface changes; repeated proposals to measure and test before acting. A lesson in a
+handover lasts a generation or two; the design's principles and its table of weaknesses are read in full by every role
+at every start. Researched in `process/research/weakness-implications-26nov.md`.
+
+**The owner's words.** In conversation first: "proper consideration should be made of development velocity in design
+and implementation choices made by and for process4 and products like civicsmith and all others." Then: "Decision:
+every design and implementation choice, for Process4 and each product, weighs its effect on development velocity; add
+the principle and the known-weakness row as drafted." — 26 November 2026, typed in PROCESS #19's session.
