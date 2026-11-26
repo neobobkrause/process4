@@ -39,3 +39,4 @@ owner's exact dated words and the reasons. Keep it current with each entry writt
 - The limit on depth, and a fresh ROOT — `design-decisions-2.md`
 - A record that outgrows one comment, and a starting job's block — `design-decisions-2.md`
 - The tool's reading of a product under the standard — `design-decisions-2.md`
+- Development velocity — `design-decisions-2.md`
