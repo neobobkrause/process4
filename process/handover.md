@@ -1,6 +1,6 @@
 # PROCESS handover
 
-Written 26 Nov 2026 ~01:20Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (near its refresh point; fill ~46 percent). If you are its successor, you are **PROCESS #18**: read the generation in
+Written 26 Nov 2026 ~01:25Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`) at its refresh point (fill 50 percent), at a natural pause: no worker running, everything merged. If you are its successor, you are **PROCESS #18**: read the generation in
 `handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
 (keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
 0 until your first turn ends, then is real. Never `git add -A`; put `.claude/worktrees/` in `.git/info/exclude`.
