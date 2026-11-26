@@ -347,12 +347,11 @@ test('who is told is a lookup in the later modules\' uses files: a module whose 
   const withUses = withUsesFiles(files);
   const before = mkdtempSync(join(tmpdir(), 'p4-look-')), after = mkdtempSync(join(tmpdir(), 'p4-look-'));
   write(before, withUses);
-  // only formatDay changes: its code may now throw
-  write(after, { ...withUses, 'src/dates/index.mjs': DATES('1 to 31').replace('return String(d.n);', "if (d.n < 0) throw new RangeError('n'); return String(d.n);") });
+  // only formatDay changes: what it hands back may now be missing
+  write(after, { ...withUses, 'src/dates/index.mjs': DATES('1 to 31').replace(' * @param {Day} d\n * @returns {string}', ' * @param {Day} d\n * @returns {string | null}') });
   const r = notice(before, after, 'dates');
-  // report's show takes in formatDay's errors (its uses file's takesIn): a changed item of report too, which no one uses
-  assert.deepEqual(r.changed.map((c) => `${c.module} ${c.item}: ${c.changes}`), ['dates formatDay: errors that can leave it changed', 'report show: errors that can leave it changed']);
-  assert.match(r.changed[0].words, /^errors that can leave it changed: none -> RangeError$/);
+  assert.deepEqual(r.changed.map((c) => `${c.module} ${c.item}: ${c.changes}`), ['dates formatDay: hands back differently']);
+  assert.match(r.changed[0].words, /^hands back differently: string -> null \| string$/);
   assert.deepEqual(r.told.map((t) => t.user), ['report']);
 });
 
@@ -457,7 +456,7 @@ test('a conversion\'s merge tells no one, even where it changed an item; nothing
   assert.match(two.out.join('\n'), /TOLD orders/);
 });
 
-test('the means worked out from the code: errors, a class instance, this, arguments written into, channels, and a type error', () => {
+test('the means worked out from the code: a class instance, this and a type error tell; errors, arguments written into and channels tell no one', () => {
   const P = (body) => `/**
  * @typedef {Object} Box
  * @property {number} v
@@ -488,10 +487,11 @@ export function createBoxes() {
     write(after, { ...files, 'src/dates/index.mjs': `${DATES()}${P(body)}` });
     return Object.fromEntries(notice(before, after, 'dates').changed.filter((c) => c.module === 'dates').map((c) => [c.item, c.changes.join(', ')]));
   };
-  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { if (n > 99) throw new RangeError('big'); return n > 0; }")), { 'Boxes.ok': 'errors that can leave it changed' });
+  // worked out and listed, and telling no one (the owner's decision of 26 November)
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { if (n > 99) throw new RangeError('big'); return n > 0; }")), {});
   assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', 'ok(n) { return this.make(n).v > 0; }')), { 'Boxes.ok': 'now needs its object as this' });
-  assert.deepEqual(changed(base.replace('put(b) { all.push(b);', 'put(b) { b.v += 1; all.push(b);')), { 'Boxes.put': 'arguments written into changed' });
-  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { console.error('asked'); return n > 0; }")), { 'Boxes.ok': 'channels, settings or files changed' });
+  assert.deepEqual(changed(base.replace('put(b) { all.push(b);', 'put(b) { b.v += 1; all.push(b);')), {});
+  assert.deepEqual(changed(base.replace('ok(n) { return n > 0; }', "ok(n) { console.error('asked'); return n > 0; }")), {});
   // A class instance where plain data was: every item that hands back a Box, and the kind Box itself.
   const inst = changed(`class BoxImpl {\n  /** @type {number} */\n  #v;\n  /** @param {number} n */\n  constructor(n) { this.#v = n; }\n  get v() { return this.#v; }\n}\n${base.replace('make(n) { return { v: n }; }', '/** @param {number} n */ make(n) { return new BoxImpl(n); }')}`);
   assert.equal(inst.Box, 'plain data or instance changed');
@@ -737,7 +737,7 @@ test('an unknown kind becoming known tells no one; any other difference in the s
   assert.ok(m.told.some((t) => t.user === 'orders' && t.reasons.some((x) => x.item === 'raw')));
 });
 
-test('a comment alone is not a change: an error the code already raised, newly stated, tells no one; one the code newly raises tells', () => {
+test('a comment alone is not a change: an error newly stated tells no one, and neither, now, does one the code newly raises', () => {
   // civicsmith notify 1356: a first @throws told every user. The errors that can leave an item are worked out from its code.
   const root = mkdtempSync(join(tmpdir(), 'p4-raises-'));
   const after = mkdtempSync(join(tmpdir(), 'p4-raises-'));
@@ -747,11 +747,10 @@ test('a comment alone is not a change: an error the code already raised, newly s
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/**\n * @param {string} x\n * @returns {string}\n * @throws {TypeError} when x is empty\n */\nexport function raw(x) { if (!x) throw new TypeError('x'); return x; }\n` });
   assert.deepEqual(notice(root, after, 'dates').changed, []);
   write(after, { ...files, 'src/dates/index.mjs': `${DATES()}\n/** @param {string} x @returns {string} */\nexport function raw(x) { if (!x) throw Object.assign(new TypeError('x'), { code: 'EMPTY' }); return x; }\n` });
+  // errors that can leave an item tell no one (the owner's decision of 26 November), here or through orders' shown
   const r = notice(root, after, 'dates');
-  // orders' shown takes in raw's errors: a changed item of orders too
-  assert.deepEqual(r.changed.map((e) => `${e.module} ${e.item}: ${e.changes}`), ['dates raw: errors that can leave it changed', 'orders shown: errors that can leave it changed']);
-  assert.match(noticeText(r), /means: errors that can leave it changed: TypeError -> TypeError code EMPTY/);
-  assert.deepEqual(r.told.map((t) => t.user), ['orders']);
+  assert.deepEqual(r.changed, []);
+  assert.deepEqual(r.told, []);
 });
 
 test('a name two interface files export for two things is two items, each told to its own users (civicsmith test-support)', () => {
