@@ -86,3 +86,30 @@ every earlier module's change.
 - **H. Carry the gap through.** An R1 (or other) place whose `any` comes only from a host gap is `unknownHost` too, and
   not kept. Small; no text change (build text 2c already says it). Recommended, with A, G1, G2.
 The second point (the record write refused by the secondary limit) is G2 of `github-limits-26nov.md`.
+
+## A fourth report: R2 places on a module's own data (court-citations #2, PR 1715, via ARCH #32, ~22:56Z)
+
+Its words: "R2, 7 places: decoding JSON this module owns is still read as "not from this module's own channel". That
+covers the data text in court-data.mjs (index.mjs:148), the package files the build reads from a folder its caller
+names (build.mjs:200, 289, 290, 335), the test's reading of a generated module's text, and the test's own
+child-process output. Each "waits on the owner of the data: its reader", but this module is that owner." Also `p4 test`
+exited on the rate limit without writing its record; a second run ten minutes later wrote it (G2). GitHub's block
+lifted ~22:50Z; the three owed notices are held for PROCESS's answer.
+
+Read in the tool: `ownChannel` (`refs.mjs:601`) accepts a literal, a `const` whose initializer is one, `JSON.parse` of
+those, a file read whose path resolves inside the module, the module's own table rows, its exported validator's or
+guard's parameter. It does not follow a text imported from the module's own data file, a generated file of the module,
+or the output of a program the module itself starts; each is made an R2 place with mayRefer ["*"]. A folder its caller
+names is a different matter (R15: a boundary export takes no path from its caller); that place may be right.
+
+## After the sweep: what A does not cover
+
+A stops notices to modules not yet converted. A converted module that keeps any place with mayRefer ["*"] is still
+told by point 3 of every change to every earlier module, for good. By the design a conversion leaves only places that
+wait on a provider or on ARCH; places that wait on "this module" are the conversion's to remove. The runs now report
+places left only because the tool records them wrongly: H (R1 notes from Node gaps) and the R2 cases above. Each such
+tool fault, corrected, removes leftover places; the rest are the job's.
+
+- **J. Own data read as own.** `ownChannel` also accepts the module's own data text (imported or read from its own
+  folder), its own generated files, and the output of a program it starts itself. A caller-named folder stays a place
+  (R15). Small; build text 2c's R2 already says it ("read from the module's own channel"). Recommended with A, G1, G2, H.
