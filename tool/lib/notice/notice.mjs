@@ -2,18 +2,21 @@
 // before and after a change to one module, which of its items changed, and who is told and why.
 //
 // What changed: each item's means (means.mjs), worked out on both sides with the same tool and settings, and compared;
-// every item whose means differs, or that is removed, is a changed item. Any difference in what it accepts tells,
-// accepting more included (the owner's decision of 25 November, "Who a change tells", item 3); the words `accepts more`
-// and `cannot stand in` only say which. A constant's value is in its means. A new item tells no one, unless it changes
-// what a name already used resolves to (resolvesAnew). Describing an item (a part read as any value, with no stated type
+// every item whose means differs, or that is removed, is a changed item. Only a change of an item's stated types or
+// bounds tells (the owner's decision of 26 November): what it accepts and hands back, expanded, with the parts that are
+// type facts (its sort, a member that may be missing, plain data or an instance, its object as `this`, a message's
+// channel), its bound lines, and a new type error in its code. Errors that can leave it, channels, settings and files
+// it reads or writes, arguments it writes into, and a constant's value within its type are worked out and listed, and
+// tell no one. Any difference in what it accepts tells, accepting more included (the owner's decision of 25 November,
+// "Who a change tells", item 3); the words `accepts more` and `cannot stand in` only say which. A new item tells no
+// one, unless it changes what a name already used resolves to (resolvesAnew). Describing an item (a part read as any value, with no stated type
 // or a stated `unknown`, now stated narrower) is no change where the item's code is unchanged or the merge is the
 // module's conversion (a merged job whose block's kind is `conversion`); at a conversion every other change tells as
 // always. Added to these: the items whose meaning ARCH names in the work it placed, and the pull request declares
 // (`named`): a name or a declaration may add a changed item, never remove one; and taken off: an item the tool found
-// changed that the pull request records as keeping its domain and range (`sameAs`, push --same), and with it what takes
-// in a change only through it. A later module's item whose means take in a changed error or channel of a provider's
-// item, as its uses file's `takesIn` records, is a changed item of that module too, and so on through the modules after
-// it (takenIn).
+// changed that the pull request records as keeping its domain and range (`sameAs`, push --same). A provider's error or
+// channel that passes through a later module's item (its uses file's `takesIn`) does not make that item changed; a
+// provider's type does, being written out in the item's own stated types.
 //
 // Who is told (design part 2, section 7, "Who is told"): a lookup in the later modules' uses files, with no user's code
 // read. Each module whose uses file names a changed item or a member of a changed type (by its provider and name,
@@ -47,7 +50,6 @@ function usesOf(tree, module) {
   return {
     uses: list(d.uses).filter((u) => typeof u.provider === 'string' && typeof u.item === 'string').map((u) => ({ ...u, where: list(u.where) })),
     outside: list(d.outside), orderFaults: list(d.orderFaults), copies: list(d.copies),
-    takesIn: list(d.takesIn).filter((t) => ['item', 'provider', 'providerItem', 'part'].every((k) => typeof t[k] === 'string')),
     packages: list(d.packages).filter((x) => typeof x.package === 'string'),
   };
 }
@@ -209,9 +211,10 @@ function askerOf(b, a) {
 }
 
 /**
- * Compares the means of one item before and after: the parts that differ, each with its word, and the one-line why.
- * Any difference tells, accepting more included (the owner's decision, "Who a change tells", item 3); the words
- * `accepts more` and `cannot stand in` only say which, as the written forms show it. Returns null where nothing differs.
+ * Compares the means of one item before and after: the parts that differ and tell, each with its word, and the one-line
+ * why. Only its stated types and bounds tell (the owner's decision of 26 November); any difference in them tells,
+ * accepting more included (the owner's decision, "Who a change tells", item 3); the words `accepts more` and `cannot
+ * stand in` only say which, as the written forms show it. Returns null where nothing differs.
  * @param conversion whether the change is the module's conversion (describedBy)
  */
 export function compareItem(b, a, { conversion = false } = {}) {
@@ -241,26 +244,23 @@ export function compareItem(b, a, { conversion = false } = {}) {
   }
   if (!!a.optional && !b.optional) differ('may now be missing', false, true);
   if (!same(b.bounds ?? [], a.bounds ?? [])) differ('bound changed', b.bounds ?? [], a.bounds ?? []);
-  if (!same(b.throws ?? [], a.throws ?? [])) differ('errors that can leave it changed', b.throws ?? [], a.throws ?? []);
   if (!same(b.instances ?? [], a.instances ?? [])) differ('plain data or instance changed', b.instances ?? [], a.instances ?? []);
   if (!!b.needsThis !== !!a.needsThis) differ(a.needsThis ? 'now needs its object as this' : 'no longer needs its object as this', !!b.needsThis, !!a.needsThis);
-  if (!same(b.writesArguments ?? [], a.writesArguments ?? [])) differ('arguments written into changed', b.writesArguments ?? [], a.writesArguments ?? []);
-  if (!same(b.channels ?? [], a.channels ?? [])) differ('channels, settings or files changed', b.channels ?? [], a.channels ?? []);
-  // A constant's value is in its range: where what its type shows is the same, its code (its value and what makes it)
-  // decides.
-  if (a.kind === 'value' && b.kind === 'value' && b.code !== a.code && same(bh ?? null, a.handsBack ?? null)) differ('value changed', b.value, a.value);
-  // A type error in the item's code counts as a change: a new one, or, while it has one, any change to its code (the
-  // stated kinds then do not bind the code).
-  if (a.typeErrors?.length && (!same(b.typeErrors ?? [], a.typeErrors) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
+  // Its code no longer matching its stated types is a change: a type error it did not have before. A change to its code
+  // while the same errors stand changes no stated type.
+  if (a.typeErrors?.length && !same(b.typeErrors ?? [], a.typeErrors)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
   return parts.length ? { parts, why: whys.join('; ') } : null;
 }
 
-/** The parts of the means that differ, for the reason a told job reads (before and after). */
+/** The parts of an item's means worked out and listed that tell no one (the owner's decision of 26 November). */
+const UNTOLD = new Set(['throws', 'writesArguments', 'channels']);
+
+/** The parts of the means that differ and tell, for the reason a told job reads (before and after). */
 function partsThatDiffer(b, a) {
   const db = describe(b) ?? {}, da = describe(a) ?? {};
   const before = {}, after = {};
   for (const k of new Set([...Object.keys(db), ...Object.keys(da)])) {
-    if (JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
+    if (UNTOLD.has(k) || JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
     before[k] = db[k] ?? null;
     after[k] = da[k] ?? null;
   }
@@ -286,8 +286,8 @@ const sameOr = (x, y) => same(x ?? null, y ?? null);
  */
 export function memberChanges(b, a, conversion = false) {
   if (!b || !a || b.kind !== a.kind || !MEMBERED.has(a.kind) || (b.message ?? null) !== (a.message ?? null)) return null;
-  for (const k of ['bounds', 'throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
-  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || (a.typeErrors?.length && b.code !== a.code)) return null;
+  for (const k of ['bounds', 'instances', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional) return null;
   const out = { added: [], removed: [], changed: [], optional: [] };
   if (a.kind === 'handle kind') {
     const nb = b.handsBack?.names ?? [], na = a.handsBack?.names ?? [];
@@ -333,9 +333,8 @@ function byName(c, names) {
  */
 function onlyInside(b, a, names, conversion = false) {
   if (!names.size || b.kind !== a.kind || (b.message ?? null) !== (a.message ?? null)) return false;
-  for (const k of ['bounds', 'throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
-  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || (a.typeErrors?.length && b.code !== a.code)) return false;
-  if (a.kind === 'value' && b.code !== a.code) return false;
+  for (const k of ['bounds', 'instances', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional) return false;
   const known = describedBy(b, a, conversion);
   return same(byName(known(b.accepts, a.accepts) ?? null, names), byName(a.accepts ?? null, names))
     && same(byName(known(b.handsBack, a.handsBack) ?? null, names), byName(a.handsBack ?? null, names));
@@ -428,7 +427,7 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
   for (const item of [...new Set([...Object.keys(mb.items), ...Object.keys(ma.items)])].sort()) {
     const b = mb.items[item], a = ma.items[item];
     // At the module's conversion only describing is no change (compareItem reads it through `known`); an item removed, a
-    // constant's value changed, a bound, errors or a type error, and every other difference tell as always.
+    // bound, a type error, and every other difference of its stated types tell as always.
     if (!a) { out.push({ module: moduleId, item, found: 'means', changes: ['removed'], tells: true, why: null, before: describe(b), after: null }); continue; }
     if (!b) { fresh.push(item); continue; }
     const c = compareItem(b, a, { conversion });
@@ -482,47 +481,6 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
     }
   }
   return { module: moduleId, changed: out, fresh, conversion };
-}
-
-/** The parts of an item's means that a later module's item takes in (its uses file's `takesIn`), by the words of a change. */
-const TAKEN = { 'errors that can leave it changed': 'errors', 'channels, settings or files changed': 'channels' };
-
-/**
- * Through a middle module (design part 2, section 7, "What changes"): where a later module's item takes in a changed part
- * of a provider's item (an error that can pass through it, a channel it reaches), as that module's uses file records,
- * that item is a changed item of that module too, and so on through the modules after it. A lookup: no code is read.
- * @param changed the changed items that tell
- * @param files [{ id, files: [its uses file before and after, as read] }] in module order
- * @returns the changed items found so, each { module, item, found: 'means', changes, tells, takesIn: [{ module, item, part }] }
- */
-export function takenIn(changed, files, indexOf) {
-  const out = new Map(); // `${module}|${item}` -> changed item
-  const queue = changed.filter((c) => c.changes.some((w) => TAKEN[w]));
-  const seen = new Set(queue.map((c) => `${c.module}|${c.item}`));
-  while (queue.length) {
-    const c = queue.shift();
-    const parts = c.changes.map((w) => TAKEN[w]).filter(Boolean);
-    for (const { id, files: fs2 } of files) {
-      if (indexOf(id) <= indexOf(c.module)) continue;
-      for (const t of fs2.flatMap((f) => f.takesIn)) {
-        if (t.provider !== c.module || t.providerItem !== c.item || !parts.includes(t.part)) continue;
-        const k = `${id}|${t.item}`;
-        const word = Object.keys(TAKEN).find((w) => TAKEN[w] === t.part);
-        let d = out.get(k);
-        if (!d) {
-          if (seen.has(k)) continue;
-          d = { module: id, item: t.item, found: 'means', changes: [], tells: true, why: null, takesIn: [] };
-          out.set(k, d);
-          seen.add(k);
-          queue.push(d);
-        }
-        if (!d.changes.includes(word)) { d.changes.push(word); if (!queue.includes(d)) queue.push(d); }
-        if (!d.takesIn.some((x) => x.module === c.module && x.item === c.item && x.part === t.part)) d.takesIn.push({ module: c.module, item: c.item, part: t.part });
-        d.words = d.takesIn.map((x) => `takes in the ${x.part} of ${x.module} ${x.item}, which changed`).join('; ');
-      }
-    }
-  }
-  return [...out.values()];
 }
 
 /** Whether a place of a uses file is an `export * from` statement: the provider's own export list, read at that line. */
@@ -611,7 +569,6 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   // A new item that changes what a name already used resolves to: a lookup in the uses files and the providers' own
   // export lists, with no user's code read.
   report.changed.push(...resolvesAnew(B, A, provider, mine.fresh, order));
-  report.changed.push(...takenIn(report.changed.filter((c) => c.tells), order.map((id) => ({ id, files: [usesOf(B, id), usesOf(A, id)].filter(Boolean) })), indexOf));
   const telling = report.changed.filter((c) => c.tells);
   // The modules whose changed items are told; and the provider, whose files changed, for those that hear of any change.
   const byModule = new Map();
