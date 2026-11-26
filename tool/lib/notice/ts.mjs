@@ -3,6 +3,7 @@
 // (build text 1, section 2): `ts` is empty until loadReader() is called.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { fileSpecifier } from '../util.mjs';
 
 const require = createRequire(import.meta.url);
 /** TypeScript, once loadReader() has run. */
@@ -42,7 +43,22 @@ export const NODE_DESCRIPTION = fileURLToPath(new URL('./node.d.ts', import.meta
 
 export function makeProgram(files, host = undefined) {
   const o = options();
-  return ts.createProgram([...files, NODE_DESCRIPTION], o, host);
+  return ts.createProgram([...files, NODE_DESCRIPTION], o, resolvingQueries(host ?? ts.createCompilerHost(o), o));
+}
+
+/**
+ * A reader's host that resolves a relative import with a query or fragment (`./index.mjs?again`) as Node does: the
+ * same file, found without them (util.mjs, fileSpecifier; build text 2c, S1: Node's documented algorithm). The pinned
+ * reader keeps them in the path and finds no file. Every other import is resolved by the reader as before.
+ */
+function resolvingQueries(host, o) {
+  if (host.resolveModuleNameLiterals) return host;
+  const cache = ts.createModuleResolutionCache(host.getCurrentDirectory(), (f) => host.getCanonicalFileName(f), o);
+  host.resolveModuleNameLiterals = (literals, containingFile, redirected, opts, containingSourceFile) => literals.map((lit) => {
+    const mode = ts.getModeForUsageLocation(containingSourceFile, lit, opts);
+    return ts.resolveModuleName(fileSpecifier(lit.text), containingFile, opts, host, cache, redirected, mode);
+  });
+  return host;
 }
 
 /**
@@ -62,10 +78,9 @@ export const standardOptions = () => ({
 export function makeStandardProgram(files, oldProgram = undefined, virtual = null) {
   loadReader();
   const o = standardOptions();
-  let host;
+  const host = resolvingQueries(ts.createCompilerHost(o), o);
   if (virtual?.size) {
     // Files the tool writes only in memory (the questions makeSame puts to the checker), served beside the real ones.
-    host = ts.createCompilerHost(o);
     const { getSourceFile, fileExists, readFile } = host;
     host.getSourceFile = (f, lang, ...rest) => (virtual.has(f) ? ts.createSourceFile(f, virtual.get(f), lang, true) : getSourceFile.call(host, f, lang, ...rest));
     host.fileExists = (f) => virtual.has(f) || fileExists.call(host, f);

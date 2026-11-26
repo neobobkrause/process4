@@ -45,19 +45,54 @@ export function packageName(spec) {
   const parts = spec.split('/');
   return spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
 }
+/** workerd, the other host a product runs on: its facilities are described by this package's declarations. */
+export const WORKERD = 'workerd';
+const WORKERD_TYPES = '@cloudflare/workers-types';
 /**
- * The package that gives a facility, by where its declaration is: under a node_modules folder of the product, that
- * package (its @types package for one without its own types; @types/node is the host's); anything else, the language's
- * library and the tool's own description of the host among them, the host's.
+ * The package that gives a facility, by where its declaration is (build text 2c, "Facilities": the tool classifies the
+ * host's, ARCH the packages'): the language's library and the tool's own description of the host (both under the
+ * tool's folder) and @types/node, the host (`node`); @cloudflare/workers-types, `workerd`; under any other node_modules
+ * folder, that package, from the path after the last node_modules/ (`@a/b` for a scoped one; its @types package for one
+ * without its own types). A declaration in the product's own files, or none at all (a member a kind operator such as
+ * Record makes), is no facility: null.
  */
 export function packageOf(sym) {
   const f = (sym?.declarations?.[0]?.getSourceFile().fileName ?? '').split(path.sep).join('/');
-  if (!f || f.startsWith(TOOL_ROOT.split(path.sep).join('/'))) return HOST;
+  if (!f) return null;
+  if (f.startsWith(TOOL_ROOT.split(path.sep).join('/'))) return HOST;
   const at = f.lastIndexOf('/node_modules/');
-  if (at < 0) return HOST;
+  if (at < 0) return null;
   let name = packageName(f.slice(at + '/node_modules/'.length));
+  if (name === WORKERD_TYPES) return WORKERD;
   if (name.startsWith('@types/')) { name = name.slice(7); name = name.includes('__') ? `@${name.replace('__', '/')}` : name; }
   return name === 'node' ? HOST : name;
+}
+
+/**
+ * A facility's qualified name, as the tool's classification and the facility list name it: the host's by its qualified
+ * declaration, a module's name without its quotes (node:fs.readFileSync); a package's as `package:Export.member`
+ * (pg:Client.query), the path to the package's file left out, so the name is the same on every machine. A member of an
+ * unnamed kind is named by the declaration the kind is written in (console.log, node:crypto.createHash.update).
+ * Shared by refs.mjs and facilities-build.mjs, so a use and the classification name a facility alike.
+ */
+export function qualifiedName(checker, sym, pkg = packageOf(sym)) {
+  const fq = (s) => checker.getFullyQualifiedName(s);
+  let name = fq(sym);
+  if (/^__type\./.test(name)) {
+    const trail = [sym.name];
+    for (let p = sym.declarations?.[0]?.parent; p; p = p.parent) {
+      if (ts.isTypeNode(p) || ts.isParameter(p) || ts.isTypeParameterDeclaration(p)) continue;
+      const s = p.symbol ?? (p.name && checker.getSymbolAtLocation(p.name));
+      if (!s) break;
+      const n = fq(s);
+      if (/^__type(\.|$)/.test(n)) { trail.unshift(s.name); continue; }
+      name = `${n}.${trail.join('.')}`;
+      break;
+    }
+  }
+  name = name.replace(/^global\./, '');
+  if (pkg && pkg !== HOST) name = `${pkg}:${name.replace(/^"[^"]*"\.?/, '')}`;
+  return name;
 }
 
 /** Every module earlier than the one read: "may refer to any of them". */
@@ -351,12 +386,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const d = s.declarations?.[0];
     // a member written `typeof f` stands for f itself
     if (d && ts.isPropertySignature(d) && d.type && ts.isTypeQueryNode(d.type)) { const q = resolve(checker.getSymbolAtLocation(d.type.exprName)); if (q) s = q; }
-    let name = checker.getFullyQualifiedName(s);
-    // a member of an unnamed kind: named by the variable that has that kind (console.log)
-    if (/^__type\./.test(name)) {
-      for (let p = s.declarations?.[0]?.parent; p; p = p.parent) if (ts.isVariableDeclaration(p) && ts.isIdentifier(p.name)) { name = `${p.name.text}.${s.name}`; break; }
-    }
-    return name.replace(/^global\./, '');
+    return qualifiedName(checker, s);
   }
   /** A facility as the facility list names it: a module's name without its quotes (node:fs.readFileSync). */
   const listName = (name) => name.replace(/^"([^"]+)"/, '$1');
@@ -367,18 +397,23 @@ export function readReferences(tree, moduleId, opts = {}) {
   const boundaryModules = facilityList?.boundary ?? new Set();
   const isBoundaryModule = boundaryModules.has(mod.id);
   function facility(node, sym, { write = false } = {}) {
+    // the product's own member (of a kind the product writes, or one a kind operator makes) is no facility
+    const pkg = packageOf(sym);
+    if (!pkg) return null;
     let name = facilityName(sym);
     if (!name) return null;
     // the clock: Date() called, or new Date() with no argument (ECMA-262 21.4.2.1)
     const par = node.parent;
     if (name === 'Date' && par && par.expression === node && (ts.isCallExpression(par) || (ts.isNewExpression(par) && !(par.arguments?.length)))) name = 'Date()';
     const shown = listName(name);
-    inventory.set(shown, packageOf(sym));
+    inventory.set(shown, pkg);
     const never = neverRule(name);
     if (never) place(never, node, { what: `uses ${shown}, which no product may use`, waitsOn: 'this module' });
-    else if (write) place('R14', node, { what: `writes ${shown}, a member the host declares` });
+    else if (write) place('R14', node, { what: `writes ${shown}, a member ${pkg === HOST || pkg === WORKERD ? 'the host' : pkg} declares` });
     else if (reachOf(name) === 'tests') { if (!mod.tests.includes(node.getSourceFile().fileName)) place('R14', node, { what: `uses ${shown}, the test runner's, outside the module's tests`, waitsOn: 'this module' }); }
-    else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, which neither the tool's classification of the host nor the facility list names`, waitsOn: 'ARCH: the facility list' });
+    // the host's facilities are the tool's to classify, a package's are ARCH's (build text 2c, "Facilities")
+    else if (!reachOf(name) && (pkg === HOST || pkg === WORKERD)) place('R14', node, { what: `uses ${shown}, a facility of the host the tool's classification leaves out`, waitsOn: 'this module' });
+    else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, a facility of ${pkg} the facility list does not name`, waitsOn: 'ARCH: the facility list' });
     else if (reachOf(name) === 'out' && !isBoundaryModule) place('R14', node, { what: `uses ${shown}, which reaches out, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
     return name;
   }
@@ -559,6 +594,9 @@ export function readReferences(tree, moduleId, opts = {}) {
         const fn = d.parent;
         // the unknown parameter of the module's own exported validator
         if (isExported(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id) return true;
+        // the parameter of the module's own guard (`v is T`, R3): its origin is judged at each call
+        const sig = ts.isFunctionLike(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id ? checker.getSignatureFromDeclaration(fn) : undefined;
+        if (sig && checker.getTypePredicateOfSignature(sig)) return true;
         // an element handed to a callback of a list's own method (rows.map((r) => ...))
         const call = fn.parent;
         if (call && ts.isCallExpression(call) && call.arguments.includes(fn) && ts.isPropertyAccessExpression(call.expression) && checker.isArrayType(typeAt(call.expression.expression) ?? { flags: 0 })) return ownChannel(call.expression.expression, depth + 1);
@@ -970,22 +1008,33 @@ export function readReferences(tree, moduleId, opts = {}) {
 
       // ---- R1: no value of kind any ----
       if ((ts.isIdentifier(n) && !inType(n) && !isDeclNameOrImport(n)) || ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n) || ts.isCallExpression(n) || ts.isNewExpression(n)) {
-        if (!(ts.isIdentifier(n) && n.parent && ts.isPropertyAccessExpression(n.parent) && n.parent.name === n) && !inErrorAssertion(n.getStart(sf))) {
+        // a member's name (`x.name`) or a renamed key taken apart (`{ prefix: p }`) is no value; the value is the whole or the binding
+        const keyName = ts.isIdentifier(n) && n.parent && ((ts.isPropertyAccessExpression(n.parent) && n.parent.name === n) || (ts.isBindingElement(n.parent) && n.parent.propertyName === n));
+        if (!keyName && !inErrorAssertion(n.getStart(sf))) {
           const t = typeAt(n);
           if (t && hasAny(t)) place('R1', n, { what: `a value of kind ${checker.typeToString(t).slice(0, 80)}` });
         }
       }
       // ---- R2: structure given to a value of kind unknown that is not from the module's own channel ----
       if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression)) {
-        const s = checker.getSymbolAtLocation(n.expression);
-        const declared = s && s.valueDeclaration ? checker.getTypeOfSymbol(s) : undefined;
-        // narrowed by instanceof to another module's class (S4 iv), it is that module's value, found by its kind
-        const theirs = kindDecls(typeAt(n.expression)).length > 0;
-        if (declared && hasUnknown(declared) && !theirs && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
+        // the kind at the read, as narrowed there: by instanceof (S4) to a class, or by another module's exported check, it is
+        // that class's or that module's value; narrowed by hand (`in`, a guard of this module) the place is the narrowing (below)
+        const t = typeAt(n.expression);
+        if (t && hasUnknown(t) && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
       }
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InKeyword) {
         const t = typeAt(n.right);
         if (t && ts.isIdentifier(n.right) && hasUnknown(checker.getTypeOfSymbol(checker.getSymbolAtLocation(n.right) ?? { flags: 0 }) ?? t) && !ownChannel(n.right)) place('R2', n, { what: 'narrows a value of kind unknown that is not from this module\'s own channel', waitsOn: 'the owner of the data: its reader' });
+      }
+      // a hand-written guard of this module (`v is T`, R3) gives its argument a shape: a place where that is not its own channel
+      if (ts.isCallExpression(n)) {
+        const sig = checker.getResolvedSignature(n);
+        const pred = sig && checker.getTypePredicateOfSignature(sig);
+        const arg = pred && typeof pred.parameterIndex === 'number' ? n.arguments[pred.parameterIndex] : undefined;
+        const decl = sig?.getDeclaration();
+        const own = decl && !decl.getSourceFile().isDeclarationFile && tree.moduleOfFile(decl.getSourceFile().fileName) === mod.id;
+        const t = arg && typeAt(arg);
+        if (own && t && hasUnknown(t) && !ownChannel(arg)) place('R2', n, { what: `a guard of this module gives a value of kind unknown that is not from this module's own channel the kind ${checker.typeToString(pred.type).slice(0, 80)}`, waitsOn: 'the owner of the data: its reader' });
       }
 
       // ---- R19: narrowing only of a const or a parameter never assigned ----
@@ -1373,7 +1422,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     return true;
   }
   function modulesOfSpec(spec, from) {
-    const target = spec.startsWith('.') ? path.resolve(path.dirname(from), spec) : resolver.resolve(spec, from);
+    const target = resolver.resolve(spec, from);
     const o = target ? ownersOfPath(target) : null;
     return o && o.size ? [...o] : [ANY];
   }

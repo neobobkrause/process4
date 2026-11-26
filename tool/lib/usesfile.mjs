@@ -28,7 +28,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readAt } from './config.mjs';
-import { underPath } from './util.mjs';
+import { fileSpecifier, underPath } from './util.mjs';
 
 const modulesDir = (cfg) => `${(cfg.process_folder || 'process/').replace(/\/?$/, '/')}modules/`;
 
@@ -150,7 +150,7 @@ export function makeResolver(tree) {
   return {
     isOwn,
     resolve(spec, from) {
-      if (spec.startsWith('.') || spec.startsWith('/')) return path.resolve(path.dirname(from), spec);
+      if (spec.startsWith('.') || spec.startsWith('/')) return path.resolve(path.dirname(from), fileSpecifier(spec));
       return isOwn(spec) ? find(spec) : null;
     },
   };

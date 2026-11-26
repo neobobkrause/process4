@@ -988,6 +988,48 @@ export function day() { return new Date('2026-11-25T00:00:00Z').getUTCDate(); }
   assert.ok(t.outside.some((o) => o.rule === 'R14' && /the test runner's, outside the module's tests/.test(o.what)), JSON.stringify(t.outside));
 });
 
+test('facility names: a package\'s as package:Export.member on any machine; the product\'s own members none; the host\'s unnamed kinds by their declaration', () => {
+  const PKGS = {
+    'node_modules/miniflare/package.json': { name: 'miniflare', types: 'dist/src/index.d.ts' },
+    'node_modules/miniflare/dist/src/index.d.ts': 'export declare class Miniflare { constructor(o: object); dispose(): Promise<void>; }\n',
+    'node_modules/@a/b/package.json': { name: '@a/b', types: 'index.d.ts' },
+    'node_modules/@a/b/index.d.ts': 'export declare namespace ns { function f(): number; }\n',
+  };
+  const CODE = `import { Miniflare } from 'miniflare';
+import { ns } from '@a/b';
+import { createHash } from 'node:crypto';
+/** @type {Record<'viewer' | 'id', string>} */
+const r = { viewer: 'x', id: 'y' };
+const { viewer, id } = r;
+/** @returns {Promise<void>} */
+export function stop() { return new Miniflare({}).dispose(); }
+/** @returns {string} */
+export function hash() { return createHash('sha256').update(viewer + id).digest('hex') + ns.f(); }
+/** @returns {object} */
+export function trap() { return new Proxy({}, {}); }
+`;
+  const list = facilityList(['miniflare:Miniflare', 'miniflare:Miniflare.dispose', '@a/b:ns', '@a/b:ns.f']);
+  // the same names, whatever folder the product is checked out in
+  const [r1, r2] = [1, 2].map(() => read(caseProduct({ ...PKGS, 'src/u/index.mjs': CODE, 'process/modules/facilities.json': list }), 'u'));
+  assert.deepEqual(r1.facilities, r2.facilities);
+  assert.deepEqual(r1.packages.filter((p) => p.package !== 'node'), [
+    { package: '@a/b', facility: '@a/b:ns' }, { package: '@a/b', facility: '@a/b:ns.f' },
+    { package: 'miniflare', facility: 'miniflare:Miniflare' }, { package: 'miniflare', facility: 'miniflare:Miniflare.dispose' }]);
+  const r14 = r1.outside.filter((o) => o.rule === 'R14').map((o) => `${o.line} ${o.what} | ${o.waitsOn}`);
+  // on the list, the package's facilities are no place; the product's own members (a kind Record makes) are no facility
+  assert.ok(!r14.some((x) => /miniflare|@a\/b|viewer|\bid\b/.test(x)), r14.join('; '));
+  assert.ok(!r1.facilities.some((f) => f === 'viewer' || f === 'id' || /__type/.test(f)), r1.facilities.join(', '));
+  // the Hash createHash returns: the host's, named by createHash, in the process
+  assert.ok(r1.packages.some((p) => p.package === 'node' && p.facility === 'node:crypto.createHash.update'));
+  assert.ok(r1.packages.some((p) => p.package === 'node' && p.facility === 'node:crypto.createHash.update.digest'));
+  assert.ok(!r14.some((x) => /createHash/.test(x)), r14.join('; '));
+  // Proxy: the host's, left out of its classification (study-references.md, row 23): a place that waits on the module, not ARCH
+  assert.deepEqual(r14, ['12 uses Proxy, a facility of the host the tool\'s classification leaves out | this module']);
+  // off the list, a package's facility waits on ARCH, by the list's name
+  const off = read(caseProduct({ ...PKGS, 'src/u/index.mjs': CODE, 'process/modules/facilities.json': facilityList([]) }), 'u');
+  assert.ok(off.outside.some((o) => o.rule === 'R14' && o.what === 'uses miniflare:Miniflare.dispose, a facility of miniflare the facility list does not name' && o.waitsOn === 'ARCH: the facility list'));
+});
+
 // ---- what a use does with a value of another module's kind (build text 2c, the uses file's `value`) ----
 
 const KINDS = `/** @typedef {{ id: number, name: string, tags: { label: string }[] }} Row */
@@ -1121,4 +1163,98 @@ export const kept = one();
   // a kind joined to another with &: its values are its own, the whole value used whole, a member read a member
   assert.ok(at('wideWhole').includes('Wide whole'), at('wideWhole').join('; '));
   assert.deepEqual(at('wideRead').filter((x) => x.startsWith('Wide')), ['Wide member extra', 'Wide none']);
+});
+
+// ---- three faults from a product's first conversion (process/research/facility-names-26nov.md) ----
+
+test('the host\'s description holds Buffer and the spawn options Node documents: a file read as bytes and decoded, maxBuffer, are no complaint', () => {
+  const root = caseProduct({ 'src/u/index.mjs': `import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { Buffer as B } from 'node:buffer';
+/** @param {string} f @returns {string} */
+export function read(f) {
+  const bytes = readFileSync(f);
+  void execFileSync('ls', [], { maxBuffer: 1024, encoding: 'utf8' });
+  return bytes.toString('utf8') + Buffer.from('a', 'utf8').toString('hex') + String(B.isBuffer(bytes));
+}
+` });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'S4').map((o) => o.what), []);
+  // Buffer computes in the process (buffer.html): no place of its own
+  assert.deepEqual(r.outside.filter((o) => /Buffer/.test(o.what)).map((o) => o.what), []);
+});
+
+test('S12: a RegExp\'s test(...) in a test is no test case; the runner\'s and a test context\'s are', () => {
+  const root = caseProduct({ 'test/u/u.test.mjs': `import { test } from 'node:test';
+import * as nt from 'node:test';
+import assert from 'node:assert/strict';
+const WORD = /^w/;
+test('words', async (t) => {
+  const s = String(Math.max(1, 2));
+  assert.ok(!WORD.test(s));
+  assert.ok(!/^x/.test(s));
+  await t.test('inner', () => { assert.ok(/1|2/.test(s)); });
+  await t.test(s, () => {});
+});
+nt.describe(String(1), () => {});
+` });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'S12').map((o) => o.line), [10, 12]);
+});
+
+test('S1: a relative import with a query, a fresh load of a module\'s own file, resolves to that file', () => {
+  const root = caseProduct({
+    'src/u/index.mjs': '/** @returns {number} */\nexport function one() { return 1; }\n',
+    'test/u/u.test.mjs': `import { test } from 'node:test';
+import assert from 'node:assert/strict';
+test('loads afresh', async () => {
+  const again = await import('../../src/u/index.mjs?again');
+  const hashed = await import('../../src/u/index.mjs#h');
+  assert.equal(again.one() + hashed.one(), 2);
+});
+`,
+  });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => ['S1', 'S4', 'R1'].includes(o.rule)).map((o) => `${o.rule} ${o.line} ${o.what}`), []);
+  // an import of a missing file is still a place
+  write(root, { 'test/u/u.test.mjs': "import { test } from 'node:test';\ntest('gone', async () => { await import('../../src/u/gone.mjs?again'); });\n" });
+  assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'S1').map((o) => o.what), ['an import the tool cannot resolve: ../../src/u/gone.mjs?again']);
+});
+
+// ---- two more faults from a product's conversion (process/research/facility-names-26nov.md, b and c) ----
+
+test('R1: a renamed key taken apart (`{ prefix: p }`) is the member\'s kind, not any', () => {
+  const root = caseProduct({ 'src/u/index.mjs': `const ID_TABLE = [{ prefix: 'a', n: 1 }, { prefix: 'b', n: 2 }];
+/** @returns {string} */
+export function prefixes() {
+  let s = '';
+  for (const { prefix: p, n: count } of ID_TABLE) s += p + String(count);
+  const { prefix: first } = ID_TABLE[0] ?? { prefix: '' };
+  return s + first;
+}
+` });
+  assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'R1').map((o) => `${o.line} ${o.what}`), []);
+});
+
+test('R2: a value of kind unknown narrowed by instanceof is read by its narrowed kind; a module\'s own guard on another\'s data is the place, once, at the guard', () => {
+  const root = product(`import { text, rows } from '../q/index.mjs';
+class Mine { constructor() { this.name = 'm'; } }
+/** @typedef {{ name: string }} Named */
+/** @param {unknown} v @returns {v is Named} */
+function isNamed(v) { return typeof v === 'object' && v !== null && 'name' in v && typeof v.name === 'string'; }
+/** @returns {string} */
+export function f() {
+  try { rows(); } catch (e) { if (e instanceof Error) return e.message; }
+  /** @type {unknown} */
+  const m = rows().length ? new Mine() : null;
+  if (m instanceof Mine) return m.name;
+  const own = JSON.parse('{"name":"x"}');
+  if (isNamed(own)) return own.name;
+  const theirs = JSON.parse(text());
+  if (isNamed(theirs)) return theirs.name;
+  return '';
+}
+`);
+  const r2 = read(root, 'u').outside.filter((o) => o.rule === 'R2').map((o) => `${o.line} ${o.what}`);
+  assert.deepEqual(r2, ['15 a guard of this module gives a value of kind unknown that is not from this module\'s own channel the kind Named']);
 });

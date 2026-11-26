@@ -17,9 +17,41 @@ interface NodeStats { size: number; mtimeMs: number; isFile(): boolean; isDirect
 interface NodeReadOptions { encoding?: string; flag?: string; }
 interface NodeRmOptions { recursive?: boolean; force?: boolean; }
 
+// Buffer (Node 22, buffer.html): a Uint8Array with Node's encodings, global and in node:buffer. What a file read with no
+// encoding hands back.
+interface Buffer extends Uint8Array {
+  toString(encoding?: string, start?: number, end?: number): string;
+  toJSON(): { type: 'Buffer'; data: number[] };
+  equals(other: Uint8Array): boolean;
+  compare(target: Uint8Array, targetStart?: number, targetEnd?: number, sourceStart?: number, sourceEnd?: number): number;
+  copy(target: Uint8Array, targetStart?: number, sourceStart?: number, sourceEnd?: number): number;
+  write(text: string, offset?: number, length?: number, encoding?: string): number;
+  subarray(start?: number, end?: number): Buffer;
+  slice(start?: number, end?: number): Buffer;
+  indexOf(value: string | number | Uint8Array, byteOffset?: number, encoding?: string): number;
+  includes(value: string | number | Uint8Array, byteOffset?: number, encoding?: string): boolean;
+}
+interface BufferConstructor {
+  from(data: string, encoding?: string): Buffer;
+  from(data: Uint8Array | readonly number[] | ArrayBuffer): Buffer;
+  alloc(size: number, fill?: string | number | Uint8Array, encoding?: string): Buffer;
+  allocUnsafe(size: number): Buffer;
+  byteLength(data: string | Uint8Array | ArrayBuffer, encoding?: string): number;
+  concat(list: readonly Uint8Array[], totalLength?: number): Buffer;
+  isBuffer(value: unknown): value is Buffer;
+  isEncoding(encoding: string): boolean;
+  compare(a: Uint8Array, b: Uint8Array): number;
+}
+declare var Buffer: BufferConstructor;
+declare module 'node:buffer' {
+  const Buffer: BufferConstructor;
+  export { Buffer };
+}
+declare module 'buffer' { export * from 'node:buffer'; }
+
 declare module 'node:fs' {
   export function readFileSync(path: NodePathLike, options: string | { encoding: string; flag?: string }): string;
-  export function readFileSync(path: NodePathLike): Uint8Array;
+  export function readFileSync(path: NodePathLike): Buffer;
   export function writeFileSync(path: NodePathLike, data: string | Uint8Array, options?: string | { encoding?: string; flag?: string }): void;
   export function appendFileSync(path: NodePathLike, data: string | Uint8Array): void;
   export function existsSync(path: NodePathLike): boolean;
@@ -44,7 +76,7 @@ declare module 'node:fs' {
 }
 declare module 'node:fs/promises' {
   export function readFile(path: NodePathLike, options: string | { encoding: string }): Promise<string>;
-  export function readFile(path: NodePathLike): Promise<Uint8Array>;
+  export function readFile(path: NodePathLike): Promise<Buffer>;
   export function writeFile(path: NodePathLike, data: string | Uint8Array, options?: string | { encoding?: string }): Promise<void>;
   export function readdir(path: NodePathLike): Promise<string[]>;
   export function mkdir(path: NodePathLike, options?: { recursive?: boolean }): Promise<string | undefined>;
@@ -86,7 +118,7 @@ interface NodeChild {
   on(event: string, listener: (...args: any[]) => void): NodeChild;
   kill(signal?: string | number): boolean;
 }
-interface NodeSpawnOptions { cwd?: string; env?: Record<string, string | undefined>; input?: string; encoding?: string; stdio?: unknown; timeout?: number; }
+interface NodeSpawnOptions { cwd?: string; env?: Record<string, string | undefined>; input?: string | Uint8Array; encoding?: string; stdio?: unknown; timeout?: number; maxBuffer?: number; killSignal?: string | number; shell?: boolean | string; windowsHide?: boolean; }
 interface NodeSpawnResult { status: number | null; signal: string | null; stdout: string; stderr: string; error?: Error; }
 declare module 'node:child_process' {
   export function spawn(command: string, args?: readonly string[], options?: NodeSpawnOptions): NodeChild;

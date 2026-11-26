@@ -632,8 +632,36 @@ function addedBoundTests(before, after) {
 
 /** Names of calls that name a test or a group of tests. */
 const TEST_CALLS = new Set(['test', 'it', 'describe', 'suite']);
-/** Is this a call that names a test or a group of tests (test, it, describe, or t.test)? */
-export const isTestCall = (n) => ts.isCallExpression(n) && (ts.isIdentifier(n.expression) ? TEST_CALLS.has(n.expression.text) : ts.isPropertyAccessExpression(n.expression) && TEST_CALLS.has(n.expression.name.text));
+/**
+ * Is this a call that names a test or a group of tests (test, it, describe, or t.test)? A member call counts only on
+ * the test runner itself or a test's context: `x.test(...)` on a name imported from node:test, or on a parameter of a
+ * function handed to a test call. Any other `.test(...)` (a RegExp's) is no test.
+ */
+export const isTestCall = (n) => ts.isCallExpression(n) && (ts.isIdentifier(n.expression) ? TEST_CALLS.has(n.expression.text)
+  : ts.isPropertyAccessExpression(n.expression) && TEST_CALLS.has(n.expression.name.text) && ts.isIdentifier(n.expression.expression) && isRunnerOrContext(n.expression.expression));
+const TEST_MODULES = new Set(['node:test', 'test']);
+const runnerNames = new WeakMap();
+function isRunnerOrContext(id) {
+  const sf = id.getSourceFile();
+  if (!runnerNames.has(sf)) {
+    const names = new Set();
+    for (const st of sf.statements) {
+      const c = ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier) && TEST_MODULES.has(st.moduleSpecifier.text) ? st.importClause : null;
+      if (!c) continue;
+      if (c.name) names.add(c.name.text);
+      const b = c.namedBindings;
+      if (b && ts.isNamespaceImport(b)) names.add(b.name.text);
+      else if (b) for (const e of b.elements) names.add(e.name.text);
+    }
+    runnerNames.set(sf, names);
+  }
+  // the nearest function that declares the name: a test's context where that function is handed to a test call
+  for (let p = id.parent; p; p = p.parent) {
+    if (!ts.isFunctionLike(p) || !p.parameters?.some((q) => ts.isIdentifier(q.name) && q.name.text === id.text)) continue;
+    return !!p.parent && ts.isCallExpression(p.parent) && p.parent.arguments.includes(p) && isTestCall(p.parent);
+  }
+  return runnerNames.get(sf).has(id.text);
+}
 const testName = (n) => { const a0 = n.arguments[0]; return a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) ? a0.text : null; };
 
 
