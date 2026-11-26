@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
-import { declaredUses } from '../usesfile.mjs';
+import { declaredUses, placeMayRefer } from '../usesfile.mjs';
 
 /**
  * Complaints that mean "I cannot tell", never a disagreement. Decided here:
@@ -603,7 +603,7 @@ function declaredUsesCheck(tree, mod, refusals, cannotTell, only) {
     refusals.push({ at: `${f.file}:${f.line}`, code: 'uses', text: `uses ${f.provider} ${f.item} (${f.type}), and ${f.provider} is ${why(o)}`, kind });
   }
   for (const x of d.data.outside ?? []) {
-    const later = (x.mayRefer ?? []).filter((m) => m !== '*' && notBefore(m));
+    const later = placeMayRefer(x).filter((m) => m !== '*' && notBefore(m));
     if (!later.length || (only && !only.has(x.file))) continue;
     cannotTell.push({ at: `${x.file}:${x.line}`, code: x.rule, why: `a place outside the coding standard (${x.rule}) that may refer to ${later.join(', ')}, later in the order`, text: x.what });
   }

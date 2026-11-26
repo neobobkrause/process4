@@ -41,7 +41,7 @@ import { loadTree } from './model.mjs';
 import { loadReader, makeStandardProgram, readerVersion } from './ts.mjs';
 import { moduleMeans, meansSideOf, MEANS_SIDE } from './means.mjs';
 import { same, standsIn, render } from './canon.mjs';
-import { importedModules, reachedModules, reExportsReached, readFacilities, readUses } from '../usesfile.mjs';
+import { importedModules, placeMayRefer, reachedModules, reExportsReached, readFacilities, readUses } from '../usesfile.mjs';
 
 /** A module's uses file on one side, its lists made lists (build text 2c), or null where it has none (or none that reads). */
 function usesOf(tree, module) {
@@ -732,10 +732,11 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
         }
         // A place outside the standard hears of any change to the files of a module it may refer to, until a job
         // converts it; where it cannot say which (`*`, or no `mayRefer`), of every earlier module (design part 2, section
-        // 7, rule 2 for the tool). One whose `mayRefer` is empty refers to no other module.
+        // 7, rule 2 for the tool). One whose `mayRefer` is empty refers to no other module, nor does an R14 place
+        // (placeMayRefer), in a file of any tool's writing.
         if (m === provider ? hearsAny : true) {
           for (const o of outside) {
-            const may = Array.isArray(o.mayRefer) ? o.mayRefer.map(String) : ['*'];
+            const may = placeMayRefer(o);
             if (!may.includes('*') && !may.includes(m)) continue;
             reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], outside: `${o.rule ?? 'outside'} ${o.file}:${o.line ?? ''}`,
               why: `${anyChange(m)}; a place outside the coding standard that may refer to ${may.includes('*') ? 'any earlier module' : may.join(', ')}`,
