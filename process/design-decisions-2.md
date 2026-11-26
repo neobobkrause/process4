@@ -535,6 +535,9 @@ question for later: describe Node from its published types rather than by hand. 
 for Bob" on option A, sent to PROCESS #18.
 On the second group (the four corrections put in PROCESS #19's session and on his page, option A to merge all four as one
 version): "Decision: A" — 26 November 2026, typed in PROCESS #19's session.
+On the uses files' rewriting (the tool type-checked each module from scratch, 15–20 s a module on civicsmith; shared
+files now read once and modules read in up to four processes, every file the same): "Decision: A, the speed fix" — 26
+November 2026, typed in PROCESS #19's session. Researched in `process/research/uses-rewrite-slow-26nov.md`.
 
 ### Subject: Development velocity
 

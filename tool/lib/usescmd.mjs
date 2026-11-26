@@ -6,15 +6,16 @@
 // 2026): a file names the tool that wrote it as information only, and every reader reads it as that tool meant it.
 // `uses <module>` writes one module's uses file into the checkout from the code there and prints what a conversion's
 // first step lists.
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { availableParallelism, freemem, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig, loadModules } from './config.mjs';
 import { loadTree } from './notice/model.mjs';
 import { readReferences, ANY } from './notice/refs.mjs';
 import { moduleMeans } from './notice/means.mjs';
-import { readerVersion } from './notice/ts.mjs';
+import { readerVersion, whileFilesStay } from './notice/ts.mjs';
 import { readUses, sameUses, usesPath, writeUses } from './usesfile.mjs';
 import { writeOut } from './notify.mjs';
 import { fail, git } from './util.mjs';
@@ -57,6 +58,35 @@ export function usesReading(tree, moduleId, commit) {
 }
 /** The uses file of one module, as the tool writes it. */
 export const usesData = (tree, moduleId, commit) => usesReading(tree, moduleId, commit).data;
+
+const READER = fileURLToPath(new URL('./usesworker.mjs', import.meta.url));
+/**
+ * How many processes read the uses files of n modules (civicsmith ARCH #28): one for up to 15 modules; otherwise one
+ * for each 8 modules, up to four, as the machine's cores and free memory (2 GB a reader) allow.
+ */
+export const readersFor = (n) => Math.max(1, Math.min(4, Math.floor(n / 8), availableParallelism(), Math.floor(freemem() / 2 ** 31)));
+
+/**
+ * The uses file of each of the modules named, by module, from a product written out (a commit, which stays as it is
+ * while it is read): read here, one module after another, with their programs sharing what they read of the files
+ * (notice/ts.mjs, whileFilesStay); or, with more than one reader, in that many processes at once (usesworker.mjs), each
+ * a share of the modules. Each module's file is the same either way: a module's reading depends on the product alone.
+ * A module a reader did not give back is read here.
+ */
+export function readAllUses(tree, ids, commit, dir, readers = null) {
+  const k = Math.min(readers ?? readersFor(ids.length), ids.length);
+  const got = new Map();
+  if (k > 1) {
+    mkdirSync(dir, { recursive: true });
+    const shares = Array.from({ length: k }, (_, i) => ids.filter((_, j) => j % k === i));
+    const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
+    spawnSync(process.execPath, [...heap, READER], { input: JSON.stringify({ root: tree.root, commit, shares, out: dir }), stdio: ['pipe', 'ignore', 'pipe'], maxBuffer: 1 << 26 });
+    for (const id of ids) { try { got.set(id, JSON.parse(readFileSync(join(dir, `${id}.json`), 'utf8'))); } catch { /* read here */ } }
+  }
+  const rest = ids.filter((id) => !got.has(id));
+  if (rest.length) whileFilesStay(() => { for (const id of rest) got.set(id, usesData(tree, id, commit)); });
+  return got;
+}
 
 /** Files changed between two commits. */
 const changedFiles = (root, from, to) => git(['diff', '--name-only', '--no-renames', from, to], { cwd: root }).split('\n').filter(Boolean);
@@ -104,8 +134,9 @@ function modulesToWrite(root, baseTree, headTree, base, head, job) {
  * uses files the branch's change asks for (modulesToWrite) where what they say differs from what the files hold (when
  * and by which tool a file was written is no difference), and commits them. Returns the modules written. No check of a
  * file is made.
+ * `readers`: how many processes read the modules (by default, readersFor).
  */
-export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
+export function writeUsesFiles(ctx, branch, { job = null, base = null, readers = null } = {}) {
   const root = ctx.root;
   const cfg = loadConfig(root, 'HEAD');
   if (!cfg || !loadModules(root, cfg, 'HEAD').length) return [];
@@ -133,8 +164,10 @@ export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
     let baseTree = null;
     if (base && base !== head && loadConfig(root, base) && loadModules(root, loadConfig(root, base), base).length) baseTree = loadTree(writeOut(root, base, tmp));
     const mods = base ? modulesToWrite(root, baseTree, headTree, base, head, job) : new Set(job && headTree.byId.has(job) ? [job] : []);
-    for (const id of headTree.modules.map((m) => m.id).filter((x) => mods.has(x))) {
-      const data = usesData(headTree, id, head);
+    const ids = headTree.modules.map((m) => m.id).filter((x) => mods.has(x));
+    const read = readAllUses(headTree, ids, head, join(tmp, 'uses-read'), readers);
+    for (const id of ids) {
+      const data = read.get(id);
       if (sameUses(readUses(root, id, { cfg: headTree.cfg, ref: 'HEAD' }), data)) continue;
       written.push({ module: id, file: writeUses(root, id, data, { cfg: headTree.cfg }), data });
     }

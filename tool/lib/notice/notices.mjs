@@ -12,6 +12,7 @@ import { closeSync, openSync, readFileSync, readSync, writeSync } from 'node:fs'
 import { pathToFileURL } from 'node:url';
 import { loadTree } from './model.mjs';
 import { notice } from './notice.mjs';
+import { whileFilesStay } from './ts.mjs';
 import { Fail } from '../util.mjs';
 
 /**
@@ -87,13 +88,16 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     const fd = openSync(out, 'w');
     try {
-      for (const m of mods) {
-        const report = notice(treeB, treeA, m.module, {
-          named: named.filter((n) => n.module === m.module || !n.module), filesChanged: m.filesChanged, conversion: m.conversion,
-          sameAs: sameAs.filter((x) => x.module === m.module || !x.module),
-        });
-        for (const line of noticeLines(report)) writeSync(fd, `${line}\n`);
-      }
+      // the two folders stay as they are while they are read: the programs of every module share what they read of them
+      whileFilesStay(() => {
+        for (const m of mods) {
+          const report = notice(treeB, treeA, m.module, {
+            named: named.filter((n) => n.module === m.module || !n.module), filesChanged: m.filesChanged, conversion: m.conversion,
+            sameAs: sameAs.filter((x) => x.module === m.module || !x.module),
+          });
+          for (const line of noticeLines(report)) writeSync(fd, `${line}\n`);
+        }
+      });
     } finally {
       closeSync(fd);
     }
