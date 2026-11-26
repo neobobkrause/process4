@@ -988,6 +988,48 @@ export function day() { return new Date('2026-11-25T00:00:00Z').getUTCDate(); }
   assert.ok(t.outside.some((o) => o.rule === 'R14' && /the test runner's, outside the module's tests/.test(o.what)), JSON.stringify(t.outside));
 });
 
+test('facility names: a package\'s as package:Export.member on any machine; the product\'s own members none; the host\'s unnamed kinds by their declaration', () => {
+  const PKGS = {
+    'node_modules/miniflare/package.json': { name: 'miniflare', types: 'dist/src/index.d.ts' },
+    'node_modules/miniflare/dist/src/index.d.ts': 'export declare class Miniflare { constructor(o: object); dispose(): Promise<void>; }\n',
+    'node_modules/@a/b/package.json': { name: '@a/b', types: 'index.d.ts' },
+    'node_modules/@a/b/index.d.ts': 'export declare namespace ns { function f(): number; }\n',
+  };
+  const CODE = `import { Miniflare } from 'miniflare';
+import { ns } from '@a/b';
+import { createHash } from 'node:crypto';
+/** @type {Record<'viewer' | 'id', string>} */
+const r = { viewer: 'x', id: 'y' };
+const { viewer, id } = r;
+/** @returns {Promise<void>} */
+export function stop() { return new Miniflare({}).dispose(); }
+/** @returns {string} */
+export function hash() { return createHash('sha256').update(viewer + id).digest('hex') + ns.f(); }
+/** @returns {object} */
+export function trap() { return new Proxy({}, {}); }
+`;
+  const list = facilityList(['miniflare:Miniflare', 'miniflare:Miniflare.dispose', '@a/b:ns', '@a/b:ns.f']);
+  // the same names, whatever folder the product is checked out in
+  const [r1, r2] = [1, 2].map(() => read(caseProduct({ ...PKGS, 'src/u/index.mjs': CODE, 'process/modules/facilities.json': list }), 'u'));
+  assert.deepEqual(r1.facilities, r2.facilities);
+  assert.deepEqual(r1.packages.filter((p) => p.package !== 'node'), [
+    { package: '@a/b', facility: '@a/b:ns' }, { package: '@a/b', facility: '@a/b:ns.f' },
+    { package: 'miniflare', facility: 'miniflare:Miniflare' }, { package: 'miniflare', facility: 'miniflare:Miniflare.dispose' }]);
+  const r14 = r1.outside.filter((o) => o.rule === 'R14').map((o) => `${o.line} ${o.what} | ${o.waitsOn}`);
+  // on the list, the package's facilities are no place; the product's own members (a kind Record makes) are no facility
+  assert.ok(!r14.some((x) => /miniflare|@a\/b|viewer|\bid\b/.test(x)), r14.join('; '));
+  assert.ok(!r1.facilities.some((f) => f === 'viewer' || f === 'id' || /__type/.test(f)), r1.facilities.join(', '));
+  // the Hash createHash returns: the host's, named by createHash, in the process
+  assert.ok(r1.packages.some((p) => p.package === 'node' && p.facility === 'node:crypto.createHash.update'));
+  assert.ok(r1.packages.some((p) => p.package === 'node' && p.facility === 'node:crypto.createHash.update.digest'));
+  assert.ok(!r14.some((x) => /createHash/.test(x)), r14.join('; '));
+  // Proxy: the host's, left out of its classification (study-references.md, row 23): a place that waits on the module, not ARCH
+  assert.deepEqual(r14, ['12 uses Proxy, a facility of the host the tool\'s classification leaves out | this module']);
+  // off the list, a package's facility waits on ARCH, by the list's name
+  const off = read(caseProduct({ ...PKGS, 'src/u/index.mjs': CODE, 'process/modules/facilities.json': facilityList([]) }), 'u');
+  assert.ok(off.outside.some((o) => o.rule === 'R14' && o.what === 'uses miniflare:Miniflare.dispose, a facility of miniflare the facility list does not name' && o.waitsOn === 'ARCH: the facility list'));
+});
+
 // ---- what a use does with a value of another module's kind (build text 2c, the uses file's `value`) ----
 
 const KINDS = `/** @typedef {{ id: number, name: string, tags: { label: string }[] }} Row */
