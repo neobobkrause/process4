@@ -193,6 +193,13 @@ export function notifyCmd(ctx, n) {
     git(['fetch', '-q', 'origin', after], { cwd: ctx.root });
   }
   const before = git(['rev-parse', `${after}^1`], { cwd: ctx.root });
+  // A conversion's merge tells no one (the owner's decision, 26 Nov 2026; design part 2, section 7): it changes no
+  // behaviour, so no user has anything to re-check. Nothing is read and nothing is written.
+  const merged = jobBlockOf(ctx.gh.comments(ctx.slug, n))?.data;
+  if (merged?.kind === 'conversion') {
+    ctx.log(`pull request ${n} is the conversion of ${pr.head?.ref?.match(JOB)?.[1] ?? merged.module ?? 'its module'}: a conversion's merge tells no one. Nobody is told.`);
+    return 0;
+  }
   const base = tempBase();
   let told = [];
   let tranche = null;
