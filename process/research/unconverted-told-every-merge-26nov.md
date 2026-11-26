@@ -129,3 +129,31 @@ lasting cure is option C of `rules-r15-r19-host-26nov.md` (Node from its publish
 label read as a value is a reader fault, folded into H (a label is never a value).
 Figures for the owner's account: runtime-limits 683 -> 18 places, bundler 1,316 -> 259, court-citations 799 -> 128,
 signatures 578 -> 121 (PRs 1712-1715, merged).
+
+## A sixth report: test-support #6 (PR 1711, via ARCH #32, ~23:16Z)
+
+Its words: "1. The tool's description of Node lacks node:zlib, node:http, node:sqlite and node:crypto.createCipheriv. It
+also lacks fs lstatSync, chmodSync, chownSync, openSync and closeSync, rmSync's maxRetries, Hash.digest() with no
+argument, new TextDecoder(label), Buffer.of, Buffer.readUInt32BE, Buffer.writeUIntLE, process.getuid,
+process.memoryUsage, Stats.mode, and NodeWritable write(Uint8Array), once and end(callback). Most of the remaining R1
+and S4 places come from these. 2. R2 does not count JSON a module's own spawned child prints, or a file the module
+wrote, as the module's own channel. It also flags get/set on a Map<string, unknown> the module declares itself. 3. `new
+Map()` on a declared type reads as Map<any, any> (R1). TS 5.5's inferred type predicates read as hand-written R3
+guards. Iterable/AsyncIterable defaults read as any. 4. R17 flags Object.assign from a value whose kind hides members,
+but not an object spread of the same value. R6 flags a literal passed through a conditional but not the same literal
+passed directly. 5. A deliberately bad input to a function stored in a closure and handed to assert.throws later is a
+disagreement, not "cannot tell". I rewrote those calls directly inside assert.throws." test-support: 3,868 -> 526
+places, merged.
+
+Bearing:
+- Point 5 is a refusal against the owner's rule (design part 2 §6: a value passed on purpose in an error assertion is
+  "cannot tell", never refused). A tool fault; the job worked round it by rewriting its tests.
+- Points 2-4 are the reader's precision against the standard as written; J widens to "the reader faults the jobs
+  report": each corrected where the tool contradicts build text 2c, judged one by one by a worker; where the tool misses
+  one form of a real place (point 4's spread, direct literal), the miss is recorded, not widened, at the owner's word.
+- Point 1, with signatures' list, makes about forty missing Node names from three jobs. **N: add the reported Node
+  features by hand** to the tool's description (from Node 22's documentation, as 70022da did), with H so any later gap
+  tells no one. Small. **C** (Node from @types/node, `rules-r15-r19-host-26nov.md`) closes the class but costs a second
+  dependency, about three times the reading time of each `uses`/`check`/`notify` run, and a rename of every host
+  facility that tells every converted module once. Recommended: N now, C not.
+Group now: A, G1, G2, H, J (widened), N. Recommended: all six.
