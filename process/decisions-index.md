@@ -37,3 +37,4 @@ owner's exact dated words and the reasons. Keep it current with each entry writt
 - Cleaning up Process4 before further improvements — `design-decisions-2.md`
 - What PROCESS reads in full — `design-decisions-2.md`
 - The limit on depth, and a fresh ROOT — `design-decisions-2.md`
+- A record that outgrows one comment, and a starting job's block — `design-decisions-2.md`

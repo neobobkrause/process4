@@ -223,7 +223,7 @@ test('a module with no uses file is told when it imports a provider, reads its f
   assert.match(told.open[0], /open has no uses file yet, and the tool cannot tell which modules it reaches \(readFileSync by a path the tool cannot read at src\/open\/index\.mjs:2\)/);
 });
 
-test('a conversion\'s merge tells no module by point 3; an ordinary job\'s merge does; a conversion whose means changed tells by point 1', () => {
+test('a conversion\'s merge tells no module by point 3; an ordinary job\'s merge does; a conversion that changed an item tells as any merge', () => {
   const LIMIT = (v) => `/** @type {number} */\nexport const LIMIT = ${v};\n`;
   // loose holds a place outside the standard (an untyped call of dates); plain has no uses file yet and imports dates
   const base = withUsesFiles(files({
@@ -244,10 +244,12 @@ test('a conversion\'s merge tells no module by point 3; an ordinary job\'s merge
   const conv = notice(b, a, 'dates', { conversion: true });
   assert.deepEqual(conv.told, []);
   assert.match(conv.summary, /nobody is told/);
-  // a conversion that changes a constant's value: its users told by point 1, still no one by point 3
+  // a conversion that changes a constant's value: it does not change nothing, so it tells as any merge: its users by
+  // point 1, and the place outside and the module with no uses file by point 3
   const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + LIMIT(6) });
   const conv2 = notice(b2, a2, 'dates', { conversion: true });
-  assert.deepEqual(conv2.told.map((t) => [t.user, t.reasons.map((x) => x.item ?? x.found)]), [['orders', ['LIMIT']]]);
+  assert.deepEqual(conv2.told.map((t) => t.user).sort(), ['loose', 'orders', 'plain']);
+  assert.deepEqual(conv2.told.find((t) => t.user === 'orders').reasons.map((x) => x.item ?? x.found), ['LIMIT']);
 });
 
 // A merged pull request whose merge commit is real.

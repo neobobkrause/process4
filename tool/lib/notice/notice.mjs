@@ -621,9 +621,10 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   const hitsOf = new Map();
   // A conversion's merge tells no place outside the standard and no module with no uses file of any change to the
-  // provider's files (point 3): its statement that it changes no behaviour stands there as a `same` record stands for an
-  // item. Points 1 and 2 still tell; so do mocks and order faults.
-  const hearsAny = filesChanged && !conversion;
+  // provider's files (point 3) while no item of the provider changed: its statement that it changes no behaviour stands
+  // there as a `same` record stands for an item. A conversion that changes an item tells as any merge. Points 1 and 2
+  // still tell; so do mocks and order faults.
+  const hearsAny = filesChanged && !(conversion && !itemsOf(provider).length);
   // A kind a module wrote as a copy of an earlier module's kind (S4, a place listing what it `relabels`): a module that
   // reads the copy reads the original through it, and hears of the original's changes (build text 5, section 6, "by
   // any route"), until the copy is written as the original's kind.
