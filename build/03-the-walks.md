@@ -2,9 +2,9 @@
 
 Length: 159 lines. Last section: "8. To try first in the trial repository, smallest first".
 
-**Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below) and answers item 9 of its part 10, section 2. It changes no rule of the design and adds no test, check, gate, review or stop. Words in quotation marks are the owner's unless a line says otherwise. The tool's commands named here are in build text 1b, section 4. Its sections begin at 2.
+**Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below). Words in quotation marks are the owner's unless a line says otherwise. The tool's commands named here are in build text 1b, section 4. Its sections begin at 2.
 
-Marks: **Decided here:** a choice made in this text, with what it gives and costs. **Unproven:** never shown to work.
+Marks: **Decided here:** a choice made in this text. **Unproven:** never shown to work.
 
 ## 2. Areas
 
@@ -20,7 +20,7 @@ The design fixes what an area is: for the internal walk a screen or a named grou
 4. That is the candidate list. ARCH adds an area where it doubts how a change will show (the design, part 3, section 3), and may take one away. Each added or removed area carries one line of reason.
 5. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
 
-Gives: the list is made the same way every round, and the judgment in it is visible. Costs: a deep module can pull in most of the product, and only ARCH's judgment trims that. **Unproven:** that requirement text and step headers name enough for the list to be right.
+**Unproven:** that requirement text and step headers name enough for the list to be right.
 
 ## 3. Steps
 
@@ -36,26 +36,23 @@ expects: <the document's own words for what must be so>
 - **Who and when.** The module's job writes the step in the same pull request that meets or changes the requirement. A job given a flaw corrects or adds the step that shows it. ARCH, writing requirement text, names the screen or journey step a requirement serves, by the text's ending (build text 2, section 4), so the job knows what to follow.
 - A step runs only in a walk. A job may run its own step on its own machine while it works; nothing requires it and nothing reads the result.
 - The program that runs steps and serves the product on one machine is itself product code in a module ARCH names. A journey's order comes from the step numbers in its page.
-- A step that proves no requirement, or serves the process, is not allowed (the design, part 2, section 6).
 
-Gives: a step changes with the code it proves, under the rule that a job writes only its own module; no walker module gathers every flaw. Costs: a journey's steps are spread over many modules; a journey step no module's requirement covers has no home until ARCH writes the requirement.
-
-**Decided here:** a walk is measured against the document, not against the steps. The walking session reads each page of its areas in full. Whatever the page says that no step covers, the session walks by hand in its browser. Gives: a missing or loosened step is met by the walk itself, with no check added. Costs: session time; and for a part walked by hand the record is the session's own words.
+**Decided here:** a walk is measured against the document, not against the steps. The walking session reads each page of its areas in full. Whatever the page says that no step covers, the session walks by hand in its browser.
 
 ## 4. The internal walk
 
 1. ARCH starts each walking session from the newest commit of the tranche branch. Its starting instructions, which the tool fills in (`walk text`), name the walk, the walk issue and the process config, where its two commands are; its areas stay in the round record, which it reads (`state read`).
-2. The session builds the product on its own machine. Built files are not committed.
+2. The session builds the product on its own machine.
 3. It serves the product there with the product's own local command, with the product's stand-in wherever a screen needs an AI answer, and with no secret.
 4. For each area it reads the Screens page in full, runs that page's steps, and walks by hand what no step covers.
 5. It compares what is on each screen, each state the page names, and where each action leads, with the page's words. A difference is a flaw of the first kind. Anything else it notes is an observation.
 6. It writes its record (section 6) and sends ARCH one message.
 
-A walking session starts no workers. At the fill level it writes its last lines in the walk issue, tells ARCH and stops, and ARCH gives the areas not yet walked to a fresh session (the design, part 4, section 11). It has no commit and no branch.
+Workers and the fill level: the design, part 4, section 11. It has no commit and no branch.
 
-**Decided here:** the process config holds two commands (build text 2, section 7, `walk`): the one that builds and serves the product on one machine, and the one that runs named steps against an address. A walking session reads them there: its starting text names the process config, and is filled in with names and addresses only (the design, part 4, section 11). Costs: two more entries in the process config.
+**Decided here:** the process config holds two commands (build text 2, section 7, `walk`): the one that builds and serves the product on one machine, and the one that runs named steps against an address.
 
-**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. Gives: room inside the time a session can run one thing (the design, part 7, section 1). **Unproven:** all of this section.
+**Decided here:** one area is one command, started in the background. Where an area's steps run longer than twenty minutes, ARCH makes it two areas. **Unproven:** all of this section.
 
 ## 5. The external walk
 
@@ -65,28 +62,28 @@ A walking session starts no workers. At the fill level it writes its last lines 
 - The walking session takes its own copy through the product's own first-use door and so makes its own sign-in. No sign-in passes between sessions or is written anywhere.
 - The owner enters the copies' hosts once among the cloud environment's allowed hosts (build text 4, section 4). The browser is on the session's machine and uses its proxy.
 
-Gives: journeys that change data cannot disturb another session's journeys; fixed names mean the allowed hosts are set once. Costs: several deployments each round, of unknown length, and more of the account's room. If that is too much, the other form is one copy, with ARCH giving each session journeys that do not touch the same data. **Unproven:** every part; and whether a product's first-use door allows it is a fact of the product.
+**Unproven:** every part; and whether a product's first-use door allows it is a fact of the product.
 
 **Following a journey.** The session reads the journey's page in full, runs its steps in order from start to end, and walks by hand what no step covers. A journey that cannot be taken to its end is a flaw of the second kind, recorded at the step where it stopped. A journey that ends with a result that is not what the page says is a flaw of the third kind.
 
 **Journeys that use AI.**
 
 - Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked. A tranche may end with such journeys recorded not walked (the owner's decision).
-- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision).** Costs: this is a session's judgment and can differ between sessions.
+- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision).**
 
 **How many sessions, and the account's limits. Decided here:**
 
-- The number of external walking sessions is the least of: the free slots, the number of external areas, and a figure in the process config for the most external walkers (`walk.most_external_walkers`). That figure begins at one. ARCH raises it by its own judgment, with the owner's caution before it: "be careful that there aren't too many external walkers to cause the Cloudflare system to exceed limits of the account".
+- The number of external walking sessions is the least of: the free slots, the number of external areas, and a figure in the process config for the most external walkers (`walk.most_external_walkers`). That figure begins at one. ARCH raises it by its own judgment (the owner's caution: the design, part 9, section 1).
 - Each walking session drives one browser and follows one journey at a time.
 - A refusal by the hosting provider for a limit is not a flaw. The session stops, records the area as not walked with the provider's words, and tells ARCH, which lowers the figure.
 
-Gives: the owner's caution is kept by starting low. Costs: early external walks are slow. **Unproven:** all of it. What bears the cost of the AI account's use in a walk is not known.
+**Unproven:** all of it. What bears the cost of the AI account's use in a walk is not known.
 
 ## 6. The record, a flaw and an observation
 
 **Decided here: where.** For each walk ARCH's session, by the tool (`walk open`), opens one issue in the product's repository, the walk issue, titled with the tranche, the round and the kind of walk, and writes its number in the round record. Each walking session writes one comment there by the tool (`walk write`), its own, rewritten in place as it goes. It sends ARCH its message only after its last write.
 
-Gives: what ARCH needs is saved before the message; each comment has one writer; nothing is a file or a commit; the tranche report can count flaws from GitHub. Costs: one closed issue for each walk stays on GitHub, as a job's pull request does. The design's rule on messages names the walk's own issue (part 4, section 8). **Unproven:** the size a comment holds.
+**Unproven:** the size a comment holds.
 
 **The comment's form.**
 
@@ -128,7 +125,7 @@ Among observations: a part of a page that no step covers and that matched when w
 
 1. **Work for a named module.** It names the module: the one in the step's requirement line; for a part walked by hand, the module that owns the screen's code in the module list; where the step itself is wrong, the module that holds the step. Where no requirement covers what the document says, ARCH first writes one, marked not yet met. ARCH's session, by the tool, writes the flaw's number, the module and a link to the comment into the waiting-work record (`state write`). The job block on its pull request carries them, and the job reads the flaw where it lies (`walk read`).
 2. **The document is wrong.** ARCH gives it to the UX lane, which corrects the page. It is named in the account after the round.
-3. **It is none of the three things.** ARCH sets it aside with one line of reason. **Decided here:** each flaw set aside is named in the account after the round with that reason. Costs: ARCH judges entries about a product it designed; the account is what lets the owner see it.
+3. **It is none of the three things.** ARCH sets it aside with one line of reason. **Decided here:** each flaw set aside is named in the account after the round with that reason.
 
 Observations go into the same account. ARCH may write a requirement from one. When ARCH has placed every entry, its session closes the walk issue (`walk close`).
 
@@ -139,7 +136,7 @@ Observations go into the same account. ARCH may write a requirement from one. Wh
 - every area in the round record has a line, written by the session given it, saying "walked to the end";
 - no flaw stands: every flaw written was set aside by ARCH with its reason, or none was written.
 
-An area with no line, or marked not walked, means the walk is not finished. ARCH gives the area to a session again. That is the design's "the areas it was given", and no added stop. A flaw given to the UX lane still counts in that walk: the document was wrong, and the corrected page is walked in the next round.
+An area with no line, or marked not walked, means the walk is not finished. ARCH gives the area to a session again. A flaw given to the UX lane still counts in that walk: the document was wrong, and the corrected page is walked in the next round.
 
 **The tool judges nothing.** ARCH writes the outcome, through the tool, into the round record: each area as clean, flawed or not walked, and one line for the walk, without flaws or not. From the walk the tool needs only fixed-form lines it can copy: the hidden mark, the area lines, and each flaw's number with the module ARCH named. It opens and closes the walk issue (`walk open`, `walk close`), writes a walking session's comment (`walk write`), prints the issue (`walk read`), and writes ARCH's placements into waiting work and ARCH's lines into the round record (`state write`). These are acts of the design's list (part 6, section 5). It never judges a flaw's words and never refuses a deployment or an end of tranche. ARCH's session deploys after ARCH has written that the internal walk is without flaws.
 

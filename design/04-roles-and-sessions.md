@@ -11,10 +11,9 @@ Length: 152 lines. Last section: "11. Smaller rules a session needs".
 - **A lane** is a standing design responsibility for one area of a product (section 3).
 - **PROCESS** is where the process is changed, and the only place (part 6).
 - **A job** is a session started to do one module's work (part 2).
-- **A walking session** is started by ARCH for a walk (part 3) and uses a job slot (part 2, section 5).
-- **A worker** is a helper that a long-lived role or a job starts inside itself (part 1, section 6).
+- **A walking session** is started by ARCH for a walk (part 3).
 
-What the tool does and what ARCH keeps: whatever has one right answer is done by the tool: who takes a free slot, when a notice is sent and to whom, whether a round's jobs are done. ARCH's session keeps what needs judgment. The share of ARCH's work that is passing things on is measured on the first tranche. The tool chooses the next job and writes its starting instructions; ARCH's session makes the start, because only a session can start a session.
+What the tool does and what ARCH keeps: whatever has one right answer is done by the tool: who takes a free slot, when a notice is sent and to whom, whether a round's jobs are done. ARCH's session keeps what needs judgment. The share of ARCH's work that is passing things on is measured on the first tranche. The tool chooses the next job and writes its starting instructions; ARCH's session makes the start.
 
 ## 2. Who starts whom
 
@@ -37,9 +36,7 @@ What the tool does and what ARCH keeps: whatever has one right answer is done by
 
 The owner's rulings:
 
-- ARCH starts a product's design lanes.
 - A lane decides design in its area. ARCH decides whether and when a design is built and whether it can be built as given. A design ARCH cannot build goes back to the lane.
-- The owner works with a lane through its design pages.
 
 - A lane has a folder of design knowledge in the product's repository, which it owns. It reads its area whole. It delivers designs, never product code.
 - The owner identifies the need for a lane, and ARCH opens it. The UX lane is always there. A product's other lanes are named in its process config.
@@ -48,10 +45,9 @@ The owner's rulings:
 - A lane decides design and wording in its area, within the product's principles.
 - The owner keeps the product's direction, audiences and principles. A lane decision that would change one comes to him with options and the lane's recommendation.
 - Questions from the work reach a lane only through ARCH, which passes each on with enough context to decide. A job never talks to a lane, and lanes never talk to each other.
-- The UX lane owns the Screens document and the journeys.
 - A lane ends when the owner or ARCH says its area needs no further design. Its folder and research stay.
 
-A lane session uses no job slot. A fresh lane session begins by reading the index of the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, as a claim naming no session yet; once the start returns, the starter writes the same entry again with the session's address. The tool accepts that one fill-in and refuses to write a second session while the first is recorded as live.
+A fresh lane session begins by reading the index of the lane's research and the links to its design pages. One session for each lane is held by the lanes record. The record is written before the session is started, as a claim naming no session yet; once the start returns, the starter writes the same entry again with the session's address. The tool accepts that one fill-in and refuses to write a second session while the first is recorded as live.
 
 The questions ARCH puts to a lane, and its answers, are not kept as a running record. What a lane decides is written into its folder as design.
 
@@ -110,7 +106,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 - After any full stop there is one way back: the owner starts ROOT, and ROOT rebuilds everything from the shared state and the repository.
 - An edit to the owner's approvals goes with a restart of ROOT by this way. What it does to a running round: the owner first tells the coordinator to stop, and open jobs push and stop; he lands the edit (part 6, section 2) and starts ROOT; ROOT starts the standing roles afresh; ARCH starts a new session for each module with an open pull request, continuing from its branch. The round goes on from the round record.
 - A restarted ROOT first archives every session still named in the roles and lanes records, except PROCESS, which the owner starts and refreshes (section 5), and every open job's session, and then starts the roles afresh.
-- A switch of account adds only the owner's own acts in the new account, and includes confirming that the new account's cloud environment, under which the sessions will run, carries the process's permissions-management settings (part 7, section 5). **Unproven:** an account switch that loses no work.
+- A switch of account adds only the owner's own acts in the new account (part 1, section 3; part 7, section 5). **Unproven:** an account switch that loses no work.
 
 ## 8. Messages
 
@@ -129,15 +125,14 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 - **A loop that would not end.** A flaw handed back twice is decided by ARCH as a design question (part 2, section 4). A job blocked twice by the same other module is the same: the boundary between the two is an architecture bug (part 2, section 8). A design that ARCH has sent back to a lane twice comes to the owner as a question, with both views. A chain of notices ends of itself, because a module is used only by modules after it. A tranche's rounds end on the owner's word (part 3, section 5), and takeovers by the watcher at the limit on depth (section 6). In each case other work goes on.
 - **A session dies or stops.** ROOT's hourly wake finds it, and it is woken or replaced as section 5 says.
 - **A stop nothing called for** is a process fault. Some need no change to Process4, for example a stop caused by a compaction; then the stopped session is woken or replaced. Each such case may be studied and reported to PROCESS. While Process4 is on trial every such stop is reported to PROCESS; the simpler handling applies once it is beyond trial.
-- **The process itself has a fault.** No session building a product fixes it or works round it (part 6, section 6).
-- **The process is completely blocked.** The owner gets one plain message with a numbered list of what is his to do.
+- **The process itself has a fault:** part 6, section 6.
 - **A stop on the owner's word.** He tells the coordinator, which writes the stop record and tells ARCH, which interrupts each job. It is lifted the same way: he tells the coordinator, which clears the record and tells ARCH, which wakes or replaces each job from its pull request. A stop takes effect in the turn in which a session receives it. ROOT reads the stop record at every wake, so that the hourly wake does not undo it.
 
 ## 11. Smaller rules a session needs
 
 - **Starting texts** are kept in the process's repository beside the tool, one for each role, at the product's fixed version. PROCESS writes and changes them, as a process change. The tool fills in a job's and a walking session's. This design is kept there too, in a folder of its own beside the build texts, and a session reads it from its copy of the process.
 - **Who directs whom.** The session that started a session directs it. The owner directs every session he speaks to. The coordinator's message carrying the owner's marked words is an instruction to ARCH.
-- **Naming a role to message it.** A session resolves a role to its current session address from the roles record, and a lane from the lanes record, and messages that address, never one it remembered (section 4, "sessions name roles, not session addresses"). A record in another repository cannot be read (part 7, section 3): the live PROCESS is found in the product's own roles record, and PROCESS finds each product's ROOT in its products registry (build text 5, section 4). A role whose session the record does not yet name cannot be messaged until it is recorded.
+- **Naming a role to message it.** A session resolves a role to its current session address from the roles record, and a lane from the lanes record, and messages that address, never one it remembered (section 4, "sessions name roles, not session addresses"). The live PROCESS is found as section 5 says; PROCESS finds each product's ROOT in its products registry (build text 5, section 4). A role whose session the record does not yet name cannot be messaged until it is recorded.
 - **Naming a session.** Every session carries a standard name, so the owner can see each one and its lineage. A session that holds a role is named `<product> <role> #<generation>`; PROCESS, which serves no one product, `PROCESS #<generation>`. The generation counts that role's sessions on that product — one for the first, one more at each refresh, replacement or takeover — and for a long-lived role it is kept in that role's handover record, so it continues across a full stop and never resets. A job, which holds no role, is named `<product> <module> #<n>`, `<n>` its job number (part 2, section 3); a walking session `<product> walk #<number>`, its walking-session number (part 3, section 3). A session that keeps a handover record names itself on start, from the generation there; ARCH names a job and a walking session when it starts them. How a name is set is in the harness part.
 - **ROOT's start.** The owner's plain prompt tells ROOT to fetch the process's copy and read ROOT's starting text. ROOT then reads the roles record. If it names sessions, this is a restart, and ROOT archives them first (section 7). ROOT makes its own scheduled wake; the watcher makes its own.
 - **A stopped session** is first woken by a message from ROOT. If it has not answered by ROOT's next wake, ROOT replaces it, or asks ARCH to where ARCH started it.
@@ -147,6 +142,6 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 - **A natural pause** is a moment between two pieces of work, with nothing half done and everything saved.
 - **What ARCH learns from the coordinator** (a held or approved merge, a module put first, a new slot number, a request for a full external walk) comes by the standing notes, which the tool reads before every merge, and a message.
 - **The one message when the process is completely blocked** is sent by the coordinator, or by ROOT where the coordinator is what has stopped.
-- **The tool** is built, and only PROCESS changes it, as a process change merged on the owner's word (part 6, section 7). The owner merges none of its pull requests.
-- **"At most ten rules"** counts the numbered rule lines of a starting text, the lines that say what the session never does among them. A line may hold closely related rules. A starting text must name every act its session may take, because a session declines an act its starting text does not name, and that alone is more than ten single rules for most roles. What keeps a text short is its size limit. The owner left the count to the AI. The size limit applies to the role's instructions as filled in for a session, with the one mechanical fetch line (the clone command the session runs once and never rereads) left out of the count. What is filled in is names and addresses only. A list (the work placed, the uses a notice carries, a walk's areas) stays in the pull request or the round record, which the text names.
+- **The tool:** only PROCESS changes it, as a process change merged on the owner's word (part 6, section 7). The owner merges none of its pull requests.
+- **"At most ten rules"** counts the numbered rule lines of a starting text, the lines that say what the session never does among them. A line may hold closely related rules. A starting text must name every act its session may take. The owner left the count to the AI. The size limit applies to the role's instructions as filled in for a session, with the one mechanical fetch line (the clone command the session runs once and never rereads) left out of the count. What is filled in is names and addresses only. A list (the work placed, the uses a notice carries, a walk's areas) stays in the pull request or the round record, which the text names.
 

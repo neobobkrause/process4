@@ -13,7 +13,7 @@ Length: 83 lines. Last section: "7. Known weaknesses of AI sessions".
 
 - The process owns what can be proven in the repository and on the machines that run the tests.
 - Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. A product's production signing keys are needed to produce the installer as part of the release ceremony (part 3, section 6). They are kept among the secret values of the environment the product's sessions run under, and they stay there. The release process may also use a release token with the privileges to publish.
-- For those three the process provides written procedures (part 3, section 8). The owner, or whoever runs the product, carries them out.
+- For those three the process provides written procedures (part 3, section 8).
 
 ## 3. The owner's acts
 
@@ -60,7 +60,6 @@ Length: 83 lines. Last section: "7. Known weaknesses of AI sessions".
 - Every problem is either an architecture bug or an implementation error. An architecture bug is corrected by rewriting the part of the design it belongs to, never by appending to it; an implementation error is corrected in the code or text that has it.
 - A workaround is not a fix.
 - Two kinds of refusal are kept apart. An act the permission checker refused is never retried elsewhere. An act a session declined only because its instructions did not name it may be given to a new session whose instructions do.
-- A third case is kept apart from both: a non-substantive refusal of a sanctioned act is made again, cleanly and bounded, as part 6, section 4 says. This is not working a refusal around (section 7).
 - Workers are the standing way a long-lived role keeps heavy reading out of its own context: a narrow brief, a short answer in a set shape, and the worker ends when its work is done. A brief may hand the worker a decision to make, which it reports with its grounds. No worker is briefed to review another session's work.
 - A hard open question gets a session of its own with a written brief and a bounded task, and ends with a written result once the result is usable.
 - A session saves its work to the repository before its turn ends.
@@ -77,7 +76,7 @@ Process4 steps around the situations where a known weakness does harm, and does 
 | A claim is made that was not checked | It is about to tell the owner that something works or will work | Says what is proven, by what, and what is not (section 5) |
 | Conversation is taken as a decision | The owner says something that sounds decided, without the mark | Asks once whether to record it (section 4) |
 | Caution grows the process | It is about to add a test, check, gate, review or stop, or to write a demand into another session's instructions | Does not. Reports a process fault if one exists (part 6, section 6) |
-| A refusal is worked around | The permission checker refuses an act | Does not reword it or hand it on. Three refusals in a row stop the session, which is replaced. A non-substantive refusal of a sanctioned act is re-attempted cleanly and bounded (part 6, section 4), which is not working it around |
+| A refusal is worked around | The permission checker refuses an act | Does not reword it or hand it on. Three refusals in a row stop the session, which is replaced. A non-substantive refusal: part 6, section 4 |
 | A successor acts from memory it does not have | A session starts as the new holder of a role | Starts only from the shared state and the repository |
 | The same correction fails again and again | A job's second correction fails | The job is replaced by a fresh session, which first works out why the corrections were made (part 4, section 10) |
 | Work stops with nothing calling for it | It is about to end its turn while work remains that it can do | Goes on. A stop nothing called for is a process fault (part 4, section 10) |

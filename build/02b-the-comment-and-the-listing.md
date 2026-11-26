@@ -2,13 +2,13 @@ Length: 124 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
-Sections 5 and 6 of build text 2, kept in their own file so that each stays under 24,000 bytes; their numbers are kept. Sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, whose section 1 names the proof ("proof:" paths below are in its folder), and section 10, the coding standard, in `02c-the-coding-standard.md`. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.** It adds no check, gate, review or stop; where it and the design (`design/`) differ, the design rules.
+Sections 5 and 6 of build text 2, in their own file; their numbers are kept. Sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, whose section 1 names the proof ("proof:" paths below are in its folder), and section 10, the coding standard, in `02c-the-coding-standard.md`. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.**
 
-Marks: **Decided here:** a choice made in this text, with what it gives and what it costs. **Unproven:** never shown to work in this form. Every example is made up: a product in plain JavaScript with modules `dates`, `pricing` and `orders`.
+Marks and examples: as build text 2.
 
 ## 5. A structured comment
 
-These are the proof's forms (proof: `product/money/src/index.mjs`, and `bookings` and `door` beside it), for plain JavaScript under TypeScript's reader, the only reader tried. Comments are JSDoc blocks, which running code never sees.
+These are the proof's forms (proof: `product/money/src/index.mjs`, and `bookings` and `door` beside it), for plain JavaScript under TypeScript's reader. Comments are JSDoc blocks, which running code never sees.
 
 **What a module accepts and hands back.** Each export of the module's interface files (section 6) has a block with `@param` and `@returns`, or `@type`. A kind with a name is a `@typedef`. The kinds of error raised are `@throws {Kind}`. A kind of another module is brought in by `/** @import { Price } from '../pricing/index.mjs' */`.
 

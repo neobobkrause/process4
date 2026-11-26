@@ -7,10 +7,9 @@ Length: 91 lines. Last section: "6. Words used".
 ## 1. What this is
 
 - This is the design of Process4, in eleven parts. It is "the process4 requirements" and is what sessions follow.
-- It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from. The owner's decisions, in his exact dated words, are kept in the record of decisions (part 5). The reasons and the evidence are in the background document.
+- It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from.
 - It names no product. A product's own facts and the steps to bring it under Process4 belong to that product's conversion plan, which the product's onboarding lane writes (part 6, section 8).
 - Parts 1 to 6 name no hosting provider and use harness-neutral terms. A harness is named there only in part 5, where a figure comes from one. Part 7 says what carries each term on Claude Code, part 8 on Codex, part 9 on Cloudflare.
-- Each part is kept under the single-text maximum, and the eleven together under the set maximum (part 5).
 
 ## 2. Status
 

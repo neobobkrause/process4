@@ -18,7 +18,7 @@ Everything in this part is specific to Claude Code.
 | Secret values, the deploy token and a product's production signing keys among them | Settings of Claude's cloud environment, entered by the owner. The only route measured to work |
 | Instruction files loaded at start | `CLAUDE.md` and `settings.json`. The product's `CLAUDE.md` stays under thirty lines |
 | Worker | A helper the session starts inside itself. A worker cannot start workers |
-| Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way); where a session cannot read its fill, it refreshes only at a natural pause (part 5, section 2) |
+| Fill level | A session reads how full its context is from the harness's own usage data (`get_session`, field `context_usage`), the route the role sessions use. A bare headless `claude -p` reader cannot see it and guesses (early, the safe way) |
 | Compaction | A full context is shrunk automatically, which loses what was read |
 | The time a session can run one thing | Two hours for one command the session runs in the background, which it waits for within its turn; ten minutes for one in the foreground. A command a worker starts ends with the worker. A command started in the foreground and then moved to the background was seen cut at thirty minutes. Whether a background command goes on while the session waits between turns is not known |
 | Archiving | A session can be archived and unarchived |
@@ -26,15 +26,15 @@ Everything in this part is specific to Claude Code.
 | The owner's standing page; a lane's design pages | Pages on claude.ai |
 | The owner speaking to a role | He opens that role's session and types |
 | Grouping sessions under a product | A tag naming the product, set on each session when it is started. Sessions can be listed by tag. Workers are not sessions and so carry none. Not measured |
-| The owner seeing each open job | Each job's session is named `<product> <module> #<n>` (the naming row below; part 4, section 11), so each open job is told apart by its module, and the list of sessions shows each one's name and whether it is working, waiting or finished. Whether the list he sees meets the rule is not measured |
-| Naming a session | A session's name is set with the harness's set-session-title. A session that keeps a handover record names itself on start, from the generation in that record; ARCH names a job and a walking session when it starts them; the owner-started ROOT and PROCESS name themselves. Seen to work in Auto mode: PROCESS sessions named themselves, and the trial's ROOT, watcher, ARCH and coordinator sessions carry their standard names |
+| The owner seeing each open job | Each job's session carries its standard name (part 4, section 11), so each open job is told apart by its module, and the list of sessions shows each one's name and whether it is working, waiting or finished. Whether the list he sees meets the rule is not measured |
+| Naming a session | A session's name is set with the harness's set-session-title. The owner-started ROOT and PROCESS name themselves. Seen to work in Auto mode: PROCESS sessions named themselves, and the trial's ROOT, watcher, ARCH and coordinator sessions carry their standard names |
 | Starting instructions | The prompt a session is started with |
 | Model and effort passed on | The starter names both when it starts a session. Not measured |
 | Planned replacement | The parent starts a fresh session and archives the old one |
 | The limit on depth | One session reported a limit of eight. It bounds how many times a watcher can take over before the owner starts a fresh ROOT (part 4, section 6) |
 | The shared state | Not carried by the harness. It is on GitHub (part 4, section 4) |
 | Connecting the harness to GitHub | The owner connects his GitHub to Claude and installs Claude's GitHub App on the repository |
-| A session's browser | A browser on the session's own machine. Not shown to reach the development site |
+| A session's browser | A browser on the session's own machine. |
 | A session's copy of the process | A plain clone of the process's public repository into a folder outside the session's working files. Sessions run with full rights, so the file system does not stop a write to it; that no session edits it is held by text |
 | What the subscription covers; cost | **Open (a session):** where cost can be read is not named anywhere read |
 
@@ -43,7 +43,7 @@ Everything in this part is specific to Claude Code.
 As measured on Claude Code:
 
 - A plain read returns a file whole up to the harness's mechanical cut, about 25,000 tokens: about 76,000 bytes of dense governing prose, and about 63,000 bytes of table-dense prose. The single-text maximum on Claude Code, 60,000 bytes, sits below both (part 5, section 2).
-- A file past the cut comes back as a partial read. In this harness version the tool result carried no notice of the cut, so a session that did not compare the lines returned against the file's length would act on part of a text. The guard is keeping the single-text maximum below the cut, which 60,000 is.
+- A file past the cut comes back as a partial read. In this harness version the tool result carried no notice of the cut, so a session that did not compare the lines returned against the file's length would act on part of a text.
 - A file over 256 KB is refused, with no lines returned.
 
 ## 3. Not proven on Claude Code
@@ -69,7 +69,7 @@ Before these acts PROCESS starts the product's onboarding lane (part 6, section 
 4. Make the rule for every branch: no deleting and no overwriting, with no one excepted.
 5. Connect Claude to GitHub as the second account, and install Claude's GitHub App on both repositories. Sessions act on GitHub through this connection, so no GitHub token is made (part 6, section 8).
 6. Make the product's tokens, once, each with every permission the product's development will need at every stage (part 1, section 3); the lane's page lists them. Enter the secret values in the fields of Claude's cloud environment settings page. A session checks that environment carries the process's permissions-management settings; where they are missing, he approves with a click the change it proposes (section 5).
-7. Decide his approvals in PROCESS's session, drafted there on his request or typed by him, and land them, with the forbidden commands, on the process repository's main branch by clicking Merge on the pull requests PROCESS opens (part 6, section 2).
+7. Decide his approvals in PROCESS's session and land them, with the forbidden commands, on the process repository's main branch (part 6, section 2).
 8. Do the same for the product, in a plain session he starts on the product's repository for this one act, with the lane's brief. Before the product has a coordinator, that session drafts the product's approvals (part 6, section 2). It also writes the product's first Process4 files — `process.json`, the module list, the required-run workflow and the copy of the forbidden commands — by pull request into main, and then makes the tranche branch from main's newest commit, also where main already holds an earlier history.
 9. Start ROOT: the product's repository alone, the tranche branch, Auto mode, a plain prompt.
 10. Once the required run has reported for the first time, make the rule for the main and tranche branches: change by pull request only, with that run passing, replacing any check an earlier process required there.

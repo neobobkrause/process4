@@ -2,33 +2,24 @@ Length: 191 lines. Last section: "8. Unproven, and not settled here".
 
 # Process4 build text 5: the records, and what the tool follows
 
-Beside the design (`design/`, "the design"). **Status: proposed. Built in the tool, not run in a process in force; nothing is in force.** It answers item 12 of the design's part 10, section 2. It adds no rule to the design, and no test, check, gate, review or stop: the test record's hold on `ready` and `merge` is the design's (part 2, section 6). Where this text differs from the design, the design rules. Every example is made up.
+Beside the design (`design/`, "the design"). **Status: proposed. Built in the tool, not run in a process in force; nothing is in force.** The test record's hold on `ready` and `merge` is the design's (part 2, section 6). Every example is made up.
 
 Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrule any. **Unproven:** never shown to work.
 
 ## 1. The issue that carries the shared state
 
 - One issue in the product's repository, titled `Process4 shared state`, with the label `process4-state`. Its body is two fixed lines: what it is, and that only the tool writes it.
-- Each record is one comment. Its first line is the hidden mark `<!-- process4-record: <key> -->`. **Decided here:** after the mark comes one JSON block; a handover has its plain words after the block; an empty record is the mark and `{}`. Gives: every command reads fixed fields. Costs: the owner reads JSON on the page.
+- Each record is one comment. Its first line is the hidden mark `<!-- process4-record: <key> -->`. **Decided here:** after the mark comes one JSON block; a handover has its plain words after the block; an empty record is the mark and `{}`.
 - Times are UTC, written `2026-11-20T09:00Z`. A session is named by the address its harness gives it. No record uses "@".
 - **Finding it.** Once in a session the tool lists open issues with the label and takes the lowest number. `state write --create`, run by ROOT, makes the label, the issue and the comments of section 2 that are not a lane's, each empty, and locks the issue.
 - **Reading.** One call lists the issue's comments, 100 to a page. The tool keeps those whose first line is a mark, with each comment's id. A missing key reads as empty. `state read [<record>]` prints one or all. With `--repository <address>` it reads the issue of another repository (section 4).
 - **Writing.** `state write <record> --from <file>` sends the whole new body in one request to that comment. A key with no comment yet is created. The tool prints the record's size and refuses none for size.
-- **A failed write.** On a rate-limit answer the tool waits as GitHub says and tries again up to four times (the design, part 4, section 4); the same on a server or network failure. A comment that is gone is made afresh. Anything else, or tries used up: exit 1 with GitHub's words, the record stays as it was, and the session reports a process fault. No list of later writes is kept.
+- **A failed write.** On a rate-limit answer the tool waits as GitHub says and tries again up to four times (the design, part 4, section 4); the same on a server or network failure. A comment that is gone is made afresh. Anything else, or tries used up: exit 1 with GitHub's words, the record stays as it was, and the session reports a process fault.
 - **One writing session for each record** (the design, part 4, section 4). All sessions act as one GitHub account, so this is held by the starting texts. A job writes none.
 
 ## 2. The eight records
 
-| Key | Record | Its one writer |
-|---|---|---|
-| `roles` | Roles | The holder of ROOT; at a takeover the watcher, which by that write becomes ROOT |
-| `lanes` | Lanes | ARCH |
-| `wakes` | Wakes | ROOT |
-| `stop` | Stop | The coordinator |
-| `standing-notes` | Standing notes | The coordinator |
-| `round` | Round | ARCH's session, by the tool |
-| `waiting-work` | Waiting work | ARCH's session, by the tool |
-| `handover-root`, `-watcher`, `-arch`, `-coordinator`, `-lane-<name>` | Handover | The holder of that role |
+Keys (each record's one writer: the design, part 4, section 4): `roles`, `lanes`, `wakes`, `stop`, `standing-notes`, `round`, `waiting-work`, and `handover-root`, `-watcher`, `-arch`, `-coordinator`, `-lane-<name>` for the handovers.
 
 **Roles.**
 
@@ -37,7 +28,7 @@ Marks: **Decided here:** a choice of this text; the owner or PROCESS can overrul
   "coordinator": "session_01D", "process": "session_01G", "written": "2026-11-20T09:00Z" }
 ```
 
-`process` is the live PROCESS session, written by ROOT from the message PROCESS sends it on start (section 4); it is `"none"` until a PROCESS has announced itself, or when the recorded one no longer answers. The coordinator reads it here, never across repositories.
+`process` is the live PROCESS session, written by ROOT from the message PROCESS sends it on start (section 4); it is `"none"` until a PROCESS has announced itself, or when the recorded one no longer answers.
 
 **Lanes.** `state write lanes` refuses a record that names a second live session for a lane the present record shows live (the design's own refusal). The claim written before a start (the design, part 4, section 3) is `"session": null` and `"live": true`; giving it its session is not refused.
 
@@ -108,7 +99,7 @@ Where ARCH records the tranche's scope (the design, part 2, section 3), `scope` 
 | `slot-number` | A later slot number | The file holds another `slot-number` note with a later `written` |
 | `full-external-walk` | That walk recorded | The round record holds an external walk with `"full": true` and an outcome other than `not yet` |
 
-**Decided here:** `state write standing-notes` leaves each ended note out of what it writes, and a command that reads a note whose ending has come true treats it as gone. Gives: `merge` and `next-job` act rightly before the coordinator's next write. Costs: a held merge ends only by the coordinator's write, since nothing on GitHub shows the owner's word.
+**Decided here:** `state write standing-notes` leaves each ended note out of what it writes, and a command that reads a note whose ending has come true treats it as gone. Costs: a held merge ends only by the coordinator's write, since nothing on GitHub shows the owner's word.
 
 ## 4. In the process's repository
 
@@ -151,7 +142,7 @@ The job's record, `<!-- process4-job-record -->`, is written only by the job's s
 
 - `blocked` is written by `push --blocked <module> "<why>"`, `unblocked` by `push --unblocked "<why>"` (where ARCH ended the block by its own decision; the job is then open and holds its slot), `nothing_to_change` by `close <pr> --nothing-to-change "<why>"`, and `notice_needs_no_change` by `push --notice-nothing "<why>"`, with the job block's `notice_seq` at that moment. A later record rewrites the comment in place and keeps `notice_needs_no_change`.
 - The tool reads `blocked.by` to make the job ready again when that module merges; `nothing_to_change` to count the module finished on a pull request closed unmerged (the design, part 2, section 4); and it and `notice_needs_no_change` as the test record below says. No test runs for them.
-- **Decided here:** one JSON block for each. Gives: the required run and every command read fixed places, and no write is lost to another session's.
+- **Decided here:** one JSON block for each.
 
 The conversion's report, `<!-- process4-conversion -->`, is written by `ready` on a conversion job for the owner's review, from the uses file at the head and as `uses` reads the base (places converted by rule, copies, what each place still outside waits on, time from opening, cost where it can be read): `{ "converted": { "S5": 3, "R1": 12 }, "copies": ["<file>:<line> <item>"], "waits": ["S5 <file>:<line>: <waitsOn>"], "time": "2h 10m", "cost": "unmeasured" }`.
 

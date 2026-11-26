@@ -4,9 +4,9 @@ Length: 75 lines. Last section: "8. Support beyond the process".
 
 ## 1. Opening a tranche
 
-- A tranche opens because the product has work to do — requirements added or changed, issues raised by its lanes, flaws found by walks or by jobs, and notices between modules. There is no single purpose to state and no owner review before it opens: ARCH opens the tranche and decides its scope, recording it where the tranche holds less than all the work (part 2, section 3, step 1), and the owner directs the product continuously through the coordinator and the lanes and by marked instructions.
+- A tranche opens because the product has work to do — requirements added or changed, issues raised by its lanes, flaws found by walks or by jobs, and notices between modules. There is no single purpose to state and no owner review before it opens: ARCH opens the tranche and decides its scope, recording it where the tranche holds less than all the work (part 2, section 3, step 1).
 - The tranche is built on the tranche branch. The main branch never moves while a tranche runs. There is one lasting tranche branch. After a tranche merges into the main branch, the next tranche goes on from the same branch.
-- A product's tranche runs on one fixed version of the process from open to close (part 6). A product moves to a changed process version only on the owner's approval (part 6, section 7). A version move loses no work — where no job is open it is made at once; where jobs are open it is made at the next round boundary, or, on the owner's word to move now, open jobs stop and restart from their branches on the new version (as after an approvals edit, part 4, section 7).
+- A product moves to a changed process version only on the owner's approval (part 6, section 7). A version move loses no work — where no job is open it is made at once; where jobs are open it is made at the next round boundary, or, on the owner's word to move now, open jobs stop and restart from their branches on the new version (as after an approvals edit, part 4, section 7).
 - While a tranche runs, ARCH prepares what the next round or tranche needs.
 
 ## 2. A round
@@ -15,8 +15,6 @@ Length: 75 lines. Last section: "8. Support beyond the process".
 2. **The internal walk.** When the round's jobs are done, walking sessions walk the product as built against the Screens document, in the areas ARCH names.
 3. **Deployment and the external walk.** Only when the internal walk lists no flaw is the product deployed to the development site. Walking sessions then follow the journeys there, in the areas ARCH names.
 4. Each flaw becomes work for a named module in the next round, "not the next tranche".
-
-The order is jobs, then the internal walk, and deployment only after an internal walk with no flaws.
 
 ## 3. The walks
 
@@ -60,7 +58,7 @@ The coordinator gives the owner a short account: the tranche's scope where one i
 - The install and the update run on a development account; "successful" means the installer or updater finishes without error and the site it produced starts; on a failure no release is offered and the fault becomes work in the next tranche.
 - ARCH prepares the release and waits for the owner's approval. No session publishes a release without it. A development release, made only for development, is made and published in one act as a pre-release and needs no approval; his approval is for public releases.
 - On his approval ARCH carries out the publish — the release ceremony places the new installer where the product's check-for-updates and outside users expect it, using the release token and, to produce the installer, the production signing keys of part 1, section 2. Running an install or an update on a real site is always the user's or operator's act, never a session's.
-- How his approval reaches the publishing session, if ARCH publishes: ARCH prepares the release unpublished and the coordinator puts it on his standing page. He types his approval in ARCH's own session, as a marked decision naming that release. ARCH publishes in that turn and passes his words to the coordinator for the record. Approval relayed through another session is not used. **Unproven:** that the checker accepts an approval typed this way.
+- How his approval reaches ARCH: ARCH prepares the release unpublished and the coordinator puts it on his standing page. He types his approval in ARCH's own session, as a marked decision naming that release. ARCH publishes in that turn and passes his words to the coordinator for the record. Approval relayed through another session is not used. **Unproven:** that the checker accepts an approval typed this way.
 - With each release the process writes what changed, what the update does to stored data, and how to go back. These notes, the written procedures of section 8 and each tranche report are kept in the product repository's process folder, named in the process config, and change as the process's named files do (part 2, section 9).
 - **Unproven:** the whole release path. No release of any kind has been made by sessions.
 
