@@ -287,6 +287,8 @@ of 20 November 2026 on Claude Code (model `claude-opus-5-5`, effort `medium`, a 
 - **The largest single text read in full: 60,000 bytes on Claude Code,** and 24,000 bytes on Codex until Codex is measured;
   20 percent below the largest clean read. It is set per harness, the one exception to the maximums applying on both
   harnesses (part 5, section 1; part 7, section 2).
+  Design part 2 is over the Codex figure; it stays whole while no product runs on Codex, and before one does, the Codex
+  figure is measured or part 2 is split.
 - **The largest set of texts read together: 175,000 bytes,** measured: read whole at every size up to 220,000 bytes, with a
   25 percent margin kept.
 - **A role's starting text: 8,192 bytes, and at most ten rules.** The limit is measured against the role's instructions
@@ -320,6 +322,9 @@ leaves a lot of room to continue work up to the 74% when compaction can occur." 
 2026.
 On the two findings: "Decision: as recommended" — 20 November 2026 (on the standing page,
 the two-findings item; option (a) for each finding).
+On design part 2 over the Codex figure: "Decision: 0" — 26 November 2026, about 00:00 UTC (in PROCESS #17's session; options:
+0 leave it whole while no product runs on Codex, recommended; A split it now and trim elsewhere to keep a job's reading set
+under 175,000).
 
 ### Subject: What a role reads
 

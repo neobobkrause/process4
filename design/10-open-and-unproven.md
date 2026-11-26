@@ -1,6 +1,6 @@
 # Part 10. What is open, what is unproven, and the trial
 
-Length: 101 lines. Last section: "6. Risks with no trial".
+Length: 102 lines. Last section: "6. Risks with no trial".
 
 Most items are also marked where they belong in parts 1 to 9. This part gathers them and adds what belongs to no one part.
 
@@ -30,6 +30,7 @@ For a session to do, and to report.
 11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
 12. The forms of the shared state's records, the means and what the tool means by "reaches". Written: build text `05-the-records-and-following.md`. Nothing in it has run.
 13. What is read to show that archived sessions do not use up the account's room.
+14. Part 2 is over the Codex single-text figure (part 5, section 2). Before a product runs on Codex, the Codex figure is measured or part 2 is split.
 
 ## 3. Unproven
 
