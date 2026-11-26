@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 05:45 UTC, by PROCESS #18. First: three choices before civicsmith moves. Done: the trial of who is told.</p>
+<p class="updated">Updated 26 Nov 2026, about 06:30 UTC, by PROCESS #18. First: move civicsmith (one line, below). Done: the three choices; the trial of who is told.</p>
 </header>
 
 
@@ -35,7 +35,7 @@ a{color:var(--accent)}
 <li><b>Done: a fresh ROOT on the trial product.</b> You started process3-probes ROOT #11 at about 02:00 UTC, at the top of the chain; it has started a fresh watcher, ARCH and coordinator, all with idle compaction off.</li>
 <li><b>Done: the trial's plan is written</b> (in Process4's research, "trial-who-is-told-26nov"). The trial product converts every module, then makes one change that stays inside a module and one that changes what a module offers; its ARCH writes down beforehand which modules should be told, and then reports who was told.</li>
 <li><b>Done: the trial</b> (finished about 05:28 UTC). On the trial product, a change to one module's insides told no one; a change to what it offers told exactly the one module that uses that part, and not the other; a change of meaning went along the chain of modules that compute with the value, each step telling only its own next user and stopping at the end. Proven once, on six small modules. Not shown: a change of meaning that the code cannot reveal, and anything at civicsmith's size. Cost read: five jobs, about $28.60.</li>
-<li><b>Yours, now: three choices before civicsmith moves</b> (below). Once you have chosen, I build them, and civicsmith moves once, on your instruction at its coordinator.</li>
+<li><b>Yours, now: move civicsmith.</b> In civicsmith's coordinator session, type:<div class="draft">Instruction: move civicsmith to the latest Process4 version</div>Its ARCH then writes the facility list and converts the first 8 modules in order, and stops there for your review.</li>
 <li><b>Yours, once the trial is clean and choice 6 is built:</b> in civicsmith's coordinator session, type:<div class="draft">Instruction: move civicsmith to the latest Process4 version</div>. Its ARCH then works on the first 8 modules only, and stops there for your review.</li>
 </ol>
 </section>
@@ -47,26 +47,9 @@ a{color:var(--accent)}
 <p><b>No product uses it yet.</b> Next: the trial on the trial product, which needs a fresh ROOT from you; then civicsmith moves only when you tell its coordinator to move it, and its first pass of 8 modules stops for your review.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: three choices before civicsmith moves</h2>
-<p>The trial showed two things that would cost civicsmith a great deal, and choice 6 is still open. They interact, so I put them together. Each is a correction; none adds a test, a check or a stop.</p>
-<p><b>1. Writing the list of outside facilities told every module.</b> When a product first writes down which version of Node it runs on, the tool reads "no version before, a version now" as Node being upgraded, and tells every module that uses Node. Nothing changed. On civicsmith that would be about 204 jobs that each find nothing to do, roughly $285 to $390. The design already says this should tell no one, so this is a fault in the tool.</p>
-<ul>
-<li><b>1-0. No change.</b></li>
-<li><b>1-A. Fix the tool (recommended).</b> A version written down for the first time tells no one. No design text changes.</li>
-</ul>
-<p><b>2. Converting a module tells every later module not yet converted.</b> A conversion only tidies a module so the tool can read it; it changes nothing the module does. But the rule that protects modules the tool can't fully read yet tells all of them about any change to an earlier module, a conversion included. On civicsmith's first 8 modules that means about 1,600 notices and up to about 1,570 jobs outside the 8, roughly $320 to $2,600, and the first pass can't stop for your review until they're done. Over all 204 modules it would be about 20,700 notices.</p>
-<ul>
-<li><b>2-0. No change.</b></li>
-<li><b>2-B1. A conversion tells no one by that rule (recommended).</b> The conversion's statement that it changes nothing stands, as a job's record that an item is unchanged already does. A conversion that changes what a module offers still tells its users. The risk: if a conversion changed something by accident, and a later module not yet converted reached into it directly, no session would be told to check. That would be caught by the converted module's own tests, by the later module's tests when it is converted, and by the walks. This changes design part 2.</li>
-<li><b>2-B3. Only land choice 6</b> (below), so all the notices fit. The cost above stays.</li>
-</ul>
-<p><b>3. Choice 6: civicsmith's list of waiting work outgrew one GitHub comment.</b> When it did, notices for modules with no open job were lost, and two jobs could not start. The fix lets the list span several comments, and keeps a starting job's notes small enough to post. It is built and all 270 of the tool's tests pass. The list was emptied when the refactoring tranche was dropped, and 1 and 2-B1 would keep it much smaller; but it has overflowed once, and civicsmith's next tranches can fill it again.</p>
-<ul>
-<li><b>6-0. No change.</b></li>
-<li><b>6B. Land the fix (recommended).</b></li>
-</ul>
-<p>I recommend all three together: 1-A, 2-B1 and 6B, built as one version, so civicsmith moves once. To choose, reply here starting with "Decision:", for example "Decision: 1-A, 2-B1, 6B", or choose differently for each.</p>
+<section class="card">
+<h2>Done: the three choices before civicsmith moves</h2>
+<p>Built and merged on your "Decision: 1-A, 2-B1, 6B" (as Process4 version 26fbf9e; all 272 of the tool's tests pass). Writing down the facility list no longer tells any module. A conversion that changes nothing tells no later module; one that does change something still tells as any change does. civicsmith's waiting-work list can now span several comments, and a starting job's notes are kept small enough to post. Your words are in your record word for word.</p>
 </section>
 
 <section class="card">
@@ -104,7 +87,7 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> has dropped its refactoring tranche and has no tranche open; the refactoring restarts once the new version is confirmed on the trial product. It runs Process4 version 55db8e4 until you tell its coordinator to move it. The newest version is 1813890.</li>
+<li><b>civicsmith</b> has dropped its refactoring tranche and has no tranche open; the refactoring restarts once the new version is confirmed on the trial product. It runs Process4 version 55db8e4 until you tell its coordinator to move it. The newest version is 26fbf9e.</li>
 <li><b>The trial product</b> (process3-probes) has a fresh ROOT (#11, at the top of the chain) and has moved to the newest version and run the trial.</li>
 <li><b>PROCESS #18</b> is running (session named PROCESS #18); it has no lane running. You may archive the session named <b>PROCESS #17</b> if you have not.</li>
 </ul>
