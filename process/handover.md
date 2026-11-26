@@ -9,7 +9,7 @@ your address. Your fill (`get_session`, `context_usage`) is real after your firs
 **Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, `build/README.md`, and this handover.
 
-## START HERE: a group of six tool corrections waits for the owner; more faults to research
+## START HERE: first, `notify` fails on civicsmith (urgent, `notify-size-26nov.md`); the six corrections are merged (54d7eee, his "Decision: A, as recommended"); more faults to research
 
 civicsmith moved to 1216397 and its first pass of 8 conversions is running. Its jobs keep meeting tool faults; all are in
 `process/research/facility-names-26nov.md` (read it whole first).
