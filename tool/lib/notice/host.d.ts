@@ -174,8 +174,24 @@ declare module 'node:events' {
     emit(event: string, ...args: unknown[]): boolean;
   }
 }
+// process.versions (Node 22, process.html#processversions): the version strings of Node and its parts, "an object
+// similar to" the example there, so only node, v8 and modules (which the text names) are certain; the others in the
+// example depend on how Node was built and may be missing (no index signature: a part not named is a checker complaint).
+// Fixed at start, read from the host: out, as process.version is (facilities-build).
+interface NodeProcessVersions {
+  readonly node: string;
+  readonly v8: string;
+  readonly modules: string;
+  readonly acorn?: string; readonly ada?: string; readonly ares?: string; readonly base64?: string; readonly brotli?: string;
+  readonly cjs_module_lexer?: string; readonly cldr?: string; readonly icu?: string; readonly llhttp?: string; readonly napi?: string;
+  readonly nghttp2?: string; readonly nghttp3?: string; readonly ngtcp2?: string; readonly openssl?: string; readonly simdjson?: string;
+  readonly simdutf?: string; readonly sqlite?: string; readonly tz?: string; readonly undici?: string; readonly unicode?: string;
+  readonly uv?: string; readonly uvwasi?: string; readonly zlib?: string;
+}
+interface NodeProcess { readonly versions: NodeProcessVersions; }
 declare module 'node:process' {
   const p: NodeProcess;
+  export const versions: NodeProcessVersions;
   export default p;
 }
 declare module 'node:vm' {
@@ -192,11 +208,22 @@ interface NodeTestContext {
   mock: NodeMock;
 }
 interface NodeMockFunction { mock: { calls: { arguments: unknown[]; result: unknown }[]; callCount(): number }; }
+// mock.property (test.html#mockpropertyobject-propertyname-value, added in Node v22.20.0): the object, its property
+// mocked, with the property's MockPropertyContext as `mock`
+interface NodeMockPropertyContext<V> {
+  readonly accesses: { type: 'get' | 'set'; value: V; stack: Error }[];
+  accessCount(): number;
+  mockImplementation(value: V): void;
+  mockImplementationOnce(value: V, onAccess?: number): void;
+  resetAccesses(): void;
+  restore(): void;
+}
 interface NodeMock {
   fn<F extends (...args: never[]) => unknown>(original?: F): F & NodeMockFunction;
   method<O extends object, K extends keyof O>(object: O, methodName: K, implementation?: O[K]): NodeMockFunction;
+  property<O extends object, K extends keyof O>(object: O, propertyName: K, value?: O[K]): O & { mock: NodeMockPropertyContext<O[K]> };
   module(specifier: string, options?: { namedExports?: object; defaultExport?: unknown }): { restore(): void };
-  timers: { enable(options?: { apis?: string[]; now?: number }): void; tick(ms: number): void; reset(): void; runAll(): void };
+  timers: { enable(options?: { apis?: string[]; now?: number | Date }): void; tick(ms?: number): void; reset(): void; runAll(): void; setTime(ms: number): void };
   restoreAll(): void;
 }
 type NodeTestFn = (t: NodeTestContext) => unknown;

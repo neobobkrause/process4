@@ -1354,3 +1354,36 @@ export function e() {
     '32 relies on the narrowed variable tz, which is not a const',
   ]);
 });
+
+test('the host\'s description holds process.versions and node:test\'s mock.property and mock.timers.setTime, as Node 22 documents them; Temporal, which Node 22 lacks, it does not', () => {
+  const root = caseProduct({
+    'src/u/index.mjs': `import { versions as vs } from 'node:process';
+/** @returns {string} */
+export function versions() {
+  const v = process.versions;
+  return v.node + (v.tz ?? '') + (vs.icu ?? '');
+}
+`,
+    'test/u/u.test.mjs': `import { test, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import { versions } from '../../src/u/index.mjs';
+test('clock', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: 0 });
+  t.mock.timers.setTime(10);
+  const clock = { now: 1 };
+  const p = mock.property(clock, 'now', 2);
+  assert.equal(p.now + p.mock.accessCount(), 3);
+  p.mock.restore();
+  assert.ok(versions().length > 0);
+  assert.equal(typeof globalThis.Temporal, 'undefined');
+});
+`,
+  });
+  const r = read(root, 'u');
+  // described: no checker complaint, no value of kind any, every facility classified
+  assert.deepEqual(r.outside.filter((o) => o.line !== 12 || o.file !== 'test/u/u.test.mjs').filter((o) => ['S4', 'R1'].includes(o.rule) || /leaves out|neither/.test(o.what)).map((o) => `${o.rule} ${o.file}:${o.line} ${o.what}`), []);
+  // process.versions reads the host's build: out, like process.version, so a place outside a boundary module
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'R14').map((o) => `${o.file}:${o.line} ${o.what}`), ['src/u/index.mjs:4 uses NodeProcess.versions, which reaches out, outside a boundary module', 'src/u/index.mjs:5 uses node:process.versions, which reaches out, outside a boundary module']);
+  // Temporal is not a global of Node 22: still the checker's complaint
+  assert.ok(r.outside.some((o) => o.rule === 'S4' && o.file === 'test/u/u.test.mjs' && o.line === 12), places(r).join('; '));
+});
