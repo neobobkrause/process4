@@ -485,11 +485,22 @@ Buffer and spawn's `maxBuffer`; a RegExp's `.test(...)` is not a test case (S12)
 resolves to its file; a renamed key taken apart is not a value of kind any (R1); a value of kind `unknown` is read by its
 kind at the use, narrowed by `instanceof` or by the module's own guard, the guard placed once at its call (R2). One
 judgment in it: `instanceof` a host class clears ordinary data too, where build text 2c names it for errors.
+R15 is judged by each union member the value fits, whatever the target type's spelling and whether the value is passed
+or assigned to a member; R19 counts only real assignments, found by symbol (taking a value apart included, `++`/`--`
+only among prefix operators). The host description also covers `process.versions`, node:test's `mock.property` and
+`mock.timers.setTime`, added by hand; option C waits. `notify` counts only a new type error, or changed code while one
+stands, as a change; a reason carries only the parts that changed; the reading's result comes back in parts and equal
+type parts are kept once.
 
 Why: civicsmith's first conversions (ARCH #28 and its jobs) met each as a tool fault against the text: ~15,677 places that
-nothing could clear, and complaints on ordinary code. Options: 0 no change; A merge the corrections (recommended); C, a
+nothing could clear, and complaints on ordinary code. The second group (26 Nov): two rule-reading faults (R15, R19), Node
+features missing, a conversion that only stated types read as changing items (all 150 importers told on a product of
+civicsmith's shape), and notices too large to send (120 MB to 153 KB once reasons carry only what changed). Researched in
+`process/research/rules-r15-r19-host-26nov.md` and `process/research/notify-size-26nov.md`. Options: 0 no change; A merge the corrections (recommended); C, a
 question for later: describe Node from its published types rather than by hand. Researched in
 `process/research/facility-names-26nov.md`.
 
 **The owner's words.** "Decision: A, as recommended" — 26 November 2026, typed as a comment on his page "Process4 Waiting
 for Bob" on option A, sent to PROCESS #18.
+On the second group (the four corrections put in PROCESS #19's session and on his page, option A to merge all four as one
+version): "Decision: A" — 26 November 2026, typed in PROCESS #19's session.
