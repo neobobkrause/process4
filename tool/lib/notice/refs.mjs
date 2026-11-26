@@ -1731,30 +1731,44 @@ function exportedLiterals(tree, m) {
   const out = [];
   const names = new Set();
   for (const f of m.public) {
-    let sf;
-    try { sf = ts.createSourceFile(f, fs.readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS); } catch { continue; }
-    for (const st of sf.statements) {
-      const exported = st.modifiers?.some((x) => x.kind === ts.SyntaxKind.ExportKeyword);
-      if (ts.isExportDeclaration(st) && st.exportClause && ts.isNamedExports(st.exportClause)) for (const e of st.exportClause.elements) names.add(e.name.text);
-      for (const d of st.jsDoc ?? []) for (const t of d.tags ?? []) if ((ts.isJSDocTypedefTag(t) || ts.isJSDocCallbackTag(t)) && t.name) names.add(t.name.getText());
-      if (!exported) continue;
-      if ((ts.isFunctionDeclaration(st) || ts.isClassDeclaration(st)) && st.name) names.add(st.name.text);
-      if (!ts.isVariableStatement(st)) continue;
-      for (const d of st.declarationList.declarations) {
-        if (!ts.isIdentifier(d.name)) continue;
-        names.add(d.name.text);
-        const walk = (e, item, depth) => {
-          while (e && (ts.isParenthesizedExpression(e) || ts.isAsExpression?.(e))) e = e.expression;
-          if (e && ts.isCallExpression(e) && /^Object\.freeze$/.test(e.expression.getText()) && e.arguments[0]) e = e.arguments[0];
-          const v = folded(e);
-          if (v !== undefined) { out.push({ provider: m.id, item, value: v }); return; }
-          if (e && ts.isObjectLiteralExpression(e) && depth < 3) for (const p of e.properties) if (ts.isPropertyAssignment(p) && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name))) walk(p.initializer, `${item}.${p.name.text}`, depth + 1);
-        };
-        walk(d.initializer, d.name.text, 0);
-      }
-    }
+    let text;
+    try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    // Read once per run for each file and text: every module's reading asks for every other module's (civicsmith ARCH #28).
+    const had = LITERALS.get(f);
+    const got = had?.id === m.id && had.text === text ? had : (() => { const r = { id: m.id, text, ...literalsIn(f, text, m.id) }; if (LITERALS.size >= 20000) LITERALS.clear(); LITERALS.set(f, r); return r; })();
+    if (!got.ok) continue;
+    for (const l of got.literals) out.push({ ...l });
+    for (const n of got.names) names.add(n);
   }
   return { literals: out, names };
+}
+const LITERALS = new Map(); // file -> { id, text, ok, literals, names }
+function literalsIn(f, text, id) {
+  const out = [];
+  const names = [];
+  let sf;
+  try { sf = ts.createSourceFile(f, text, ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS); } catch { return { ok: false, literals: [], names: [] }; }
+  for (const st of sf.statements) {
+    const exported = st.modifiers?.some((x) => x.kind === ts.SyntaxKind.ExportKeyword);
+    if (ts.isExportDeclaration(st) && st.exportClause && ts.isNamedExports(st.exportClause)) for (const e of st.exportClause.elements) names.push(e.name.text);
+    for (const d of st.jsDoc ?? []) for (const t of d.tags ?? []) if ((ts.isJSDocTypedefTag(t) || ts.isJSDocCallbackTag(t)) && t.name) names.push(t.name.getText());
+    if (!exported) continue;
+    if ((ts.isFunctionDeclaration(st) || ts.isClassDeclaration(st)) && st.name) names.push(st.name.text);
+    if (!ts.isVariableStatement(st)) continue;
+    for (const d of st.declarationList.declarations) {
+      if (!ts.isIdentifier(d.name)) continue;
+      names.push(d.name.text);
+      const walk = (e, item, depth) => {
+        while (e && (ts.isParenthesizedExpression(e) || ts.isAsExpression?.(e))) e = e.expression;
+        if (e && ts.isCallExpression(e) && /^Object\.freeze$/.test(e.expression.getText()) && e.arguments[0]) e = e.arguments[0];
+        const v = folded(e);
+        if (v !== undefined) { out.push({ provider: id, item, value: v }); return; }
+        if (e && ts.isObjectLiteralExpression(e) && depth < 3) for (const p of e.properties) if (ts.isPropertyAssignment(p) && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name))) walk(p.initializer, `${item}.${p.name.text}`, depth + 1);
+      };
+      walk(d.initializer, d.name.text, 0);
+    }
+  }
+  return { ok: true, literals: out, names };
 }
 /** A constant expression's value: a literal, or + of literals (constant folding); undefined otherwise. */
 function folded(e) {
