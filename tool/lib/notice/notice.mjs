@@ -790,14 +790,17 @@ export function packageVersions(tree) {
 /**
  * Point 4 of who is told (design part 2, section 7): on a change to a package's version, each module whose uses file
  * names the package; on a change to the host's version (the facility list's `versions`), each module that uses a
- * facility of it. One notice for each package that changed. A lookup in the uses files: no code is read.
+ * facility of it. One notice for each package that changed; one with no version before is not changed. A lookup in the
+ * uses files: no code is read.
  * @returns [{ package, was, now, told: [{ user, reasons }] }]
  */
 export function versionNotices(before, after) {
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const B = treeOf(before), A = treeOf(after);
   const vb = packageVersions(B), va = packageVersions(A);
-  const changed = [...new Set([...vb.keys(), ...va.keys()])].filter((p) => vb.get(p) !== va.get(p)).sort();
+  // A version written for the first time (the facility list's first creation, a package first named) changes no one's
+  // host or package: it tells no one.
+  const changed = [...vb.keys()].filter((p) => vb.get(p) !== va.get(p)).sort();
   if (!changed.length) return [];
   const order = [...new Set([...A.modules.map((m) => m.id), ...B.modules.map((m) => m.id)])];
   const files = new Map(order.map((id) => [id, [usesOf(B, id), usesOf(A, id)].filter(Boolean)]));

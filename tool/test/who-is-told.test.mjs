@@ -188,6 +188,22 @@ test('packages and the host: each facility used is recorded with its package; a 
   assert.match(v3[0].told[0].reasons[0].why, /report has no uses file yet/);
 });
 
+test('a version written for the first time tells no one: the facility list\'s first creation; a real change of the host\'s version still tells', () => {
+  const list = (v) => ({ versions: { node: v }, boundary: [], facilities: [] });
+  const f = withUsesFiles(files({
+    'process/modules/facilities.json': list('22.12.0'),
+    'src/orders/index.mjs': `${ORDERS}/** @param {string} s @returns {string} */\nexport const tidy = (s) => s.trim();\n`,
+  }));
+  const none = { ...f }; delete none['process/modules/facilities.json'];
+  // the list first written: the host had no version before, so none changed
+  const [b, a] = sides(none, f);
+  assert.deepEqual(versionNotices(b, a), []);
+  // node 22 -> 24: every module that uses a facility of it
+  const [b2, a2] = sides(f, { ...f, 'process/modules/facilities.json': list('24.1.0') });
+  assert.deepEqual(versionNotices(b2, a2).map((v) => [v.package, v.was, v.told.map((t) => t.user)]),
+    [['node', 'the facility list\'s versions "22.12.0"', ['dates', 'orders']]]);
+});
+
 test('a module with no uses file is told when it imports a provider, reads its files by path or starts its program; every one where the tool cannot tell', () => {
   const base = files({
     'process/modules/order.txt': 'dates\norders\nreport\nreader\nopen\n',
