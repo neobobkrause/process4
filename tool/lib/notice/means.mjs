@@ -934,6 +934,10 @@ function makeCode(program, checker, tree, mod) {
       // reads), only what can reach that state: a stream written out, which no code of the product reads back, cannot
       channels: [...new Set([...sortedOf(all, (p) => [...p.channels].filter((c) => fc.has(p) || !SINKS.has(c))),
         ...sortedOf(called, (p) => [...p.channels]), ...sortedOf(reached, (p) => [...p.channels].filter((c) => !SINKS.has(c)))])].sort(),
+      // A program the item's own code starts during the call: its start arguments and the streams it writes out are the
+      // item's interface, what it accepts and hands back (design part 2, section 7; the owner's decision of 26 November
+      // as corrected): they tell, where its other channels do not.
+      program: starts ? sortedOf(called, (p) => [...p.channels].filter((c) => c === 'start arguments' || SINKS.has(c))) : [],
       typeErrors: sortedOf(fc, (p) => p.errors),
       code: digestOf(fc),
       ...(whole_ ? { wholeModule: true } : {}),

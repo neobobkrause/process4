@@ -1,7 +1,10 @@
 // What counts as a change (design part 2, section 7; build text 5, section 6): an item whose type is written differently
-// but means the same is unchanged, as the type checker finds it; accepting more is a change, which tells its users; a
-// constant's value is in its means; describing is no change only where the item's code is unchanged; and the facts
-// worked out from the code are exact where the language decides them.
+// but means the same is unchanged, as the type checker finds it; accepting more is a change, which tells its users; only
+// a change of an item's stated types or bounds tells (the owner's decision of 26 November), a program it starts (its
+// start arguments and output) among them: errors, other channels, arguments written into and a constant's value within
+// its type tell no one; describing is no change only where the item's code
+// is unchanged; and the facts worked out from the code, listed though they tell no one, are exact where the language
+// decides them.
 import assert from 'node:assert/strict';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -32,6 +35,14 @@ function changes(before, after, { others = {}, extraB = {}, extraA = extraB } = 
   loadReader();
   const r = changedItems(product({ ...others, p: before }, extraB), product({ ...others, p: after }, extraA), 'p');
   return r.changed.map((c) => `${c.item}: ${c.changes.join(', ')}${c.tells ? '' : ' (tells no one)'}`);
+}
+/** The parts of module p's items worked out from the code and listed, which tell no one, that differ before and after. */
+function worked(before, after, { others = {}, extraB = {}, extraA = extraB } = {}) {
+  loadReader();
+  const mb = moduleMeans(product({ ...others, p: before }, extraB), 'p').items, ma = moduleMeans(product({ ...others, p: after }, extraA), 'p').items;
+  const WORDS = { throws: 'errors that can leave it', writesArguments: 'arguments written into', channels: 'channels, settings and files' };
+  return Object.keys(ma).filter((k) => mb[k]).sort().flatMap((k) => Object.keys(WORDS)
+    .filter((w) => JSON.stringify(mb[k][w] ?? []) !== JSON.stringify(ma[k][w] ?? [])).map((w) => `${k}: ${WORDS[w]}`));
 }
 const fn = (params, ret, body = 'return /** @type {any} */ (0);', args = 'x') => `/**\n${params.map((p) => ` * @param ${p}\n`).join('')} * @returns {${ret}}\n */\nexport function f(${args}) { ${body} }\n`;
 const generic = (extra = '', constraint = '') => `/**\n * @template ${constraint}T\n * @param {T} x\n${extra} * @returns {T}\n */\nexport function f(x) { return x; }\n`;
@@ -99,6 +110,30 @@ test('accepting more tells its users: the word only says, as the written forms s
   for (const [b, a, want] of cases) assert.deepEqual(changes(b, a), want, a);
 });
 
+test('only a stated type or a bound tells: errors, channels, arguments written into and a constant\'s value tell no one', () => {
+  const p = (body, ret = 'number', bound = '0 to 9', limit = 5) => `/** @type {number} */\nexport const LIMIT = ${limit};
+/**
+ * @param {{n: number}} box
+ * @returns {${ret}}
+ * @bound the answer: ${bound}
+ */
+export function f(box) { ${body} return /** @type {any} */ (box.n); }
+`;
+  // each of these is worked out and listed, and tells no one
+  assert.deepEqual(changes(p(''), p("if (box.n < 0) throw new RangeError('n');")), []);
+  assert.deepEqual(changes(p(''), p("console.error('f');")), []);
+  assert.deepEqual(changes(p(''), p('box.n += 1;')), []);
+  assert.deepEqual(changes(p(''), p('', 'number', '0 to 9', 6)), []);
+  assert.deepEqual(worked(p(''), p("if (box.n < 0) throw new RangeError('n'); console.error('f'); box.n += 1;")),
+    ['f: errors that can leave it', 'f: arguments written into', 'f: channels, settings and files']);
+  // a stated type, a bound and a new type error still tell
+  assert.deepEqual(changes(p(''), p('', 'string')), ['f: hands back differently']);
+  assert.deepEqual(changes(p(''), p('', 'number', '0 to 8')), ['f: bound changed']);
+  assert.deepEqual(changes(p(''), p("const s = /** @type {string} */ (1);")), ['f: type error in its code']);
+  // while the same type error stands, a change to its code changes no stated type
+  assert.deepEqual(changes(p("const s = /** @type {string} */ (1);"), p("const s = /** @type {string} */ (1); box.n += 1;")), []);
+});
+
 test('errors that can leave an item: one raised inside a try whose catch never names it is caught', () => {
   const p = (extra) => `/** @param {string} s @returns {number} */
 function parse(s) { if (!s) throw new TypeError('empty');${extra} return s.length; }
@@ -127,8 +162,8 @@ export function maker(s) { try { return build(s); } catch { return () => 0; } }
   assert.deepEqual(m.notAwaited.throws, ['TypeError']);
   assert.deepEqual(m.maker.throws, ['TypeError']);
   // the helper's errors grow: only the items whose callers can see that are changed
-  assert.deepEqual(changes(p(''), p(" if (s === 'x') throw new RangeError('x');")), [
-    'bare: errors that can leave it changed', 'handsOn: errors that can leave it changed', 'maker: errors that can leave it changed', 'notAwaited: errors that can leave it changed']);
+  assert.deepEqual(worked(p(''), p(" if (s === 'x') throw new RangeError('x');")), [
+    'bare: errors that can leave it', 'handsOn: errors that can leave it', 'maker: errors that can leave it', 'notAwaited: errors that can leave it']);
 });
 
 test('channels: what code outside the call writes to a stream out of the program does not reach the item; a file it writes does', () => {
@@ -139,8 +174,8 @@ export function put(s) { last = s;${more} }
 /** @returns {string} */
 export function get() { return last; }
 `;
-  assert.deepEqual(changes(p(''), p(' console.log(s);')), ['put: channels, settings or files changed']);
-  assert.deepEqual(changes(p(''), p(" writeFileSync('kept.txt', s);")), ['get: channels, settings or files changed', 'put: channels, settings or files changed']);
+  assert.deepEqual(worked(p(''), p(' console.log(s);')), ['put: channels, settings and files']);
+  assert.deepEqual(worked(p(''), p(" writeFileSync('kept.txt', s);")), ['get: channels, settings and files', 'put: channels, settings and files']);
 });
 
 test('a call into a module proven to keep no state couples nothing; into one that keeps state, it does', () => {
@@ -154,17 +189,17 @@ export function b() { return tag(${more}); }
   const keeps = { m: `let n = 0;\n/** @param {string} s @returns {string} */\nexport function tag(s) { n += 1; return s + n; }\n` };
   const listed = { m: `/** @type {string[]} */\nconst seen = [];\n/** @param {string} s @returns {string} */\nexport function tag(s) { seen.push(s); return s + seen.length; }\n` };
   const before = p("'x'"), after = p("process.env.MODE ?? 'x'");
-  assert.deepEqual(changes(before, after, { others: pure }), ['b: channels, settings or files changed']);
-  const both = ['a: channels, settings or files changed', 'b: channels, settings or files changed'];
-  assert.deepEqual(changes(before, after, { others: keeps }), both);
-  assert.deepEqual(changes(before, after, { others: listed }), both);
+  assert.deepEqual(worked(before, after, { others: pure }), ['b: channels, settings and files']);
+  const both = ['a: channels, settings and files', 'b: channels, settings and files'];
+  assert.deepEqual(worked(before, after, { others: keeps }), both);
+  assert.deepEqual(worked(before, after, { others: listed }), both);
   // state kept inside what it hands out or is handed: a closure, an object's own fields, an argument written into
   const tag = '/** @param {string} s @returns {string} */\nexport function tag(s) { return s; }\n';
   for (const kept of [
     `${tag}/** @returns {{inc: () => number}} */\nexport function counter() { let n = 0; return { inc: () => { n += 1; return n; } }; }\n`,
     `${tag}export class Counter {\n  constructor() { this.n = 0; }\n  /** @returns {number} */\n  inc() { this.n += 1; return this.n; }\n}\n`,
     `${tag}/** @param {{last: string}} box @param {string} s @returns {void} */\nexport function keep(box, s) { box.last = s; }\n`,
-  ]) assert.deepEqual(changes(before, after, { others: { m: kept } }), both, kept);
+  ]) assert.deepEqual(worked(before, after, { others: { m: kept } }), both, kept);
 });
 
 test('what an item reads of what it is handed is its input: the code that made that value is not its means', () => {
@@ -181,7 +216,7 @@ export function last() { return kept[kept.length - 1]?.room ?? ''; }
 export function nested(o) { const { req } = o; return req.room; }
 `;
   // use and nested read only what their caller hands them; last reads the module's own state, which make writes
-  assert.deepEqual(changes(p("'r'"), p('String(Math.random())')), ['last: channels, settings or files changed', 'make: channels, settings or files changed']);
+  assert.deepEqual(worked(p("'r'"), p('String(Math.random())')), ['last: channels, settings and files', 'make: channels, settings and files']);
 });
 
 test('a program of the module started by a literal path: its channels are its starter\'s; env and argv from node:process are read', () => {
@@ -193,12 +228,12 @@ export function start(onLine) { const c = spawn(process.execPath, [PROGRAM]); c.
 export function trim(line) { return line.trim(); }
 `;
   const worker = (body) => ({ 'src/p/worker.mjs': `import { trim } from './index.mjs';\n${body}\n` });
-  const run = (b, a) => changes(index, index, { extraB: worker(b), extraA: worker(a) });
+  const run = (b, a) => worked(index, index, { extraB: worker(b), extraA: worker(a) });
   // a stream the program writes moves: what start hands on changes; trim, which starts nothing, is unchanged
-  assert.deepEqual(run("process.stdout.write(trim(' a '));", "process.stderr.write(trim(' a '));"), ['PROGRAM: channels, settings or files changed', 'start: channels, settings or files changed']);
+  assert.deepEqual(run("process.stdout.write(trim(' a '));", "process.stderr.write(trim(' a '));"), ['PROGRAM: channels, settings and files', 'start: channels, settings and files']);
   // the program now needs a start argument or a setting, read through Node's process or imported from node:process:
   // every item whose closure names the program hears of it (trim's start-up code names it too)
-  const needs = ['PROGRAM: channels, settings or files changed', 'start: channels, settings or files changed', 'trim: channels, settings or files changed'];
+  const needs = ['PROGRAM: channels, settings and files', 'start: channels, settings and files', 'trim: channels, settings and files'];
   assert.deepEqual(run("process.stdout.write('a');", "process.stdout.write(process.argv[2] ?? 'a');"), needs);
   assert.deepEqual(run("process.stdout.write('a');", "import { argv } from 'node:process';\nprocess.stdout.write(argv[2] ?? 'a');"), needs);
   assert.deepEqual(run("process.stdout.write('a');", "import { env } from 'node:process';\nprocess.stdout.write(env.CURRENCY ?? 'a');"), needs);
@@ -212,6 +247,24 @@ export function trim(line) { return line.trim(); }
 
 // civicsmith, 26 Nov 2026: a conversion stated the types of a module whose kinds name each other; each kind written out
 // in full wherever it appears made millions of parts of a few hundred distinct ones, and the means did not fit memory.
+test('a program the item starts: its start arguments and output streams tell; a file it writes, or a setting it reads, does not', () => {
+  const index = `import { spawn } from 'node:child_process';
+export const PROGRAM = new URL('./worker.mjs', import.meta.url).pathname;
+/** @param {(line: string) => void} onLine @returns {void} */
+export function start(onLine) { const c = spawn(process.execPath, [PROGRAM]); c.stdout.on('data', (/** @type {unknown} */ d) => onLine(String(d))); }
+`;
+  const worker = (body) => ({ 'src/p/worker.mjs': `${body}\n` });
+  const run = (b, a) => changes(index, index, { extraB: worker(b), extraA: worker(a) });
+  const out = "process.stdout.write('a');";
+  // its output stream and its start arguments are what start hands back and accepts (the owner's correction of 26 Nov)
+  assert.deepEqual(run(out, "process.stderr.write('a');"), ['start: the program it starts changed']);
+  assert.deepEqual(run(out, "process.stdout.write(process.argv[2] ?? 'a');"), ['start: the program it starts changed']);
+  // a file it writes and a setting it reads are other channels: they tell no one
+  assert.deepEqual(run(out, `import { writeFileSync } from 'node:fs';\nwriteFileSync('kept.txt', 'a');\n${out}`), []);
+  assert.deepEqual(run(out, "process.stdout.write(process.env.CURRENCY ?? 'a');"), []);
+  assert.deepEqual(moduleMeans(product({ p: index }, worker(out)), 'p').items.start.program, ['writes standard output']);
+});
+
 test('equal parts of the means are kept once, written the same; a kind\'s instances are read from the items that name it', () => {
   loadReader();
   const p = `/**\n * @typedef {Object} Leaf\n * @property {'leaf'} tag\n * @property {Tree[]} kids\n */

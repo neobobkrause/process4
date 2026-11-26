@@ -1,5 +1,5 @@
-// Who a change tells (design part 2, section 7), as the tool builds it: a middle module's item that takes in a changed
-// part of a provider; a constant's value; a test that mocks a provider's member; packages and the host; a module with
+// Who a change tells (design part 2, section 7), as the tool builds it: a provider's error or channel taken in by a
+// middle module's item, which tells no one; a constant's value; a test that mocks a provider's member; packages and the host; a module with
 // no uses file that reaches a provider by a path, or where the tool cannot tell; the mechanical edit; and an item the
 // pull request records as keeping its domain and range.
 import assert from 'node:assert/strict';
@@ -57,7 +57,7 @@ const sides = (before, after) => {
   return [b, a];
 };
 
-test('a later module\'s item that takes in a changed error of a provider is a changed item too, found in its uses file, and so on', () => {
+test('a provider\'s error or channel taken in by a later module\'s item makes no item changed; the uses file still records it', () => {
   const f = withUsesFiles(files({
     'process/modules/order.txt': 'dates\norders\nreport\nfar\n',
     'process/modules/far.json': entry('far'),
@@ -72,26 +72,20 @@ test('a later module\'s item that takes in a changed error of a provider is a ch
     { item: 'orderDay', provider: 'dates', providerItem: 'parseDay', part: 'errors' },
     { item: 'safeDay', provider: 'dates', providerItem: 'parseDay', part: 'channels' },
   ]);
-  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': DATES(" if (!text) throw new RangeError('empty');") });
-  const r = notice(b, a, 'dates');
-  assert.deepEqual(r.changed.map((c) => `${c.module} ${c.item}: ${c.changes}`), [
-    'dates parseDay: errors that can leave it changed',
-    'orders orderDay: errors that can leave it changed',
-    'report both: errors that can leave it changed',
-    'report first: errors that can leave it changed',
-    'far f: errors that can leave it changed',
-  ]);
-  assert.deepEqual(r.changed[1].takesIn, [{ module: 'dates', item: 'parseDay', part: 'errors' }]);
-  // report is told of orderDay (and not of safeDay, which caught them), and far of both, through two middle modules
-  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => `${x.module} ${x.item}`)]), [
-    ['orders', ['dates parseDay']], ['report', ['orders orderDay']], ['far', ['report both']]]);
-  assert.match(noticeText(r), /orders orderDay: errors that can leave it changed \[found by its means\] -> tells its users\n {6}means: takes in the errors of dates parseDay, which changed/);
-  // A change only to the channels of parseDay reaches safeDay too.
-  const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES(" console.error('parsing');") });
-  assert.deepEqual(notice(b2, a2, 'dates').changed.filter((c) => c.module === 'orders').map((c) => c.item), ['orderDay', 'safeDay']);
+  // Only a change of an item's stated types or bounds tells (the owner's decision of 26 November): a new error, or a
+  // channel, of parseDay changes no item, here or in a later module.
+  for (const extra of [" if (!text) throw new RangeError('empty');", " console.error('parsing');"]) {
+    const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': DATES(extra) });
+    const r = notice(b, a, 'dates');
+    assert.deepEqual(r.changed, [], extra);
+    assert.deepEqual(r.told, [], extra);
+  }
+  // its stated type still tells its users
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': DATES().replace('@returns {number}', '@returns {number | null}') });
+  assert.deepEqual(notice(b, a, 'dates').told.map((t) => t.user), ['orders']);
 });
 
-test('a constant\'s value is in its means: a changed value tells its users, whether or not its kind is stated', () => {
+test('a constant\'s value within its stated type tells no one; with no stated type, the value is its type and tells', () => {
   const p = (v, typed = false) => `${typed ? '/** @type {number} */\n' : ''}export const LIMIT = ${v};\n`;
   const f = (src) => withUsesFiles(files({ 'src/dates/index.mjs': `${DATES()}${src}`, 'src/orders/index.mjs': `${ORDERS}import { LIMIT } from '../dates/index.mjs';\n/** @returns {number} */\nexport const most = () => LIMIT;\n` }));
   const run = (bv, av, typed) => {
@@ -104,9 +98,8 @@ test('a constant\'s value is in its means: a changed value tells its users, whet
   assert.match(plain.changed[0].words, /hands back differently: 5 -> 6/);
   assert.deepEqual(plain.told.map((t) => t.user), ['orders']);
   const typed = run(5, 6, true);
-  assert.deepEqual(typed.changed.map((c) => `${c.item}: ${c.changes}`), ['LIMIT: value changed']);
-  assert.match(typed.changed[0].words, /value changed: 5 -> 6/);
-  assert.deepEqual(typed.told.map((t) => t.user), ['orders']);
+  assert.deepEqual(typed.changed, []);
+  assert.deepEqual(typed.told, []);
   // written otherwise, the same value: its code is the same
   assert.deepEqual(run('5', '(5)', true).changed, []);
 });
@@ -133,7 +126,7 @@ test('describing tells no one only where the item\'s code is unchanged', () => {
 // civicsmith, 26 Nov 2026: a conversion that only stated types took away an item's "implicitly has an 'any' type" while a
 // type error its code had before stayed; the list of errors differed, the item counted as changed, and every module
 // importing the provider with no uses file was told.
-test('a type error the code had before and still has, its code the same, is no change; a new one, or the code changed while it has one, is', () => {
+test('a type error the code had before and still has, its code the same, is no change; a new one is; the code changed while it has the same one is not', () => {
   const RAW = (body) => `\nexport function shout(p) { const n = 1; ${body} }\n`;
   const STATED = (body) => `\n/** @param {string} p @returns {string} */\nexport function shout(p) { const n = 1; ${body} }\n`;
   const user = `${ORDERS}import { shout } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const s = () => shout('a');\n`;
@@ -152,9 +145,9 @@ test('a type error the code had before and still has, its code the same, is no c
   const two = notice(b2, a2, 'dates', { conversion: true });
   assert.deepEqual(two.changed.map((c) => `${c.item}: ${c.changes}`), ['shout: type error in its code']);
   assert.deepEqual(two.told.map((t) => t.user), ['orders', 'late']);
-  // the code changed while it has one: a change
+  // the code changed while it has the same one: no stated type changed (the owner's decision of 26 November)
   const [b3, a3] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + STATED("return n.toUpperCase() + p + '!';") });
-  assert.deepEqual(notice(b3, a3, 'dates', { conversion: true }).changed.map((c) => c.item), ['shout']);
+  assert.deepEqual(notice(b3, a3, 'dates', { conversion: true }).changed, []);
 });
 
 // civicsmith, 26 Nov 2026: a conversion that stated an early provider's types and added a bound line told its users of
@@ -186,15 +179,15 @@ test('a reason\'s before and after hold only the parts that changed: a part only
   assert.deepEqual(r2.after, { handsBack: 'number', bounds: ['to: at most 99'] });
 });
 
-test('at a conversion only describing tells no one: an item removed, a constant\'s value changed, tell as always (E4)', () => {
+test('at a conversion only describing tells no one: an item removed tells as always; a constant\'s value within its type tells no one (E4)', () => {
   const f = withUsesFiles(files({
     'src/dates/index.mjs': `${DATES()}/** @type {number} */\nexport const LIMIT = 5;\n/** @returns {number} */\nexport function gone() { return 1; }\n`,
     'src/orders/index.mjs': `${ORDERS}import { LIMIT, gone } from '../dates/index.mjs';\n/** @returns {number} */\nexport const most = () => LIMIT + gone();\n`,
   }));
   const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': `${DATES()}/** @type {number} */\nexport const LIMIT = 6;\n` });
   const r = notice(b, a, 'dates', { conversion: true });
-  assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes} ${c.tells}`), ['LIMIT: value changed true', 'gone: removed true']);
-  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => x.item)]), [['orders', ['LIMIT', 'gone']]]);
+  assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes} ${c.tells}`), ['gone: removed true']);
+  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => x.item)]), [['orders', ['gone']]]);
   // the same at no conversion
   assert.deepEqual(notice(b, a, 'dates').told.map((t) => t.user), ['orders']);
 });
@@ -300,9 +293,9 @@ test('a conversion\'s merge tells no module by point 3; an ordinary job\'s merge
   const conv = notice(b, a, 'dates', { conversion: true });
   assert.deepEqual(conv.told, []);
   assert.match(conv.summary, /nobody is told/);
-  // a conversion that changes a constant's value: it does not change nothing, so it tells as any merge: its users by
-  // point 1, and the place outside and the module with no uses file by point 3
-  const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + LIMIT(6) });
+  // a conversion that changes a constant's stated type: it does not change nothing, so it tells as any merge: its users
+  // by point 1, and the place outside and the module with no uses file by point 3
+  const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': `${DATES()}/** @type {number | null} */\nexport const LIMIT = 6;\n` });
   const conv2 = notice(b2, a2, 'dates', { conversion: true });
   assert.deepEqual(conv2.told.map((t) => t.user).sort(), ['loose', 'orders', 'plain']);
   assert.deepEqual(conv2.told.find((t) => t.user === 'orders').reasons.map((x) => x.item ?? x.found), ['LIMIT']);
@@ -372,14 +365,14 @@ test('notify: an item the pull request records as keeping its domain and range t
   const gh = fakeGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   mergedPR(root, gh, 'job/dates/7', {
-    'src/dates/index.mjs': DATES(" if (!text) throw new RangeError('empty');").replace('formatDay(n) { return String(n); }', "formatDay(n) { if (n < 0) throw new RangeError('n'); return String(n); }"),
+    'src/dates/index.mjs': DATES().replace('@returns {number}', '@returns {number | null}').replace('/** @param {number} n @returns {string} */', '/** @param {number} n @returns {string} @bound n: zero or more */'),
   });
   gh.addComment('o/product', 7, block(MEANING_MARK, { meaning: [], same: [{ item: 'formatDay', why: 'n is never below zero: the check is one no caller reaches' }] }));
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
   const text = out.join('\n');
   assert.match(text, /the pull request records that dates formatDay keeps its domain and range: n is never below zero/);
-  assert.match(text, /dates formatDay: errors that can leave it changed \[found by its means\] -> tells no one\n {6}means: [^\n]*\n {6}the same domain and range, as the pull request records: n is never below zero/);
+  assert.match(text, /dates formatDay: bound changed \[found by its means\] -> tells no one\n {6}means: [^\n]*\n {6}the same domain and range, as the pull request records: n is never below zero/);
   assert.doesNotMatch(text, /uses dates formatDay/);
-  assert.match(text, /TOLD orders\n {6}uses dates parseDay \(errors that can leave it changed/);
+  assert.match(text, /TOLD orders\n {6}uses dates parseDay \(hands back differently/);
 });
