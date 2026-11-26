@@ -71,7 +71,7 @@ with each change.
 - 2. The eight records and their JSON forms (roles with `process`, lanes, wakes, stop, standing notes, round with scope, waiting work, handover with `generation`).
 - 3. What ends each kind of standing note.
 - 4. The process's repository: its three records and the `products` registry.
-- 5. The comments on pull requests: the job block, the job's record (a notice that needs no change among it), the conversion's report, the declaration (meaning, and items recorded as the same), the test record and the heads it stands for, the notice comments.
+- 5. The comments on pull requests: the job block, the job's record (the notices that need no change among it), the conversion's report, the declaration (meaning, and items recorded as the same), the test record and the heads it stands for, the notice comments.
 - 6. How the tool works out the means (the closure's order, the implicit members, a module that keeps no state) and who is told, from the uses files' fields.
 - 7. How the tool makes a told job's related tests.
 - 8. Unproven, and not settled.

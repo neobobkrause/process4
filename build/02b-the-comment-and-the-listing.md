@@ -1,4 +1,4 @@
-Length: 127 lines. Last section: "6. An interface listing, and an item's means".
+Length: 128 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
@@ -94,7 +94,7 @@ Listing of pricing
       throws: RangeError
 ```
 
-- An entry is named by its name within its module; the file and line beside it are not compared. Where two of the module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the file as the module list writes it; the same thing exported again from a second file stays one entry. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`). A message's kind (`@message`, section 5) is a kind whose entry carries its channel.
+- An entry is named by its name within its module; the file and line beside it are not compared. Where two of the module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`, the file as the module list writes it; the same thing exported again from a second file stays one entry. Beside exports, entries are each member of a handle kind (`Door.call`), each class member (`Name.x` static, `Name#x` otherwise), each operation (`op:priceof`) and each shared table (`table:<name>`). A message's kind (`@message`, section 5) is a kind whose entry carries its channel, the field `message`, printed `a message on: <channel>`.
 - An entry has a sort (function, value, kind, handle kind, method, class, class member, operation table, operation, stored rows) and, as they apply: what it accepts, what it hands back, its bound lines, a message's channel, whether a member may be missing, and the reader's printed declaration of it with comments removed.
 - A kind of plain data is written out in full, fields in name order, with its name kept, in every entry that accepts it or hands it back, and its bound lines go with it. A handle kind is written by name. Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A constant's value is kept.
 
@@ -107,7 +107,7 @@ Listing of pricing
 | `kind changed` | Its sort (above) | Its users |
 | `accepts more` | What it accepts is wider, as the type checker reads the old and new in one program, and what it hands back the same | Its users |
 | `cannot stand in` | What it accepts differs otherwise: removed, renamed, newly required or newly refused | Its users |
-| `hands back differently` | What it hands back, a message's channel | Its users |
+| `hands back differently` | What it hands back, or a message's channel (`message`) | Its users |
 | `may now be missing` | A member that could not be missing before | Its users |
 | `bound changed` | A bound line added, removed or reworded | Its users |
 | `errors that can leave it changed`, `plain data or instance changed`, `now needs its object as this` (or `no longer needs its object as this`), `arguments written into changed`, `channels, settings or files changed` | That part worked out from the code differs | Its users |
@@ -115,6 +115,7 @@ Listing of pricing
 | `type error in its code` | Its code no longer matches its stated types: a new error, or any change to its code while it has one | Its users |
 | `meaning changed` | ARCH named, or the pull request declared, a change of meaning | Its users |
 | `<module> now answers the same name` | A second module answers an operation's name | That operation's users |
+| `<provider> <name> now reaches it through a re-export` | A module hands the provider on by `export *`, and the provider has a new item of a name some uses file reaches through that module (`resolves: { via }`) | That name's users through that module |
 
 ```
 Notice for a change to pricing (TypeScript 5.6.3)
