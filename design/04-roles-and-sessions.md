@@ -72,7 +72,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 
 - Sessions name roles, not session addresses, so that a replaced role can be obeyed.
 - The owner's decisions are not kept here. They are in the record of decisions (part 5).
-- What carries the records on GitHub: one issue in the product's repository, found by its label, with each record one comment rewritten in place. Each comment's first line is a hidden mark naming its record. One listing call reads them all; one call rewrites a record.
+- What carries the records on GitHub: one issue in the product's repository, found by its label, with each record one comment, or more where it outgrows one, rewritten in place. Each comment's first line is a hidden mark naming its record. One listing call reads them all; one call rewrites a record.
 - GitHub keeps no guard against two writes to one comment at the same moment: one is lost, silently. So every record has exactly one writing session. A job writes none. It records that it is blocked, or that a notice needs no change, in its own pull request, and sends ARCH its one message; the tool in ARCH's session then rewrites the round and waiting-work records. Which modules are finished is worked out afresh each time from GitHub's own record of pull requests: merged, or closed with the job's record that nothing needed changing.
 - On a failed write the tool obeys GitHub's rate-limit response and tries again up to four times. If the write still fails, that is a process fault. It keeps no list of writes to make later.
 - Each record is kept under the single-text maximum, as a rule.
