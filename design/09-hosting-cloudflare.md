@@ -1,6 +1,6 @@
 # Part 9. The hosting table for Cloudflare
 
-Length: 29 lines. Last section: "3. Not known".
+Length: 28 lines. Last section: "3. Not known".
 
 Everything in this part is specific to Cloudflare, the first hosting provider. Support for other hosting is not built; the design is written so that it can be added as another table.
 

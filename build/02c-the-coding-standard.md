@@ -1,8 +1,8 @@
-Length: 92 lines. Last section: "10. The coding standard and the uses file".
+Length: 91 lines. Last section: "10. The coding standard and the uses file".
 
 # Process4 build text 2c: the coding standard and the uses file
 
-Section 10 of build text 2, in its own file; sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, 5 and 6 in `02b-the-comment-and-the-listing.md`. **Status: not built, not run.**
+Section 10 of build text 2, in its own file; sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, 5 and 6 in `02b-the-comment-and-the-listing.md`. **Status: proposed. Built in the tool (`uses`, `check`, the uses file at `push`) and tested by its own tests. Unproven: none of it has run on a product.**
 
 ## 10. The coding standard and the uses file
 
@@ -24,7 +24,7 @@ Section 10 of build text 2, in its own file; sections 1 to 4 and 7 to 9 are in `
 - **S12 Tests.** Tests keep S1 to S11; preloads and set-up use only the module's own files; a mock names its target written out (`mock.module('<path>')`, `mock.method(binding, '<name>')`); each test case has a written-out name (`test('…')`, `it('…')`, `describe('…')`).
 - **S13 Facts.** Every fact a module states is obtained from the module that owns it: an import of its constant, or a call to its reader, any cache being inside the reader. Where that is impossible (a test's deliberately written-out expected answer, a data file) the copy is marked: `copyOf_<module>_<item>` or `/** @copyof <module>:<item> */` in JavaScript; `@copyof <module>:<item>` in a comment on the line above in another file with comments; a `copies` entry in the uses file for JSON. A marked copy is a use of its item.
 
-**The rules on types, host facilities and order.**
+**The rules on types, host facilities and order.** Order: the design, part 2, sections 1 and 6. Rule numbers are permanent; none is numbered R9.
 
 - **R1** No expression's type is or contains `any`.
 - **R2** A value of type `unknown` is given a shape only where it is read from the module's own channel; another module's data is read only through that module's reader.

@@ -9,13 +9,13 @@ with each change.
 ## Build text 1
 
 `01-the-tool-and-the-required-run.md`: the tool and the required run (section 4 is in 1b).
-- 1. What carries over from the earlier tool, what is dropped, what is new.
+- 1. What the tool is made of.
 - 2. Where the tool lives (the repository's folders), its language and one dependency, how a product names its version, the fetch line, what the tool reads from the product.
 - 3. Signing in on a session and on GitHub's machines, write limits, and the act the permission checker sees for each command.
 - 5. A pull request's tests run once by `p4 test`, the test record, the required run `module-tests` and its verdict, the seven steps that decide the scope.
 - 6. The tool's own tests: what they cover, when they run (`tool-tests`), never on a product's work.
 - 7. Build order by trial stage, and who builds the tool.
-- 8. Not settled: a private process repository, the mechanical edit's scope, the approvals' wording, Codex, unread proof data.
+- 8. Not settled: a private process repository, the mechanical edit's scope, the approvals' wording, Codex.
 
 ## Build text 1b
 
@@ -42,7 +42,7 @@ with each change.
 ## Build text 2c
 
 `02c-the-coding-standard.md`: section 10 of build text 2.
-- 10. The coding standard (a reference; S1 to S13; R1 to R22; order; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form (its `mock` uses, `packages` and `takesIn`).
+- 10. The coding standard (a reference; S1 to S13; R1 to R22, no R9; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form (its `mock` uses, `packages` and `takesIn`).
 
 ## Build text 3
 

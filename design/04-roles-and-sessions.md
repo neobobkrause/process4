@@ -1,6 +1,6 @@
 # Part 4. Roles and sessions
 
-Length: 152 lines. Last section: "11. Smaller rules a session needs".
+Length: 147 lines. Last section: "11. Smaller rules a session needs".
 
 ## 1. The roles, and the sessions that hold no standing role
 
@@ -76,7 +76,7 @@ The questions ARCH puts to a lane, and its answers, are not kept as a running re
 - GitHub keeps no guard against two writes to one comment at the same moment: one is lost, silently. So every record has exactly one writing session. A job writes none. It records that it is blocked, or that a notice needs no change, in its own pull request, and sends ARCH its one message; the tool in ARCH's session then rewrites the round and waiting-work records. Which modules are finished is worked out afresh each time from GitHub's own record of pull requests: merged, or closed with the job's record that nothing needed changing.
 - On a failed write the tool obeys GitHub's rate-limit response and tries again up to four times. If the write still fails, that is a process fault. It keeps no list of writes to make later.
 - Each record is kept under the single-text maximum, as a rule.
-- **Unproven:** all of it. The shared state is not built. Not verified from GitHub's own pages: the size a comment can hold, that rewriting a comment notifies no one, and any limit on how often one comment can be rewritten.
+- **Unproven:** all of it. The tool builds the shared state and passes its own tests; it has not run in a round. Not verified from GitHub's own pages: the size a comment can hold, that rewriting a comment notifies no one, and any limit on how often one comment can be rewritten.
 
 ## 5. Refresh and replacement
 

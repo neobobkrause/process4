@@ -1,4 +1,4 @@
-Length: 163 lines. Last section: "9. What could not be settled".
+Length: 162 lines. Last section: "9. What could not be settled".
 
 # Process4 build text 2: the forms of the files the design names
 
@@ -156,7 +156,7 @@ The `Decision` line is the one plain line the coordinator gives the owner. A cha
 
 ## 9. What could not be settled
 
-1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals, which compared listings and inferred users; the 150 recorded answers are to be recorded again under the means and the uses files (build text 4, stage 4).
+1. **The proof's forms as the design takes them.** Sections 5 and 6 (build text 2b) give the proof's forms, read from its repository. What ran is design 7 with its 23 refusals, which compared listings and inferred users; the 150 recorded answers are recorded again under the means and the uses files, among the tool's own tests (build text 1, section 6).
 2. **A product in another language.** Sections 5 and 6 (build text 2b) are for plain JavaScript under TypeScript's reader. No other reader has been tried.
 3. **Messages between two separately running parts.** The proof's mark is `@message` (build text 2b, section 5).
 4. **A decision record that outgrows the maximum.** The owner's dated words are never edited, so his record only grows. How it is split is the coordinator's and PROCESS's to settle.

@@ -1,6 +1,6 @@
 # Process4: the design
 
-Length: 91 lines. Last section: "6. Words used".
+Length: 90 lines. Last section: "6. Words used".
 
 **Status: proposed. Nothing here is in force and nothing here has run.**
 

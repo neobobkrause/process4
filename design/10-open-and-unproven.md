@@ -20,11 +20,11 @@ For a session to do, and to report.
 
 **What a session needs before it can build the tool, and this document does not yet say.** Each is design work, to be written as its own text beside this one and not into it:
 
-4. The tool itself. Written: build texts `01-the-tool-and-the-required-run.md` and `01b-the-commands.md`. Not built. Unproven there: a session that holds one repository fetching the tool's copy; and it assumes the process's repository is public.
+4. The tool itself. Written: build texts `01-the-tool-and-the-required-run.md` and `01b-the-commands.md`. Built, and its own tests pass; it has not run in a process in force. Unproven there: a session that holds one repository fetching the tool's copy; and it assumes the process's repository is public.
 5. Each role's starting text. Drafted: eight texts in the folder `starting_texts/`, each under 8,192 bytes. None has been put before the permission checker, and each has ten numbered rule lines or fewer, as part 4, section 11 counts them.
 6. The form of a structured comment and of an interface listing. Written: build text `02b-the-comment-and-the-listing.md`. The proof they come from is named in build text 2, section 1.
 7. The form of the module list, a requirements file and the process config. Written in build text `02-the-forms.md`.
-8. The required run. Written in build text `01-the-tool-and-the-required-run.md`. Not built.
+8. The required run. Written in build text `01-the-tool-and-the-required-run.md`. Built, and not run in a process in force.
 9. The walks. Written: build text `03-the-walks.md`. Nothing in it has run.
 10. Left unsettled by the forms text: helpers under one module's tests that another module imports, which the interface listing does not cover; one written form for messages between two separately running parts of a product; and how the owner's record of decisions is split when it outgrows the maximum.
 11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
@@ -34,7 +34,7 @@ For a session to do, and to report.
 
 ## 3. Unproven
 
-Process4 has never run and its tool is not built. Nothing below has been shown to work as this design uses it.
+Process4 has never run; its tool is built and passes its own tests. Nothing below has been shown to work as this design uses it.
 
 - **The tool,** and merges made by it passing the permission checker at a real rate. That a program run by a session can reach GitHub has been seen (part 7, section 3).
 - **The shared state,** and a successor starting only from it.
@@ -52,7 +52,7 @@ Process4 has never run and its tool is not built. Nothing below has been shown t
 - **An account switch that loses no work.**
 - **Two products sharing the slots.**
 - **An edit to the approvals with a restart** that carries a round on.
-- **The notice as part of a running process:** the reading under the coding standard, the means and the uses files, designed from the language's own definitions on two premises (part 2, section 7), not built or run on a real product. Picking a told job's related tests is not proven at all. What bringing a product's code into the standard costs is measured by the first pass of eight real modules.
+- **The notice as part of a running process:** the reading under the coding standard, the means and the uses files, designed from the language's own definitions on two premises (part 2, section 7), built and not run on a real product. Picking a told job's related tests is not proven at all. What bringing a product's code into the standard costs is measured by the first pass of eight real modules.
 - **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
 - **The owner's approvals placed by a session:** whether the permission checker lets a session place his approved text in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
 - **The owner's acts to start a product** (part 7, section 4), an onboarding lane carried through to a product's ROOT starting (part 6, section 8), and that nothing physical stops a product's session from changing the process (part 6, section 7).

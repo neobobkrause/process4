@@ -1,6 +1,6 @@
 # Build text 3. How a walk is made
 
-Length: 159 lines. Last section: "8. To try first in the trial repository, smallest first".
+Length: 156 lines. Last section: "8. To try first in the trial repository, smallest first".
 
 **Status: proposed. Nothing here has run.** It stands beside the design (`design/`, "the design" below). Words in quotation marks are the owner's unless a line says otherwise. The tool's commands named here are in build text 1b, section 4. Its sections begin at 2.
 
@@ -68,8 +68,8 @@ Workers and the fill level: the design, part 4, section 11. It has no commit and
 
 **Journeys that use AI.**
 
-- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked. A tranche may end with such journeys recorded not walked (the owner's decision).
-- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. **The UX design lane sets, per journey, the "what must be present" words that `expects` line carries (the owner's decision).**
+- Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked (the design, part 3, section 3).
+- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. The UX lane sets those words for each journey (the design, part 3, section 3).
 
 **How many sessions, and the account's limits. Decided here:**
 

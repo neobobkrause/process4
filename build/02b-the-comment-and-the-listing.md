@@ -1,4 +1,4 @@
-Length: 124 lines. Last section: "6. An interface listing, and an item's means".
+Length: 127 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
@@ -73,7 +73,7 @@ The mark `@carriesop <members>`, on the handle's kind or on a function, names wh
 
 **Three more marks the proof ran.** A member that may be missing is optional in the listing. A kind sent between two separately running parts is marked `@message stdin` or `@message stdout`. Rows of a shared table are `@storedrows <table>` on the rows' kind, with `@carriestable get list put remove` on the store's handle, and are read as calls by name are.
 
-**Unproven:** the proven tool held modules to these forms by refusals the design does not take (a module imports only another's interface files; messages and stored rows carry their marks). The forms without those refusals are unproven.
+**Unproven:** these forms with no refusal to hold a module to them: that a module imports only another's interface files, and that messages and stored rows carry their marks.
 
 ## 6. An interface listing, and an item's means
 
@@ -102,15 +102,18 @@ Listing of pricing
 
 | Word | When | Told |
 |---|---|---|
-| `removed` | An item gone, or a name lost from a handle or table. A renamed item is this and a `new item` | Its users |
-| `new item` | An item only after | Nobody |
+| `removed` | An item gone, or a name lost from a handle or table. A renamed item is this, and new under its new name | Its users |
+| No word: a new item | An item only after | Nobody, unless it changes what a name already used resolves to (the design, part 2, section 7) |
+| `kind changed` | Its sort (above) | Its users |
 | `accepts more` | What it accepts is wider, as the type checker reads the old and new in one program, and what it hands back the same | Its users |
 | `cannot stand in` | What it accepts differs otherwise: removed, renamed, newly required or newly refused | Its users |
-| `hands back differently` | What it hands back, a message's channel, a member that may now be missing | Its users |
+| `hands back differently` | What it hands back, a message's channel | Its users |
+| `may now be missing` | A member that could not be missing before | Its users |
 | `bound changed` | A bound line added, removed or reworded | Its users |
-| `errors`, `data or instance`, `this`, `writes arguments`, `channels` | That part worked out from the code differs | Its users |
-| `type error` | Its code no longer matches its stated types | Its users |
-| `declaration changed` | No other word applies, and the printed declaration differs | Its users |
+| `errors that can leave it changed`, `plain data or instance changed`, `now needs its object as this` (or `no longer needs its object as this`), `arguments written into changed`, `channels, settings or files changed` | That part worked out from the code differs | Its users |
+| `value changed` | A constant's value, or what makes it, where its type shows no difference | Its users |
+| `type error in its code` | Its code no longer matches its stated types: a new error, or any change to its code while it has one | Its users |
+| `meaning changed` | ARCH named, or the pull request declared, a change of meaning | Its users |
 | `<module> now answers the same name` | A second module answers an operation's name | That operation's users |
 
 ```
@@ -121,4 +124,4 @@ Notice for a change to pricing (TypeScript 5.6.3)
 ```
 
 - What is not a change (describing among it), a change ARCH named or a pull request declared, and an item a job records as the same (`push --same`, build text 5, section 5) are the design's (part 2, section 7); `notify` applies them to these words.
-- **Unproven:** the comparison of means; not built. The proof compared listings alone (build text 2, section 1).
+- **Unproven:** the comparison of means, which is built and passes the tool's own tests but has not run on a product. The proof compared listings alone (build text 2, section 1).

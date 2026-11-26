@@ -1,6 +1,6 @@
 # Part 5. Reading in full, and the documents
 
-Length: 53 lines. Last section: "6. Each product's ranking page".
+Length: 48 lines. Last section: "6. Each product's ranking page".
 
 ## 1. Reading in full
 
