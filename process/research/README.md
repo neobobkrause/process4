@@ -5,6 +5,8 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 26 Nov 2026
+- `uses-rewrite-slow-26nov.md` — `p4 push` rewrote uses files at 15–20 s a module (about an hour for 203); cause: a fresh type-check per module; fix: shared parsed files, up to four reader processes (33.4 s to 5.6 s on 200 synthetic modules, files identical); merged on "Decision: A, the speed fix".
+- `uses-file-version-26nov.md` — the owner's decision on the uses file and the tool's version: what changed, how each reader reads an older file, which places are no longer stored; R14 places refer to no product module (his "Decision: A").
 - `weakness-implications-26nov.md` — choices made without following their cost through (the owner's words; five seen on 26 Nov); options 0 and A; reframed by him as development velocity; decided: a principle in design part 1 §6 and a known-weakness row.
 - `types-and-bounds-only-26nov.md` — the owner's "Decision: only a change of an item's stated types or bounds tells" (26 Nov), built (worker): each part of the means and its fate; errors, channels, arguments written into, a constant's value and `takesIn` tell no one; measured (converted proof: told 410 to 341, missed 7 to 21); the cost of also dropping named or declared meaning.
 - `first-pass-figures-26nov.md` — civicsmith ARCH #28's figures for the first 8 conversions (about $150; 14,318 places to 728, 95%; causes; no copies; uses files unchecked); PROCESS's estimate for 204 modules and open questions.

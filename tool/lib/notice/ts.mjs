@@ -51,13 +51,16 @@ export function makeProgram(files, host = undefined) {
  * same file, found without them (util.mjs, fileSpecifier; build text 2c, S1: Node's documented algorithm). The pinned
  * reader keeps them in the path and finds no file. Every other import is resolved by the reader as before.
  */
-function resolvingQueries(host, o) {
+function resolvingQueries(host, o, cache = null) {
   if (host.resolveModuleNameLiterals) return host;
-  const cache = ts.createModuleResolutionCache(host.getCurrentDirectory(), (f) => host.getCanonicalFileName(f), o);
+  cache ??= ts.createModuleResolutionCache(host.getCurrentDirectory(), (f) => host.getCanonicalFileName(f), o);
   host.resolveModuleNameLiterals = (literals, containingFile, redirected, opts, containingSourceFile) => literals.map((lit) => {
     const mode = ts.getModeForUsageLocation(containingSourceFile, lit, opts);
     return ts.resolveModuleName(fileSpecifier(lit.text), containingFile, opts, host, cache, redirected, mode);
   });
+  // The program's own package scopes come from the same cache, so that a package.json is read once per program, not
+  // once per file (without it the reader reads it again for each file it finds).
+  host.getModuleResolutionCache = () => cache;
   return host;
 }
 
@@ -75,10 +78,73 @@ export const standardOptions = () => ({
   noUncheckedIndexedAccess: true,
   exactOptionalPropertyTypes: true,
 });
+/**
+ * The files the reader has parsed under the standard settings, by name: { text, key, sf }. Every standard program of a
+ * run shares them (as TypeScript's own document registry shares a file among the programs of an editor), so that the
+ * language's library, the host's description and every product file are parsed and bound once per run, not once per
+ * module (civicsmith ARCH #28: a push that rewrote every module's uses file took an hour). A file is reused only where
+ * its text and the way it is read are the same as when it was parsed, so a reading is the same as with a fresh parse:
+ * the binding of a file depends on the file and the settings alone, and the settings here are always the same.
+ */
+const parsed = new Map();
+const PARSED_MAX = 20000;
+/** Forgets every parsed file (the tool's tests use it to read a product with nothing parsed before). */
+export const forgetParsed = () => parsed.clear();
+function sharingParsed(host) {
+  const { getSourceFile } = host;
+  host.getSourceFile = (f, lang, onError, fresh) => {
+    if (fresh) return getSourceFile.call(host, f, lang, onError, fresh);
+    let text;
+    try { text = host.readFile(f); } catch { text = undefined; }
+    if (text === undefined) return getSourceFile.call(host, f, lang, onError, fresh);
+    const key = typeof lang === 'object' ? `${lang.languageVersion}|${lang.impliedNodeFormat}|${lang.jsDocParsingMode}` : `${lang}`;
+    const had = parsed.get(f);
+    if (had && had.text === text && had.key === key) return had.sf;
+    const sf = ts.createSourceFile(f, text, lang);
+    if (parsed.size >= PARSED_MAX) parsed.clear();
+    parsed.set(f, { text, key, sf });
+    return sf;
+  };
+  return host;
+}
+
+/**
+ * A run in which the files the reader reads stay as they are (a commit written out, the tool's own files): within it,
+ * every standard program shares what it learns of the files, so that a file is read, and an import or a library
+ * resolved, once per run, not once per module. What a program finds is what it would find alone, the files being the
+ * same. Used where a command reads module after module of a product written out (usescmd.mjs, usesworker.mjs, notices.mjs).
+ */
+let run = null;
+export function whileFilesStay(f) {
+  if (run) return f();
+  loadReader();
+  const o = standardOptions();
+  const host = ts.createCompilerHost(o);
+  run = {
+    texts: new Map(), exists: new Map(), dirs: new Map(),
+    resolution: ts.createModuleResolutionCache(host.getCurrentDirectory(), (x) => host.getCanonicalFileName(x), o),
+  };
+  run.library = ts.createModuleResolutionCache(host.getCurrentDirectory(), (x) => host.getCanonicalFileName(x), o, run.resolution.getPackageJsonInfoCache());
+  try { return f(); } finally { run = null; }
+}
+const remembered = (map, f) => (x) => { if (!map.has(x)) map.set(x, f(x)); return map.get(x); };
+function stayingFiles(host) {
+  const { readFile, fileExists, directoryExists } = host;
+  host.readFile = remembered(run.texts, (x) => readFile.call(host, x));
+  host.fileExists = remembered(run.exists, (x) => fileExists.call(host, x));
+  if (directoryExists) host.directoryExists = remembered(run.dirs, (x) => directoryExists.call(host, x));
+  const library = run.library;
+  host.resolveLibrary = (name, from, opts) => ts.resolveLibrary(name, from, opts, host, library);
+  return host;
+}
+
 export function makeStandardProgram(files, oldProgram = undefined, virtual = null) {
   loadReader();
   const o = standardOptions();
-  const host = resolvingQueries(ts.createCompilerHost(o), o);
+  // A program with files written only in memory shares nothing of a run's: its imports may find those files.
+  const shared = run && !virtual?.size ? run : null;
+  const base = ts.createCompilerHost(o);
+  const host = resolvingQueries(sharingParsed(shared ? stayingFiles(base) : base), o, shared?.resolution);
   if (virtual?.size) {
     // Files the tool writes only in memory (the questions makeSame puts to the checker), served beside the real ones.
     const { getSourceFile, fileExists, readFile } = host;
