@@ -84,3 +84,14 @@ no module now gives no facility at all (design part 2 §1 gives every file a mod
   later: a package re-exported under another name, Node types pulled in by a package, workerd (not yet classified), a
   product `.d.ts` that belongs to no module.
 Adds no test, gate, review or stop.
+
+## Three more faults from the first conversion (civicsmith job setup-words #11, PR 1688, via ARCH #28 and coordinator #10, 09:29Z), unchanged
+
+"(a) The tool's host description has no Buffer, so readFileSync's bytes.toString("utf8") at build.mjs:128 is a checker
+complaint. It also has no maxBuffer in NodeSpawnOptions (build.mjs:201).
+(b) S12 reports RegExp .test(...) calls in tests as "a test whose name is not written out": word-list.test.mjs:363, 372,
+373 and extraction.test.mjs:310. I left those as they are.
+(c) The tool cannot resolve the written-out import "../../../src/setup-words/index.mjs?again" (S1, word-list.test.mjs:245),
+which R4's fresh-load test needs."
+
+Coordinator adds: ARCH carried out the answer on `documents` (it leaves the module list; its files go to setup-words).
