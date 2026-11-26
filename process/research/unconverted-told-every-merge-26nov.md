@@ -51,3 +51,19 @@ told each, one merge held, ~199 told jobs queued, slow `open`.
   (scope names requirements or whole modules), and it delays bug fixes for the whole sweep.
 
 Recommended: A. It costs one small tool change and text, and removes ~199 jobs and the merge holds at civicsmith's size.
+
+## Then: the notices could not be written (process fault from civicsmith ARCH #32, 26 Nov ~22:18Z)
+
+Passed unchanged by civicsmith coordinator #14. ARCH ran `p4 notify` for 1706, 1707 and 1708 at once, each in the
+background. Each found no item's means changed, told the 199 modules by point 3, wrote the notice into the five open
+jobs' blocks, then failed: "GitHub refused: gh: You have exceeded a secondary rate limit and have been temporarily
+blocked from content creation ... (HTTP 403); nobody is told; the notice for pull request <n> is owed". Each run's
+output was 95-111 MB. `p4 open --module id-spaces` then failed the same way; the tool's four retries did not get past
+it. The block is on the sessions' GitHub account, so it reaches every repository that account writes, Process4's
+included (PROCESS #20's own `p4 open` stalled at the same time). Effect: three notices owed; id-spaces cannot open.
+ARCH will re-run the owed notifies one at a time once the block lifts.
+
+Bearing on the options: the writes that tripped the limit are the 199-module notices themselves. Option A removes
+them (no module is told before its conversion), so the fault does not recur and the three owed notices need not be
+sent (each told only unconverted modules; the open jobs already have theirs). Under option 0 the tool would also need
+to write such notices within GitHub's content-creation limits, a second change; with A, nothing more.
