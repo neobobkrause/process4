@@ -11,7 +11,7 @@ Why: on civicsmith (203 modules), a move to a new Process4 version and a change 
 ## What changed
 
 - `tool/lib/usescmd.mjs`: `modulesToWrite` no longer adds every module when the facility list changes. It no longer adds every module whose file was written under another classification when `process.json`'s Process4 version moves. `classificationAt` is gone. `writeUsesFiles` writes a file only where what it says differs (`sameUses`, which ignores `written`). The rules that stay are:
-  - a job's own module;
+  - a job's own module, only where its code or tests differ from the base or it has no uses file yet (a conversion's first), so a told job that changes nothing leaves an older file as it is;
   - each module whose code or tests differ from the base;
   - the module-list rule: the modules touched, and each user whose file names a touched or gone module.
 - `written.tool` is still the tool's commit. It is information only, and no reader looks at it.

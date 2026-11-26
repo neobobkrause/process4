@@ -881,6 +881,41 @@ test('a push that changes the facility list, or moves to another Process4 versio
   assert.deepEqual(pushed(), []);
 });
 
+test('a told job that changes no code or test of its module leaves a file an earlier tool wrote as it is; one with no uses file yet writes its first', () => {
+  const files = {
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nu\n',
+    'process/modules/p.json': { name: 'p', files: ['src/p/'], tests: ['test/p/'], public: ['src/p/index.mjs'] },
+    'process/modules/u.json': { name: 'u', files: ['src/u/'], tests: ['test/u/'], public: ['src/u/index.mjs'] },
+    'src/p/index.mjs': '/** @typedef {{ id: number, name: string }} Row */\n/** @returns {Row} */\nexport function row() { return { id: 1, name: "one" }; }\n',
+    'src/u/index.mjs': "import { row } from '../p/index.mjs';\n/** @returns {string} */\nexport function name() { return row().name; }\n",
+  };
+  const root = makeRepo(files);
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const { ctx } = ctxFor(root, fakeGitHub());
+  const pushed = () => { const before = git(['rev-parse', 'HEAD'], { cwd: root }); push(ctx, { _: [] }); return git(['diff', '--name-only', before, 'HEAD'], { cwd: root }).split('\n').filter(Boolean); };
+  // a job of u with no uses file yet writes its first, though its code is unchanged
+  git(['checkout', '-q', '-b', 'job/u/1', 'origin/tranche'], { cwd: root });
+  commit(root, { 'process/modules/u.md': '- **R1** [met] one\n' });
+  assert.deepEqual(pushed(), ['process/modules/u.uses.json']);
+  // u's file as an earlier tool wrote it: no `value` on its uses, no `packages`, no `takesIn`, another tool's commit
+  const now = readUses(root, 'u', { ref: 'HEAD' });
+  const older = { ...now, written: { ...now.written, tool: 'f'.repeat(40) }, uses: now.uses.map(({ value, member, ...u }) => u) };
+  delete older.packages;
+  delete older.takesIn;
+  commit(root, { 'process/modules/u.uses.json': older });
+  git(['push', '-q', 'origin', 'HEAD:refs/heads/tranche'], { cwd: root });
+  // a told job of u that changes nothing of u's code or tests writes nothing
+  git(['checkout', '-q', '-b', 'job/u/2', 'origin/tranche'], { cwd: root });
+  commit(root, { 'process/modules/u.md': '- **R1** [met] one, told\n' });
+  assert.deepEqual(pushed(), []);
+  assert.deepEqual(readUses(root, 'u', { ref: 'HEAD' }), JSON.parse(JSON.stringify(older)));
+  // a job that changes u's code rewrites it
+  commit(root, { 'src/u/index.mjs': `${files['src/u/index.mjs']}// changed\n` });
+  assert.deepEqual(pushed(), ['process/modules/u.uses.json']);
+  assert.notEqual(readUses(root, 'u', { ref: 'HEAD' }).written.tool, 'f'.repeat(40));
+});
+
 test('a note on a Node facility the tool does not know is printed by `uses` and not kept in the uses file', () => {
   const root = makeRepo({
     'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),

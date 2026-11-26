@@ -1,6 +1,6 @@
 // The uses file at work (design part 2, sections 7 and 9; build text 1b, commands 2, 27 and 28; build text 2c): `push`,
 // and `test` where it merges the base in, rewrite the uses file of every module whose code or tests the branch changes
-// against its base (a job's: its own module), and, where the branch changes the module list, of the modules it touches
+// against its base (a job's: its own module only, or its first uses file), and, where the branch changes the module list, of the modules it touches
 // and their users, from the code at the commit pushed, where what the file says differs, and carry it in the push. A
 // move to another Process4 version or a change to the facility list rewrites no file (the owner's decision of 26 Nov
 // 2026): a file names the tool that wrote it as information only, and every reader reads it as that tool meant it.
@@ -63,7 +63,8 @@ const changedFiles = (root, from, to) => git(['diff', '--name-only', '--no-renam
 
 /**
  * The modules whose uses files a branch's change asks to rewrite (design part 2, sections 7 and 9): for a job, its own
- * module; otherwise each module whose code or tests differ from the base. Where the module list differs from the base
+ * module, where its code or tests differ from the base or it has no uses file yet; otherwise each module whose code or
+ * tests differ from the base. Where the module list differs from the base
  * (an entry, the order), also the modules it touches (an entry changed, added or removed; a file whose owner changed)
  * and every module whose uses file names one of them, or a provider no longer in the list. A change to the facility
  * list or to process.json's Process4 version adds none.
@@ -72,7 +73,9 @@ function modulesToWrite(root, baseTree, headTree, base, head, job) {
   const files = changedFiles(root, base, head);
   const out = new Set();
   const ownerAt = (tree, f) => tree?.moduleOfFile(join(tree.root, f)) ?? null;
-  if (job) { if (headTree.byId.has(job)) out.add(job); }
+  // a job's own module: where its code or tests differ from the base, or it has no uses file yet (a conversion's first);
+  // a told job that changes nothing leaves a file an earlier tool wrote as it is
+  if (job) { if (headTree.byId.has(job) && (files.some((f) => ownerAt(headTree, f) === job || ownerAt(baseTree, f) === job) || !readUses(headTree.root, job, { cfg: headTree.cfg }))) out.add(job); }
   else for (const f of files) { const m = ownerAt(headTree, f); if (m) out.add(m); }
   const dir = `${(headTree.cfg.process_folder || 'process/').replace(/\/?$/, '/')}modules/`;
   const listChanged = files.some((f) => f.startsWith(dir) && (f.endsWith('.json') && !f.endsWith('.uses.json') && !f.endsWith('facilities.json') || f.endsWith('order.txt')));
