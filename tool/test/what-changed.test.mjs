@@ -209,3 +209,36 @@ export function trim(line) { return line.trim(); }
   const own = (v) => `import { env } from 'node:process';\n/** @returns {string} */\nexport function currency() { return ${v}; }\n`;
   assert.deepEqual(moduleMeans(product({ p: own("env.CURRENCY ?? 'EUR'") }), 'p').items.currency.channels, ['setting CURRENCY']);
 });
+
+// civicsmith, 26 Nov 2026: a conversion stated the types of a module whose kinds name each other; each kind written out
+// in full wherever it appears made millions of parts of a few hundred distinct ones, and the means did not fit memory.
+test('equal parts of the means are kept once, written the same; a kind\'s instances are read from the items that name it', () => {
+  loadReader();
+  const p = `/**\n * @typedef {Object} Leaf\n * @property {'leaf'} tag\n * @property {Tree[]} kids\n */
+/**\n * @typedef {Object} Fork\n * @property {'fork'} tag\n * @property {Tree} left\n * @property {Tree} right\n * @property {Leaf} [first]\n */
+/** @typedef {Leaf | Fork} Tree */
+class Box { constructor() { this.v = 1; } }
+/** @param {Tree} t @returns {Tree} */
+export function keep(t) { return t; }
+/** @param {Tree} t @returns {Fork} */
+export function fork(t) { return { tag: 'fork', left: t, right: t }; }
+/** @param {Fork} f @returns {Box} */
+export function box(f) { return f.left ? new Box() : new Box(); }
+`;
+  const m = moduleMeans(product({ p }), 'p');
+  const tree = (it) => it.accepts.items[0].t;
+  // the same part, one object: what keep and fork accept, and what keep hands back
+  assert.equal(tree(m.items.keep), tree(m.items.fork));
+  assert.equal(tree(m.items.keep), m.items.keep.handsBack);
+  // written out as before: the kinds in full, each cycle cut where it comes round again
+  const text = JSON.stringify(m.items.keep.accepts);
+  assert.match(text, /"k":"cycle"/);
+  assert.ok(text.split('"name":"p.Leaf"').length > 3, text);
+  // a kind's instances: those of every item whose means name it (as the text of its means shows the name)
+  for (const [name, it] of Object.entries(m.items).filter(([, x]) => x.kind === 'kind')) {
+    const tag = `"name":${JSON.stringify(`p.${name}`)}`;
+    const by = Object.values(m.items).filter((x) => x.instances && JSON.stringify([x.accepts, x.handsBack]).includes(tag));
+    assert.deepEqual(it.instances, [...new Set(by.flatMap((x) => x.instances))].sort(), name);
+  }
+  assert.ok(m.items.Fork.instances.length, 'Fork is named by an item that builds an instance');
+});
