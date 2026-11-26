@@ -18,7 +18,7 @@ owner's exact dated words and the reasons. Keep it current with each entry writt
 - What a role reads — `design-decisions.md`
 - The smaller readings (part 10, section 1, item 7) — `design-decisions.md`
 - Onboarding and setting up a product — `design-decisions.md`
-- Claude accounts, the environment's settings, and an account switch — `design-decisions.md`
+- Claude accounts, the environment's settings (idle compaction off among them), and an account switch — `design-decisions.md`
 - Publishing a release, and where secret values are kept — `design-decisions.md`
 - Moving a product to a Process4 version — `design-decisions.md`
 - A tranche opens: from main, by ARCH, with its scope — `design-decisions.md`

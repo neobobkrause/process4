@@ -51,3 +51,14 @@ and "Compaction"; part 7 §5 (the settings the environment's setup script writes
   for ARCH, that "fill unreadable" in ARCH's handover is wrong. Text only.
 - **C. A and B (recommended).** A removes the compaction that happened; B removes the false belief that would hide the next
   one of the other kind.
+
+## Outcome (26 Nov 2026, PROCESS #18)
+
+The owner typed in PROCESS #18's session: "Instruction: Turn idle compaction off" (26 November 2026). Carried out as
+option A: PROCESS proposed through the harness's approval prompt a replacement of the BioDefault environment's setup script
+that also writes `"idleCompaction": false` into `~/.claude/settings.json` beside `autoMode` (tested first in a scratch
+home: the key is written, existing settings kept, exit 0); he approved it and it was saved (~01:20Z). It takes effect for
+sessions started fresh; PROCESS #18 also wrote it into its own settings. Design part 7 §1 ("Compaction") and §5 name it;
+the record's subject "Claude accounts, the environment's settings, and an account switch" holds his words. Option B
+(correct the claim that the fill cannot be read) was not chosen and stays open with him. Unproven: that the harness honours
+the setting; shown only after a fresh session's next idle hour.
