@@ -1,7 +1,6 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~23:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (not
-yet at its refresh point; fill ~28 percent). If you are its successor, you are **PROCESS #18**: read the generation in
+Written 26 Nov 2026 ~00:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (near its refresh point; fill ~46 percent). If you are its successor, you are **PROCESS #18**: read the generation in
 `handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
 (keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
 0 until your first turn ends, then is real. Never `git add -A`; put `.claude/worktrees/` in `.git/info/exclude`.
@@ -10,31 +9,34 @@ yet at its refresh point; fill ~28 percent). If you are its successor, you are *
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
 `build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: the design of who is told is written; the tool and texts are being built to it
+## START HERE: `work/decision-c-design` holds the design, tool and texts; final checks running
 
-Branch `work/decision-c-design` (from `work/decision-c` 27b2be9; head a17447b or later) holds the design part 2 §7–8
-rewritten on the owner's request (his words, 25 Nov ~22:55Z, in `precision-26nov/README.md`): who knows that an interface
-changes, by cause; what the tool compares (domain and range in his 14 Nov definitions, verified in process3 at 2a43eb5);
-what is and is not a change; who uses what (uses file, with `takesIn`, `mock`, `packages`); exactly who is told; the
-insides only; what a told module does. Checked by a fresh worker (`design-check.md` on `work/decision-c-design-check`,
-28 findings, all answered). His page for reading it: https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ (source
-`md2html.py` in PROCESS's scratchpad: regenerate from the design if it changes).
+Branch `work/decision-c-design` (head 6626d3e or later) = decision C + facility decision + the design of who is told
+(part 2 §6–8, rewritten on his request of 25 Nov ~22:55Z) + the tool and texts built to it + a footprint reduction.
+His decisions recorded there (`design-decisions-2.md` "Who a change tells" item 3 and words at its end;
+`design-decisions.md` "The reading values"): accepting more tells users (23:07Z); a job's `same` record and a told job
+that changes nothing runs no test (~23:11Z, on his "yes"); his 14 Nov domain/range words (verified in process3 2a43eb5);
+"Decision: 0" (26 Nov ~00:00Z): part 2 stays whole while no product runs on Codex. His words: "You don't need a decision
+to build it, though you do need a decision when we decide to use it." — so merging to main is on his recorded decisions;
+a product moves only on his instruction at its coordinator. "The need for rigor and accuracy must survive any footprint
+reduction." His page for reading part 2 §7–8: https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ (regenerate with
+`md2html.py`, kept in research `precision-26nov/` if the scratchpad is gone — else rewrite it).
 
-His decisions recorded on that branch ("Who a change tells", item 3 and words at its end): "Decision: remove the rule
-that accepting more tells no one; any change to what a provider accepts tells its users." (25 Nov 23:07Z); his answers
-on a job's record of same domain and range and a told job that changes nothing, recorded on his "yes" (~23:11Z). Two
-lines are PROCESS's, shown to him: an open job whose notice needs nothing keeps its pass; the mechanical-edit exception.
+Done: design check (28 findings) and final check (13; five misses fixed: a middle module's own items changing with a
+provider's are declared by its told job, which then merges; re-exports; order faults without a uses file; new name
+through `export *`; conversion tells real changes); one writer per record (the job writes only its record; the required
+run reads it: `shims/module-tests.yml`); scope ignores comments/layout; footprint: 98 cuts (10,226 bytes); sets: job
+168,933, ARCH 169,040, PROCESS 162,072 (before texts3). Tool 266/266. Original proof 112/958/846/0.
 
-He said "Go ahead and build it" (~23:35Z); PROCESS asked once whether to record it as his approval: unanswered.
+Running at 00:40Z 26 Nov: `work/decision-c-texts3` (texts for the tool's new flags: `push --notice <n>`, `run verdict
+--job-record`, test record `modules`, `message`, new change words) and `work/decision-c-cutcheck` (verifies each cut lost
+nothing: `cut-check.md`). Next: restore anything a cut lost; join texts3; run `npm test`; then ONE pull request
+`work/decision-c-design` → main, body quoting his decisions; merge once `tool-tests` passes; update his page (the "Being
+built" card and the waiting items) and notify his phone. Then Part D (trial on process3-probes needs a fresh ROOT from
+him; civicsmith moves only on his instruction at its coordinator).
 
-**Building now** (two workers; names fixed between them: `push --same <item> "<why>"`, `push --notice-nothing "<why>"`,
-`close --nothing-to-change` pushing a rewritten uses file; uses file `mock`, `packages`, `takesIn`):
-- `work/decision-c-tool`: the tool (list in `precision-26nov/design-to-build.md`, F3 as a lookup through `takesIn`).
-- `work/decision-c-texts`: build texts (5 §6–7 cut to the how) and starting texts; reading sets ≤ 175,000.
-
-**Next:** join both onto `work/decision-c-design`; a fresh-eyes check that tool, texts and design agree (code and texts,
-not conclusions); then ONE pull request to main from that branch, its body quoting his decisions and approving words;
-merge once `tool-tests` passes. Do not re-run the proof's measurement (his words): reason from the texts.
+Later, for him, one at a time: a job reads ~31,600 bytes it never acts on (footprint study item 4: a reading-set change);
+the idle-compaction choice; choice 5; the two tidy questions; who keeps his standing page.
 
 The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
 `3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
