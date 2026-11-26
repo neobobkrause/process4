@@ -19,7 +19,8 @@
 // one `member` named; use it whole ("whole": hand it to a function, store, spread, compare, iterate, copy, write it as
 // text, or anything not proved to be one of the others; "handed back": returned from an export of the module's
 // interface code); or none of it ("none": name the kind, or hold the value under a name whose uses are listed apart).
-// A use without `value` (a file written before it) reads as "whole". A place where the module relabels another
+// A use without `value` (a file written before it) reads as "whole": every reader reads a file an earlier tool wrote as
+// that tool meant it, and `written.tool` is information only. A place where the module relabels another
 // module's kind as a kind of its own (S4) gives the copy (`item`) and the kind it copies (`relabels`).
 // "*" in mayRefer stands for every module earlier than this one at the time it is read (the order can change). A place
 // in a test that no test case reaches gives `in` in place of `test`. The only hand-written part is a copy in a JSON file,

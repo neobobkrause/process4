@@ -9,6 +9,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { notifyCmd } from '../lib/notify.mjs';
 import { notice, noticeText, versionNotices } from '../lib/notice/notice.mjs';
+import { check } from '../lib/notice/check.mjs';
+import { loadTree } from '../lib/notice/model.mjs';
 import { block } from '../lib/github.mjs';
 import { MEANING_MARK } from '../lib/round.mjs';
 import { create } from '../lib/state.mjs';
@@ -375,4 +377,78 @@ test('notify: an item the pull request records as keeping its domain and range t
   assert.match(text, /dates formatDay: bound changed \[found by its means\] -> tells no one\n {6}means: [^\n]*\n {6}the same domain and range, as the pull request records: n is never below zero/);
   assert.doesNotMatch(text, /uses dates formatDay/);
   assert.match(text, /TOLD orders\n {6}uses dates parseDay \(hands back differently/);
+});
+
+// ---- a uses file an earlier tool wrote, read as that tool meant it ----
+
+const OLD_P = `/** @typedef {{ id: number, name: string }} Row */
+/** @returns {Row} */
+export function row() { return { id: 1, name: 'one' }; }
+/** @returns {number} */
+export function one() { return 1; }
+`;
+const OLD_U = `import { row, one } from '../p/index.mjs';
+import dgram from 'node:dgram';
+/** @returns {string} */
+export function name() { return row().name; }
+/** @returns {number} */
+export function two() { return one() + 1; }
+/** @returns {unknown} */
+export const sock = () => dgram.createSocket('udp4');
+`;
+// u's uses file exactly as the tool at commit 78a2c83 (25 Nov 2026) wrote it, the oldest form the tool has written and
+// build text 2c's first: no `value` on a use, no `item` or `relabels` on a place, no `packages`, no `takesIn`; the
+// note on node:dgram, a Node module the tool has no description of, kept as a place (R14) that may refer to any
+// earlier module and waits on ARCH; `written.tool` the tool's version where its commit could not be read.
+const OLDEST_U = {
+  module: 'u',
+  written: { commit: 'c'.repeat(40), tool: 'process4-tool 0.1.0' },
+  providers: ['p'],
+  uses: [
+    { provider: 'p', item: 'Row', itemKind: 'type', type: 'read', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 4, in: 'name' }] },
+    { provider: 'p', item: 'Row', itemKind: 'type', type: 'receive', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 4, in: 'name' }] },
+    { provider: 'p', item: 'one', itemKind: 'function', type: 'call', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 6, in: 'two' }] },
+    { provider: 'p', item: 'one', itemKind: 'function', type: 'import', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 1, in: '(top level)' }] },
+    { provider: 'p', item: 'row', itemKind: 'function', type: 'call', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 4, in: 'name' }] },
+    { provider: 'p', item: 'row', itemKind: 'function', type: 'import', route: 'direct', standard: true, where: [{ file: 'src/u/index.mjs', side: 'code', line: 1, in: '(top level)' }] },
+  ],
+  outside: [
+    { rule: 'R14', file: 'src/u/index.mjs', side: 'code', line: 2, mayRefer: ['*'], waitsOn: 'ARCH: the facility list', tests: [] },
+    { rule: 'R1', file: 'src/u/index.mjs', side: 'code', line: 8, mayRefer: ['*'], waitsOn: 'this module', tests: [] },
+    { rule: 'R4', file: 'src/u/index.mjs', side: 'code', line: 8, mayRefer: [], waitsOn: 'this module: a stated kind for what it hands out', tests: [] },
+  ],
+  orderFaults: [],
+  copies: [],
+};
+
+test('a uses file in the oldest form the tool wrote is read by check and notify as that tool meant it', () => {
+  const product = (uses) => ({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nu\n',
+    'process/modules/p.json': entry('p'),
+    'process/modules/u.json': entry('u'),
+    'src/p/index.mjs': OLD_P,
+    'src/u/index.mjs': OLD_U,
+    ...(uses ? { 'process/modules/u.uses.json': uses } : {}),
+  });
+  const old = product(OLDEST_U);
+  // check: its providers are before it in the order; no place of it refers to a later module
+  const [dir] = sides(old, old);
+  const c = check(loadTree(dir), 'u');
+  assert.deepEqual(c.refusals, []);
+  assert.deepEqual(c.cannotTell.filter((x) => /^src\/u\/index\.mjs:/.test(x.at) && ['R14', 'R1', 'R4'].includes(x.code)), []);
+  // notify: Row's id changes kind, a member u's code does not read. The oldest file says nothing of what u does with
+  // a Row, so its uses read as the whole value and u is told of Row; today's file says u reads only `name`, and u is
+  // not told of Row
+  const changed = OLD_P.replace('id: number', 'id: string');
+  const told = (f) => { const [b, a] = sides(f, { ...f, 'src/p/index.mjs': changed }); return notice(b, a, 'p').told.find((t) => t.user === 'u')?.reasons ?? []; };
+  const byOld = told(old);
+  assert.ok(byOld.some((r) => r.item === 'Row'), JSON.stringify(byOld));
+  const now = withUsesFiles(product(null));
+  assert.ok(!now['process/modules/u.uses.json'].outside.some((o) => o.line === 2), 'the note on node:dgram is not kept');
+  const byNow = told(now);
+  assert.ok(!byNow.some((r) => r.item === 'Row'), JSON.stringify(byNow));
+  // the older file's places are read as written: each that may refer to any earlier module hears of any change to it
+  assert.deepEqual(byOld.filter((r) => r.outside).map((r) => r.outside), ['R14 src/u/index.mjs:2', 'R1 src/u/index.mjs:8']);
+  assert.deepEqual(byNow.filter((r) => r.outside).map((r) => r.outside), ['R1 src/u/index.mjs:8']);
 });

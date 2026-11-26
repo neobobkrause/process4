@@ -17,6 +17,7 @@
 // goes on under a name of the module's own, or into an expression judged where it stands); anything the walk cannot
 // prove to be a member or neither is the whole value.
 import fs from 'node:fs';
+import { isBuiltin } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ts, loadReader, makeStandardProgram, forEachNode, lineOf, tagsOf, tagText } from './ts.mjs';
@@ -48,6 +49,21 @@ export function packageName(spec) {
 /** workerd, the other host a product runs on: its facilities are described by this package's declarations. */
 export const WORKERD = 'workerd';
 const WORKERD_TYPES = '@cloudflare/workers-types';
+/** A specifier that names a module of the host: Node's own (`node:fs`, `fs`) or workerd's (`cloudflare:sockets`). */
+export const isHostModule = (spec) => /^(node|cloudflare):/.test(spec) || isBuiltin(spec);
+/** A declaration in the language's own library (TypeScript's lib files), not in a description of Node or workerd. */
+const isLanguageFile = (f) => /\/typescript\/lib\/lib\.[^/]*\.d\.ts$/.test(f.split(path.sep).join('/'));
+/**
+ * Whether a facility the tool reads is Node's or workerd's, not the language's: its package is the host, and its
+ * declaration is not in the language's library. A use of one the tool's classification leaves out is a note on a host
+ * facility the tool does not know (build text 2c, "The uses file"): `uses` prints it; the uses file does not keep it.
+ */
+export function isHostFacility(sym, pkg = packageOf(sym)) {
+  if (pkg === WORKERD) return true;
+  if (pkg !== HOST) return false;
+  const f = sym?.declarations?.[0]?.getSourceFile().fileName ?? '';
+  return !!f && !isLanguageFile(f);
+}
 /**
  * The package that gives a facility, by where its declaration is (build text 2c, "Facilities": the tool classifies the
  * host's, ARCH the packages'): the language's library and the tool's own description of the host (both under the
@@ -97,6 +113,13 @@ export function qualifiedName(checker, sym, pkg = packageOf(sym)) {
 
 /** Every module earlier than the one read: "may refer to any of them". */
 export const ANY = '*';
+/** The checker's codes for a name of Node's (or Bun's) it has no description of: "Cannot find name 'process'. Do you
+ * need to install type definitions for node?". */
+const HOST_NAMES = new Set([2580, 2591, 2867, 2868]);
+/** "Module '"x"' has no exported member 'y'" (with or without a suggestion). */
+const NO_EXPORT = new Set([2305, 2614, 2724]);
+/** "Property 'y' does not exist on type 'X'" (with or without a suggestion). */
+const NO_MEMBER = new Set([2339, 2551]);
 
 const PROTOCOL = ['then', 'toJSON', 'valueOf', 'toString', 'constructor'];
 const PRIMITIVE = ['toString', 'valueOf'];
@@ -336,7 +359,9 @@ export function readReferences(tree, moduleId, opts = {}) {
     uses.get(k).where.set(`${w.file}|${w.line}|${w.test ?? w.in}`, w);
   }
   /** A place outside the standard. mayRefer: the modules it may refer to ([] none, [ANY] every earlier module). */
-  function place(rule, node, { what, mayRefer = [ANY], waitsOn = 'this module', item, relabels } = {}) {
+  // `unknownHost`: a note that stands only because the tool's description or classification of Node or workerd lacks
+  // a facility the code uses; printed by `uses`, never kept in the uses file (usescmd.mjs).
+  function place(rule, node, { what, mayRefer = [ANY], waitsOn = 'this module', item, relabels, unknownHost = false } = {}) {
     const sf = node.getSourceFile();
     const file = rel(sf.fileName);
     const line = lineOf(node);
@@ -345,7 +370,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     const mayR = [...new Set(mayRefer)].filter((m) => m !== mod.id);
     const old = outside.get(k);
     if (old) { old.mayRefer = [...new Set([...old.mayRefer, ...mayR])]; return; }
-    outside.set(k, { rule, file, side, line, what, ...(item ? { item } : {}), ...(relabels ? { relabels } : {}), mayRefer: mayR.includes(ANY) ? [ANY] : mayR, waitsOn, tests: side === 'test' ? testsAt(node) : [] });
+    outside.set(k, { rule, file, side, line, what, ...(item ? { item } : {}), ...(relabels ? { relabels } : {}), mayRefer: mayR.includes(ANY) ? [ANY] : mayR, waitsOn, tests: side === 'test' ? testsAt(node) : [], ...(unknownHost ? { unknownHost } : {}) });
   }
   const modulesOf = (decls) => [...new Set(decls.map((d) => entryOf(d)?.module).filter(Boolean))];
 
@@ -412,7 +437,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     else if (write) place('R14', node, { what: `writes ${shown}, a member ${pkg === HOST || pkg === WORKERD ? 'the host' : pkg} declares` });
     else if (reachOf(name) === 'tests') { if (!mod.tests.includes(node.getSourceFile().fileName)) place('R14', node, { what: `uses ${shown}, the test runner's, outside the module's tests`, waitsOn: 'this module' }); }
     // the host's facilities are the tool's to classify, a package's are ARCH's (build text 2c, "Facilities")
-    else if (!reachOf(name) && (pkg === HOST || pkg === WORKERD)) place('R14', node, { what: `uses ${shown}, a facility of the host the tool's classification leaves out`, waitsOn: 'this module' });
+    else if (!reachOf(name) && (pkg === HOST || pkg === WORKERD)) place('R14', node, { what: `uses ${shown}, a facility of the host the tool's classification leaves out`, waitsOn: 'this module', unknownHost: isHostFacility(sym, pkg) });
     else if (!reachOf(name)) place('R14', node, { what: `uses ${shown}, a facility of ${pkg} the facility list does not name`, waitsOn: 'ARCH: the facility list' });
     else if (reachOf(name) === 'out' && !isBoundaryModule) place('R14', node, { what: `uses ${shown}, which reaches out, outside a boundary module`, waitsOn: 'ARCH: a boundary module for it' });
     return name;
@@ -953,7 +978,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (d.code === 2307 || d.code === 7016) {
         const m = /'([^']+)'/.exec(msg)?.[1] ?? '';
         if (m.startsWith('.') || resolver.isOwn(m)) place('S1', node, { what: `an import the tool cannot resolve: ${m}`, mayRefer: modulesOfSpec(m, fileName) });
-        else { inventory.set(m, packageName(m)); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list' }); }
+        else { inventory.set(m, packageName(m)); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list', unknownHost: isHostModule(m) }); }
         continue;
       }
       let stmt = node; while (stmt.parent && !ts.isStatement(stmt) && !ts.isSourceFile(stmt.parent)) stmt = stmt.parent;
@@ -968,7 +993,7 @@ export function readReferences(tree, moduleId, opts = {}) {
         for (const x of kindDecls(t)) involved.add(entryOf(x).module);
       });
       for (const r of d.relatedInformation ?? []) { const m = r.file && tree.moduleOfFile(r.file.fileName); if (m && m !== mod.id) involved.add(m); }
-      place('S4', node, { what: `the checker: ${msg}`.slice(0, 300), mayRefer: untyped ? [ANY] : [...involved], waitsOn: 'this module: code the checker accepts under the standard\'s settings' });
+      place('S4', node, { what: `the checker: ${msg}`.slice(0, 300), mayRefer: untyped ? [ANY] : [...involved], waitsOn: 'this module: code the checker accepts under the standard\'s settings', unknownHost: hostGap(d, msg, node) });
     }
 
     /** A name (S1 to S3, R11, R14): what an identifier in code or in a comment resolves to. */
@@ -1455,6 +1480,20 @@ export function readReferences(tree, moduleId, opts = {}) {
     const target = resolver.resolve(spec, from);
     const o = target ? ownersOfPath(target) : null;
     return o && o.size ? [...o] : [ANY];
+  }
+  /**
+   * Whether a checker's complaint stands only because the tool's description of Node or workerd lacks what the code
+   * uses: one of Node's global names (TypeScript's own codes for them); a member a host module does not export; a
+   * member of a kind Node's or workerd's description declares.
+   */
+  function hostGap(d, msg, node) {
+    if (HOST_NAMES.has(d.code)) return true;
+    if (NO_EXPORT.has(d.code)) { const m = /'"([^"]+)"'/.exec(msg)?.[1]; return !!m && isHostModule(m); }
+    if (NO_MEMBER.has(d.code) && node?.parent && ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) {
+      const t = typeAt(node.parent.expression);
+      return [t?.aliasSymbol, t?.symbol].some((s) => !!s && isHostFacility(s));
+    }
+    return false;
   }
   function nodeAtPos(sf, pos) {
     let found = null;

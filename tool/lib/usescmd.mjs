@@ -1,10 +1,11 @@
 // The uses file at work (design part 2, sections 7 and 9; build text 1b, commands 2, 27 and 28; build text 2c): `push`,
-// and `test` where it merges the base in, rewrite the uses file of every module the branch changes against its base
-// (a job's: its own module), where the branch changes the module list, of the modules it touches and their users, and
-// where it changes the facility list, or moves to a Process4 version whose classification of the host's facilities
-// differs from the one a file was written under, of every module (that file),
-// from the code at the commit pushed, and carry it in the push; `uses <module>` writes one module's uses file into the
-// checkout from the code there and prints what a conversion's first step lists.
+// and `test` where it merges the base in, rewrite the uses file of every module whose code or tests the branch changes
+// against its base (a job's: its own module only, or its first uses file), and, where the branch changes the module list, of the modules it touches
+// and their users, from the code at the commit pushed, where what the file says differs, and carry it in the push. A
+// move to another Process4 version or a change to the facility list rewrites no file (the owner's decision of 26 Nov
+// 2026): a file names the tool that wrote it as information only, and every reader reads it as that tool meant it.
+// `uses <module>` writes one module's uses file into the checkout from the code there and prints what a conversion's
+// first step lists.
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -14,14 +15,14 @@ import { loadTree } from './notice/model.mjs';
 import { readReferences, ANY } from './notice/refs.mjs';
 import { moduleMeans } from './notice/means.mjs';
 import { readerVersion } from './notice/ts.mjs';
-import { facilitiesPath, readUses, sameUses, usesPath, writeUses } from './usesfile.mjs';
+import { readUses, sameUses, usesPath, writeUses } from './usesfile.mjs';
 import { writeOut } from './notify.mjs';
 import { fail, git } from './util.mjs';
 
 const MODULE = /^[a-z0-9-]+$/;
 const TOOL_DIR = dirname(fileURLToPath(new URL('../p4.mjs', import.meta.url)));
 let toolCommit = null;
-/** The tool's commit (build text 2c: the uses file's `written.tool`): the commit of the copy it runs from. */
+/** The tool's commit (build text 2c: the uses file's `written.tool`, information only): the commit of the copy it runs from. */
 export function toolVersion() {
   if (toolCommit) return toolCommit;
   const r = git(['rev-parse', 'HEAD'], { cwd: TOOL_DIR, allowFail: true });
@@ -30,29 +31,14 @@ export function toolVersion() {
   return toolCommit;
 }
 
-const CLASSIFICATION = 'tool/lib/notice/facilities.json';
-const classifications = new Map();
-/**
- * The text of the classification of the host's facilities that the tool at a commit carries (notice/facilities.json),
- * read from the tool's own repository; null where that commit cannot be read there (then it counts as different).
- */
-export function classificationAt(commit) {
-  if (!commit) return null;
-  if (!classifications.has(commit)) {
-    let text = null;
-    if (commit === toolVersion()) { try { text = readFileSync(join(TOOL_DIR, 'lib/notice/facilities.json'), 'utf8'); } catch { text = null; } }
-    else if (/^[0-9a-f]{40}$/.test(commit)) { const r = git(['show', `${commit}:${CLASSIFICATION}`], { cwd: TOOL_DIR, allowFail: true }); text = r.code === 0 ? r.stdout : null; }
-    classifications.set(commit, text);
-  }
-  return classifications.get(commit);
-}
-
 /**
  * The reading of one module and its uses file. The file holds what build text 2c states: the providers, the uses, the
  * places outside the standard (rule, file, side, line, what they may refer to, what they wait on, their tests; for a
  * kind written as a copy of another module's, the copy and the kind it copies), the
  * order faults and the hand-written copies in JSON files. The reading also holds what `uses` prints for a conversion:
- * what each place is, the marked copies and their drift, the candidate restated facts, the host facilities used.
+ * what each place is, the marked copies and their drift, the candidate restated facts, the host facilities used, and
+ * the notes on Node's and workerd's facilities the tool does not know (refs.mjs, `unknownHost`), which the file does
+ * not keep.
  */
 export function usesReading(tree, moduleId, commit) {
   const r = readReferences(tree, moduleId);
@@ -61,7 +47,7 @@ export function usesReading(tree, moduleId, commit) {
     written: { commit, tool: toolVersion() },
     providers: r.providers,
     uses: r.uses,
-    outside: r.outside.map(({ rule, file, side, line, mayRefer, waitsOn, tests, item, relabels }) => ({ rule, file, side, line, ...(relabels ? { item, relabels } : {}), mayRefer, waitsOn, tests })),
+    outside: r.outside.filter((o) => !o.unknownHost).map(({ rule, file, side, line, mayRefer, waitsOn, tests, item, relabels }) => ({ rule, file, side, line, ...(relabels ? { item, relabels } : {}), mayRefer, waitsOn, tests })),
     orderFaults: r.orderFaults,
     copies: r.copies,
     packages: r.packages,
@@ -77,30 +63,21 @@ const changedFiles = (root, from, to) => git(['diff', '--name-only', '--no-renam
 
 /**
  * The modules whose uses files a branch's change asks to rewrite (design part 2, sections 7 and 9): for a job, its own
- * module; otherwise each module whose code or tests differ from the base. Where the facility list differs from the base,
- * every module. Where the module list differs from the base
+ * module, where its code or tests differ from the base or it has no uses file yet; otherwise each module whose code or
+ * tests differ from the base. Where the module list differs from the base
  * (an entry, the order), also the modules it touches (an entry changed, added or removed; a file whose owner changed)
- * and every module whose uses file names one of them, or a provider no longer in the list.
+ * and every module whose uses file names one of them, or a provider no longer in the list. A change to the facility
+ * list or to process.json's Process4 version adds none.
  */
 function modulesToWrite(root, baseTree, headTree, base, head, job) {
   const files = changedFiles(root, base, head);
   const out = new Set();
   const ownerAt = (tree, f) => tree?.moduleOfFile(join(tree.root, f)) ?? null;
-  if (job) { if (headTree.byId.has(job)) out.add(job); }
+  // a job's own module: where its code or tests differ from the base, or it has no uses file yet (a conversion's first);
+  // a told job that changes nothing leaves a file an earlier tool wrote as it is
+  if (job) { if (headTree.byId.has(job) && (files.some((f) => ownerAt(headTree, f) === job || ownerAt(baseTree, f) === job) || !readUses(headTree.root, job, { cfg: headTree.cfg }))) out.add(job); }
   else for (const f of files) { const m = ownerAt(headTree, f); if (m) out.add(m); }
   const dir = `${(headTree.cfg.process_folder || 'process/').replace(/\/?$/, '/')}modules/`;
-  // A change to the facility list changes what every module's places outside the standard are (R14): every module's
-  // uses file is rewritten in the same push (design part 2, section 7).
-  if (files.includes(facilitiesPath(headTree.cfg))) for (const m of headTree.modules) out.add(m.id);
-  // A move to a Process4 version (process.json's process commit changed): every uses file written under a tool whose
-  // classification of the host's facilities differs from this tool's is rewritten (design part 2, section 7).
-  if (files.includes('process.json') && baseTree && JSON.stringify(baseTree.cfg.process ?? null) !== JSON.stringify(headTree.cfg.process ?? null)) {
-    const mine = classificationAt(toolVersion());
-    for (const m of headTree.modules) {
-      const d = readUses(headTree.root, m.id, { cfg: headTree.cfg });
-      if (!d || classificationAt(d.written?.tool) !== mine) out.add(m.id);
-    }
-  }
   const listChanged = files.some((f) => f.startsWith(dir) && (f.endsWith('.json') && !f.endsWith('.uses.json') && !f.endsWith('facilities.json') || f.endsWith('order.txt')));
   if (!listChanged || !baseTree) return out;
   const touched = new Set();
@@ -124,8 +101,9 @@ function modulesToWrite(root, baseTree, headTree, base, head, job) {
 
 /**
  * Before a push, and in `test` after it merges the base in (build text 1b, commands 2 and 27): rewrites, from HEAD, the
- * uses files the branch's change asks for (modulesToWrite) where they differ from what the files hold, and commits
- * them. Returns the modules written. No check of a file is made.
+ * uses files the branch's change asks for (modulesToWrite) where what they say differs from what the files hold (when
+ * and by which tool a file was written is no difference), and commits them. Returns the modules written. No check of a
+ * file is made.
  */
 export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
   const root = ctx.root;
@@ -157,9 +135,7 @@ export function writeUsesFiles(ctx, branch, { job = null, base = null } = {}) {
     const mods = base ? modulesToWrite(root, baseTree, headTree, base, head, job) : new Set(job && headTree.byId.has(job) ? [job] : []);
     for (const id of headTree.modules.map((m) => m.id).filter((x) => mods.has(x))) {
       const data = usesData(headTree, id, head);
-      const before = readUses(root, id, { cfg: headTree.cfg, ref: 'HEAD' });
-      // the same file, unless it was written under a classification of the host's facilities other than this tool's
-      if (sameUses(before, data) && classificationAt(before?.written?.tool) === classificationAt(toolVersion())) continue;
+      if (sameUses(readUses(root, id, { cfg: headTree.cfg, ref: 'HEAD' }), data)) continue;
       written.push({ module: id, file: writeUses(root, id, data, { cfg: headTree.cfg }), data });
     }
   } finally {
@@ -193,7 +169,7 @@ export function printedUses(r) {
   for (const o of r.outside) byRule.set(o.rule, (byRule.get(o.rule) ?? 0) + 1);
   L.push(`places outside the standard (${r.outside.length}${byRule.size ? `: ${[...byRule].sort().map(([k, n]) => `${k} ${n}`).join(', ')}` : ''}):`);
   for (const o of r.outside) {
-    L.push(`  ${o.rule} ${o.file}:${o.line} (${o.side}) ${o.what}`);
+    L.push(`  ${o.rule} ${o.file}:${o.line} (${o.side}) ${o.what}${o.unknownHost ? ' [a Node or workerd facility the tool does not know: not kept in the uses file]' : ''}`);
     L.push(`      may refer to ${mayText(o.mayRefer)}; waits on ${o.waitsOn}${o.tests.length ? `; tests: ${o.tests.map((t) => `"${t}"`).join(', ')}` : ''}`);
   }
   L.push(`order faults, for ARCH (${r.orderFaults.length}):`);
