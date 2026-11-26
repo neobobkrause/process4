@@ -3,9 +3,10 @@
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadTree } from './notice/model.mjs';
+import { readNoticeLines } from './notice/notices.mjs';
 import { loadReader, readerVersion } from './notice/ts.mjs';
 import { moduleMeans } from './notice/means.mjs';
 import { describe, noticeText, versionNotices } from './notice/notice.mjs';
@@ -111,8 +112,10 @@ function readNotices(dirB, dirA, mods, n, named, sameAs) {
   const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
   const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
   if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
-  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs }), encoding: 'utf8', maxBuffer: 1 << 30 });
-  if (r.status === 0) return JSON.parse(r.stdout);
+  // The notices come back in a file of JSON lines, beside the two folders, read a line at a time (notices.mjs).
+  const out = join(dirname(dirA), 'notices.jsonl');
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs, out }), encoding: 'utf8', maxBuffer: 1 << 26 });
+  if (r.status === 0) return readNoticeLines(out);
   const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
   if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
     fail(`could not read the product within this machine's memory; nobody is told; the notice for pull request ${n} is owed`);
