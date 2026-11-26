@@ -210,6 +210,11 @@ so to him on the same thread).
    modules and classifies the packages it uses, in its facility list. This replaces the rule that the
    tool infers uses from plain code and that no list is kept by hand (design part 2, section 7, rule 1), and retires
    decision 3B (below): no module is told only because the tool cannot follow it.
+   A uses file names the tool version that wrote it, as information only. It is rewritten only when its module's own
+   code or tests change, or when the module list moves items into or out of it; never because the Process4 version or
+   the facility list changed. Every version of the tool reads uses files written by earlier versions as their version
+   meant them. The tool's notes on Node features it does not know are not kept in the file (the owner's decision of 26
+   November 2026).
 2. **What changed** is each item's means, worked out before and after the merge: its stated types, expanded through every
    type they name; its named types and read-only arguments; and, from its code over a closure that follows calls and data
    within the module, the errors that can leave it, plain data or a class instance, `this`, the arguments it writes into,
@@ -308,6 +313,12 @@ output tell and four readings stand as built (a class instance and `this` tell; 
 constant with no stated type tells; changed code under a standing type error does not): "Decision: A" — 26 November
 2026; with the owner's note that ARCH and the lanes, not the tool alone, give jobs the perspective to declare what tells. Built: on the converted proof changed items that tell 486 to 216, told without need 309 to 255, missed 7 to 16 (the
 eight error-class cases, as decided, and one setting a started program reads).
+On the uses file and the tool's version (in PROCESS #19's session, after civicsmith's move to 72c177e spent about an
+hour rewriting all 203 uses files only because the tool's classification of Node features changed): "Decision: a uses
+file names the tool version that wrote it, as information only; it is rewritten only when its module's own code or tests
+change, or when the module list moves items into or out of it, never because the Process4 version or the facility list
+changed; every version of the tool reads uses files written by earlier versions as their version meant them; and the
+tool's notes on Node features it does not know are not kept in the file." — 26 November 2026.
 On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
 can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
 conversion's merge tells no one." — 26 November 2026.
