@@ -156,3 +156,13 @@ them fails at run time) is not modelled.
 - **C. Describe Node from its published type description, pinned to the product's Node version, instead of by hand (a
   question, not built).** The hand-written host description covers only part of Node, so its gaps will surface one job at
   a time. Not researched; to study only on his word. Rule 6: nothing measured beyond the gaps met so far.
+
+## Two more, already covered (civicsmith job connection-grammar #4, PR 1694, via ARCH #28 and coordinator #10, 09:46Z), unchanged
+
+"(1) uses and check read a RegExp's .test(...) call inside an assertion as a test case, and list it as "S12 a test whose
+name is not written out". This happens at conformance.test.mjs:106 and hub-by-kind.test.mjs:143, 160 and 162. I left those
+lines as they are. (2) node:crypto's Hash update and digest are named __type.update and __type.digest, so they are listed
+as unclassified facilities (R14) at shape.test.mjs:105."
+
+Both are corrected on this branch (891a917: RegExp `.test` no test; 59fa682: a member of an unnamed host type named by its
+declaration). Coordinator #10 told so as information.
