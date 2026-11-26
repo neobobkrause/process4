@@ -16,6 +16,7 @@ import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
 import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
 import { noticeSeq, testRecordOf } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
+import { isUsesPath } from './usesfile.mjs';
 import { fail, git, run } from './util.mjs';
 
 const MODULE = /^[a-z0-9-]+$/;
@@ -54,6 +55,7 @@ export function listingText(l) {
     if (e.accepts) L.push(`      accepts: ${e.accepts}`);
     if (e.handsBack) L.push(`      hands back: ${e.handsBack}`);
     if (e.value !== undefined) L.push(`      value: ${e.value}`);
+    if (e.message) L.push(`      a message on: ${e.message}`);
     for (const b of e.bounds ?? []) L.push(`      bound: ${b}`);
     if (e.optional) L.push('      may be missing');
     if (e.throws) L.push(`      errors that can leave it: ${e.throws.join(', ')}`);
@@ -244,15 +246,25 @@ export function notifyCmd(ctx, n) {
         for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
       }
     }
-    // The mechanical edit (design part 2, section 7): a module whose code or tests the merged pull request changed, and
-    // whose tests its test record ran whole, already ran on the change; it is not told.
+    // The whole-tests exception (design part 2, section 7): a merge does not tell a module whose code or tests it changed
+    // where its test record ran that module's whole tests on the merged result (a mechanical edit, or another pull
+    // request ARCH's session tests). The record is a pass of scope `whole module` naming the module in `modules`, made at
+    // a commit from which the merge commit differs in uses files at most: what it ran is what merged.
     const record = testRecordOf(comments)?.data;
-    const ranWhole = new Set(record?.result === 'pass' && record.scope === 'whole module' && Array.isArray(record.modules) ? record.modules : []);
+    const onMerged = (c) => {
+      if (!/^[0-9a-f]{40}$/.test(String(c ?? ''))) return false;
+      const d = git(['diff', '--name-only', '--no-renames', c, after], { cwd: ctx.root, allowFail: true });
+      return d.code === 0 && d.stdout.split('\n').filter(Boolean).every((f) => isUsesPath(treeA.cfg, f));
+    };
+    const whole = record?.result === 'pass' && record.scope === 'whole module' && Array.isArray(record.modules);
+    const ranWhole = new Set(whole && onMerged(record.commit) ? record.modules : []);
     const spared = [...new Set(told.filter((t) => ranWhole.has(t.module) && changed.includes(t.module)).map((t) => t.module))];
     if (spared.length) {
-      ctx.log(`not told, as the pull request changed their files and its test record ran their whole tests: ${spared.join(', ')}`);
+      ctx.log(`not told, as the pull request changed their files and its test record ran their whole tests on the merged result: ${spared.join(', ')}`);
       told = told.filter((t) => !spared.includes(t.module));
     }
+    const unspared = whole && !ranWhole.size ? [...new Set(told.filter((t) => record.modules.includes(t.module) && changed.includes(t.module)).map((t) => t.module))] : [];
+    if (unspared.length) ctx.log(`told although its test record ran their whole tests, as the record is not of the merged result (${String(record.commit).slice(0, 10)}): ${unspared.join(', ')}`);
   } finally {
     rmSync(base, { recursive: true, force: true });
   }

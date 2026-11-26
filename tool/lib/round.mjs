@@ -24,6 +24,15 @@ export function jobBlockOf(comments) {
   return null;
 }
 
+/** A pull request's job record among its comments, the first marked <!-- process4-job-record -->, written only by the job's session: { data, words, comment }, or null. */
+export function jobRecordOf(comments) {
+  for (const c of comments || []) {
+    const b = parseBlock(c.body, RECORD_MARK);
+    if (b) return { ...b, comment: c };
+  }
+  return null;
+}
+
 const jobOf = (pr) => {
   const m = (pr.head?.ref || '').match(JOB);
   return m ? { module: m[1], n: Number(m[2]) } : null;

@@ -184,6 +184,60 @@ export function importedModules(tree, mod, { only = null } = {}) {
   return { imported, cannot };
 }
 
+// `export … from '…'`, `export * from '…'` and `export * as n from '…'`, read from the text.
+const RE_EXPORT = /(?<![\w$.])export\s*(?:type\s*)?(?:\*(?:\s*as\s+[\w$]+)?|\{[^}]*\})\s*from\s*(['"])([^'"\n]+)\1/g;
+
+/**
+ * The other modules a module hands on names of: from its uses file where it has one (a use of type `re-export`, and a
+ * use of a module object, `*`, at a line of its code that is `export *`), else from its code's text. No reader.
+ * @param uses the module's uses file, as read (its `uses`, each with `where`), or null
+ */
+export function reExportsOf(tree, mod, uses = null) {
+  const out = new Set();
+  if (uses) {
+    const lineAt = (w) => { try { return fs.readFileSync(path.join(tree.root, w.file), 'utf8').split('\n')[(Number(w.line) || 1) - 1] ?? ''; } catch { return ''; } };
+    for (const u of uses.uses ?? []) {
+      if (u.type === 're-export' || (u.item === '*' && u.type === 'import' && (u.where ?? []).some((w) => /^\s*export\s*\*/.test(lineAt(w))))) out.add(u.provider);
+    }
+    out.delete(mod.id);
+    return out;
+  }
+  const resolver = makeResolver(tree);
+  for (const f of mod.src) {
+    let text;
+    try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    for (const m of text.matchAll(RE_EXPORT)) {
+      const target = resolver.resolve(m[2], f);
+      const other = target && tree.moduleOfFile(target);
+      if (other && other !== mod.id) out.add(other);
+    }
+  }
+  return out;
+}
+
+/**
+ * For a module with no uses file yet (design part 2, section 7, point 3): the modules it reaches through a module it
+ * imports that re-exports them, and so on, each with the modules it imports that hand it on. Map(module -> [middle]).
+ * @param usesOf (module) -> its uses file as read, or null
+ */
+export function reExportsReached(tree, mod, usesOf = () => null) {
+  const direct = [...importedModules(tree, mod).imported.keys()];
+  const out = new Map();
+  const seen = new Set([mod.id, ...direct]);
+  const todo = direct.map((x) => [x, x]);
+  while (todo.length) {
+    const [x, first] = todo.shift();
+    const m = tree.byId.get(x);
+    if (!m) continue;
+    for (const r of reExportsOf(tree, m, usesOf(x))) {
+      if (r === mod.id) continue;
+      if (!direct.includes(r)) { if (!out.has(r)) out.set(r, []); if (!out.get(r).includes(first)) out.get(r).push(first); }
+      if (!seen.has(r)) { seen.add(r); todo.push([r, first]); }
+    }
+  }
+  return out;
+}
+
 // Calls that read a file or start a program by a path (fs, child_process, worker_threads), read from the text.
 const BY_PATH = /(?<![\w$])(readFileSync|readFile|createReadStream|readdirSync|readdir|writeFileSync|writeFile|appendFileSync|appendFile|spawnSync|spawn|fork|execFileSync|execFile|execSync|Worker)\s*\(\s*/g;
 const LITERAL = /(['"`])((?:(?!\1)[^\n\\$])*)\1/g;

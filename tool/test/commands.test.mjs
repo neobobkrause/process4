@@ -560,14 +560,45 @@ test('push --notice-nothing records that the notices that reached an open job ne
   // a later flag keeps it
   push(ctx, parseArgs(['--unblocked', 'ARCH ended the block']));
   assert.deepEqual(gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).find(Boolean).data, { notice_needs_no_change: { notice_seq: 1, why: 'orders reads no day the notice names' }, unblocked: 'ARCH ended the block' });
+  // one writer for each record: the job block is ARCH's, and the job's session never writes it
   const jb = gh.s.comments.map((c) => parseBlock(c.body, JOB_MARK)).find(Boolean).data;
-  assert.deepEqual(jb.notice_needs_no_change, { notice_seq: 1, why: 'orders reads no day the notice names' });
-  // the pass recorded before the notice stands for it; a later notice does not
+  assert.deepEqual(jb, { module: 'orders', work: ['notice from dates (pull request 4)'], kind: 'ordinary', notice_seq: 1 });
+  const jobRecord = gh.s.comments.map((c) => parseBlock(c.body, RECORD_MARK)).find(Boolean).data;
+  // the pass recorded before the notice stands for it, read from the job's record; a later notice does not
   const record = { commit: 'a'.repeat(40), notice_seq: 0, result: 'pass', passed: 1, scope: 'whole module' };
-  assert.equal(recordStands(record, 'a'.repeat(40), jb).ok, true);
-  assert.equal(recordStands(record, 'a'.repeat(40), { ...jb, notice_seq: 2 }).ok, false);
+  assert.equal(recordStands(record, 'a'.repeat(40), jb, { jobRecord }).ok, true);
+  assert.equal(recordStands(record, 'a'.repeat(40), jb).ok, false);
+  assert.equal(recordStands(record, 'a'.repeat(40), { ...jb, notice_seq: 2 }, { jobRecord }).ok, false);
   assert.match(out.join('\n'), /need no change \(orders reads no day the notice names\); its recorded pass stands for them/);
   assert.throws(() => push(ctx, parseArgs(['--notice-nothing'])), /say --notice-nothing "<why>"/);
+  assert.throws(() => push(ctx, parseArgs(['--notice', '1'])), /only with --notice-nothing/);
+});
+
+test('push --notice-nothing answers only the notices up to the count the job names, or the block\'s count as it records; a notice that arrives later is not answered', () => {
+  const root = product();
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  const { ctx, out } = ctxFor(root, gh);
+  git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
+  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  gh.addComment('o/product', pr.number, block(JOB_MARK, { module: 'orders', work: ['notice from dates (pull request 4)', 'notice from money (pull request 5)'], kind: 'ordinary', notice_seq: 2 }));
+  // the job read its block when it held one notice; notify has added a second since: the job answers the first only
+  push(ctx, parseArgs(['--notice-nothing', 'orders reads no day', '--notice', '1']));
+  const jobRecord = () => gh.s.comments.map((x) => parseBlock(x.body, RECORD_MARK)).find(Boolean).data;
+  assert.deepEqual(jobRecord().notice_needs_no_change, { notice_seq: 1, why: 'orders reads no day' });
+  assert.match(out.join('\n'), /to notice 1, need no change \(orders reads no day\); its recorded pass stands for them; notice\(s\) 2 to 2 still need the job's answer/);
+  const jb = gh.s.comments.map((x) => parseBlock(x.body, JOB_MARK)).find(Boolean).data;
+  assert.equal(jb.notice_needs_no_change, undefined);
+  const record = { commit: 'a'.repeat(40), notice_seq: 0, result: 'pass', passed: 1, scope: 'whole module' };
+  assert.equal(recordStands(record, 'a'.repeat(40), jb, { jobRecord: jobRecord() }).ok, false);
+  assert.equal(noticeAfterTests(record, jb, jobRecord()), true);
+  assert.throws(() => push(ctx, parseArgs(['--notice-nothing', 'x', '--notice', '3'])), /counts 2 notice\(s\); there is no notice 3/);
+  assert.throws(() => push(ctx, parseArgs(['--notice-nothing', 'x', '--notice', 'two'])), /say --notice <n>/);
+  // named nothing: the block's count as it records, and a notice notify adds after that is not answered
+  push(ctx, parseArgs(['--notice-nothing', 'orders reads no money either']));
+  assert.deepEqual(jobRecord().notice_needs_no_change, { notice_seq: 2, why: 'orders reads no money either' });
+  assert.equal(recordStands(record, 'a'.repeat(40), jb, { jobRecord: jobRecord() }).ok, true);
+  assert.equal(recordStands(record, 'a'.repeat(40), { ...jb, notice_seq: 3 }, { jobRecord: jobRecord() }).ok, false);
 });
 
 test('a test record stands for a later head that differs from its commit only in the module\'s uses file; scope nothing needs none once the notices need no change', () => {
@@ -587,8 +618,14 @@ test('a test record stands for a later head that differs from its commit only in
   assert.equal(recordStands(record, codeHead, null, { usesOnly: only }).ok, false);
   const nothing = { scope: 'nothing', why: "no changed file is under a module's code or tests" };
   assert.equal(recordNeed(nothing, { notice_seq: 1 }).needed, true);
-  assert.equal(recordNeed(nothing, { notice_seq: 1, notice_needs_no_change: { notice_seq: 1, why: 'x' } }).needed, false);
-  assert.equal(noticeAfterTests({ notice_seq: 0 }, { notice_seq: 2, notice_needs_no_change: { notice_seq: 1 } }), true);
+  assert.equal(recordNeed(nothing, { notice_seq: 1 }, { notice_needs_no_change: { notice_seq: 1, why: 'x' } }).needed, false);
+  // the job block's copy is not read: only the job's record, which the job alone writes
+  assert.equal(recordNeed(nothing, { notice_seq: 1, notice_needs_no_change: { notice_seq: 1, why: 'x' } }).needed, true);
+  assert.equal(noticeAfterTests({ notice_seq: 0 }, { notice_seq: 2 }, { notice_needs_no_change: { notice_seq: 1 } }), true);
+  // a told job: its test record, or its record that it found nothing to change
+  assert.equal(recordNeed(nothing, { kind: 'told' }).needed, true);
+  assert.match(recordNeed(nothing, { kind: 'told' }, { nothing_to_change: 'nothing reaches orders' }).why, /found nothing to change \(nothing reaches orders\)/);
+  assert.equal(recordNeed(nothing, { kind: 'told' }, { nothing_to_change: 'nothing reaches orders' }).needed, false);
 });
 
 test('close --nothing-to-change: where the tool rewrites the module\'s uses file, it pushes it and marks the pull request ready with no test; otherwise it closes unmerged', () => {

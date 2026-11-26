@@ -1021,6 +1021,7 @@ export function moduleMeans(tree, moduleId) {
     if (e.side) it.side = e.side;
     if (e.optional) it.optional = true;
     if (e.value !== undefined) it.value = e.value;
+    if (e.message) it.message = e.message;
     it.bounds = e.bounds ?? [];
     it.where = e.where;
     if (!NO_CODE.has(e.kind)) {

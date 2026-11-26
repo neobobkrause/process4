@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { loadConfig, requiredCheck } from './config.mjs';
 import { isUsesPath, usesPath } from './usesfile.mjs';
 import { block } from './github.mjs';
-import { JOB, jobBlockOf } from './round.mjs';
+import { JOB, jobBlockOf, jobRecordOf } from './round.mjs';
 import { pushPace } from './commands.mjs';
 import { writeUsesFiles } from './usescmd.mjs';
 import { DROP, decideScope, runModules } from './scope.mjs';
@@ -37,10 +37,10 @@ export function usesOnly(root, branch) {
   };
 }
 
-/** A pull request's job block and test record, from one read of its comments. */
+/** A pull request's job block (ARCH's), the job's record (the job's) and its test record, from one read of its comments. */
 export function recordsOf(ctx, n) {
   const comments = ctx.gh.comments(ctx.slug, n);
-  return { jobBlock: jobBlockOf(comments)?.data || null, record: testRecordOf(comments) };
+  return { jobBlock: jobBlockOf(comments)?.data || null, jobRecord: jobRecordOf(comments)?.data || null, record: testRecordOf(comments) };
 }
 
 /**
@@ -176,16 +176,18 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
  * run verdict: on GitHub's machines, the required run's one job. It runs no test: it passes where the pull request
  * needs no test record (recordNeed), or where the record stands for the head; it fails otherwise. A draft cannot
  * merge, so it is judged without its notices: a draft whose scope is nothing passes at once (build text 1, section 5,
- * step 2). Writes the step summary.
+ * step 2). It reads the three comments of a job's pull request, each with its one writer: the job block (ARCH's), the
+ * job's record (the job's: which notices need no change, and a told job's `nothing_to_change`) and the test record
+ * (build text 1, section 5; build text 5, section 5). Writes the step summary.
  */
-export function verdict(root, { base, baseRef, branch, draft, head, jobBlock, record, log = console.log, summary = process.env.GITHUB_STEP_SUMMARY }) {
+export function verdict(root, { base, baseRef, branch, draft, head, jobBlock, jobRecord = null, record, log = console.log, summary = process.env.GITHUB_STEP_SUMMARY }) {
   const s = decideScope(root, { base, baseRef, branch, draft, jobBlock, related: false });
   const lines = [`## module-tests`, '', `Scope: **${s.scope}**, because ${s.why}. Config read from ${s.config_from}.`, ''];
   let ok;
   let why;
-  if (!recordNeed(s, draft ? null : jobBlock).needed) { ok = true; why = 'nothing needs a test record: passed at once'; }
+  if (!recordNeed(s, draft ? null : jobBlock, draft ? null : jobRecord).needed) { ok = true; why = 'nothing needs a test record: passed at once'; }
   else {
-    const st = recordStands(record, head, jobBlock, { usesOnly: usesOnly(root, branch) });
+    const st = recordStands(record, head, jobBlock, { usesOnly: usesOnly(root, branch), jobRecord });
     ok = st.ok;
     why = st.ok || record ? st.why : `no pass recorded for ${head}; run p4 test`;
     if (record) lines.push(`Test record: ${record.result} at ${short(record.commit)}, ${record.passed} passed, ${record.failed} failed, scope ${record.scope}, written ${record.written}.`, '');
