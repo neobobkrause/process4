@@ -229,9 +229,9 @@ so to him on the same thread).
 5. **The reason printed.** A notice names each changed item the module uses, how it was found (its means, ARCH's work, the
    job's declaration), the one-line why, and the places from the module's uses file: file, line, and for tests the test
    case's name.
-6. **A conversion that changes no item tells no one by point 3.** Its statement that it changes no behaviour stands for
-   the places outside the standard and the modules with no uses file, as a job's record that an item is unchanged stands
-   for that item. A conversion that changes an item tells as any merge (decision 2-B1).
+6. **A conversion's merge tells no one.** It changes no behaviour, so no user has anything to re-check; `notify` reads
+   nothing for it. An accidental change of behaviour is caught by the provider's own tests at its interface and by the
+   walks (the owner's decision of 26 November 2026, replacing 2-B1 and its narrowing).
 7. **A version first written is not a change of version.** A package or the host that had no version before (the
    facility list's first writing) tells no one; a real change of version tells as point 4 says (decision 1-A).
 
@@ -256,7 +256,9 @@ notices by point 3 (1,596 in civicsmith's first pass of 8, about 20,700 over 204
 change, A the tool fixed; for the second, 0 no change, B1 a conversion tells no one by point 3, B2 notices dropped at the
 receiving module's conversion, B3 only the record in parts. Researched in `process/research/conversion-notices-26nov.md`
 and `trial-who-is-told-26nov.md`. A conversion that changes an item still tells by point 3, as the owner's page put it
-("A conversion that changes what a module offers still tells its users").
+("A conversion that changes what a module offers still tells its users"). Item 6 rewritten 26 Nov 2026: the tool read conversions that only stated types as changing items (a type error gone
+counted as a change), so every unconverted importer was told, and five of civicsmith's notices were too large to send;
+the owner's view that a conversion run should notify no one. Researched in `process/research/notify-size-26nov.md`.
 
 **The owner's words.** All 25 November 2026; the early provider's three fixes and the unknown kind's three are under "How
 `notify` reads the product" and "How a notice reaches a user".
@@ -292,6 +294,9 @@ changes are still properly factored into the decision of who to notify and who n
 2026, about 23:10 UTC.
 On a version first written, and a conversion's notices, with the record in parts below: "Decision: 1-A, 2-B1, 6B" — 26
 November 2026 (in PROCESS #18's session).
+On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
+can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
+conversion's merge tells no one." — 26 November 2026.
 
 ### Subject: How `notify` reads the product
 

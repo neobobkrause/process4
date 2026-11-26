@@ -424,35 +424,36 @@ test('a module with no uses file yet is told of every change of an earlier modul
   assert.deepEqual(notice(before, after, 'dates').told.map((t) => t.user), ['old']);
 });
 
-test('a module\'s conversion (its job block\'s kind): only describing tells no one; a bound changed, as any other change, tells', () => {
-  // describing: formatDay's extra parameter, read as any value, is stated, and its code changes too: at the conversion,
-  // no change
+test('a conversion\'s merge tells no one, even where it changed an item; nothing is read or written', () => {
+  // describing: pad's parameter, read as any value, is stated, and its code changes too
   const RAW = '\nexport function pad(x) { return x; }\n';
   const STATED = '\n/** @param {string} x @returns {string} */\nexport function pad(x) { return `${x}`; }\n';
   const files = withUsesFiles({ ...baseFiles(), 'src/dates/index.mjs': DATES() + RAW, 'src/orders/index.mjs': `${ORDERS}import { pad } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const p = () => pad('a');\n` });
+  for (const after of [DATES() + STATED, DATES('1 to 30') + STATED]) {
+    // the second also changes a bound line: still a conversion, so still no one is told
+    const root = makeRepo(files);
+    const gh = fakeGitHub();
+    create(gh, 'o/product', ['waiting-work'], () => {});
+    mergedPR(root, gh, { 'src/dates/index.mjs': after });
+    gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
+    const { ctx, out } = ctxFor(root, gh);
+    const wrote = JSON.stringify(gh.s.comments);
+    assert.equal(notifyCmd(ctx, 7), 0);
+    const text = out.join('\n');
+    assert.match(text, /a conversion's merge tells no one\. Nobody is told\./);
+    assert.doesNotMatch(text, /TOLD/);
+    assert.doesNotMatch(text, /tells its users/);
+    assert.equal(JSON.stringify(gh.s.comments), wrote);
+  }
+  // the same change merged by an ordinary job tells orders
   const root = makeRepo(files);
   const gh = fakeGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
-  mergedPR(root, gh, { 'src/dates/index.mjs': DATES() + STATED });
-  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
-  const { ctx, out } = ctxFor(root, gh);
-  assert.equal(notifyCmd(ctx, 7), 0);
-  // nor does orders hear of it for its own place outside the standard (its call of pad, which stated nothing): a
-  // conversion tells no one by point 3
-  assert.match(out.join('\n'), /dates's conversion: no item's means changed, describing aside; nobody is told\./);
-  assert.doesNotMatch(out.join('\n'), /uses dates pad/);
-  // the same conversion that also changes a bound line tells that item's users
-  const root2 = makeRepo(files);
-  const gh2 = fakeGitHub();
-  create(gh2, 'o/product', ['waiting-work'], () => {});
-  mergedPR(root2, gh2, { 'src/dates/index.mjs': DATES('1 to 30') + STATED });
-  gh2.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
-  const two = ctxFor(root2, gh2);
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') + STATED });
+  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['R1'], kind: 'ordinary' }));
+  const two = ctxFor(root, gh);
   assert.equal(notifyCmd(two.ctx, 7), 0);
-  const text = two.out.join('\n');
-  assert.match(text, /dates Day: bound changed \[found by its means\] -> tells its users/);
-  assert.doesNotMatch(text, /dates pad:/);
-  assert.match(text, /TOLD orders/);
+  assert.match(two.out.join('\n'), /TOLD orders/);
 });
 
 test('the means worked out from the code: errors, a class instance, this, arguments written into, channels, and a type error', () => {

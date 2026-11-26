@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 26 Nov 2026
+- `conversion-tells-no-one-26nov.md` — the owner's "Decision: a conversion's merge tells no one." (26 Nov): why (conversions read as changing items told every unconverted importer), the risk, what was built; the five owed civicsmith notices need not be sent.
 - `notify-size-26nov.md` — `notify` cannot send five of civicsmith's conversion notices (one JSON string past the language's limit; out of memory twice), owed; R15's alias and member cases; for PROCESS #19, urgent.
 - `no-code-module-26nov.md` — civicsmith's `documents` left with no code cannot finish its conversion; design part 2 §1 already makes it a list error for ARCH to correct; options 0 (recommended) and B; coordinator told as information.
 - `facility-names-26nov.md` — process fault: the tool named package facilities by this machine's path and counted the product's own members as the host's (15,677 places on civicsmith); causes and a correction on `work/facility-names` (worker; 273/273); options 0 and A (recommended).
