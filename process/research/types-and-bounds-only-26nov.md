@@ -3,9 +3,9 @@
 The owner's decision, exactly: "Decision: only a change of an item's stated types or bounds tells; new errors, other
 values within the range, side effects and test prerequisites do not."
 
-Built on `work/types-and-bounds-only` (from main c834ac4, merged with main 70022da). The tool still works out and
+Built on `work/types-and-bounds-only` (from main c834ac4, merged with main 70022da and d3e99b4). The tool still works out and
 lists every part (`p4 listing`); only `compareItem` (and the member-by-member checks that mirror it) stop counting the
-parts below as a change. `npm test`: 287 pass, 0 fail.
+parts below as a change. `npm test`: 288 pass, 0 fail (with the correction below).
 
 ## Each part of an item's means, and its fate
 
@@ -22,8 +22,9 @@ parts below as a change. `npm test`: 287 pass, 0 fail.
 | A new type error (code no longer matches its stated types) | Tells | |
 | Its code changed while the same type errors stand | **Stops** | No stated type changed; the decision's words name stated types only |
 | A type error gone | Does not tell (as on main) | |
+| A program it starts (design 2 §7: "for a program it starts is the item that starts it"): the program's start arguments and the streams it writes out | Tells (the owner's correction, option A) | They are what the starter accepts and hands back |
 | Errors that can leave it | **Stops** | |
-| Channels, settings, files, start arguments read or written | **Stops** | |
+| Other channels, settings, files, the item's own start arguments and streams | **Stops** | |
 | Arguments it writes into | **Stops** | |
 | A constant's value within its stated type | **Stops** | |
 | A constant with no stated type (`export const L = 5`) | Tells | The checker's type of it is `5`: the value is its type, so 5 to 6 changes its type, not a value within it |
@@ -53,10 +54,29 @@ Small in the notice: skip `named` in `changedItems` (one loop, about 10 lines) a
 named: told 341 to 310, told without need 254 to 233, missed 21 to 31 (P15, P17, A07, Y07, Z01, Z02, V02, W17, U06,
 T08: limits and meanings changed with no type or bound changed).
 
+## The owner's option A: a started program's start arguments and output tell (re-measured)
+
+The owner chose option A: merge as built, the four ambiguous readings confirmed, with one correction: for an item that
+starts a program, the program's start arguments and the streams it writes out are its interface and still tell; its
+settings, files and other channels still stop. Built: each item has a part `program` (worked out only where the item's
+own code starts the program during the call), compared with the word `the program it starts changed`.
+
+| Converted proof | main 70022da | first branch head (f922e27) | with the correction |
+|---|---|---|---|
+| Changed items that tell | 486 | 210 | 216 |
+| Told | 410 | 341 | 347 |
+| Told without need | 309 | 254 | 255 |
+| Missed | 7 | 21 | 16 |
+
+Came back: X09, Y06, Z04, V03, W01 (the meter program's output stream or start argument). Not back: U05, a setting the
+meter program reads through `node:process` (`env`), which the correction leaves telling no one; and the eight error
+cases. The tool's notice proof: no answer changes (204 changed items that tell).
+
 ## Unknown, or for PROCESS
 
 - The uses file still records `takesIn` (build text 2c; `usescmd.mjs`); notify no longer reads it. Whether to drop it
   from 2c and the writer is not done here.
 - Design part 2 §7 and the design decisions still state the old rule; PROCESS edits those.
-- The three readings marked ambiguous above (instances and `this` kept, the untyped constant kept, the code change
-  under a standing type error dropped) are choices for the owner to confirm.
+- The ambiguous readings above were confirmed by the owner (option A).
+- A started program's standard input (what its starter writes into it) is not in `program`: the correction names its
+  start arguments and output only.
