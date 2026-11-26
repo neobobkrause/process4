@@ -452,3 +452,29 @@ test('a uses file in the oldest form the tool wrote is read by check and notify 
   assert.deepEqual(byOld.filter((r) => r.outside).map((r) => r.outside), ['R14 src/u/index.mjs:2', 'R1 src/u/index.mjs:8']);
   assert.deepEqual(byNow.filter((r) => r.outside).map((r) => r.outside), ['R1 src/u/index.mjs:8']);
 });
+
+test('an R14 place refers to no product module, in a file of any tool\'s writing; a name the tool could not resolve may be the product\'s, and still tells', () => {
+  const P1 = '/** @returns {number} */\nexport function one() { return 1; }\n';
+  const f = withUsesFiles({
+    'process.json': config({ language_reader: { name: 'typescript', version: '5.6.3', source: ['**/*.mjs'] } }),
+    'process/modules/order.txt': 'p\nu\n',
+    'process/modules/p.json': entry('p'),
+    'process/modules/u.json': entry('u'),
+    'src/p/index.mjs': P1,
+    // shared-lib: a bare name the tool cannot resolve, which may be a module of the product's own (a workspace
+    // package); console.log: the host's, reaching out outside a boundary module
+    'src/u/index.mjs': "import * as shared from 'shared-lib';\nexport { shared };\n/** @param {string} s @returns {void} */\nexport function say(s) { console.log(s); }\n",
+  });
+  const now = f['process/modules/u.uses.json'];
+  assert.deepEqual(now.outside.map((o) => `${o.rule} ${o.line} ${JSON.stringify(o.mayRefer)}`), ['R14 1 ["*"]', 'R14 4 []']);
+  // p's code changes, no item's stated types: only a place that may refer to p hears of it
+  const heard = (files) => {
+    const [b, a] = sides(files, { ...files, 'src/p/index.mjs': P1.replace('return 1;', 'return 1 + 0;') });
+    return (notice(b, a, 'p').told.find((t) => t.user === 'u')?.reasons ?? []).filter((r) => r.outside).map((r) => r.outside);
+  };
+  assert.deepEqual(heard(f), ['R14 src/u/index.mjs:1']);
+  // u's file as the tool wrote it before: every R14 place may refer to any earlier module, and a note on a host
+  // facility the classification left out waits on the module itself. Read now, only the unresolved name hears of p.
+  const older = { ...now, outside: [...now.outside.map((o) => ({ ...o, mayRefer: ['*'] })), { rule: 'R14', file: 'src/u/index.mjs', side: 'code', line: 2, mayRefer: ['*'], waitsOn: 'this module', tests: [] }] };
+  assert.deepEqual(heard({ ...f, 'process/modules/u.uses.json': older }), ['R14 src/u/index.mjs:1']);
+});

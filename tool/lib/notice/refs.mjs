@@ -24,7 +24,7 @@ import { ts, loadReader, makeStandardProgram, forEachNode, lineOf, tagsOf, tagTe
 import { makeLister } from './listing.mjs';
 import { carrierOf } from './carriers.mjs';
 import { isTestCall } from './check.mjs';
-import { handCopies, makeResolver, readFacilities, readUses, sideOf } from '../usesfile.mjs';
+import { handCopies, makeResolver, readFacilities, readUses, sideOf, UNRESOLVED_WAIT } from '../usesfile.mjs';
 import { underPath } from '../util.mjs';
 
 let HOST_FACILITIES = null;
@@ -361,7 +361,9 @@ export function readReferences(tree, moduleId, opts = {}) {
   /** A place outside the standard. mayRefer: the modules it may refer to ([] none, [ANY] every earlier module). */
   // `unknownHost`: a note that stands only because the tool's description or classification of Node or workerd lacks
   // a facility the code uses; printed by `uses`, never kept in the uses file (usescmd.mjs).
-  function place(rule, node, { what, mayRefer = [ANY], waitsOn = 'this module', item, relabels, unknownHost = false } = {}) {
+  // An R14 place refers to no product module (R14 is only about facilities of Node, workerd, the language or a
+  // package): none, unless it says otherwise (a name the tool could not resolve, which may be the product's own).
+  function place(rule, node, { what, mayRefer = rule === 'R14' ? [] : [ANY], waitsOn = 'this module', item, relabels, unknownHost = false } = {}) {
     const sf = node.getSourceFile();
     const file = rel(sf.fileName);
     const line = lineOf(node);
@@ -978,7 +980,7 @@ export function readReferences(tree, moduleId, opts = {}) {
       if (d.code === 2307 || d.code === 7016) {
         const m = /'([^']+)'/.exec(msg)?.[1] ?? '';
         if (m.startsWith('.') || resolver.isOwn(m)) place('S1', node, { what: `an import the tool cannot resolve: ${m}`, mayRefer: modulesOfSpec(m, fileName) });
-        else { inventory.set(m, packageName(m)); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: 'ARCH: the facility list', unknownHost: isHostModule(m) }); }
+        else { inventory.set(m, packageName(m)); place('R14', node, { what: `uses ${m}, which the tool has no description of`, waitsOn: UNRESOLVED_WAIT, unknownHost: isHostModule(m), mayRefer: isHostModule(m) ? [] : [ANY] }); }
         continue;
       }
       let stmt = node; while (stmt.parent && !ts.isStatement(stmt) && !ts.isSourceFile(stmt.parent)) stmt = stmt.parent;

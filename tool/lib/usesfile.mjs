@@ -71,6 +71,18 @@ export function writeUses(root, module, data, { cfg } = {}) {
   return rel;
 }
 
+/** The text an R14 place waits on where it may be an import, by a bare name, of a module the tool cannot resolve. */
+export const UNRESOLVED_WAIT = 'ARCH: the facility list';
+/**
+ * The modules a place outside the standard may refer to, as every reader reads it, in a file of any tool's writing:
+ * its `mayRefer` (none written: every earlier module, `*`); but an R14 place refers to no product module (R14 is only
+ * about facilities of Node, workerd, the language or a package), so it reads as none, except one that waits on
+ * UNRESOLVED_WAIT, read as written: there a name the tool could not resolve may be a module of the product's own
+ * (a workspace package, an alias), and in a file written before 26 Nov 2026 that kind cannot be told from the others
+ * that wait on it.
+ */
+export const placeMayRefer = (o) => (o?.rule === 'R14' && o.waitsOn !== UNRESOLVED_WAIT ? [] : Array.isArray(o?.mayRefer) ? o.mayRefer.map(String) : ['*']);
+
 /** Do two uses files say the same, apart from when and by what they were written? */
 export const sameUses = (a, b) => !!a && !!b && usesText({ ...a, written: null }) === usesText({ ...b, written: null });
 
