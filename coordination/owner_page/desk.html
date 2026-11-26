@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 01:35 UTC, by PROCESS #18. First: the path to civicsmith, step 1 is a fresh ROOT on the trial product. Done: idle compaction is off.</p>
+<p class="updated">Updated 26 Nov 2026, about 02:05 UTC, by PROCESS #18. First: a fresh ROOT on the trial product. Done: idle compaction is off; ROOT's depth (A built after B's test failed).</p>
 </header>
 
 
@@ -46,18 +46,11 @@ a{color:var(--accent)}
 <p><b>No product uses it yet.</b> Next: the trial on the trial product, which needs a fresh ROOT from you; then civicsmith moves only when you tell its coordinator to move it, and its first pass of 8 modules stops for your review.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: ROOT keeps running out of depth</h2>
-<p><b>The question.</b> Should a new ROOT start at the top, so you no longer have to restart ROOT by hand?</p>
-<p><b>What happens.</b> The watcher does take over from ROOT. But ROOT started the watcher, and Claude Code counts every session another session starts as one level deeper. So each takeover puts ROOT one level deeper, and at 8 levels nothing can start sessions or set a wake. Only you starting a ROOT puts it back to the top. Measured: the trial product's ROOT is at level 7 and its watcher at 8, so it has been stopped since 25 Nov. civicsmith reached level 5, you restarted it, and it is now at 2. Most of civicsmith's takeovers come from moves to a new Process4 version (7 of 8); the trial product's come from ROOT filling up every 4 to 7 hours.</p>
-<ul>
-<li><b>0. No change.</b> You start a fresh ROOT whenever a product nears the limit.</li>
-<li><b>A. Warn one takeover earlier</b> (choice 5B). ROOT asks you before a takeover that would break. You still restart regularly. Text only.</li>
-<li><b>B. The next ROOT starts at the top (recommended).</b> At each takeover, the new ROOT is started by a one-time scheduled task rather than by the old ROOT. A session started that way has no parent, so it sits at the top. The chain never grows, and you never restart ROOT for depth. Not proven: one such session has been seen with no parent, but it was made another way and had no repository. So first I would make one test session from a scheduled task in Process4's own repository and check it, which needs your word because my approvals don't name scheduled tasks. If it fails, A stands.</li>
-<li><b>C. Fewer takeovers on a version move.</b> ROOT takes over only when the move changed what ROOT reads. Fewer, not none.</li>
-</ul>
-<p>To choose, reply in my session starting with "Decision:", for example "Decision: B, test first". Either way, the trial product needs a fresh ROOT from you now.</p>
-<p><b>Also seen:</b> an old wake of the trial product's watcher, "process3-probes watcher wake", still fires every hour at :17 into an empty session, fails, and once sent you a notification. You can delete it in your list of scheduled tasks, or the trial product's fresh ROOT can.</p>
+<section class="card">
+<h2>Done: ROOT's depth (your decision B, tested; A built)</h2>
+<p>On your "Decision: B, as recommended" I tested B first. A session started by a scheduled task does start at the top, with no parent. But it starts with no repository, so your approvals and the forbidden commands never load, and it has no tools to start or message other sessions. It cannot be a ROOT. So, as your choice provided, A is built (merged as 09c8c5c): ROOT now checks its own depth. Three levels from the limit it puts a fresh ROOT on your page; two levels from it, it makes no takeover that would break and asks you instead. You still restart ROOT by hand now and then, but nothing stalls first. Products get this with their next move.</p>
+<p><b>One more question, when convenient (C):</b> most of civicsmith's takeovers come from moves to a new version, 7 of 8. If ROOT took over on a move only when the move changed what ROOT itself reads, you would be asked for a fresh ROOT less often. Text only. Say "Decision: C" if you want it.</p>
+<p><b>Also seen:</b> an old wake of the trial product's watcher, "process3-probes watcher wake", still fires every hour at :17 into an empty session. You can delete it in your list of scheduled tasks.</p>
 </section>
 
 <section class="card">
