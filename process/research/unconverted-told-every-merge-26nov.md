@@ -67,3 +67,22 @@ Bearing on the options: the writes that tripped the limit are the 199-module not
 them (no module is told before its conversion), so the fault does not recur and the three owed notices need not be
 sent (each told only unconverted modules; the open jobs already have theirs). Under option 0 the tool would also need
 to write such notices within GitHub's content-creation limits, a second change; with A, nothing more.
+
+## A third report: R1 notes kept for Node features the tool does not know (runtime-limits #2, PR 1712, via ARCH #32)
+
+Its words: "the uses file keeps R1 places with mayRefer "*" (tokens.mjs:53; runtime-limits.test.mjs:219, 222, 223)
+that exist only because the tool's description of Node lacks crypto.subtle and process.cpuUsage. Build text 2c says a
+note that stands only for such a gap is not kept. The matching S4 notes are dropped, but these R1 notes are kept and
+tell this module of every earlier module's change. Second, possibly a fault: p4 test's record write gave up on
+GitHub's secondary rate limit rather than waiting it out." Its tests passed twice (60/0); both record writes refused.
+
+Read in the tool: `refs.mjs:998` marks the checker's S4 note `unknownHost` where the gap is the host's (`hostGap`),
+and `usescmd.mjs:51` leaves `unknownHost` places out of the file; but the R1 place for the value of `any` type that
+the missing property yields is made without `unknownHost` (`place`, `refs.mjs:366`), so it is kept with mayRefer
+["*"]. A tool fault against the owner's decision of 26 Nov (ee2091f: the tool's notes on Node features it does not
+know are not kept). Unlike A, it lasts after the sweep: a converted module keeping such a note is told by point 3 of
+every earlier module's change.
+
+- **H. Carry the gap through.** An R1 (or other) place whose `any` comes only from a host gap is `unknownHost` too, and
+  not kept. Small; no text change (build text 2c already says it). Recommended, with A, G1, G2.
+The second point (the record write refused by the secondary limit) is G2 of `github-limits-26nov.md`.
