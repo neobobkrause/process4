@@ -43,7 +43,7 @@ export function loadModules(root, cfg, ref) {
     const text = readAt(root, `${dir}${name}.json`, ref);
     if (text === null) fail(`module ${name} is in the order file but has no ${dir}${name}.json`);
     const e = parse(text, `${dir}${name}.json`);
-    return { name, files: [], tests: [], uses: [], ...e, order: i + 1 };
+    return { name, files: [], tests: [], ...e, order: i + 1 };
   });
 }
 

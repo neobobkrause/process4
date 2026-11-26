@@ -1,5 +1,7 @@
-// The related list (build text 5, section 7): the test files of a told module that relate to its job, chosen by
-// whole file, made with the reader on the merged result of the job's pull request. Reads files; runs nothing.
+// The related list (design part 2, section 7, "Which tests relate"; build text 5, section 7): the test files of a told
+// module that relate to its job, chosen by whole file, made with the reader on the merged result of the job's pull
+// request. The places are those the told module's uses file names for the changed items its notices name (and the
+// places the notices carry, where the uses file no longer names them). Reads files; runs nothing.
 //
 // A piece is a function, a method, or the top-level code of one file, among the files under the module's `files`
 // and `tests`; a place belongs to the innermost piece that holds its line. Piece A calls piece B when A's code holds
@@ -11,21 +13,26 @@ import path from 'node:path';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
 import { git } from '../util.mjs';
+import { readUses } from '../usesfile.mjs';
+import { CODE, hunkRuns, tokensOf } from './running.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
 const isTestFile = (rel) => /\.test\.[^/]*$/.test(rel) && !WALK.test(rel);
 
 export const RULES = {
-  place: 'holds a place named in the job block\'s uses',
-  reachesPlace: 'reaches a piece that holds a place named in uses',
+  place: 'holds a place its uses file names for a changed item',
+  reachesPlace: 'reaches a piece that holds a place its uses file names for a changed item',
   reachesChanged: 'reaches a piece with a line this pull request changed',
   changed: 'added or changed by this pull request',
   step1: 'lost the thread, step 1',
   step2: 'lost the thread, step 2: an import the reader cannot resolve',
-  step3: 'lost the thread, step 3',
+  step3: 'the whole module',
 };
 
-/** Hunks of `git diff -U0` per file (new-side paths): [{ os, oc, ns, nc }]. */
+/**
+ * Hunks of `git diff -U0` per file (new-side paths): [{ os, oc, ns, nc, runs }]. `runs` is false for a hunk whose change
+ * is comments or layout only (running.mjs): such a line is not a changed line. Every hunk is kept, for mapLine.
+ */
 function hunks(gitRoot, base, after) {
   const out = new Map();
   let file = null;
@@ -34,11 +41,16 @@ function hunks(gitRoot, base, after) {
     const m = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/.exec(l);
     if (m && file) out.get(file).push({ os: +m[1], oc: m[2] === undefined ? 1 : +m[2], ns: +m[3], nc: m[4] === undefined ? 1 : +m[4] });
   }
+  for (const [f, hs] of out) {
+    const at = (c) => { const r = git(['show', `${c}:${f}`], { cwd: gitRoot, allowFail: true }); return r.code === 0 ? tokensOf(f, r.stdout) : null; };
+    const was = CODE.test(f) ? at(base) : null, now = was ? at(after) : null;
+    for (const h of hs) h.runs = hunkRuns(f, was, now, h);
+  }
   return out;
 }
 
-/** The lines of the merged result a hunk changed; a deletion counts as the line where it was. */
-const changedLines = (hs) => hs.flatMap((h) => (h.nc ? Array.from({ length: h.nc }, (_, i) => h.ns + i) : [Math.max(h.ns, 1)]));
+/** The lines of the merged result a hunk changed, comments and layout aside; a deletion counts as the line where it was. */
+const changedLines = (hs) => hs.filter((h) => h.runs).flatMap((h) => (h.nc ? Array.from({ length: h.nc }, (_, i) => h.ns + i) : [Math.max(h.ns, 1)]));
 
 /** A line of the base, where it stands in the merged result (a changed line: where its hunk now starts). */
 function mapLine(hs, line) {
@@ -77,16 +89,19 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     return { whole: files.length === tests.length && tests.length > 0, files, leftOut: tests.filter((t) => !reasons.get(t).size) };
   };
 
-  // Step 3: a use the notice did not follow: every test file is related.
-  const nf = uses.filter((u) => u.notFollowed);
-  if (nf.length) {
-    for (const t of tests) for (const u of nf) give(t, `${RULES.step3}: not followed fully for ${u.module}, so the whole module's tests`);
+  // The whole module: where the module has no uses file yet, or a reason says its whole tests run (a module told with
+  // no uses file, a notice too large for the job block), or a reason names no item the tool can look up.
+  const usesFile = readUses(tree.root, module, { cfg: tree.cfg });
+  const whole = !usesFile || typeof usesFile !== 'object' ? [`${module} has no uses file yet`]
+    : uses.filter((u) => u.noUsesFile || u.whole || !(u.item || u.outside || u.orderFault)).map((u) => (u.noUsesFile || u.whole ? String(u.noUsesFile || u.whole) : `a reason from ${u.module ?? 'a provider'} that names no item`));
+  if (whole.length) {
+    for (const t of tests) for (const w of whole) give(t, `${RULES.step3}: ${w}`);
     return result();
   }
 
   const diff = hunks(gitRoot, base, after);
   const own = new Set(mod.files.map(rel));
-  for (const t of tests) if (diff.has(t)) give(t, RULES.changed);
+  for (const t of tests) if ((diff.get(t) ?? []).some((h) => h.runs)) give(t, RULES.changed);
 
   const program = makeProgram(mod.files);
   const checker = program.getTypeChecker();
@@ -175,14 +190,21 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
     forEachNode(sf, (n) => { visit(n); });
   }
 
-  // Targets: pieces holding a place of uses (read in the base, carried to the merged result), and pieces holding a
-  // line this pull request changed.
+  // Targets: pieces holding a place the uses file names for a changed item (as written for the merged result); where it
+  // names none for a reason, the places the reason carries (read in the base, carried to the merged result); and pieces
+  // holding a line this pull request changed.
   const placeTargets = new Set(), changedTargets = new Set();
-  for (const u of uses) for (const at of u.lines ?? []) {
-    const m = /^(.*):(\d+)$/.exec(at);
-    if (!m || !own.has(m[1])) continue;
-    const p = pieceAt(m[1], mapLine(diff.get(m[1]) ?? [], +m[2]));
-    if (p) placeTargets.add(p);
+  const named = (c, used) => used === c || used.startsWith(`${c}.`) || used.startsWith(`${c}#`);
+  const target = (file, line) => { if (!own.has(file)) return; const p = pieceAt(file, line); if (p) placeTargets.add(p); };
+  for (const u of uses) {
+    const items = u.item ? [u.item] : [];
+    const now = items.length ? (Array.isArray(usesFile.uses) ? usesFile.uses : []).filter((x) => x && x.provider === u.module && typeof x.item === 'string' && items.some((c) => named(c, x.item))).flatMap((x) => (Array.isArray(x.where) ? x.where : [])) : [];
+    if (now.length) { for (const w of now) target(w.file, Number(w.line) || 1); continue; }
+    // a place of a reason, `<file>:<line> <function or test>`
+    for (const at of u.places ?? []) {
+      const m = /^(\S+?):(\d+)(?:\s|$)/.exec(String(at));
+      if (m) target(m[1], mapLine(diff.get(m[1]) ?? [], Number(m[2])));
+    }
   }
   // A changed test file is in the list for itself; its own changed lines are not counted again.
   for (const [f, hs] of diff) if (own.has(f) && !tests.includes(f)) for (const line of changedLines(hs)) { const p = pieceAt(f, line); if (p) changedTargets.add(p); }

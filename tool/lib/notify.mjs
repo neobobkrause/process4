@@ -6,16 +6,17 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadTree } from './notice/model.mjs';
-import { loadReader, makeProgram, readerVersion } from './notice/ts.mjs';
-import { makeLister } from './notice/listing.mjs';
-import { describe, noticeText } from './notice/notice.mjs';
+import { loadReader, readerVersion } from './notice/ts.mjs';
+import { moduleMeans } from './notice/means.mjs';
+import { describe, noticeText, versionNotices } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
-import { block } from './github.mjs';
+import { block, parseBlock } from './github.mjs';
 import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
-import { JOB, JOB_MARK, describe as workLine, jobBlockOf } from './round.mjs';
-import { noticeSeq } from './testrecord.mjs';
+import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
+import { noticeSeq, testRecordOf } from './testrecord.mjs';
 import { readRecords, writeRecord } from './state.mjs';
+import { isUsesPath } from './usesfile.mjs';
 import { fail, git, run } from './util.mjs';
 
 const MODULE = /^[a-z0-9-]+$/;
@@ -46,27 +47,33 @@ function readerNote(ctx, tree) {
   if (want?.version && want.version !== readerVersion()) ctx.log(`note: process.json names ${want.name ?? 'typescript'} ${want.version}; this copy of the tool reads with TypeScript ${readerVersion()}`);
 }
 
-/** A listing in build text 2b, section 6's printed form. */
+/** A listing in build text 2b, section 6's printed form: each item, its stated kinds and bounds, and the rest of its means. */
 export function listingText(l) {
   const L = [`Listing of ${l.module}${l.hasInterfaceComments ? '' : ' (no interface comments)'}`];
   for (const [name, e] of Object.entries(l.entries)) {
     L.push(`  ${e.kind} ${name}   [${e.where}]`);
     if (e.accepts) L.push(`      accepts: ${e.accepts}`);
     if (e.handsBack) L.push(`      hands back: ${e.handsBack}`);
+    if (e.value !== undefined) L.push(`      value: ${e.value}`);
+    if (e.message) L.push(`      a message on: ${e.message}`);
     for (const b of e.bounds ?? []) L.push(`      bound: ${b}`);
-    if (e.throws) L.push(`      throws: ${e.throws.join(', ')}`);
-    if (e.channel) L.push(`      message on: ${e.channel}`);
     if (e.optional) L.push('      may be missing');
+    if (e.throws) L.push(`      errors that can leave it: ${e.throws.join(', ')}`);
+    if (e.instances) L.push(`      hands back or builds: ${e.instances.join(', ')}`);
+    if (e.needsThis) L.push('      needs its object as this');
+    if (e.writesArguments) L.push(`      writes into: ${e.writesArguments.join(', ')}`);
+    if (e.channels) L.push(`      channels, settings and files: ${e.channels.join('; ')}`);
+    if (e.typeErrors) L.push(`      type errors: ${e.typeErrors.join('; ')}`);
   }
   return L.join('\n');
 }
 
-/** One module's listing in a product folder: made with the reader's checker from its interface files. */
+/** One module's listing in a product folder: each item's means (notice/means.mjs). */
 export function listingOf(tree, moduleId) {
   loadReader();
-  const mod = tree.byId.get(moduleId) || fail(`no module is named ${moduleId}`);
-  const l = makeLister(makeProgram(mod.public), tree).list(mod);
-  return { module: l.module, hasInterfaceComments: l.hasInterfaceComments, entries: Object.fromEntries(Object.entries(l.entries).map(([k, e]) => [k, { ...describe(e), where: e.where }])) };
+  if (!tree.byId.has(moduleId)) fail(`no module is named ${moduleId}`);
+  const m = moduleMeans(tree, moduleId);
+  return { module: moduleId, hasInterfaceComments: m.listing.hasInterfaceComments, entries: Object.fromEntries(Object.entries(m.items).map(([k, e]) => [k, { ...describe(e), where: e.where }])) };
 }
 
 // 10. listing <module> [--at <commit>]: reads only; writes nothing to GitHub.
@@ -95,15 +102,16 @@ function changedModules(root, before, after, B, A) {
 }
 
 /**
- * The notices of a merge, read in a process of its own (notice/notices.mjs), one changed module after another, each in
- * stages (notice/staged.mjs). Running out of memory there ends that process, not this one: notify then says so plainly.
+ * The notices of a merge, read in a process of its own (notice/notices.mjs), one changed module after another: its items'
+ * means before and after, then the later modules' uses files. Running out of memory there ends that process, not this
+ * one: notify then says so plainly.
  * P4_READ_HEAP_MB, where set, is that process's heap in megabytes (for a test of running out).
  */
-function readNotices(dirB, dirA, mods, n) {
+function readNotices(dirB, dirA, mods, n, named, sameAs) {
   const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
   const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
   if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
-  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods }), encoding: 'utf8', maxBuffer: 1 << 30 });
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs }), encoding: 'utf8', maxBuffer: 1 << 30 });
   if (r.status === 0) return JSON.parse(r.stdout);
   const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
   if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
@@ -155,7 +163,7 @@ function toOpenJobs(ctx, base, told, n, mergedAt) {
     const bodyWith = (uses) => block(JOB_MARK, { ...data, work: [...(data.work || []), workLine(t)], uses, notice_seq: noticeSeq(data) + 1, notices: [...(data.notices || []), { from: t.from, merged: n }] }, words);
     const held = data.uses || [];
     const reasons = t.uses || [];
-    const whole = (dropped) => ({ module: t.from, notFollowed: [`the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block${dropped ? `, which is full: its ${dropped} earlier reason(s) are left out` : ''}; the whole module's tests run`], through: null });
+    const whole = (dropped) => ({ module: t.from, whole: `the notice from ${t.from} (pull request ${n}) has ${reasons.length} reasons, too many for the job block${dropped ? `, which is full: its ${dropped} earlier reason(s) are left out` : ''}; the whole module's tests run` });
     const body = bodyWith(fitReasons({ held, reasons, fits: (uses) => bodyWith(uses).length < NOTICE_LIMIT, whole }));
     const was = c.body;
     ctx.gh.editComment(ctx.slug, c.id, body);
@@ -190,29 +198,73 @@ export function notifyCmd(ctx, n) {
   let tranche = null;
   try {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
-    // changed file names alone; only when one changed is the code read, by one tool and one reader, in stages: the
-    // changed module's listing before and after, and only where it changed, the later modules that can use it, one
-    // at a time, since a whole product read twice needs much memory (build text 1b, command 11, "How it reads").
+    // changed file names alone; only when one changed, or an item's meaning was named or declared, is the code read: the
+    // changed module's items' means before and after, and only where one changed, the later modules' uses files (build
+    // text 1b, command 11).
     const dirB = writeOut(ctx.root, before, base);
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     tranche = treeA.cfg.tranche_branch;
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
-    const mods = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
+    // The items whose meaning ARCH named in the work it placed (the job block's `meaning`), and the pull request's
+    // declaration (its `process4-meaning` comment); and whether it is a conversion (its first means tell no one).
+    const comments = ctx.gh.comments(ctx.slug, n);
+    const jobModule = pr.head?.ref?.match(JOB)?.[1] ?? null;
+    const job = jobBlockOf(comments)?.data ?? null;
+    const declared = comments.map((c) => parseBlock(c.body, MEANING_MARK)?.data).find(Boolean);
+    const named = [
+      ...meaningsOf(job?.meaning).map((x) => ({ ...x, module: jobModule, found: 'named' })),
+      ...meaningsOf(declared?.meaning).map((x) => ({ ...x, module: jobModule, found: 'declared' })),
+    ];
+    for (const x of named) ctx.log(`${x.found === 'named' ? "ARCH's placed work names" : 'the pull request declares'} a change of meaning: ${x.module ? `${x.module} ` : ''}${x.item} (${x.line || '-'})`);
+    // The items the pull request records as keeping their domain and range (push --same): each tells no one.
+    const sameAs = (Array.isArray(declared?.same) ? declared.same : []).filter((x) => x && typeof x.item === 'string').map((x) => ({ item: x.item, why: String(x.why ?? ''), module: jobModule }));
+    for (const x of sameAs) ctx.log(`the pull request records that ${x.module ? `${x.module} ` : ''}${x.item} keeps its domain and range: ${x.why}`);
+    const conversion = job?.kind === 'conversion' ? jobModule : null;
+    // A package's or the host's version changed (design part 2, section 7, point 4): the modules that use it, by their
+    // uses files.
+    for (const v of versionNotices(treeB, treeA)) {
+      ctx.log(`Notice for a change to the version of ${v.package}: ${v.was ?? 'none'} -> ${v.now ?? 'none'}; ${v.told.length} module(s) told.`);
+      for (const t of v.told) {
+        ctx.log(`  TOLD ${t.user}\n      package ${v.package}: ${t.reasons[0].why}`);
+        told.push({ module: t.user, kind: 'notice', from: `package ${v.package}`, merged: n, uses: t.reasons });
+      }
+    }
+    const changed = changedModules(ctx.root, before, after, { tree: treeB }, { tree: treeA });
+    const mods = treeA.modules.map((m) => m.id).filter((id) => changed.includes(id) || named.some((x) => x.module === id));
     if (!mods.length) {
       ctx.log('The merge changed no module\'s files.');
-      ctx.log('The listing before and after is the same. Nobody is told.');
-      return 0;
+      if (!told.length) ctx.log('No item changed. Nobody is told.');
+    } else {
+      readerNote(ctx, treeA);
+      const read = mods.filter((m) => treeB.byId.has(m));
+      const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named, sameAs).map((r) => [r.provider, r]) : []);
+      for (const m of mods) {
+        if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
+        const r = reports.get(m);
+        ctx.log(noticeText(r));
+        for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
+      }
     }
-    readerNote(ctx, treeA);
-    const read = mods.filter((m) => treeB.byId.has(m));
-    const reports = new Map(read.length ? readNotices(dirB, dirA, read, n).map((r) => [r.provider, r]) : []);
-    for (const m of mods) {
-      if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: it had no listing before, and nobody is told.`); continue; }
-      const r = reports.get(m);
-      ctx.log(noticeText(r));
-      for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
+    // The whole-tests exception (design part 2, section 7): a merge does not tell a module whose code or tests it changed
+    // where its test record ran that module's whole tests on the merged result (a mechanical edit, or another pull
+    // request ARCH's session tests). The record is a pass of scope `whole module` naming the module in `modules`, made at
+    // a commit from which the merge commit differs in uses files at most: what it ran is what merged.
+    const record = testRecordOf(comments)?.data;
+    const onMerged = (c) => {
+      if (!/^[0-9a-f]{40}$/.test(String(c ?? ''))) return false;
+      const d = git(['diff', '--name-only', '--no-renames', c, after], { cwd: ctx.root, allowFail: true });
+      return d.code === 0 && d.stdout.split('\n').filter(Boolean).every((f) => isUsesPath(treeA.cfg, f));
+    };
+    const whole = record?.result === 'pass' && record.scope === 'whole module' && Array.isArray(record.modules);
+    const ranWhole = new Set(whole && onMerged(record.commit) ? record.modules : []);
+    const spared = [...new Set(told.filter((t) => ranWhole.has(t.module) && changed.includes(t.module)).map((t) => t.module))];
+    if (spared.length) {
+      ctx.log(`not told, as the pull request changed their files and its test record ran their whole tests on the merged result: ${spared.join(', ')}`);
+      told = told.filter((t) => !spared.includes(t.module));
     }
+    const unspared = whole && !ranWhole.size ? [...new Set(told.filter((t) => record.modules.includes(t.module) && changed.includes(t.module)).map((t) => t.module))] : [];
+    if (unspared.length) ctx.log(`told although its test record ran their whole tests, as the record is not of the merged result (${String(record.commit).slice(0, 10)}): ${unspared.join(', ')}`);
   } finally {
     rmSync(base, { recursive: true, force: true });
   }

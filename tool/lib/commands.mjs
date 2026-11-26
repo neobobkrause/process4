@@ -10,16 +10,20 @@ import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
 } from './state.mjs';
-import { fail, git, underPath } from './util.mjs';
+import { ORDER, fail, git, underPath } from './util.mjs';
 import { DROP } from './scope.mjs';
-import { noticeAfterTests, recordNeed, recordStands } from './testrecord.mjs';
-import { recordsOf, scopeForPR } from './testrun.mjs';
+import { noticeAfterTests, noticeSeq, recordNeed, recordStands } from './testrecord.mjs';
+import { recordsOf, scopeForPR, usesOnly } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf,
-  moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workOf,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, jobRecordOf, MEANING_MARK, meaningsOf,
+  hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
+import { loadTree } from './notice/model.mjs';
+import { writeOut } from './notify.mjs';
+import { usesReading, writeUsesFiles } from './usescmd.mjs';
+import { isUsesPath, readUses, usesPath } from './usesfile.mjs';
 
 export { JOB_MARK, RECORD_MARK, REQUIRED };
 const CANCELLED = ['cancelled', 'skipped'];
@@ -78,36 +82,147 @@ export function pushPace(ctx) {
   writeFileSync(file, JSON.stringify(times.slice(-6)));
 }
 
-// The job's record on its pull request: one comment, written only by the job's session.
+// The job's record on its pull request: one comment, written only by the job's session. A record that a notice needs
+// no change (`notice_needs_no_change`) is kept beside whatever a later flag writes.
 function writeJobRecord(ctx, n, data) {
-  const body = block(RECORD_MARK, data);
   const had = ctx.gh.comments(ctx.slug, n).find((c) => parseBlock(c.body, RECORD_MARK));
+  const kept = parseBlock(had?.body, RECORD_MARK)?.data?.notice_needs_no_change;
+  const body = block(RECORD_MARK, { ...(kept && !data.notice_needs_no_change ? { notice_needs_no_change: kept } : {}), ...data });
   if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, n, body);
 }
 
-// 2. push [--blocked <module> "<why>" | --unblocked "<why>"]: the current branch to the same-named branch, never forced.
-// --unblocked rewrites the job's record when a block ends by ARCH's decision rather than by the blocking module's merge.
+// The declaration on a pull request (build text 5, section 5): one comment, `<!-- process4-meaning -->`, written only by
+// the session that owns the pull request, holding one line for each item whose meaning it changes (`meaning`), and one
+// for each item the tool found changed whose domain and range the job knows are the same (`same`: push --same, design
+// part 2, section 7, "The insides only"); a later line for the same item takes its place.
+function writeMeaning(ctx, n, { meaning: added = [], same: sameAdded = [] }) {
+  const had = ctx.gh.comments(ctx.slug, n).find((c) => parseBlock(c.body, MEANING_MARK));
+  const was = parseBlock(had?.body, MEANING_MARK)?.data ?? {};
+  const held = meaningsOf(was.meaning);
+  const heldSame = (Array.isArray(was.same) ? was.same : []).filter((x) => x && typeof x.item === 'string');
+  const data = { meaning: [...held.filter((x) => !added.some((y) => y.item === x.item)), ...added] };
+  const same = [...heldSame.filter((x) => !sameAdded.some((y) => y.item === x.item)), ...sameAdded];
+  if (same.length) data.same = same;
+  const body = block(MEANING_MARK, data);
+  if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, n, body);
+}
+
+/**
+ * The words given with push's flags, each paired with its flag: --blocked (one reason for all its modules), --meaning
+ * and --same (one line each, in turn). From the order the words were given in, where it is known (util.mjs, ORDER);
+ * otherwise in this order: the block's reason, the --meaning lines, the --same lines.
+ */
+function pushLines(a, by, meanings, sames) {
+  const order = a[ORDER];
+  if (!order) {
+    const rest = a._.slice(by ? 1 : 0);
+    return { reason: by ? a._[0] : undefined, meaning: rest.slice(0, meanings.length), same: rest.slice(meanings.length, meanings.length + sames.length), extra: rest.length - meanings.length - sames.length };
+  }
+  const out = { reason: undefined, meaning: [], same: [], extra: 0 };
+  const pending = [];
+  let blockedSeen = false;
+  let word = 0;
+  // the command's own words (`push`) come first, and are no longer among the words given
+  let skip = order.filter((k) => k === '_').length - a._.length;
+  for (const k of order) {
+    if (k === '_' && skip > 0) { skip--; continue; }
+    if (k === 'blocked') { if (!blockedSeen) pending.push('blocked'); blockedSeen = true; } else if (k === 'meaning' || k === 'same') pending.push(k);
+    else if (k === '_') {
+      const line = a._[word++];
+      const to = pending.shift();
+      if (to === 'blocked') out.reason = line; else if (to) out[to].push(line); else out.extra++;
+    }
+  }
+  return out;
+}
+
+// 2. push [--blocked <module> "<why>" | --unblocked "<why>"] [--meaning <item> "<was; is now>"]... [--same <item> "<why>"]...
+// [--notice-nothing "<why>"]: the current branch to the same-named branch, never forced. --unblocked rewrites the job's
+// record when a block ends by ARCH's decision rather than by the blocking module's merge. --meaning (repeated) declares,
+// on the branch's pull request, a change of meaning under the same means (design part 2, section 7): each a changed item
+// when the pull request merges. --same (repeated) records on it that an item the tool finds changed keeps its domain and
+// range, with one line why: that item then tells no one (design part 2, section 7, "The insides only"). --notice-nothing
+// [--notice <n>] records, for an open job, that the notices that reached it, up to the block's count now or to the n-th
+// it names, need no change: its recorded pass then stands for them (design part 2, section 7, "What a told module
+// does"); written in the job's record alone, which the required run reads. First the uses file of each module the push changes, and of a job's own module, is
+// rewritten from the code as pushed and committed, so the push carries it (design part 2, section 7; usescmd.mjs). No
+// check of the file is made.
 export function push(ctx, a) {
   const name = currentBranch(ctx.root);
   const cfg = loadConfig(ctx.root);
   if (!(BRANCH.test(name) || DROP.test(name)) || name === 'main' || name === cfg?.tranche_branch) fail(`${name} is not a working branch; push only job/, work/ and drop/ branches`);
   const by = a.blocked === undefined ? null : blockers(a.blocked);
-  if (by && !a._[0]) fail('say --blocked <module> "<why>"');
   if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
+  const nothing = a['notice-nothing'];
+  if (nothing !== undefined && (typeof nothing !== 'string' || !nothing.trim() || Array.isArray(nothing))) fail('say --notice-nothing "<why>"');
+  if (a.notice !== undefined && nothing === undefined) fail('say --notice <n> only with --notice-nothing "<why>"');
+  noticeNamed(a.notice);
+  const items = a.meaning === undefined ? [] : [].concat(a.meaning);
+  const sames = a.same === undefined ? [] : [].concat(a.same);
+  const words = pushLines(a, by, items, sames);
+  if (by && !words.reason) fail('say --blocked <module> "<why>"');
+  const bad = (list, lines) => list.some((x) => x === true || !String(x)) || lines.length !== list.length || lines.some((l) => !String(l ?? '').trim());
+  if (bad(items, words.meaning)) fail('say --meaning <item> "<what it was; what it is now>", once for each item');
+  if (bad(sames, words.same)) fail('say --same <item> "<why its domain and range are the same>", once for each item');
+  if (words.extra > 0) fail('a word is given that no flag takes; say each line with its flag');
+  const meaning = items.map((item, i) => ({ item: String(item), line: String(words.meaning[i]).trim() }));
+  const same = sames.map((item, i) => ({ item: String(item), why: String(words.same[i]).trim() }));
+  writeUsesFiles(ctx, name, { job: name.match(JOB)?.[1] ?? null });
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${name}`);
+  const prOf2 = (what) => ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to ${what}`);
   if (a.blocked !== undefined) {
-    const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record the block on`);
-    writeJobRecord(ctx, pr.number, { blocked: { by: by.length === 1 ? by[0] : by, why: a._[0] } });
+    const pr = prOf2('record the block on');
+    writeJobRecord(ctx, pr.number, { blocked: { by: by.length === 1 ? by[0] : by, why: words.reason } });
     ctx.log(`recorded on pull request ${pr.number}: blocked by ${by.join(' and ')}`);
   }
   if (a.unblocked !== undefined) {
-    const pr = ctx.gh.prForBranch(ctx.slug, name) || fail(`${name} has no open pull request to record on`);
+    const pr = prOf2('record on');
     writeJobRecord(ctx, pr.number, { unblocked: a.unblocked });
     ctx.log(`recorded on pull request ${pr.number}: going on (${a.unblocked})`);
   }
+  if (meaning.length || same.length) {
+    const pr = prOf2(meaning.length ? 'declare the change of meaning on' : 'record the same domain and range on');
+    writeMeaning(ctx, pr.number, { meaning, same });
+    for (const x of meaning) ctx.log(`declared on pull request ${pr.number}: a change of meaning of ${x.item} (${x.line})`);
+    for (const x of same) ctx.log(`recorded on pull request ${pr.number}: ${x.item} keeps its domain and range (${x.why}); it tells no one`);
+  }
+  if (nothing !== undefined) {
+    const pr = prOf2('record on');
+    recordNoticeNeedsNoChange(ctx, pr.number, nothing.trim(), noticeNamed(a.notice));
+  }
   return 0;
+}
+
+/** The notice count a job names with --notice <n> (the last notice it read), or null where it names none. */
+function noticeNamed(v) {
+  if (v === undefined) return null;
+  const k = Number(v);
+  return Number.isInteger(k) && k > 0 && !Array.isArray(v) ? k : fail('say --notice <n>, the count of the last notice read (the job block\'s notice_seq)');
+}
+
+/**
+ * An open job's record that the notices that reached it need no change (design part 2, section 7): the job's record's
+ * `notice_needs_no_change` { notice_seq, why }, written only in the job's record, the job's own comment; the job block is
+ * ARCH's and is never written here (design part 4, sections 4 and 11: one writer for each record). `notice_seq` is the
+ * job block's notice count read at the moment of recording, or, where the job names the last notice it read
+ * (`--notice <n>`), that count, never above the block's: the record answers the notices up to it and none that comes
+ * later, so a notice `notify` adds after the job read its block still needs the job's answer. The required run reads
+ * the job's record, and the recorded pass then stands for those notices (testrecord.mjs). Returns the value recorded.
+ */
+function recordNoticeNeedsNoChange(ctx, n, why, named = null, record = null) {
+  const comments = ctx.gh.comments(ctx.slug, n);
+  const jb = jobBlockOf(comments);
+  if (!jb) fail(`pull request ${n} has no job block: only a job records that a notice needs no change`);
+  const seq = noticeSeq(jb.data);
+  if (!seq) fail(`no notice has reached the job of pull request ${n}; there is nothing to record`);
+  if (named !== null && named > seq) fail(`the job block of pull request ${n} counts ${seq} notice(s); there is no notice ${named}`);
+  const value = { notice_seq: named ?? seq, why };
+  // `record`, where given, is what the record says beside it (close's nothing_to_change); else it keeps what it says
+  writeJobRecord(ctx, n, { ...(record ?? jobRecordOf(comments)?.data ?? {}), notice_needs_no_change: value });
+  ctx.log(`recorded on pull request ${n}: the notice(s) that reached the job, to notice ${value.notice_seq}, need no change (${why}); its recorded pass stands for them${value.notice_seq < seq ? `; notice(s) ${value.notice_seq + 1} to ${seq} still need the job's answer` : ''}`);
+  return value;
 }
 
 // drop --tranche <name>: the tranche's merge into main run the other way, on its own branch
@@ -139,7 +254,9 @@ export function drop(ctx, a) {
     || modules.some((m) => f === requirementsFile(c, m.name)));
 
   const differs = git(['diff', '--no-renames', '--name-only', '-z', main, tip], { cwd: ctx.root }).split('\0').filter(Boolean);
-  const files = differs.filter((f) => ownerOf(modules, f) && !kept(f));
+  // A module's uses file is written from its code (design part 2, section 7): it goes back to main's with that code.
+  const usesFile = (f) => cfgs.some((c) => isUsesPath(c, f));
+  const files = differs.filter((f) => usesFile(f) || (ownerOf(modules, f) && !kept(f)));
   if (!files.length) fail(`nothing to restore: no file a module owns differs between main and ${tranche}`);
 
   // main's version of each, into a separate index made from the tranche's tip.
@@ -232,8 +349,17 @@ export function open(ctx, a) {
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const waiting = records['waiting-work']?.data?.work || [];
   const round = records.round?.data || {};
-  const { reqs, mine, notices, kind, waits } = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round }, module);
-  const job = { module, work: [...reqs, ...mine.map(describe)], kind };
+  // Whether the module has had its conversion: a merged job pull request of kind conversion (build text 1b, command 9).
+  const prsInto = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || ''));
+  const converted = (m) => hasConverted(prsInto, (k) => jobBlockOf(ctx.gh.comments(ctx.slug, k))?.data || null, m);
+  const w = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round, converted }, module);
+  const { mine, notices, kind, waits } = w;
+  // A conversion's work is the conversion alone; the module's other work waits for its next job.
+  const job = { module, work: workLines(w), kind };
+  // The items whose meaning the placed work changes, which ARCH names as `meaning` entries in waiting work (design part 2,
+  // section 7; build text 5, sections 2 and 5): each a changed item when the job's pull request merges.
+  const meaning = meaningsOf(mine.filter((w) => w.kind === 'meaning'));
+  if (meaning.length) job.meaning = meaning;
   // Requirements not yet met that the tranche's scope leaves for later are named, so the job knows they are not its work.
   if (waits.length) job.not_this_tranche = waits;
   // Each notice's reasons for this module: from its entry where it carries them, else from the notice comments on its
@@ -261,11 +387,11 @@ export function ready(ctx, n) {
   if (before.merged_at) { ctx.log(`pull request ${n} is merged; there is nothing to mark ready`); return 0; }
   if (before.state === 'closed') { ctx.log(`pull request ${n} is closed; there is nothing to mark ready`); return 0; }
   if (before.draft === false) { ctx.log(`pull request ${n} is ready already; nothing marked`); return 0; }
-  const { jobBlock, record } = recordsOf(ctx, n);
-  const st = recordStands(record?.data, before.head.sha, jobBlock);
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, before.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, before.head.ref), jobRecord });
   if (st.ok) ctx.log(st.why);
   else {
-    const need = recordNeed(scopeForPR(ctx, before, { jobBlock, related: false }), jobBlock);
+    const need = recordNeed(scopeForPR(ctx, before, { jobBlock, related: false }), jobBlock, jobRecord);
     if (need.needed) fail(`not marked ready: ${st.why} (${need.why})`);
     ctx.log(`no test record needed: ${need.why}`);
   }
@@ -273,18 +399,63 @@ export function ready(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
   if (pr.draft) fail(`pull request ${n} is still a draft`);
   ctx.log(`pull request ${n} is ${pr.state} and ready; the required run ${requiredCheck(ctx.root)} has been asked for`);
+  if (jobBlock?.kind === 'conversion') conversionReport(ctx, pr, jobBlock.module);
   return 0;
+}
+
+export const CONVERSION_MARK = 'process4-conversion';
+
+/**
+ * The conversion's report (build text 1b, command 4; build text 5, section 5), written once a conversion job is marked
+ * ready, for the owner's review, and rewritten in place: from the module's uses file at the head, and from the base as
+ * `uses` reads it, the places outside the standard gone, by rule; the copies; the places still outside, with what each waits
+ * on; the time from the pull request's opening to `ready`; and the cost, "unmeasured" where it cannot be read.
+ */
+function conversionReport(ctx, pr, module) {
+  const at = (ref) => { const f = git(['fetch', '-q', 'origin', ref], { cwd: ctx.root, allowFail: true }); return f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null; };
+  const baseSha = at(`refs/heads/${pr.base.ref}`);
+  const headSha = at(`refs/heads/${pr.head.ref}`) ?? pr.head.sha;
+  const cfg = loadConfig(ctx.root, headSha) ?? loadConfig(ctx.root);
+  const head = readUses(ctx.root, module, { cfg, ref: headSha });
+  // The base, read as `uses` reads it: the module's code there, under the coding standard (usescmd.mjs).
+  let base = null;
+  if (baseSha) {
+    const tmp = mkdtempSync(join(tmpdir(), 'p4-conversion-'));
+    try {
+      const tree = loadTree(writeOut(ctx.root, baseSha, tmp));
+      if (tree.byId.has(module)) base = usesReading(tree, module, baseSha).data;
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }
+  const count = (u) => { const c = {}; for (const o of u?.outside ?? []) c[o.rule ?? '?'] = (c[o.rule ?? '?'] ?? 0) + 1; return c; };
+  const was = count(base), now = count(head);
+  const converted = {};
+  for (const [rule, k] of Object.entries(was)) if (k > (now[rule] ?? 0)) converted[rule] = k - (now[rule] ?? 0);
+  const mins = Math.max(0, Math.round((ctx.nowMs() - Date.parse(pr.created_at ?? new Date(ctx.nowMs()).toISOString())) / 60000));
+  const data = {
+    converted: base ? converted : 'unknown: the base could not be read',
+    copies: (head?.copies ?? []).map((c) => `${c.file}${c.line ? `:${c.line}` : ''}${c.pointer ? ` ${c.pointer}` : ''} ${c.provider ? `${c.provider} ` : ''}${c.item ?? ''}`.trim()),
+    waits: (head?.outside ?? []).map((o) => `${o.rule ?? '?'} ${o.file}:${o.line ?? ''}: ${o.waitsOn ?? 'nothing named'}`),
+    time: `${Math.floor(mins / 60)}h ${mins % 60}m`,
+    cost: 'unmeasured',
+  };
+  if (!head) data.note = `the head holds no uses file of ${module} that can be read`;
+  const body = block(CONVERSION_MARK, data);
+  const had = ctx.gh.comments(ctx.slug, pr.number).find((c) => parseBlock(c.body, CONVERSION_MARK));
+  if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, pr.number, body);
+  ctx.log(`the conversion's report is written on pull request ${pr.number}: ${Object.entries(converted).map(([r, k]) => `${r} ${k}`).join(', ') || 'no place converted'}; ${data.waits.length} place(s) still outside`);
 }
 
 // 14. results <pr>: the test record's standing, then the required run's state on the head commit.
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
-  const { jobBlock, record } = recordsOf(ctx, n);
-  const st = recordStands(record?.data, pr.head.sha, jobBlock);
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, pr.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, pr.head.ref), jobRecord });
   // Where there is no record, say whether one is needed, as `ready` judges it (recordNeed).
   let none = null;
   if (!record) {
-    try { const need = recordNeed(scopeForPR(ctx, pr, { jobBlock, related: false }), jobBlock); if (!need.needed) none = need.why; } catch { /* say only what the record says */ }
+    try { const need = recordNeed(scopeForPR(ctx, pr, { jobBlock, related: false }), jobBlock, jobRecord); if (!need.needed) none = need.why; } catch { /* say only what the record says */ }
   }
   if (none) ctx.log(`test record: none needed: ${none}`);
   else ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
@@ -316,8 +487,8 @@ function notesInForce(ctx) {
 // uses, directly or through others, earlier in the order, read at the tranche branch's newest commit and at the job's
 // head commit (the union): each with an open job that is not blocked holds it. Returns the jobs it waits for, as lines.
 function jobWaits(ctx, pr, module) {
-  const { jobBlock, record } = recordsOf(ctx, pr.number);
-  if (noticeAfterTests(record?.data, jobBlock)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, pr.number);
+  if (noticeAfterTests(record?.data, jobBlock, jobRecord)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
   const issue = findIssue(ctx.gh, ctx.slug);
   const view = readView(ctx, { records: issue ? readAll(ctx.gh, ctx.slug, issue) : {} });
   if (!view.modules.some((m) => m.name === module)) return [];
@@ -406,16 +577,59 @@ export function stateWrite(ctx, key, a) {
   return 0;
 }
 
-// 5. close <pr> [--nothing-to-change "<why>"]: with the flag, first the job's record; then closed unmerged.
+// 5. close <pr> [--nothing-to-change "<why>"]: with the flag, first the job's record. A told job that finds nothing to
+// change in its code (design part 2, section 7, "What a told module does") runs no test. Its uses file is rewritten from
+// the code here and pushed where it changed. Where the job declared on its pull request an item of its own that changes
+// with the provider's (push --meaning: a value computed from the changed item, or its bound handed back), or its uses file
+// differs from its base's, the pull request is marked ready with no test (its scope is nothing, and the job's record says
+// it found nothing to change and the notices need no change; ARCH merges it as any, and `notify` on that merge tells the
+// declared items' users); otherwise it is closed unmerged. Only the job's record is written: the job block is ARCH's.
 export function close(ctx, n, a) {
   const why = a['nothing-to-change'];
   if (why !== undefined && (typeof why !== 'string' || !why.trim())) fail('say --nothing-to-change "<why>"');
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   if (pr.state !== 'open') fail(`pull request ${n} is ${pr.merged_at ? 'merged' : pr.state} already`);
-  if (why !== undefined) { writeJobRecord(ctx, n, { nothing_to_change: why }); ctx.log(`recorded on pull request ${n}: nothing to change`); }
+  if (why !== undefined) {
+    const comments = ctx.gh.comments(ctx.slug, n);
+    const jb = jobBlockOf(comments);
+    if (jb && noticeSeq(jb.data)) recordNoticeNeedsNoChange(ctx, n, why.trim(), null, { nothing_to_change: why });
+    else writeJobRecord(ctx, n, { nothing_to_change: why });
+    ctx.log(`recorded on pull request ${n}: nothing to change`);
+    const module = pr.head?.ref?.match(JOB)?.[1];
+    const declared = meaningsOf(comments.map((c) => parseBlock(c.body, MEANING_MARK)?.data).find(Boolean)?.meaning);
+    const usesDiffer = !!module && usesFileDiffers(ctx, pr, module);
+    if (module && (usesDiffer || declared.length)) {
+      if (declared.length) ctx.log(`pull request ${n} declares ${declared.map((x) => x.item).join(', ')} of ${module} changed with its provider: it merges, with no test, and its merge tells their users`);
+      if (usesDiffer) ctx.log(`the uses file of ${module} differs from ${pr.base.ref}'s: pull request ${n} merges, with no test`);
+      return ready(ctx, n);
+    }
+  }
   ctx.gh.closePR(ctx.slug, n);
   ctx.log(`closed pull request ${n} unmerged`);
   return 0;
+}
+
+/**
+ * For close --nothing-to-change: rewrites the module's uses file from the code in this checkout, where it is at the
+ * pull request's branch, and pushes it where it changed; then whether the branch differs from its base in that file.
+ */
+function usesFileDiffers(ctx, pr, module) {
+  const here = branchOrNone(ctx.root);
+  if (here === pr.head.ref) {
+    if (writeUsesFiles(ctx, here, { job: module }).length) {
+      pushPace(ctx);
+      git(['push', '-q', 'origin', `HEAD:refs/heads/${here}`], { cwd: ctx.root });
+      ctx.log(`pushed ${git(['rev-parse', 'HEAD'], { cwd: ctx.root })} to ${here}, with the rewritten uses file of ${module}`);
+    }
+  } else ctx.log(`note: the checkout is not at ${pr.head.ref}; the uses file is read as the branch holds it`);
+  const tip = (ref) => { const f = git(['fetch', '-q', 'origin', `refs/heads/${ref}`], { cwd: ctx.root, allowFail: true }); return f.code === 0 ? git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root }) : null; };
+  const head = tip(pr.head.ref), base = tip(pr.base.ref);
+  if (!head || !base) return false;
+  const mb = git(['merge-base', base, head], { cwd: ctx.root, allowFail: true });
+  if (mb.code !== 0) return false;
+  const cfg = loadConfig(ctx.root, head) ?? loadConfig(ctx.root);
+  if (!cfg) return false;
+  return !!git(['diff', '--name-only', mb.stdout.trim(), head, '--', usesPath(cfg, module)], { cwd: ctx.root });
 }
 
 // 9. next-job: one job for each call. Rewrites the round record and prints what open needs.
@@ -446,7 +660,7 @@ export function nextJob(ctx) {
     entry = { module: pick.module, state: 'open', pull_request: null, branch: name };
     ctx.log(`module: ${pick.module}`);
     ctx.log(`branch: ${name}`);
-    ctx.log(`work: ${[...w.reqs, ...w.mine.map(describe)].join('; ')}`);
+    ctx.log(`work: ${workLines(w).join('; ')}${w.conversion && (w.later.reqs.length || w.later.mine.length) ? ` (its other work waits for its next job: ${[...w.later.reqs, ...w.later.mine.map(describe)].join('; ')})` : ''}`);
     ctx.log(`kind: ${w.kind}`);
     ctx.log(`then: branch ${name}; open --module ${pick.module} prints its starting instructions`);
   }

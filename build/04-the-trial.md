@@ -85,14 +85,14 @@ Tried:
 
 ### Stage 4. The notice
 
-Needs first: nothing of the owner's. The proof's own forms are now in build texts 2b and 5. Its 150 recorded changes are in its repository; their recorded answers were made with 23 refusals this design does not take, so the answers that rest on those must be recorded again before they can be the tool's tests (`process4/working/readiness_18nov/notice_proof_forms_compared.md`, section 5).
+Needs first: nothing of the owner's. The proof's own forms are now in build texts 2b and 5. Its 150 recorded changes are in its repository; their recorded answers were made with 23 refusals this design does not take and by inferring users, so they are recorded again under the means and the uses files, with the 13 further breaks found, before they can be the tool's tests; the coding standard's 27 cases become tests too (`process/research/uses-metadata-25nov/`).
 
-Built: `listing`, `notify`, `check`, with the recorded changes of the notice's proof as the tool's tests; then the related scope and `related`.
+Built: `listing` (the means), `uses` and the uses file at `push`, `notify`, `check`, with those as the tool's tests; uses files for the proof's product, written by the tool; then the related scope and `related`.
 
 Tried:
-1. A provider's interface change tells only the users of the changed entry, in a running round and not only on made-up changes replayed.
+1. A conversion on the trial product, then a change: a provider's change of means tells exactly the users of the changed item, in a running round and not only on made-up changes replayed.
 2. A told job reads its uses from its pull request, changes what is needed, and `test` runs only the related tests; the required run passes on its record.
-3. The tool says so when it has not followed a module fully, and that module's whole tests then run (build text 5, sections 6 and 7).
+3. A place outside the standard is told of every change of the modules it may refer to, and a module with no uses file of every change of an earlier module it imports, whose whole tests then run (build text 5, sections 6 and 7).
 4. A notice to a module whose job is open reaches that job at once: it is added to the job block, ARCH tells the job, and the job runs its tests again before it can merge.
 
 ### Stage 5. The walks

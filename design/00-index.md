@@ -1,16 +1,15 @@
 # Process4: the design
 
-Length: 91 lines. Last section: "6. Words used".
+Length: 90 lines. Last section: "6. Words used".
 
 **Status: proposed. Nothing here is in force and nothing here has run.**
 
 ## 1. What this is
 
 - This is the design of Process4, in eleven parts. It is "the process4 requirements" and is what sessions follow.
-- It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from. The owner's decisions, in his exact dated words, are kept in the record of decisions (part 5). The reasons and the evidence are in the background document.
+- It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from.
 - It names no product. A product's own facts and the steps to bring it under Process4 belong to that product's conversion plan, which the product's onboarding lane writes (part 6, section 8).
 - Parts 1 to 6 name no hosting provider and use harness-neutral terms. A harness is named there only in part 5, where a figure comes from one. Part 7 says what carries each term on Claude Code, part 8 on Codex, part 9 on Cloudflare.
-- Each part is kept under the single-text maximum, and the eleven together under the set maximum (part 5).
 
 ## 2. Status
 
@@ -62,7 +61,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.
 - **Module:** one part of the product, with its own code files, tests and requirements file. The product is one ordered list of modules, and a module may use only modules before it.
 - **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface.
-- **Interface:** what a module accepts and what it hands back. **Declared uses:** the modules a module states that it uses.
+- **Interface:** what a module accepts and what it hands back. An item's **domain** is its interface, its **range** the values valid there with their **meaning**: what they stand for, their order and units, and the timing, effects and state it requires. **Means:** the part of an item's domain and range the tool can check: its stated types, and the facts the tool works out from its code (part 2, section 7). **Uses file:** a module's record, written by the tool from its code and tests, of each earlier module and item it uses, and where. **Declared uses:** the providers a module's uses file names. **The coding standard:** the forms in which a module's code and tests may refer to an earlier module, and the rules on types, host facilities and order, under which the tool finds every use (part 2, section 7). **Conversion:** a module's first job under the coding standard.
 - **Job:** one session's work on one module, delivered as one pull request.
 - **Slot:** room for one job to run. Eight by default, counted across the account.
 - **Tranche:** one batch of product work, built on the tranche branch and reaching the main branch only as a whole.
@@ -88,4 +87,4 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Deploy token:** the secret value that lets a session deploy to the development account. It is made once for a product, with every permission its development will need (part 1, section 3). **Hosting provider:** where a product is hosted and released.
 - **Fill level:** how full a session's context window is. **Refresh:** the planned replacement of a role's session by a fresh one.
 - **Lane:** a standing design responsibility for one area of a product. **The UX lane** is the lane for the user's experience: the screens and the journeys. **Design pages:** the pages a lane keeps its designs on, where the owner works with it. **Onboarding lane:** the lane of PROCESS that plans one product's move onto Process4 (part 6, section 8).
-- **Process config:** the product's short file of process settings. What it holds (each field is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.
+- **Process config:** the product's short file of process settings. What it holds, among other fields (each is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the process folder and the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.

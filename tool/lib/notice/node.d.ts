@@ -45,21 +45,42 @@ declare function setImmediate(callback: (...args: any[]) => void, ...args: any[]
 declare function queueMicrotask(callback: () => void): void;
 declare function structuredClone<T>(value: T): T;
 
+// No member is described as "anything" by an index signature: a member left out is a complaint the check reads as
+// "cannot tell" (a part of Node the description leaves out), and the reading under the standard lists it.
 interface NodeWritable {
   write(chunk: string, callback?: (error?: Error | null) => void): boolean;
   end(chunk?: string, callback?: () => void): void;
-  [key: string]: any;
+  on(event: string, listener: (...args: any[]) => void): NodeWritable;
 }
-declare var process: {
+interface NodeReadable {
+  on(event: string, listener: (...args: any[]) => void): NodeReadable;
+  setEncoding(encoding: string): NodeReadable;
+  resume(): NodeReadable;
+  pause(): NodeReadable;
+}
+interface NodeProcess {
   stdout: NodeWritable;
   stderr: NodeWritable;
-  stdin: any;
+  stdin: NodeReadable;
   execPath: string;
   argv: string[];
   env: Record<string, string | undefined>;
   exitCode: number | undefined;
-  [key: string]: any;
-};
+  platform: string;
+  pid: number;
+  version: string;
+  cwd(): string;
+  exit(code?: number): never;
+  on(event: string, listener: (...args: any[]) => void): NodeProcess;
+  once(event: string, listener: (...args: any[]) => void): NodeProcess;
+  off(event: string, listener: (...args: any[]) => void): NodeProcess;
+  emit(event: string, ...args: unknown[]): boolean;
+  nextTick(callback: (...args: any[]) => void, ...args: unknown[]): void;
+  kill(pid: number, signal?: string | number): boolean;
+  uptime(): number;
+  hrtime: { (time?: [number, number]): [number, number]; bigint(): bigint };
+}
+declare var process: NodeProcess;
 declare var console: { log(...a: unknown[]): void; error(...a: unknown[]): void; warn(...a: unknown[]): void; info(...a: unknown[]): void };
 
 declare class URLSearchParams {

@@ -1,41 +1,34 @@
-Length: 118 lines. Last section: "8. Not settled here".
+Length: 110 lines. Last section: "8. Not settled here".
 
 # Process4 build specification, part 1: the tool and the required test run
 
-Written by Claude on 18 Nov 2026. **Status: proposed. The tool is built and its own tests pass, but it has not run in a process in force; nothing here is proven in a running process, and nothing is in force.** It answers items 4 and 8 of part 10, section 2 of the design (`design/`). It adds no rule to the design; where the two differ, the design rules. "The earlier tool" is the earlier process's (process3's `tool/`, with its workflow `shims/process-gate.yml`). Section 4, the commands, is in `01b-the-commands.md` (build text 1b), to keep each file under 24,000 bytes; the numbers are kept.
+**Status: proposed. The tool is built and its own tests pass, but it has not run in a process in force; nothing here is proven in a running process, and nothing is in force.** It adds no rule to the design (`design/`); where the two differ, the design rules. Section 4, the commands, is in `01b-the-commands.md` (build text 1b), to keep each file under 24,000 bytes; the numbers are kept.
 
-Marks: **Decided here:** a choice of this text, with what it gives and costs; the owner or PROCESS can overrule any. **Unproven:** never shown to work. **Record:** stated in a named file of this repository; not seen to run by me.
+Marks: **Decided here:** a choice of this text, with what it gives and costs; the owner or PROCESS can overrule any. **Unproven:** never shown to work.
 
-## 1. What carries over, what is dropped, what is new
+## 1. What the tool is made of
 
-**Carries over** (the code ran in the earlier process; the paths in brackets are that process's, with this tool's home where it moved):
-
-- One program, a fresh process for each command, run as `node <copy>/tool/<name>.mjs <command>` (`tool/p3.mjs`): the command table, the argument reader, one plain line on failure and exit code 1.
-- GitHub reached only through the `gh` program and `git`, with no token held or read by the tool (`tool/lib/util.mjs`, `tool/lib/github.mjs`): reading and opening a pull request; listing and rewriting comments; the hidden-mark comment holding one JSON block; reading a commit's check runs; marking ready by the session proxy's own route (the earlier second route, `gh pr ready`, uses GraphQL, which sessions cannot reach, and is no longer tried).
-- The merge call itself: one request, merge commit, guarded by the head commit id (`tool/lib/merge.mjs`; now `mergePR` in `tool/lib/github.mjs`).
-- The run on GitHub: one workflow on every pull request, on GitHub's merge of the pull request into its base, with the tool fetched at the version the base branch names and credentials not kept in the checkout (`shims/process-gate.yml`; now `shims/module-tests.yml`, which starts no product code).
-- Product code started with the token variables removed (`NO_TOKENS`, `tool/lib/util.mjs`), now in the session's `p4 test`.
-- The suite runner: a module's test command run over a list of test files, the default being all of them (`tool/lib/suite.mjs`; now `runModules` in `tool/lib/scope.mjs`).
-- The scope rule's shape: nothing when no code changed, the job's module otherwise (`tool/lib/gate.mjs`; now `decideScope` in `tool/lib/scope.mjs`).
+- One program, a fresh process for each command, run as `node <copy>/tool/p4.mjs <command>`: the command table, the argument reader, one plain line on failure and exit code 1.
+- GitHub reached only through the `gh` program and `git`, with no token held or read by the tool (`tool/lib/util.mjs`, `tool/lib/github.mjs`): reading and opening a pull request; listing and rewriting comments; the hidden-mark comment holding one JSON block; reading a commit's check runs; marking ready by the session proxy's own route.
+- The merge call: one request, merge commit, guarded by the head commit id (`mergePR` in `tool/lib/github.mjs`).
+- The required run: one workflow on every pull request, on GitHub's merge of the pull request into its base, with the tool fetched at the version the base branch names and credentials not kept in the checkout (`shims/module-tests.yml`, which starts no product code).
+- Product code started by `p4 test` with the token variables removed (`NO_TOKENS`, `tool/lib/util.mjs`).
+- The suite runner, a module's test command run over a list of test files (`runModules`), and the scope rule (`decideScope`), both in `tool/lib/scope.mjs`; every command of section 4 (build text 1b); the test record (section 5).
 - The tool's tests: Node's own test runner, with GitHub calls passed in so that tests replace them (`tool/test/`).
-
-**Dropped** (each could stop work, or built up records): the ledger and its checks; the receipt; the check that a job changed only its own files; the check that new tests fail with the change reverted; the "zero tests ran" finding; the record check (size, paths, approvals); `--reviewed` / `--no-review` on merge; merge writing a row; the artifact that vouched for the run; metrics; `status`; the state branch; the submodule entry. Two came back in another form: `test`, not `merge`, brings the branch up to its base and asks for the required run again, and the test record, written in the session, is a comment on the pull request (section 5).
-
-**New:** every other command of section 4 (build text 1b), and the related scope of section 5.
 
 ## 2. Where the tool lives, its language, and how a session gets it
 
-- **Where.** The process's repository has five folders: `tool/` (entry file `tool/p4.mjs`, libraries in `tool/lib/`, tests in `tool/test/`); `shims/`, with the workflow a product copies, `shims/module-tests.yml`, and the list of forbidden commands a product copies as its `.claude/settings.json`, `shims/claude-settings.json` (the design, part 6, section 2); `starting_texts/`, one text for each role (part 4, section 11), of which the tool fills in a job's and a walking session's; `design/`, the design's eleven parts; and `build/`, the build texts. PROCESS's own folder is a sixth.
-- **Decided here:** the language is plain JavaScript modules on Node 22 or newer, no build step. Gives: the carried-over code is reused; the reader that proved the notice is TypeScript's, a Node program; Node is on GitHub's machines and in the sessions. Costs: a product in another language still needs Node on the machine.
-- **Decided here:** the tool has one dependency, the `typescript` package at one exact version (5.6.3 was the version studied), named in `tool/package.json` with a lock file and installed with `npm ci` when the copy is fetched. Gives: both listings of a comparison use one reader version. Costs: the fetch needs the public package registry. Commands that do not read code must work without it.
+- **Where.** The process's repository holds, among others, five folders: `tool/` (entry file `tool/p4.mjs`, libraries in `tool/lib/`, tests in `tool/test/`); `shims/`, with the workflow a product copies, `shims/module-tests.yml`, and the list of forbidden commands a product copies as its `.claude/settings.json`, `shims/claude-settings.json` (the design, part 6, section 2); `starting_texts/`, one text for each role (part 4, section 11), of which the tool fills in a job's and a walking session's; `design/`, the design's eleven parts; and `build/`, the build texts. PROCESS's own folder is another.
+- **Decided here:** the language is plain JavaScript modules on Node 22 or newer, no build step. Gives: the reader that proved the notice is TypeScript's, a Node program; Node is on GitHub's machines and in the sessions. Costs: a product in another language still needs Node on the machine.
+- **Decided here:** the tool has one dependency, the `typescript` package at one exact version, 5.6.3, named in `tool/package.json` with a lock file and installed with `npm ci` when the copy is fetched. Gives: both sides of a comparison use one reader version. Costs: the fetch needs the public package registry. Commands that do not read code must work without it.
 - **How a product names its version. Decided here:** the process config names the process repository's address and one full 40-character commit id of its main branch, beside the version's name (build text 2, section 7). No submodule entry and no branch name. Gives: one place names the version, and it reads the same on GitHub's machines and in a session. Costs: any pull request can change the line; the design already says nothing physical stops that (part 6, section 7).
 - **How a session fetches it. Decided here:** each session's first command, written in its starting instructions (for ROOT, in the owner's plain prompt), is one line, the fetch line, which names the commit id once, as a shell variable: `git clone` of the process repository into `$HOME/process4/<commit id>`, checkout of that commit, `npm ci` in `tool/`. Every later command is `node $HOME/process4/<commit id>/tool/p4.mjs ...`. Gives: the copy is outside the product's working tree, so no job commits it. No session edits it; that is held by text, since cloud sessions run with full rights and a file permission would not stop a write (measured 22 Nov 2026). Costs: the fetch is not made by the tool, the one exception the design names (part 6, section 3), and it is a judged act.
-- **Record:** in the earlier process every session held one repository and fetched the process as its first command, `git submodule update --init .process`, from the public process repository, with the deny list loaded (`process4/evidence/permissions_inventory.md`, probe row 17). **Unproven:** that a plain clone to a folder outside the repository works the same from a one-repository session and leaves the deny list loaded; that it works if the process repository is private; all of it on Codex. The reserve is the earlier route, a submodule entry.
-- **What the tool reads from the product:** the process config and the module list (each module's name, by which it is identified, its order, code paths, test paths, interface files and declared uses). Their forms are in build text 2 (`02-the-forms.md`), sections 3, 4 and 7.
+- **Unproven:** that a plain clone to a folder outside the repository works from a one-repository session and leaves the deny list loaded; that it works if the process repository is private; all of it on Codex.
+- **What the tool reads from the product:** the process config and the module list (each module's name, by which it is identified, its order, code paths, test paths and interface files), each module's uses file, which names its declared uses, and the facility list. Their forms are in build text 2 (`02-the-forms.md`), sections 3, 4 and 7, and `02c-the-coding-standard.md`, section 10.
 
 ## 3. Signing in, and what the permission checker sees
 
-- **In a session.** The tool starts `gh` and `git` as child programs. The harness has already connected them to GitHub as the sessions' second account through the session's proxy. The tool holds, reads and prints no token, and removes the token variables from every `git` it starts. Only GitHub's REST calls are used; the earlier process measured that sessions could not reach the other interface (note in `tool/lib/github.mjs`).
+- **In a session.** The tool starts `gh` and `git` as child programs. The harness has already connected them to GitHub as the sessions' second account through the session's proxy. The tool holds, reads and prints no token, and removes the token variables from every `git` it starts. Only GitHub's REST calls are used; sessions cannot reach the other interface (the design, part 7, section 3).
 - **On GitHub's machines.** The workflow's own token, read-only by the owner's setting; the required run starts no product code (section 5).
 - **Limits.** Every write obeys GitHub's rate-limit answer: it waits as told and tries again up to four times, then fails. `merge` waits until a minute has passed since the last merge into the same branch. `push` keeps to six a minute. No queue of later writes is kept.
 - **The deny list** takes `git push` and `gh` away from the session's own commands. It does not reach programs the tool starts.
@@ -44,17 +37,17 @@ Marks: **Decided here:** a choice of this text, with what it gives and costs; th
 | Command | What the checker sees as the act |
 |---|---|
 | `branch` | Making a new branch in the product's repository |
-| `push` | A push to the session's own working branch |
-| `open`, `ready`, `close` | Opening a draft pull request; marking it ready; closing it unmerged. `open`, `close` and `push` may also write a comment on it; `open --module` and `walk open` also rewrite a shared-state comment |
+| `push` | A push to the session's own working branch, carrying the uses files the tool writes first |
+| `open`, `ready`, `close` | Opening a draft pull request; marking it ready; closing it unmerged. `open`, `ready`, `close` and `push` may also write a comment on it; `open --module` and `walk open` also rewrite a shared-state comment |
 | `test` | Running a pull request's module tests in the session's own checkout, writing the test record on the pull request, and asking GitHub to run the required run again; where the base has moved, first merging it in and pushing to the session's own branch |
 | `drop` | Making a branch, putting back the main branch's module files on it, pushing it and opening its pull request into the tranche branch |
 | `merge` | Merging a pull request into the tranche branch (or the tranche's into main) after the required run passed, with no person's review |
 | `release prepare`; `release publish` | Making an unpublished release, or with `--development` a pre-release with its tag; publishing a release, with the owner's approval typed in that session |
 | `notify`, `state write`, `next-job`, `walk write` | Rewriting a comment on an issue; `notify` also rewrites an open job's block |
 | `walk open`, `walk close` | Opening an issue in the product's repository; closing it |
-| `listing`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `latest-version`, `walk areas`, `walk text`, `walk read` | Reading only |
+| `listing`, `uses`, `finished`, `round-done`, `results`, `failed-runs`, `state read`, `check`, `related`, `latest-version`, `walk areas`, `walk text`, `walk read` | Reading only |
 
-**Unproven:** every row. No approvals wording for Process4 is committed, and no act of this tool has been judged. Trial item 2 measures `merge`.
+**Unproven:** that the permission checker passes every row at a real rate. Trial item 2 measures `merge`.
 
 ## 5. The tests of a pull request, and the required run
 
@@ -65,18 +58,18 @@ A pull request's module tests run once, in the session that owns it, and GitHub'
 - **What runs.** For each module in scope, `check` and then the module's test command over the files in scope, one module after another. A check disagreement counts as a failure.
 - **The test record.** One comment on the pull request, hidden mark `<!-- process4-test-record -->`, rewritten in place; its form is in build text 5, section 5. Scope nothing writes a pass with no files.
 - **After a pass** `p4 test` asks GitHub to run the head's newest required run again, so a run that started before the record passes. Where none exists, or GitHub refuses, it says so in one line.
-- **`ready`** runs nothing and marks ready only where the record stands for the head, or where the scope is nothing and no notice has reached the job (build text 1b, command 4).
+- **`ready`** runs nothing and marks ready only where the record stands for the head, or where the scope is nothing and no record is needed (build text 5, section 5; build text 1b, command 4).
 - **What defines the required run.** One workflow file, `.github/workflows/module-tests.yml`, copied into the product from `shims/module-tests.yml`. It runs on every pull request event that changes the head, the base, or draft to ready.
 - **Its one name.** The check GitHub requires is named `module-tests`, the workflow's one job.
-- **What it does.** It holds the read-only token, runs no product code, installs none of the product's dependencies, and ends within ten minutes. It reads the process config **at the base branch's commit**, clones the process repository at the commit it names (so the pull request cannot move the version that judges it; where the base has no process config, the head's is used and the run says so), reads the job block and the test record with GitHub's REST interface, and runs `run verdict`. That passes when the steps below give **nothing** and no notice has reached the job, or when the record stands for the head (`recordNeed`, the same rule `ready` and `results` use); otherwise it fails with `no pass recorded for <sha>; run p4 test`, or why the record does not stand. It writes a summary. For the verdict a told job always needs its record: the run does not make the related list.
+- **What it does.** It holds the read-only token, runs no product code, installs none of the product's dependencies, and ends within ten minutes. It reads the process config **at the base branch's commit**, clones the process repository at the commit it names (so the pull request cannot move the version that judges it; where the base has no process config, the head's is used and the run says so), reads with GitHub's REST interface the job block (ARCH's) and the job's record (the job's), on a `job/` branch only, and the test record, writes each to its file (`$RUNNER_TEMP/job-block.txt`, `job-record.txt`, `test-record.txt`; an empty file where none can be read), and runs `run verdict` with `--job-block`, `--job-record` and `--test-record`. That passes when the steps below give **nothing** and no record is needed, or when the record stands for the head, as build text 5, section 5 says (`recordNeed`, the same rule `ready` and `results` use); otherwise it fails with `no pass recorded for <sha>; run p4 test`, or why the record does not stand. It writes a summary. The run does not make the related list.
 
 **How the scope is decided,** in order (`decideScope`, used by `p4 test`, `ready` and the verdict):
 
 1. The base is the main branch: **nothing**, passes at once (the tranche's own pull request).
 2. A draft: **nothing** for the required run, which passes it at once; `p4 test` decides as for a ready one.
-3. No changed file is under any module's code or test folders, by the module list of the merged result: **nothing**, passes at once.
+3. No changed file is under any module's code or test folders, by the module list of the merged result, or none changes running code: **nothing**, passes at once, the summary saying in how many files only comments or layout changed. A code file's running code is its tokens as the language reader parses them, every comment (structured comments among them) and all layout left out (`tool/lib/notice/running.mjs`); a file added or removed, or one the reader does not read, changes running code. So a uses file, or types stated only in comments, run nothing (part 2, section 6).
 4. The head branch is a dropped tranche's, `drop/<tranche>` (build text 1b, command 26), and every file it changes is byte for byte the main branch's (`origin/main`), or absent from both: **nothing**, passes at once, as step 1 (design part 3, section 5). If one file is not the main branch's, or the main branch cannot be read, the steps below apply and the summary says which file.
-5. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the list that build text 5, section 7 defines, chosen by whole file, and one step wider each time the tool loses the thread, up to the whole module. An empty list is a pass with no files.
+5. The head branch is a job's, `job/<module>.<n>` (build text 1b, command 1), and its job block says `told`: **related**: the related tests of the design (part 2, section 7), chosen by whole file as build text 5, section 7 says, up to the whole module where the tool cannot follow the code, the module has no uses file, or a reason is of a mock or a package (build text 5, section 7). An empty list is a pass with no files.
 6. The head branch is a job's otherwise: **whole module**, that module only.
 7. Any other branch that changes module code (the mechanical edit): whole module for each module touched, tested by ARCH's session.
 
@@ -88,7 +81,7 @@ A pull request's module tests run once, in the session that owns it, and GitHub'
 
 ## 6. The tool's own tests
 
-- **What they cover:** each command against replaced GitHub calls (what it sends, prints, and does on each failure); the slot rule giving the same answer for the same inputs; finished and round-done; the scope rule, one case for each step and for losing the thread; state writes, the four tries, an ended note removed, the lane refusal; the listing and notice over the recorded changes from the notice's proof (150 changes on eleven made-up modules, in `notice-proof/` of the probes repository; **not read by me**), each with the answer recorded for it.
+- **What they cover:** each command against replaced GitHub calls (what it sends, prints, and does on each failure); the slot rule giving the same answer for the same inputs; finished and round-done; the scope rule, one case for each step and for losing the thread; state writes, the four tries, an ended note removed, the lane refusal; the means, the uses files and the notice over the recorded changes from the notice's proof (150 changes on eleven made-up modules, in `notice-proof/` of the probes repository; **not read by me**), recorded again under the means and the uses files with its 13 further breaks, and the coding standard's 27 cases (`process/research/uses-metadata-25nov/every-reference.md`), each with the answer recorded for it.
 - **When they run:** only where the tool changed. The workflow named `tool-tests` in the process's repository is that repository's required run and reports on every pull request. It runs the tests only on a ready pull request that changes a file of the tool (`tool/`, `shims/`, the two starting texts the tool fills in, or the workflow itself); a draft, and a pull request that changes no such file, pass at once. Before pushing, PROCESS runs only the tests of the tool it changed, and none where no tool changed.
 - **Never on a product's work.** A product's workflow fetches `tool/` and runs commands from it; nothing in `shims/` or in any command starts `tool/test/`.
 - **Decided here:** the size of a role's text, a record or a requirements file is not among them (part 5, section 3).
@@ -101,7 +94,7 @@ The order is build text 4's (`04-the-trial.md`, section 3), which rules. What ea
 1. The fetch line; `branch`, `push`, `open`, `ready`, `results`, `merge`, `test`; `state read`, and `state write` with `--create`; the workflow and `run verdict`, with scope steps 1, 2, 3 and 6.
 2. No command: the standing roles' texts, and the trials of the shared state.
 3. `next-job`, `finished`, `round-done`, `failed-runs`, `close`.
-4. `listing`, `notify`, `check`; then scope step 5 and `related`.
+4. `listing`, `uses`, the uses file at `push`, `notify`, `check`; then scope step 5 and `related`.
 5. The walk commands.
 6. Scope step 7; `drop` and scope step 4; `release prepare`, `release publish`.
 
@@ -111,8 +104,7 @@ The order is build text 4's (`04-the-trial.md`, section 3), which rules. What ea
 
 Everything in this text is unproven; each doubt is marked where it lies.
 
-1. **Whether the process repository is public.** The fetch on GitHub's machines assumes it is, as the earlier one was. If private, the required run needs a token to fetch the tool.
+1. **Whether the process repository is public.** The fetch on GitHub's machines assumes it is. If private, the required run needs a token to fetch the tool.
 2. **The mechanical edit's scope** (section 5, step 7): whole module for each module touched, tested by ARCH's session (the design, part 2, section 9).
 3. **The owner's approvals** must name the fetch, each act of section 3, and the tool's path; the proposal in `owner_acts_and_approvals.md` was written before the path existed.
 4. **Codex:** how `gh` and `git` are signed in there, and whether a child can fetch, are not known (part 8).
-5. **The proof's data** and the earlier tool's `github push` (on another branch) were not read.

@@ -47,7 +47,7 @@ test('p4 test runs the module\'s check and tests at the head, writes a pass reco
   assert.equal(testCmd(j.ctx, j.pr.number), 0);
   assert.deepEqual(recordOf(j.gh), {
     commit: sha, notice_seq: 0, scope: 'whole module', why: 'job branch for orders; its job block says ordinary',
-    files: ['test/orders/a.test.mjs'], passed: 1, failed: 0, result: 'pass', fails_total: 0, written: '2026-11-20T10:00Z',
+    modules: ['orders'], files: ['test/orders/a.test.mjs'], passed: 1, failed: 0, result: 'pass', fails_total: 0, written: '2026-11-20T10:00Z',
   });
   assert.deepEqual(j.gh.s.calls.filter((c) => c[0] === 'rerun'), [['rerun', 7]]);
   const text = j.out.join('\n');
@@ -112,8 +112,10 @@ test('p4 test first merges in the tranche\'s newer commits, pushes, and records 
   assert.equal(testCmd(j.ctx, j.pr.number), 0);
   const head = git(['rev-parse', 'HEAD'], { cwd: j.root });
   assert.notEqual(head, old);
-  assert.equal(git(['rev-parse', 'HEAD^1'], { cwd: j.root }), old);
-  assert.equal(git(['rev-parse', 'HEAD^2'], { cwd: j.root }), moved);
+  // pushed as push pushes it: the merge, then the job's module's uses file written from it
+  assert.equal(git(['diff', '--name-only', 'HEAD^', 'HEAD'], { cwd: j.root }), 'process/modules/orders.uses.json');
+  assert.equal(git(['rev-parse', 'HEAD^^1'], { cwd: j.root }), old);
+  assert.equal(git(['rev-parse', 'HEAD^^2'], { cwd: j.root }), moved);
   assert.equal(git(['ls-remote', 'origin', 'refs/heads/job/orders/1'], { cwd: j.root }).split('\t')[0], head);
   const r = recordOf(j.gh);
   assert.deepEqual([r.commit, r.result], [head, 'pass']);
@@ -263,4 +265,25 @@ test('run verdict reads the job block and the test record from the files the wor
   out.length = 0;
   assert.equal(main(args, { root: m.root, log: (l) => out.push(String(l)) }), 0);
   assert.match(out.join('\n'), /Passed: pass recorded for/);
+});
+
+test('run verdict reads the job\'s record too: the notices it says need no change, and a told job\'s nothing to change; never the job block\'s copy', () => {
+  const m = merged({ 'process/modules/orders.uses.json': '{}\n' });
+  const dir = mkdtempSync(join(tmpdir(), 'p4-verdict-'));
+  const jb = join(dir, 'job-block.txt'), jr = join(dir, 'job-record.txt'), tr = join(dir, 'test-record.txt');
+  writeFileSync(tr, '');
+  const args = ['run', 'verdict', '--base', m.base, '--base-ref', 'tranche', '--branch', m.branch, '--draft', 'false', '--head', m.head, '--job-block', jb, '--job-record', jr, '--test-record', tr];
+  const run = () => { const out = []; let code; try { code = main(args, { root: m.root, log: (l) => out.push(String(l)) }); } catch { code = 1; } return { code, text: out.join('\n') }; };
+  // a notice reached the job; the block's own copy of an answer is not read
+  writeFileSync(jb, block(JOB_MARK, { module: 'orders', kind: 'ordinary', notice_seq: 1, notice_needs_no_change: { notice_seq: 1, why: 'x' } }));
+  writeFileSync(jr, '');
+  assert.equal(run().code, 1);
+  writeFileSync(jr, block('process4-job-record', { notice_needs_no_change: { notice_seq: 1, why: 'orders reads nothing it names' } }));
+  assert.match(run().text, /Passed: nothing needs a test record/);
+  // a told job with no code changed: its record of nothing to change stands in for its test record
+  writeFileSync(jb, block(JOB_MARK, { module: 'orders', kind: 'told' }));
+  writeFileSync(jr, '');
+  assert.equal(run().code, 1);
+  writeFileSync(jr, block('process4-job-record', { nothing_to_change: 'orders uses nothing the notice names' }));
+  assert.equal(run().code, 0);
 });

@@ -7,6 +7,11 @@
 //   its name only; each of its members is an entry of its own. So a change to one method tells the users of that
 //   method, not every user of the factory.
 // - A kind that still mentions a type parameter (generic code, such as the door) is written as TypeScript prints it.
+// - A kind written by its name in the product keeps its name beside its shape (the means, design part 2, section 7: "its
+//   stated types, expanded through every type they name", names kept, since a user may write the name); a cycle is cut
+//   at a name. A user that writes a name uses the kind's own entry, so where two forms differ only in a name, the
+//   comparison asks the checker, which finds them the same (notice.mjs, makeSame). A kind joined with & to a plain
+//   value (a named kind for a meaningful value, `number & {...}`) keeps every part. A field stated read-only says so.
 import { ts } from './ts.mjs';
 
 const P = (n) => ({ k: 'prim', n });
@@ -71,7 +76,14 @@ export function makeCanon(checker, tree) {
       const seen = new Map();
       for (const x of of) seen.set(JSON.stringify(x), x);
       of = [...seen.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map((e) => e[1]);
-      return of.length === 1 ? of[0] : { k: 'union', of };
+      if (of.length === 1) return of[0];
+      const alias = productAlias(t);
+      return alias ? { k: 'union', of, name: `${alias.module}.${alias.name}` } : { k: 'union', of };
+    }
+    if (f & ts.TypeFlags.Intersection && t.types.some((m) => !(m.flags & ts.TypeFlags.Object))) {
+      const of = t.types.map((m) => canon(m, ctx)).map((x) => [JSON.stringify(x), x]).sort((a, b) => (a[0] < b[0] ? -1 : 1)).map((e) => e[1]);
+      const alias = productAlias(t);
+      return alias ? { k: 'and', of, name: `${alias.module}.${alias.name}` } : { k: 'and', of };
     }
     if (f & (ts.TypeFlags.Object | ts.TypeFlags.Intersection)) return canonObject(t, ctx, top);
     return { k: 'other', t: checker.typeToString(t) };
@@ -84,46 +96,58 @@ export function makeCanon(checker, tree) {
     if (alias && !top && isHandle(t)) return { k: 'handle', name: `${alias.module}.${alias.name}` };
     if (alias && !isHandle(t)) ctx.kinds.set(`${alias.module}.${alias.name}`, alias.decl);
     ctx.stack.push(t);
+    const named = (r) => (alias && !isHandle(t) && r && typeof r === 'object' && !r.name ? { ...r, name: `${alias.module}.${alias.name}` } : r);
     try {
-      // Iteration 2: a kind written as parts joined with & keeps the bound lines of its parts.
-      if (t.flags & ts.TypeFlags.Intersection) for (const part of t.types) { const a = productAlias(part); if (a && !isHandle(part)) ctx.kinds.set(`${a.module}.${a.name}`, a.decl); }
-      if (checker.isArrayType(t)) {
-        const ro = t.symbol?.name === 'ReadonlyArray';
-        return { k: 'arr', ro, of: canon(checker.getTypeArguments(t)[0], ctx) };
-      }
-      if (checker.isTupleType(t)) {
-        const flags = t.target.elementFlags;
-        return {
-          k: 'tuple',
-          ro: !!t.target.readonly,
-          items: checker.getTypeArguments(t).map((a, i) => ({ opt: !!(flags[i] & ts.ElementFlags.Optional), rest: !!(flags[i] & ts.ElementFlags.Variable), t: canon(a, ctx) })),
-        };
-      }
-      const sym = t.symbol;
-      const d = sym?.declarations?.[0];
-      if (sym && d && d.getSourceFile().isDeclarationFile && !sym.name.startsWith('__')) {
-        // A kind from the language's own library (Promise, Date, Map...): its name and its arguments.
-        const args = (t.typeArguments ?? checker.getTypeArguments?.(t) ?? []).map((a) => canon(a, ctx));
-        return { k: 'ref', name: sym.name, args };
-      }
-      const calls = t.getCallSignatures();
-      const props = checker.getPropertiesOfType(t);
-      if (calls.length && !props.length) return calls.length === 1 ? canonSig(calls[0], ctx) : { k: 'overloads', of: calls.map((s) => canonSig(s, ctx)) };
-      const out = { k: 'obj', props: {} };
-      for (const p of [...props].sort((a, b) => (a.name < b.name ? -1 : 1))) {
-        notePrimitiveKind(p.declarations?.[0], ctx);
-        const opt = !!(p.flags & ts.SymbolFlags.Optional);
-        let pt = checker.getTypeOfSymbol(p);
-        if (opt) pt = removeUndefined(pt);
-        out.props[p.name] = { opt, t: canon(pt, ctx) };
-      }
-      const idx = checker.getIndexInfosOfType(t);
-      if (idx.length) out.index = idx.map((i) => ({ key: canon(i.keyType, ctx), t: canon(i.type, ctx) }));
-      if (calls.length) out.calls = calls.map((s) => canonSig(s, ctx));
-      return out;
+      return named(objectShape(t, ctx));
     } finally {
       ctx.stack.pop();
     }
+  }
+
+  /** Whether a member is stated read-only: `readonly`, a mapped Readonly, or @readonly in its comment. */
+  function readOnly(p) {
+    if ((ts.getCheckFlags?.(p) ?? 0) & ts.CheckFlags.Readonly) return true;
+    if (ts.getDeclarationModifierFlagsFromSymbol(p) & ts.ModifierFlags.Readonly) return true;
+    return (p.declarations ?? []).some((d) => ts.getJSDocTags(d).some((tg) => tg.tagName.text === 'readonly'));
+  }
+
+  function objectShape(t, ctx) {
+    // Iteration 2: a kind written as parts joined with & keeps the bound lines of its parts.
+    if (t.flags & ts.TypeFlags.Intersection) for (const part of t.types) { const a = productAlias(part); if (a && !isHandle(part)) ctx.kinds.set(`${a.module}.${a.name}`, a.decl); }
+    if (checker.isArrayType(t)) {
+      const ro = t.symbol?.name === 'ReadonlyArray';
+      return { k: 'arr', ro, of: canon(checker.getTypeArguments(t)[0], ctx) };
+    }
+    if (checker.isTupleType(t)) {
+      const flags = t.target.elementFlags;
+      return {
+        k: 'tuple',
+        ro: !!t.target.readonly,
+        items: checker.getTypeArguments(t).map((a, i) => ({ opt: !!(flags[i] & ts.ElementFlags.Optional), rest: !!(flags[i] & ts.ElementFlags.Variable), t: canon(a, ctx) })),
+      };
+    }
+    const sym = t.symbol;
+    const d = sym?.declarations?.[0];
+    if (sym && d && d.getSourceFile().isDeclarationFile && !sym.name.startsWith('__')) {
+      // A kind from the language's own library (Promise, Date, Map...): its name and its arguments.
+      const args = (t.typeArguments ?? checker.getTypeArguments?.(t) ?? []).map((a) => canon(a, ctx));
+      return { k: 'ref', name: sym.name, args };
+    }
+    const calls = t.getCallSignatures();
+    const props = checker.getPropertiesOfType(t);
+    if (calls.length && !props.length) return calls.length === 1 ? canonSig(calls[0], ctx) : { k: 'overloads', of: calls.map((s) => canonSig(s, ctx)) };
+    const out = { k: 'obj', props: {} };
+    for (const p of [...props].sort((a, b) => (a.name < b.name ? -1 : 1))) {
+      notePrimitiveKind(p.declarations?.[0], ctx);
+      const opt = !!(p.flags & ts.SymbolFlags.Optional);
+      let pt = checker.getTypeOfSymbol(p);
+      if (opt) pt = removeOptionalMark(pt, p);
+      out.props[p.name] = readOnly(p) ? { opt, ro: true, t: canon(pt, ctx) } : { opt, t: canon(pt, ctx) };
+    }
+    const idx = checker.getIndexInfosOfType(t);
+    if (idx.length) out.index = idx.map((i) => ({ key: canon(i.keyType, ctx), t: canon(i.type, ctx) }));
+    if (calls.length) out.calls = calls.map((s) => canonSig(s, ctx));
+    return out;
   }
 
   /**
@@ -158,6 +182,28 @@ export function makeCanon(checker, tree) {
     if (rest.length === t.types.length) return t;
     if (rest.length === 1) return rest[0];
     return { ...t, types: rest, __synthetic: true, flags: t.flags };
+  }
+
+  /**
+   * An optional member's kind without the mark of its being optional. Under the standard's exactOptionalPropertyTypes,
+   * `a?: number` and `a?: number | undefined` are different kinds (the second accepts a stated undefined): the checker
+   * marks the first with its own "missing" undefined, which is removed; a stated undefined is kept. Where the setting is
+   * off, an optional member's undefined is that mark, and is removed, unless its declaration states undefined (then kept:
+   * a change may be reported where none is, never missed).
+   */
+  function removeOptionalMark(t, p) {
+    if (!(t.flags & ts.TypeFlags.Union)) return t;
+    const missing = t.types.filter((m) => m.debugIntrinsicName === 'missing');
+    if (missing.length) {
+      const rest = t.types.filter((m) => !missing.includes(m));
+      return rest.length === 1 ? rest[0] : { ...t, types: rest, __synthetic: true, flags: t.flags };
+    }
+    const d = p.declarations?.[0];
+    const node = d && (d.typeExpression?.type ?? d.type);
+    let stated = null;
+    try { stated = node ? checker.getTypeFromTypeNode(node) : null; } catch { stated = null; }
+    const hasUndefined = (x) => !!x && (x.flags & ts.TypeFlags.Undefined || (x.flags & ts.TypeFlags.Union && x.types.some((m) => m.flags & ts.TypeFlags.Undefined)));
+    return hasUndefined(stated) ? t : removeUndefined(t);
   }
 
   function paramOptional(p) {
@@ -219,6 +265,7 @@ export function standsIn(old, nu) {
         const np = nu.props[name];
         if (!np) return false; // removed or renamed
         if (op.opt && !np.opt) return false; // newly required
+        if (op.ro && !np.ro) return false; // a read-only field made writable: the provider may now change it
         if (!standsIn(op.t, np.t)) return false;
       }
       for (const [name, np] of Object.entries(nu.props)) if (!old.props[name] && !np.opt) return false; // newly required
@@ -265,6 +312,7 @@ export function render(c) {
     case 'cycle': return `(${c.t} again)`;
     case 'deep': return `(${c.t})`;
     case 'union': return c.of.map(render).join(' | ');
+    case 'and': return c.of.map(wrap).join(' & ');
     case 'arr': return `${c.ro ? 'readonly ' : ''}${wrap(c.of)}[]`;
     case 'tuple': return `${c.ro ? 'readonly ' : ''}[${c.items.map((i) => `${i.rest ? '...' : ''}${render(i.t)}${i.opt ? '?' : ''}`).join(', ')}]`;
     case 'params': return `(${c.items.map((i, n) => `${i.rest ? '...' : ''}${i.name ?? 'arg' + n}${i.opt ? '?' : ''}: ${render(i.t)}`).join(', ')})`;
@@ -274,7 +322,7 @@ export function render(c) {
     case 'overloads': return c.of.map(render).join(' & ');
     case 'names': return `names: ${c.names.join(', ')}`;
     case 'obj': {
-      const parts = Object.entries(c.props).map(([n, p]) => `${n}${p.opt ? '?' : ''}: ${render(p.t)}`);
+      const parts = Object.entries(c.props).map(([n, p]) => `${p.ro ? 'readonly ' : ''}${n}${p.opt ? '?' : ''}: ${render(p.t)}`);
       if (c.index) parts.push(...c.index.map((i) => `[key: ${render(i.key)}]: ${render(i.t)}`));
       if (c.calls) parts.push(...c.calls.map(render));
       return `{ ${parts.join('; ')} }`;
@@ -282,4 +330,4 @@ export function render(c) {
     default: return JSON.stringify(c);
   }
 }
-const wrap = (c) => (c.k === 'union' || c.k === 'fn' ? `(${render(c)})` : render(c));
+const wrap = (c) => (c.k === 'union' || c.k === 'and' || c.k === 'fn' ? `(${render(c)})` : render(c));

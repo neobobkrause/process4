@@ -3,5 +3,15 @@
   "provider": "bookings",
   "covers": [
     "change of meaning under an unchanged name, comment updated"
+  ],
+  "meaning": [
+    {
+      "item": "op:bookquote",
+      "line": "total: what the whole stay costs; total: what one night costs"
+    },
+    {
+      "item": "Bookings.quote",
+      "line": "what the whole stay costs; what one night costs"
+    }
   ]
 }

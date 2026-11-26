@@ -12,9 +12,9 @@ export const NOTICE_LIMIT = 60000;
 
 const bodyOf = (data) => block(NOTICE_MARK, data);
 
-/** A reason without its before and after (the words of what changed); its entry, changes and lines, which choose the related tests, are kept. */
+/** A reason without its before and after (the words of what changed); its item, changes and places, which choose the related tests, are kept. */
 export const cutReason = (r) => {
-  if (r.notFollowed || (r.before === undefined && r.after === undefined)) return r;
+  if (r.whole || (r.before === undefined && r.after === undefined)) return r;
   const { before, after, ...rest } = r;
   return { ...rest, cut: 'its before and after are left out: too large for one comment' };
 };
@@ -22,12 +22,12 @@ export const cutReason = (r) => {
 /**
  * Reasons cut to fit one comment: the one rule for a notice comment and for a job block. The tool refuses nothing for
  * size (design part 6, section 5), so this never fails. It tries, in order: `held` and the reasons whole; the reasons
- * without their before and after; in their place one "not followed" reason, `whole()`, which runs the told module's
- * whole tests (design part 2, section 7, the three points; build text 1b, command 11); that one with `held` cut too.
+ * without their before and after; in their place one reason that runs the told module's whole tests, `whole()` (design
+ * part 2, section 7, the three points; build text 1b, command 11); that one with `held` cut too.
  * It returns the first that `fits`; where none does, `whole(held.length)` alone, leaving `held` out.
  * @param held reasons the comment holds already, kept ahead of the new ones (a job block's earlier `uses`)
  * @param fits (reasons) => whether the comment holds them
- * @param whole (dropped) => the one "not followed" reason; `dropped` counts the held reasons left out, if any
+ * @param whole (dropped) => the one reason that runs the whole module; `dropped` counts the held reasons left out, if any
  */
 export function fitReasons({ held = [], reasons, fits, whole }) {
   const one = whole();
@@ -39,7 +39,7 @@ export function fitReasons({ held = [], reasons, fits, whole }) {
  * One notice in parts: { from, merged, part, users: { <module>: reasons } }, each part's comment under NOTICE_LIMIT.
  * Users are kept whole where they fit; a user whose reasons do not fit one part goes on across parts, reason by reason.
  * A single reason too large for a part on its own is cut by fitReasons: first without its before and after; where
- * still too large, one "not followed" reason in its place, so that the told module's whole tests run.
+ * still too large, one reason in its place that runs the told module's whole tests.
  * @param users [module, reasons][] in the notice's order
  */
 export function noticeParts(from, merged, users) {
@@ -60,7 +60,7 @@ export function noticeParts(from, merged, users) {
       add(module, fitReasons({
         reasons: [r],
         fits: (rs) => fits(module, rs),
-        whole: () => ({ module: r.module ?? from, notFollowed: [`a reason of ${module} in the notice from ${from} (pull request ${merged}) is too large for one comment even without its before and after; the whole module's tests run`], through: r.through ?? null }),
+        whole: () => ({ module: r.module ?? from, whole: `a reason of ${module} in the notice from ${from} (pull request ${merged}) is too large for one comment even without its before and after; the whole module's tests run` }),
       }));
     }
   }

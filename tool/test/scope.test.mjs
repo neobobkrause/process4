@@ -96,12 +96,10 @@ test('product code runs without the token variables', () => {
 });
 
 test('the module tests run the tool\'s check before a module\'s tests, and a disagreement fails them', () => {
-  // orders imports dates without declaring it: the check refuses that. (A declared use no code makes is "cannot
-  // tell", so it does not serve as the disagreement here.)
+  // orders' own comment disagrees with its code: the check refuses that (refusal a).
   const { root, base } = merged({
-    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: [] },
     'src/dates/index.mjs': 'export const d = 1;\n',
-    'src/orders/index.mjs': "import { d } from '../dates/index.mjs';\nexport const o = d;\n", 'test/orders/a.test.mjs': passing });
+    'src/orders/index.mjs': "import { d } from '../dates/index.mjs';\n/** @type {string} */\nexport const o = d;\n", 'test/orders/a.test.mjs': passing });
   const s = decideScope(root, { base, baseRef: 'tranche', branch: 'job/orders/1', draft: false });
   const [r] = runModules(root, s);
   assert.notEqual(r.check.code, 0);

@@ -8,5 +8,15 @@
   "before": [
     "setups/W04a-bookings-states-open-errors"
   ],
-  "note": "front passes a person's note through to bookopen and states no bound on it; billing's and reports' tests open bookings without notes."
+  "note": "front passes a person's note through to bookopen and states no bound on it; billing's and reports' tests open bookings without notes.",
+  "meaning": [
+    {
+      "item": "Bookings.open",
+      "line": "a note of any length; a note of at most 140 characters"
+    },
+    {
+      "item": "op:bookopen",
+      "line": "a note of any length; a note of at most 140 characters"
+    }
+  ]
 }

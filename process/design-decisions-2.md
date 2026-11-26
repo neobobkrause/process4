@@ -56,11 +56,12 @@ On `ready` where there is nothing to mark: "Decision: Mark-ready: as recommended
    module with a notice waiting and no open job, earlier in the order than the latest running job's module, starts its told
    job at once, above the slot number; a later one waits its turn. After a merge ARCH refills the slot in the same turn
    (design part 2, sections 3 and 5).
-2. **Merge order.** A ready job merges once no job is open among the modules it uses: the earlier modules its files import,
-   followed file to file as the notice reads them, and the modules it declares, directly or through others. `merge` says
-   which job it waits for and merges nothing; ARCH merges once that job has merged. A blocked job holds no one. `merge` also
-   refuses a job whose tests ran before its latest notice (design part 2, sections 3 and 8). A use made by a path and not
-   declared is missed here, as by the notice.
+2. **Merge order.** A ready job merges once no job is open among the modules it uses: the providers its uses file names,
+   read at the tranche's newest commit and at the job's head, and theirs in turn; a module with no uses file yet waits on
+   the earlier modules it imports. `merge` says which job it waits for and merges nothing; ARCH merges once that job has
+   merged. A blocked job holds no one. `merge` also refuses a job whose tests ran before its latest notice (design part 2,
+   sections 3 and 8). The reading of uses by following imports (the update of 24 November) is retired by decision C of 25
+   November (the subject "Who a change tells").
 3. **A blocked job.** A job stopped by another module records that it is blocked and its slot is freed; when that module
    merges, the job is ready again. Where ARCH ends the block by its own decision instead (a change to the module list, the
    order or a boundary, design part 2, section 8) and tells the job to go on, the job pushes with `--unblocked "<why>"`,
@@ -100,10 +101,12 @@ On a block ARCH ended: "Decision: B" — 23 November 2026 (a comment on his page
    notice count, the scope, the files, the counts, pass or fail, and the fails across every run (design part 2, sections 3
    and 6; build text 1b, command 27; `bringBaseIn` in `tool/lib/testrun.mjs`).
 3. **The scope.** The tool decides it: the whole module for an ordinary job; the related test files for a told job; nothing
-   where no module file changed. For a told job, its own edits count among "the changed parts", so what it touches is
-   re-tested; the related tests are chosen a whole test file at a time; and where the tool cannot follow a told module's
-   code, that module's whole tests run, since the tool cannot say which relate (design part 2, section 7). Unproven: that
-   the tool can trace a use to the tests that reach it.
+   where no running code changed, as for a conversion that only states types in comments or marks data files (the
+   owner's words under "Who a change tells"). For a told job, its own edits count among "the changed parts", so what it
+   touches is re-tested; the related tests are those holding the places its uses file names for the changed items, or
+   reaching them, chosen a whole test file at a time; and where the tool cannot follow a told module's code inside it, or
+   the module has no uses file yet, that module's whole tests run (design part 2, section 7). Unproven: that the tool can
+   trace a use to the tests that reach it.
 4. **Failed runs.** The count that brings a fresh session (the third failed run) and a block (the fifth) is read from the
    record (design part 4, section 10).
 5. **A pull request that is not a job's** and changes module code or tests is tested the same way by ARCH's session, each
@@ -164,12 +167,13 @@ that has been changed." — 22 November 2026.
 2. **Error-condition tests.** A wrong-typed value a test passes on purpose inside an error assertion (`assert.throws`,
    `assert.rejects` and their kin), to show that an error condition is "properly identified and communicated", is neither
    refusal: the tool reads it as "cannot tell".
-3. **Declared uses.** The check of declared uses reads a module's tests as well as its source, and reads imports by path,
-   `require`, and imports by the product's own name. It refuses a declared use of a module that is not before this one in
-   the order, so declaring a later module is no way to make a use of it pass. A declared use with no import it can see is
+3. **Declared uses.** A module's declared uses are the providers its uses file names, which the tool writes from the
+   module's code and tests under the coding standard (the subject "Who a change tells"). The check refuses a use of a
+   module that is not before this one in the order. A place outside the standard that may refer to a later module is
    "cannot tell". A job cannot settle a needed use of a later module in its own files: it reports to ARCH and is recorded
    blocked, other work goes on, and ARCH corrects the order, the module list or the boundary (design part 2, sections 1, 3,
-   6 and 8; build text 2, section 3). A reference made another way (a started process, a file read) is not seen by it.
+   6 and 8; build text 2c). The reading of declared uses from imports (the update of 24 November) is replaced by decision
+   C of 25 November.
 4. **What the reader leaves out.** The process config's `language_reader.exclude` names files the reader leaves out
    (vendored copies, committed built bundles), which no module then owns, checks or lists (build text 2, section 7). A file
    the language's own reader cannot walk is "cannot tell"; the tool's walks over a file do not overflow the stack on a very
@@ -183,7 +187,8 @@ existing check refuse one more thing, on his word; researched in
 `process/research/tests-referring-to-later-modules-22nov.md`). On civicsmith's real code `check` refused nearly every module,
 mostly on plain uncommented code (option 3B of three: 3A no change; 3B refuse only what a comment states; 3C refuse only
 changed lines; the proof's T14 re-recorded; researched in `process/research/check-on-real-code-22nov.md`). The update of 24
-November mended the declared-uses reading (`require`, the product's own name).
+November mended the declared-uses reading (`require`, the product's own name); decision C of 25 November
+replaced that reading with the uses file.
 
 **The owner's words.** On fault D: "Decision: B" — 19 November 2026.
 On a declared use of a later module: "decision: option B, as recommended" — 22 November 2026.
@@ -195,65 +200,103 @@ so to him on the same thread).
 
 **The rule as it now stands.** The notice's rules are in design part 2, section 7; these are the owner's decisions on them.
 
-1. **A listing's entries.** An entry of an interface listing is named by its name within its module. Where two of a
-   module's interface files export one name for two different things, each is an entry of its own named `<file>:<name>`,
-   the file as the module list writes it; the same thing exported again from a second file stays one entry; a name exported
-   once is named as before (build text 2b, section 6). A class member's own written bound is in its listing, so a changed
-   bound tells its users. "Accepts more" is confirmed from the provider's public files only.
-2. **An unknown kind becoming known tells no one.** Where an entry's kind, at some place, was read as "anything" before and
-   is a stated kind after, that is the entry being described, not changed; it tells no one, in the module itself and in
-   every later module whose listing passes it on, also where a parameter is a union. Any other difference in the same entry
-   tells as before (`known` and `knownDecl` in `tool/lib/notice/notice.mjs`; `unbracket` in `tool/lib/notice/ts.mjs`).
-3. **A user the tool cannot follow fully** is told of every change to a kind of the provider that tells any user (a kind,
-   handle kind, class, operation, table or table of operations). Of a changed function, method, value or class member it is
-   told only where its own files name that entry, or where it reaches the provider in a way the tool cannot read: an import
-   the tool cannot follow anywhere in what its files reach, the provider's whole exports taken, or another module in that
-   reach that re-exports or carries the provider, hands the entry on as a value, or takes the provider whole. A change that
-   tells no user, a confirmed accepts-more or a new entry, tells it nothing. The reason it carries names the changed entries
-   that told it. Two misses are accepted: a function handed in as a callback from a module the user does not reach, and a
-   name built from pieces (design part 2, section 7, decision 2 and "A declared use that no code makes"; build text 5,
-   section 6; build text 2b, section 6; `tool/lib/notice/narrow.mjs`).
-4. **The reason printed.** A notice prints the kinds of error raised, a message's channel and "may now be missing" where
-   they differ (`noticeText` in `tool/lib/notice/notice.mjs`).
+1. **Who uses what** is worked out by the tool from each module's code and tests, kept to the coding standard (S1 to S13,
+   R1 to R22 and the type checker's settings, build text 2c), and recorded in the module's uses file at every push of its
+   jobs and in every change ARCH makes to it. Who is told is a lookup of the changed items in the later modules' uses
+   files, directly or through a middle module that passes the item on. A place outside the standard is told of every
+   change of the modules it may refer to until a job converts it; a module with no uses file yet, of every change of an
+   earlier module it imports. A module's first job under the standard is its conversion. Whether each facility of Node
+   and workerd stays inside the program or reaches outside it is fixed in the tool; ARCH names the product's boundary
+   modules and classifies the packages it uses, in its facility list. This replaces the rule that the
+   tool infers uses from plain code and that no list is kept by hand (design part 2, section 7, rule 1), and retires
+   decision 3B (below): no module is told only because the tool cannot follow it.
+2. **What changed** is each item's means, worked out before and after the merge: its stated types, expanded through every
+   type they name; its named types and read-only arguments; and, from its code over a closure that follows calls and data
+   within the module, the errors that can leave it, plain data or a class instance, `this`, the arguments it writes into,
+   the channels and settings it reads or writes, and whether it answers at once or later. A type error in the item counts
+   as a change. So does an item whose meaning ARCH names in the work it places, or the job declares in its pull request,
+   and a changed marked bound line. Whether an item still gives the same answers is not asked; an accidental change of
+   meaning is a bug in the provider, caught first by its own tests.
+3. **Describing is not changing; accepting more is.** An item's first means, at its conversion, tells no one; nor does a
+   new item. This carries decision 2 of 25 November (an unknown kind becoming known tells no one) and its union case
+   (decision 1B). Any change to what an item accepts, accepting more included, changes its domain and tells its users.
+   Where the job knows that an item the tool found changed has the same domain and range, it records that in its pull
+   request, with one line why, and that item tells no one; every other changed item, named or declared item, and module
+   told of any change is told as before. A told job that finds nothing to change closes and runs no test.
+4. **An item's name.** An item is named by its name within its module. Where two of a module's interface files export one
+   name for two different things, each is an item of its own named `<file>:<name>`, the file as the module list writes it;
+   the same thing exported again from a second file stays one item (decision 4B; build text 2b, section 6).
+5. **The reason printed.** A notice names each changed item the module uses, how it was found (its means, ARCH's work, the
+   job's declaration), the one-line why, and the places from the module's uses file: file, line, and for tests the test
+   case's name.
 
-Why: on civicsmith, changes that told users of nothing (a stated kind, an optional parameter, a new entry) and one function's
-change told about 125 modules, most only because the tool cannot follow their plain JavaScript, each a told job that closed
-with nothing to change; a name exported from two files kept one entry, telling the wrong user and missing the right one; and
-a printout hid the reason that told. Options: (2) option B of three (A no change; B all three fixes; C the second and third
-only); its union case and (4), option 1B of two (1A no change; 1B the correction); (1) option 4B of two (4A no change,
-civicsmith's ARCH renames the exports; 4B the correction); (3) option 3B of two (3A no change; 3B the narrower rule), which
-narrows his decision 2 on his word and replaced the rule of the early provider's fixes (option B) that such a user was told
-of every change that tells any user. Researched in `process/research/not-followed-told-everything-25nov.md`,
-`process/research/notify-1356-anything-to-stated-25nov.md`, `process/research/notify-1356-still-197-25nov.md`,
-`process/research/same-name-entries-25nov.md`, `process/research/notify-rerun-repeats-25nov.md` (its last sections) and
-`process/research/narrowing-decision-2-25nov/`.
+Retired: decision 3B of 25 November (a user the tool cannot follow fully told only where its files name the entry), and
+the rule it narrowed, that such a user is told of every change that tells any user; both rested on inferring uses.
+
+Why: the tool inferred uses from plain JavaScript and told every module it could not follow; after one merge 197 modules
+were told, 194 only for that. It compared written descriptions, so a job that changed code and left its comment told no
+one: on the proof, 45 needed modules were missed under every earlier option, and 13 more real breaks the proof never
+listed. The owner asked for a fix built "directly from a deep understanding of JS's specific means by which a reference is
+made", load-bearing, and recorded by rewriting the existing entries. Options: 0 no change; A a file each job writes, with
+no standard; B the standard without the rules on types; C the full standard, with a first pass of 8 real modules
+(recommended). Researched in `process/research/uses-metadata-25nov.md` and `process/research/uses-metadata-25nov/`
+(the design document, https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk, revision 58; `study-references.md`,
+`study-changes.md`, `every-reference.md`, `standard.md`, `proof.md`); the earlier fixes in
+`process/research/not-followed-told-everything-25nov.md`, `notify-1356-anything-to-stated-25nov.md`,
+`notify-1356-still-197-25nov.md`, `same-name-entries-25nov.md`, `notify-rerun-repeats-25nov.md` and
+`narrowing-decision-2-25nov/`, and `who-is-told-25nov.md`.
 
 **The owner's words.** All 25 November 2026; the early provider's three fixes and the unknown kind's three are under "How
 `notify` reads the product" and "How a notice reaches a user".
 On the union case and the reason printed: "Decision: 1b" — 25 November 2026 (a comment on his standing page, on option 1B).
 On one name exported twice: "Decision:4b" — 25 November 2026 (a comment on his standing page, on option 4B).
-On a user the tool cannot follow fully: "Decision: 3b" — 25 November 2026 (a comment on his standing page, on option 3B).
+On a user the tool cannot follow fully: "Decision: 3b" — 25 November 2026 (a comment on his standing page, on option 3B);
+retired by the decision below.
+On how the fix is to be found (conversation, in PROCESS #15's session; all his words of that day are in
+`process/research/uses-metadata-25nov/design.md`, section 6): "It's important that the tool that identifies provider uses
+be rigorous so that we have a very high level of confidence that no references are being missed." — 25 November 2026.
+"Every reference means every reference, not every reference except a bounch of others" — 25 November 2026. "There's no
+need for the module jobs to run tests when no code is being run. That needs to be in the instructions given at the top of
+these jobs." — 25 November 2026.
+On the design: "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification
+tool, and the tool that keeps each module's uses file current on every module job." — 25 November 2026, 18:51 UTC (in
+PROCESS #16's session, on the design document above).
+On who classifies host facilities: "Decision: use the simplification: the tool carries Node's and workerd's facility
+classification; ARCH names the boundary modules and classifies the packages its product uses." — 25 November 2026, 20:26
+UTC (in PROCESS #16's session, on the options: no change, ARCH keeps the whole list per product; or this simplification).
+On what a change is (his definitions and rule, in the notice session of 14 November, recorded in neobobkrause/process3,
+`process4/owner_words/bob_words_14nov_notice_session.md` at commit 2a43eb5, message 3): "The interface to a provider is it's domain. The
+bounds of valid values passed to and received from a provider are it's range. So what I'm saying is that any change to
+either a provider's domain or range necessitates that its users be retested. But if both domain and range stay the same,
+then no retesting of users is needed." — 14 November 2026.
+On accepting more: "Decision: remove the rule that accepting more tells no one; any change to what a provider accepts tells
+its users." — 25 November 2026, 23:07 UTC (in PROCESS #17's session; researched in `process/research/precision-26nov/`,
+`misses.md` §3).
+On a job's record and a told job that changes nothing (in PROCESS #17's session, answering the two questions the design
+left open; PROCESS asked once whether to record them as decisions, and he answered "yes" — 25 November 2026, about 23:11 UTC):
+"1. a job's record that a changed item's domain and range are the same take that item off the notice so long as all other
+changes are still properly factored into the decision of who to notify and who not to notify
+2. a told module that finds nothing to change, should not still run its related tests before it closes" — 25 November
+2026, about 23:10 UTC.
 
 ### Subject: How `notify` reads the product
 
-**The rule as it now stands.** `notify` reads in stages, never the whole product at once (build text 1b, command 11;
-`tool/lib/notify.mjs`, `tool/lib/notice/staged.mjs`, `notices.mjs`, `listing.mjs`).
+**The rule as it now stands.** `notify` reads only what a merge can affect, and no user's code (build text 1b, command 11).
 
 1. It works out which modules a merge changed from the two module lists and the changed file names alone, before reading
    any code; where none changed it says so and reads nothing.
-2. For each changed module it reads that module's interface listing before and after, from that module's files and what
-   they import. Where the listing is the same, nobody is told and no other module is read.
-3. Otherwise it reads, as they stood before the merge, only the later modules that can use it: those whose imports,
-   followed file to file, lead to it, those that declare it, those that reach a carrier where operations or tables are
-   involved, and those with an import it cannot follow; several to a reading. It works out the kinds each file declares
-   once for each side, before and after, and keeps them across its readings; and it reads a user's code after the change
-   only where a changed entry is new or renamed, operations or tables are in play, or the user's own files changed.
+2. For each changed module it works out each item's means before and after (design part 2, section 7), from that
+   module's files and its providers' stated types, over the closure within the module. It adds the items ARCH's placed
+   work names and the job declares.
+3. It then reads the later modules' uses files, a lookup with no code read, and tells the modules that name a changed
+   item; and, for any change to the module's files, whether or not an item changed, those with a place outside the
+   standard that may refer to it or an order fault naming it, and those with no uses file yet that import it (the subject "Who a change tells").
 4. The commands that read a product's code (`listing`, `notify`, `check`) run with a memory allowance of three quarters of
    the machine's memory where node's default is less. Where a reading still does not fit, `notify` says so plainly, tells
    nobody, and names the notice owed, instead of crashing.
 
-The answers are the notice's rules (design part 2, section 7; build text 5, section 6); the replay of the proof's 150
-recorded changes gives the same answers, except those re-recorded under "Who a change tells".
+The staged reading of the later modules' code (decision D of 23 November, and the early provider's first fix of 25
+November) is retired by decision C of 25 November (the subject "Who a change tells"): the users' files replace it.
 
 Why: on civicsmith (204 modules) `notify` ran out of memory, at 12 GB too, reading and type-checking the whole product for
 every merge; after an early provider's merge it took most of an hour and once took down ARCH's machine. The first repair was
@@ -293,8 +336,8 @@ for this item).
    The reasons are written once on the merged provider's pull request, in `<!-- process4-notice -->` comments each under
    60,000 characters, as many as needed; the waiting-work entry names only the module, the provider and the merged pull
    request; `open --module` copies the reasons into the job block and writes the block's `notices` (build text 5, sections
-   2 and 5; build text 1b, commands 3 and 11). A "not followed fully" reason keeps its first six places and a count, so a
-   notice is never lost for its size.
+   2 and 5; build text 1b, commands 3 and 11). A reason keeps its first six places and a count, so a notice is never lost for
+   its size; the places come from the told module's uses file.
 4. **No repeats.** A told user whose job pull request, open, merged or closed, already names the notice in its block, in its
    `notices` or its work line, is skipped.
 5. **A refused write** to GitHub ends with GitHub's own words, its message and errors included (`tool/lib/notify.mjs`,
@@ -322,7 +365,7 @@ to him together).
 
 ### Subject: The walks' five matters
 
-**The rule as it now stands.** (Build text `03-the-walks.md`; design part 3, section 3.)
+**The rule as it now stands.** (Build text `03-the-walks.md`; design part 3, section 3. The labels 9.1 to 9.5 are the items' numbers when put to him; each now lives where its own references say.)
 
 1. **Which list of journeys counts (9.1).** The UX design lane maintains the product's list of journeys; that list is the
    one the walks use, and the owner does not approve it per tranche. The form of the two documents stays as build text 3,
@@ -365,7 +408,7 @@ is broken." — 25 November 2026 (conversation).
 ### Subject: What PROCESS reads in full
 
 **The rule as it now stands.** PROCESS reads in full, before acting, its starting text, the design (parts 00 to 10) and its
-handover record. It reads the record of the owner's decisions, build text 5 and its research through their indexes, one line
+handover record. It reads the record of the owner's decisions, the build texts and its research through their indexes (`decisions-index.md`, `build/README.md`, `research/README.md`), one line
 for each entry or file, and opens an entry or a file, or gives it to a worker, when a question touches it. The design states
 every decision as it now stands, so it is the governing statement; the record keeps the owner's exact dated words and the
 reasons (design part 5, section 3; part 6, section 7; PROCESS's starting text). It brings PROCESS's reading set from about

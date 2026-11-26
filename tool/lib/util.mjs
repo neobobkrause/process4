@@ -88,15 +88,21 @@ export function repoSlug(root) {
 }
 
 // --key value, --key=value and --flag; repeated keys become arrays; the rest are positional.
+/** Where parseArgs keeps the order the words were given in: [flag name, or '_' for a word with no flag]. */
+export const ORDER = Symbol('p4.args.order');
+
 export function parseArgs(argv) {
   const out = { _: [] };
+  const order = [];
+  Object.defineProperty(out, ORDER, { value: order });
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (!a.startsWith('--')) { out._.push(a); continue; }
+    if (!a.startsWith('--')) { out._.push(a); order.push('_'); continue; }
     const eq = a.indexOf('=');
     const k = eq > 0 ? a.slice(2, eq) : a.slice(2);
     const v = eq > 0 ? a.slice(eq + 1) : i + 1 < argv.length && !argv[i + 1].startsWith('--') ? argv[++i] : true;
     if (k in out) out[k] = [].concat(out[k], v); else out[k] = v;
+    order.push(k);
   }
   return out;
 }

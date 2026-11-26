@@ -5,5 +5,15 @@
     "code changed and comment forgotten, where only running code enforces it",
     "bound enforced only by running code"
   ],
-  "note": "The job changed one number in the code and nothing else. Its own test named for the party bound is left as it was."
+  "note": "The job changed one number in the code and nothing else. Its own test named for the party bound is left as it was.",
+  "meaning": [
+    {
+      "item": "Bookings.open",
+      "line": "a party of 1 to 200; a party of 1 to 100"
+    },
+    {
+      "item": "op:bookopen",
+      "line": "a party of 1 to 200; a party of 1 to 100"
+    }
+  ]
 }

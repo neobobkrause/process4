@@ -6,5 +6,11 @@
   ],
   "before": [
     "setups/A03-front-uses-reexport"
+  ],
+  "meaning": [
+    {
+      "item": "slugify",
+      "line": "words joined with hyphens; words joined with underscores"
+    }
   ]
 }

@@ -213,8 +213,8 @@ On how the coordinator finds PROCESS: "Decision: option C" — 20 November 2026.
    consent is still not retried, and three refusals in a row still stop the session (design part 1, sections 6–7; part 6,
    section 4).
 3. **Naming a role to message it.** A session resolves a role to its current session address from the roles record (a lane
-   from the lanes record) before messaging it, never from a remembered address, with `state read --repository` where the
-   record is in another repository (design part 4, sections 4 and 11).
+   from the lanes record) before messaging it, never from a remembered address; a record in another repository is not read: the live
+   PROCESS is found in the product's own roles record (design part 4, sections 4, 5 and 11).
 4. **Successor registration.** ROOT records in the roles record the address of each standing session it starts or
    refreshes (design part 4, section 5).
 
@@ -287,6 +287,8 @@ of 20 November 2026 on Claude Code (model `claude-opus-5-5`, effort `medium`, a 
 - **The largest single text read in full: 60,000 bytes on Claude Code,** and 24,000 bytes on Codex until Codex is measured;
   20 percent below the largest clean read. It is set per harness, the one exception to the maximums applying on both
   harnesses (part 5, section 1; part 7, section 2).
+  Design part 2 is over the Codex figure; it stays whole while no product runs on Codex, and before one does, the Codex
+  figure is measured or part 2 is split.
 - **The largest set of texts read together: 175,000 bytes,** measured: read whole at every size up to 220,000 bytes, with a
   25 percent margin kept.
 - **A role's starting text: 8,192 bytes, and at most ten rules.** The limit is measured against the role's instructions
@@ -320,6 +322,9 @@ leaves a lot of room to continue work up to the 74% when compaction can occur." 
 2026.
 On the two findings: "Decision: as recommended" — 20 November 2026 (on the standing page,
 the two-findings item; option (a) for each finding).
+On design part 2 over the Codex figure: "Decision: 0" — 26 November 2026, about 00:00 UTC (in PROCESS #17's session; options:
+0 leave it whole while no product runs on Codex, recommended; A split it now and trim elsewhere to keep a job's reading set
+under 175,000).
 
 ### Subject: What a role reads
 
@@ -559,11 +564,11 @@ On a tranche's scope: "Decision: D, as recommended" — 24 November 2026 (in PRO
    software-development process, not the product, and leaves the balance of time, resources and quality to him.
 3. **Dropped.** A dropped tranche is carried out as the tranche's merge into main run the other way. ARCH runs `p4 drop
    --tranche <name>`, which puts back on the tranche branch main's version of every module code and test file the tranche
-   changed, and nothing else: requirements files, the module list, the process's named files, the decision records and the
+   changed, with that module's uses file, and nothing else: requirements files, the module list, the process's named files, the decision records and the
    lanes' folders stay. That pull request runs none of the tests, as none runs on the tranche's own pull request into main,
    and only when every file it changes is main's own. ARCH merges it, closes the tranche's open jobs unmerged, clears the
    round and waiting-work records, and writes "not yet met" on each requirement whose met mark came from the dropped
-   tranche. No notice is sent (design part 3, section 5; part 2, section 9; build text 1, section 5, step 2a; build text 1b,
+   tranche. No notice is sent (design part 3, section 5; part 2, section 9; build text 1, section 5, step 4; build text 1b,
    command 26; ARCH's starting text).
 
 Why: the walks already show the journeys complete; the earlier reading that no release could follow until a later tranche
@@ -596,7 +601,7 @@ branch in and goes on (design part 3, section 7).
 ## Earlier decisions not yet migrated
 
 The owner's design decisions made while Process4 was written are kept as his
-typed words in the process3 repository, under `process4/owner_words/` (design
-part 5, section 7). Migrating those into this record — one entry per subject, in
+typed words in the process3 repository, under `process4/owner_words/`.
+Migrating those into this record — one entry per subject, in
 his exact words — is done only on the owner's word, because the words quoted here
 must be his exact typed words and must never be fabricated or paraphrased.

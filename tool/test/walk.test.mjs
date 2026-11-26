@@ -9,14 +9,18 @@ import { mark } from '../lib/state.mjs';
 import { git } from '../lib/util.mjs';
 import { config, ctxFor, fakeGitHub, makeRepo } from './helpers.mjs';
 
-// orders uses pricing uses dates. orders names areas (a screen and a journey), the others name none.
+// orders uses pricing uses dates, as their uses files say. orders names areas (a screen and a journey), the others
+// name none.
+const usesFile = (module, providers) => ({ module, providers, uses: [], outside: [], orderFaults: [], copies: [] });
 function product(over = {}) {
   const root = makeRepo({
     'process.json': config({ walks_folder: 'lanes/ux/walks/' }),
     'process/modules/order.txt': 'dates\npricing\norders\n',
-    'process/modules/dates.json': { name: 'dates', files: ['src/dates/'], tests: ['test/dates/'], uses: [] },
-    'process/modules/pricing.json': { name: 'pricing', files: ['src/pricing/'], tests: ['test/pricing/'], uses: ['dates'] },
-    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'], uses: ['pricing'] },
+    'process/modules/dates.json': { name: 'dates', files: ['src/dates/'], tests: ['test/dates/'] },
+    'process/modules/pricing.json': { name: 'pricing', files: ['src/pricing/'], tests: ['test/pricing/'] },
+    'process/modules/orders.json': { name: 'orders', files: ['src/orders/'], tests: ['test/orders/'] },
+    'process/modules/pricing.uses.json': usesFile('pricing', ['dates']),
+    'process/modules/orders.uses.json': usesFile('orders', ['pricing']),
     'process/modules/dates.md': '- **R1** [met] a day is 1 to 31.\n',
     'process/modules/pricing.md': '- **R1** [met] a price is whole pence.\n',
     'process/modules/orders.md': '- **R1** [met] the basket shows the total. (screen: Checkout / basket)\n- **R2** [met] a buyer can check out. (journey: Buy a thing step 2)\n',
@@ -119,6 +123,20 @@ test('walk areas follows a changed module that names none up to its users', () =
   const out = t.out.join('\n');
   assert.match(out, /Checkout <- orders/);
   assert.match(out, /Buy a thing <- orders/);
+});
+
+test('walk areas reads a module\'s users from their uses files; a module with none yet, from its declared uses', () => {
+  // orders' uses file names dates, not pricing (its module-list entry still declares pricing).
+  const uses = (module, providers) => ({ module, providers, uses: providers.map((p) => ({ provider: p, item: 'x', where: [] })), outside: [], orderFaults: [], copies: [] });
+  const t = product({ 'process/modules/orders.uses.json': uses('orders', ['dates']) });
+  writeRound(t.ctx, t.root, { tranche: 't1', round: 3, modules: [{ module: 'pricing', state: 'open' }], walks: [] });
+  t.out.length = 0;
+  walkAreas(t.ctx);
+  assert.doesNotMatch(t.out.join('\n'), /orders/);
+  writeRound(t.ctx, t.root, { tranche: 't1', round: 4, modules: [{ module: 'dates', state: 'open' }], walks: [] });
+  t.out.length = 0;
+  walkAreas(t.ctx);
+  assert.match(t.out.join('\n'), /Checkout <- orders/);
 });
 
 test('walk areas adds a module a notice was sent to (waiting work)', () => {

@@ -8,5 +8,15 @@
   "before": [
     "setups/Z12-text-rules-slug-kind"
   ],
-  "note": "rooms makes each room's id with slugify; its tests expect ids of a-z, 0-9 and hyphens."
+  "note": "rooms makes each room's id with slugify; its tests expect ids of a-z, 0-9 and hyphens.",
+  "meaning": [
+    {
+      "item": "Slug",
+      "line": "a-z, 0-9 and single hyphens; a-z, 0-9 and single underscores"
+    },
+    {
+      "item": "slugify",
+      "line": "words joined with hyphens; words joined with underscores"
+    }
+  ]
 }

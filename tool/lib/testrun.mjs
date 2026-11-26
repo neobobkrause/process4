@@ -6,10 +6,12 @@
 import { appendFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { requiredCheck } from './config.mjs';
+import { loadConfig, requiredCheck } from './config.mjs';
+import { isUsesPath, usesPath } from './usesfile.mjs';
 import { block } from './github.mjs';
-import { jobBlockOf } from './round.mjs';
+import { JOB, jobBlockOf, jobRecordOf } from './round.mjs';
 import { pushPace } from './commands.mjs';
+import { writeUsesFiles } from './usescmd.mjs';
 import { DROP, decideScope, runModules } from './scope.mjs';
 import { TEST_MARK, noticeSeq, recordNeed, recordStands, testRecordOf } from './testrecord.mjs';
 import { fail, git } from './util.mjs';
@@ -17,10 +19,28 @@ import { fail, git } from './util.mjs';
 const short = (sha) => String(sha).slice(0, 10);
 const utc = (ms) => new Date(ms).toISOString().replace(/:\d\d(\.\d+)?Z$/, 'Z');
 
-/** A pull request's job block and test record, from one read of its comments. */
+/**
+ * Whether two commits differ only in a module's uses file (design part 2, section 6: a test record stands for a later
+ * head that differs from its commit only there): the job's module, named by its branch; for a pull request that is not
+ * a job's, only in uses files. False where either commit cannot be read here.
+ */
+export function usesOnly(root, branch) {
+  const module = branch?.match(JOB)?.[1] ?? null;
+  return (from, to) => {
+    if (!/^[0-9a-f]{40}$/.test(from || '') || !/^[0-9a-f]{40}$/.test(to || '')) return false;
+    const d = git(['diff', '--name-only', '--no-renames', from, to], { cwd: root, allowFail: true });
+    if (d.code !== 0) return false;
+    const files = d.stdout.split('\n').filter(Boolean);
+    const cfg = loadConfig(root, to) ?? loadConfig(root);
+    if (!cfg || !files.length) return false;
+    return files.every((f) => (module ? f === usesPath(cfg, module) : isUsesPath(cfg, f)));
+  };
+}
+
+/** A pull request's job block (ARCH's), the job's record (the job's) and its test record, from one read of its comments. */
 export function recordsOf(ctx, n) {
   const comments = ctx.gh.comments(ctx.slug, n);
-  return { jobBlock: jobBlockOf(comments)?.data || null, record: testRecordOf(comments) };
+  return { jobBlock: jobBlockOf(comments)?.data || null, jobRecord: jobRecordOf(comments)?.data || null, record: testRecordOf(comments) };
 }
 
 /**
@@ -97,6 +117,8 @@ export function bringBaseIn(ctx, pr) {
     git(['merge', '--abort'], { cwd, allowFail: true });
     fail(`${branch} does not merge cleanly into ${baseRef}; merge ${baseRef} into the branch first, resolve, push, then run test`);
   }
+  // pushed as push pushes it, uses file and all (build text 1b, command 27)
+  writeUsesFiles(ctx, branch, { job: branch.match(JOB)?.[1] ?? null, base: baseTip });
   pushPace(ctx);
   git(['push', '-q', 'origin', `HEAD:refs/heads/${branch}`], { cwd });
   const head = git(['rev-parse', 'HEAD'], { cwd });
@@ -132,7 +154,7 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
   const prev = testRecordOf(ctx.gh.comments(ctx.slug, n))?.data;
   const data = {
     commit: head, notice_seq: seq, scope: scope.scope, why: scope.why,
-    files: scope.modules.flatMap((m) => m.files), passed: sum('passed'), failed,
+    modules: scope.modules.map((m) => m.name), files: scope.modules.flatMap((m) => m.files), passed: sum('passed'), failed,
     result: ok ? 'pass' : 'fail', fails_total: (Number(prev?.fails_total) || 0) + (ok ? 0 : 1),
     written: utc(ctx.nowMs()),
   };
@@ -154,16 +176,18 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
  * run verdict: on GitHub's machines, the required run's one job. It runs no test: it passes where the pull request
  * needs no test record (recordNeed), or where the record stands for the head; it fails otherwise. A draft cannot
  * merge, so it is judged without its notices: a draft whose scope is nothing passes at once (build text 1, section 5,
- * step 2). Writes the step summary.
+ * step 2). It reads the three comments of a job's pull request, each with its one writer: the job block (ARCH's), the
+ * job's record (the job's: which notices need no change, and a told job's `nothing_to_change`) and the test record
+ * (build text 1, section 5; build text 5, section 5). Writes the step summary.
  */
-export function verdict(root, { base, baseRef, branch, draft, head, jobBlock, record, log = console.log, summary = process.env.GITHUB_STEP_SUMMARY }) {
+export function verdict(root, { base, baseRef, branch, draft, head, jobBlock, jobRecord = null, record, log = console.log, summary = process.env.GITHUB_STEP_SUMMARY }) {
   const s = decideScope(root, { base, baseRef, branch, draft, jobBlock, related: false });
   const lines = [`## module-tests`, '', `Scope: **${s.scope}**, because ${s.why}. Config read from ${s.config_from}.`, ''];
   let ok;
   let why;
-  if (!recordNeed(s, draft ? null : jobBlock).needed) { ok = true; why = 'nothing needs a test record: passed at once'; }
+  if (!recordNeed(s, draft ? null : jobBlock, draft ? null : jobRecord).needed) { ok = true; why = 'nothing needs a test record: passed at once'; }
   else {
-    const st = recordStands(record, head, jobBlock);
+    const st = recordStands(record, head, jobBlock, { usesOnly: usesOnly(root, branch), jobRecord });
     ok = st.ok;
     why = st.ok || record ? st.why : `no pass recorded for ${head}; run p4 test`;
     if (record) lines.push(`Test record: ${record.result} at ${short(record.commit)}, ${record.passed} passed, ${record.failed} failed, scope ${record.scope}, written ${record.written}.`, '');
