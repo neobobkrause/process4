@@ -213,10 +213,15 @@ so to him on the same thread).
 2. **What changed** is each item's means, worked out before and after the merge: its stated types, expanded through every
    type they name; its named types and read-only arguments; and, from its code over a closure that follows calls and data
    within the module, the errors that can leave it, plain data or a class instance, `this`, the arguments it writes into,
-   the channels and settings it reads or writes, and whether it answers at once or later. A type error in the item counts
-   as a change. So does an item whose meaning ARCH names in the work it places, or the job declares in its pull request,
-   and a changed marked bound line. Whether an item still gives the same answers is not asked; an accidental change of
-   meaning is a bug in the provider, caught first by its own tests.
+   the channels and settings it reads or writes, and whether it answers at once or later. Only a change of its stated
+   types or bounds tells: what it accepts and hands back, expanded, with its members, plain data or a class instance and
+   `this`; a started program's start arguments and output streams (its interface); a changed marked bound line; and a new
+   type error. The errors that can leave it, a value within its stated type, its other channels and settings, the
+   arguments it writes into and what its tests need are listed but tell no one, nor does one taken in from a provider.
+   So does an item whose meaning ARCH names in the work it places, or the job declares in its pull request: ARCH, the
+   lanes behind its requirements, and the job are how a change no type or bound shows reaches its users. Whether an item
+   still gives the same answers is not asked; an accidental change of meaning is a bug in the provider, caught first by
+   its own tests.
 3. **Describing is not changing; accepting more is.** An item's first means, at its conversion, tells no one; nor does a
    new item. This carries decision 2 of 25 November (an unknown kind becoming known tells no one) and its union case
    (decision 1B). Any change to what an item accepts, accepting more included, changes its domain and tells its users.
@@ -294,6 +299,14 @@ changes are still properly factored into the decision of who to notify and who n
 2026, about 23:10 UTC.
 On a version first written, and a conversion's notices, with the record in parts below: "Decision: 1-A, 2-B1, 6B" — 26
 November 2026 (in PROCESS #18's session).
+On what tells (in PROCESS #19's session, after PROCESS #19 explained that the tool counts errors, values and side
+effects as changes): "Decision: only a change of an item's stated types or bounds tells; new errors, other values within
+the range, side effects and test prerequisites do not." — 26 November 2026. Then, on the measured build (changed items
+486 to 210 and told without need 309 to 254 on the converted proof; 14 more misses, 8 of an error class, 6 of a started
+program, these last from a brief that dropped a program's interface), option A, a started program's start arguments and
+output tell and four readings stand as built (a class instance and `this` tell; a message's stated channel tells; a
+constant with no stated type tells; changed code under a standing type error does not): "Decision: A" — 26 November
+2026; with the owner's note that ARCH and the lanes, not the tool alone, give jobs the perspective to declare what tells.
 On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
 can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
 conversion's merge tells no one." — 26 November 2026.
