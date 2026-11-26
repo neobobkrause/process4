@@ -73,3 +73,14 @@ clear; `Proxy` uses remain, now waiting on the module. Expect nearly all to clea
 product whose program loads `@types/node` (a package's `/// <reference types="node" />`) names Node's modules `fs.x`,
 not `node:fs.x`; workerd has no classification yet, so each workerd use stays a place; a product declaration file in
 no module now gives no facility at all (design part 2 §1 gives every file a module).
+
+## Options (put to the owner 26 Nov ~07:55Z)
+
+- **0. No change.** No package can be put on civicsmith's facility list; ~15,677 places outside the standard that no job can
+  clear; every module stays "not kept to the standard" and is told of every change of every earlier module it may refer to.
+- **A. Merge the correction (recommended).** Branch `work/facility-names` (59fa682): an implementation error against build
+  text 2c and design part 2 §7, no text change. Tool tests 273/273. Unknown until run on civicsmith: how many places clear
+  (expected nearly all but `Proxy`, which stays a place by design). Left as they are, each still a place or a name to settle
+  later: a package re-exported under another name, Node types pulled in by a package, workerd (not yet classified), a
+  product `.d.ts` that belongs to no module.
+Adds no test, gate, review or stop.
