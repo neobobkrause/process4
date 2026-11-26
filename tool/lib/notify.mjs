@@ -207,7 +207,8 @@ export function notifyCmd(ctx, n) {
     tranche = treeA.cfg.tranche_branch;
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
     // The items whose meaning ARCH named in the work it placed (the job block's `meaning`), and the pull request's
-    // declaration (its `process4-meaning` comment); and whether it is a conversion (its first means tell no one).
+    // declaration (its `process4-meaning` comment); and whether it is a conversion (its describing tells no one, nor
+    // does it tell anyone by point 3).
     const comments = ctx.gh.comments(ctx.slug, n);
     const jobModule = pr.head?.ref?.match(JOB)?.[1] ?? null;
     const job = jobBlockOf(comments)?.data ?? null;

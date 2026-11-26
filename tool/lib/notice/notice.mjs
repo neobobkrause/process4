@@ -28,8 +28,9 @@
 // uses file yet that imports it, directly or through a module that re-exports it, names a path into it, or whose files
 // the tool cannot follow (read as text: usesfile.mjs, reachedModules and reExportsReached). A module with no uses file
 // yet is the one case where a told module's own files are read: as text, for what they import, never by the reader.
-// Each is told once, with the reasons of build text 5, section 5. A package's or the host's version change tells the
-// modules whose uses files name it (versionNotices).
+// At the provider's conversion, neither a place outside the standard nor a module with no uses file is told for any
+// change (hearsAny). Each is told once, with the reasons of build text 5, section 5. A package's or the host's version
+// change tells the modules whose uses files name it (versionNotices).
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadTree } from './model.mjs';
@@ -619,6 +620,10 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
   const itemsOf = (m) => byModule.get(m).map((c) => c.item);
   const anyChange = (m) => (itemsOf(m).length ? `${itemsOf(m).join(', ')} changed` : `its files changed, though no item's means did`);
   const hitsOf = new Map();
+  // A conversion's merge tells no place outside the standard and no module with no uses file of any change to the
+  // provider's files (point 3): its statement that it changes no behaviour stands there as a `same` record stands for an
+  // item. Points 1 and 2 still tell; so do mocks and order faults.
+  const hearsAny = filesChanged && !conversion;
   // A kind a module wrote as a copy of an earlier module's kind (S4, a place listing what it `relabels`): a module that
   // reads the copy reads the original through it, and hears of the original's changes (build text 5, section 6, "by
   // any route"), until the copy is written as the original's kind.
@@ -652,7 +657,7 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
         ...viaReExport.flatMap((r) => (r.get(m) ?? []).map((x) => `imports through ${x}, which re-exports`))])];
       const cannot = reached.flatMap((r) => r.cannot);
       const noUsesFile = `${user} has no uses file yet: its whole tests run`;
-      for (const m of before.filter((x) => (x === provider ? filesChanged : true) && (how(x).length || cannot.length))) {
+      for (const m of before.filter((x) => (x === provider ? hearsAny : true) && (how(x).length || cannot.length))) {
         const why = how(m).length ? `${user} has no uses file yet and ${how(m).join(' and ')} ${m}` : `${user} has no uses file yet, and the tool cannot tell which modules it reaches (${cannot[0].why} at ${cannot[0].at})`;
         reasons.push({ module: m, items: itemsOf(m), found: 'any change', changes: [], why: `${anyChange(m)}; ${why}`, noUsesFile });
       }
@@ -727,7 +732,7 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
         // A place outside the standard hears of any change to the files of a module it may refer to, until a job
         // converts it; where it cannot say which (`*`, or no `mayRefer`), of every earlier module (design part 2, section
         // 7, rule 2 for the tool). One whose `mayRefer` is empty refers to no other module.
-        if (m === provider ? filesChanged : true) {
+        if (m === provider ? hearsAny : true) {
           for (const o of outside) {
             const may = Array.isArray(o.mayRefer) ? o.mayRefer.map(String) : ['*'];
             if (!may.includes('*') && !may.includes(m)) continue;

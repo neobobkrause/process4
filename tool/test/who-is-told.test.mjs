@@ -223,6 +223,33 @@ test('a module with no uses file is told when it imports a provider, reads its f
   assert.match(told.open[0], /open has no uses file yet, and the tool cannot tell which modules it reaches \(readFileSync by a path the tool cannot read at src\/open\/index\.mjs:2\)/);
 });
 
+test('a conversion\'s merge tells no module by point 3; an ordinary job\'s merge does; a conversion whose means changed tells by point 1', () => {
+  const LIMIT = (v) => `/** @type {number} */\nexport const LIMIT = ${v};\n`;
+  // loose holds a place outside the standard (an untyped call of dates); plain has no uses file yet and imports dates
+  const base = withUsesFiles(files({
+    'process/modules/order.txt': 'dates\norders\nreport\nloose\nplain\n',
+    'process/modules/loose.json': entry('loose'), 'process/modules/plain.json': entry('plain'),
+    'src/dates/index.mjs': DATES() + LIMIT(5),
+    'src/orders/index.mjs': `${ORDERS}import { LIMIT } from '../dates/index.mjs';\n/** @returns {number} */\nexport const most = () => LIMIT;\n`,
+    'src/loose/index.mjs': "import { parseDay } from '../dates/index.mjs';\nexport function l(x) { return parseDay(x); }\n",
+    'src/plain/index.mjs': "import { formatDay } from '../dates/index.mjs';\nexport const p = () => formatDay(1);\n",
+  }));
+  const f = Object.fromEntries(Object.entries(base).filter(([k]) => !k.endsWith('plain.uses.json')));
+  assert.ok(f['process/modules/loose.uses.json'].outside.length, JSON.stringify(f['process/modules/loose.uses.json']));
+  // the insides only: a helper no item reaches
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': `${DATES()}${LIMIT(5)}function helper() { return 1; }\nhelper();\n` });
+  const ordinary = notice(b, a, 'dates');
+  assert.deepEqual(ordinary.told.map((t) => [t.user, [...new Set(t.reasons.map((x) => (x.outside ? 'outside' : x.noUsesFile ? 'no uses file' : x.item)))]]),
+    [['loose', ['outside']], ['plain', ['no uses file']]]);
+  const conv = notice(b, a, 'dates', { conversion: true });
+  assert.deepEqual(conv.told, []);
+  assert.match(conv.summary, /nobody is told/);
+  // a conversion that changes a constant's value: its users told by point 1, still no one by point 3
+  const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + LIMIT(6) });
+  const conv2 = notice(b2, a2, 'dates', { conversion: true });
+  assert.deepEqual(conv2.told.map((t) => [t.user, t.reasons.map((x) => x.item ?? x.found)]), [['orders', ['LIMIT']]]);
+});
+
 // A merged pull request whose merge commit is real.
 function mergedPR(root, gh, branch, files, n = 7) {
   git(['checkout', '-q', '-b', branch], { cwd: root });

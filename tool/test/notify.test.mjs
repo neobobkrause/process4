@@ -437,8 +437,9 @@ test('a module\'s conversion (its job block\'s kind): only describing tells no o
   gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
-  // orders hears of it only for its own place outside the standard (its call of pad, which stated nothing): any change
-  assert.match(out.join('\n'), /dates's conversion: no item's means changed, describing aside; 1 module\(s\) that hear of any change told\./);
+  // nor does orders hear of it for its own place outside the standard (its call of pad, which stated nothing): a
+  // conversion tells no one by point 3
+  assert.match(out.join('\n'), /dates's conversion: no item's means changed, describing aside; nobody is told\./);
   assert.doesNotMatch(out.join('\n'), /uses dates pad/);
   // the same conversion that also changes a bound line tells that item's users
   const root2 = makeRepo(files);
