@@ -1,6 +1,6 @@
 # PROCESS handover
 
-Written 26 Nov 2026 ~09:35Z by **PROCESS #18** (`session_018BhcegQp6kkojsnYHjDzsr`), fill ~44 percent. If you are its
+Written 26 Nov 2026 ~10:15Z by **PROCESS #18** (`session_018BhcegQp6kkojsnYHjDzsr`) at its refresh point (fill ~48 percent, at a natural pause: no worker running, everything pushed). If you are its
 successor, you are **PROCESS #19**: read the generation in `handover-process` (18), name yourself `PROCESS #19` with
 set-session-title, record generation 19 and your session there (keep the registry), and message each ROOT in the registry
 your address. Your fill (`get_session`, `context_usage`) is real after your first turn ends. Never `git add -A`; put
@@ -9,26 +9,30 @@ your address. Your fill (`get_session`, `context_usage`) is real after your firs
 **Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, `build/README.md`, and this handover.
 
-## START HERE: civicsmith's first pass of 8 conversions is under way; tool faults it found wait for the owner
+## START HERE: a group of six tool corrections waits for the owner; more faults to research
 
-civicsmith moved to 1216397 (who is told; 1-A, 2-B1, 6B; the depth rule) and its first pass of 8 conversions began.
-Its ARCH #28 reported faults, all in `process/research/facility-names-26nov.md`:
-1. Package facilities named by the machine's path; the product's own members and two host members counted as the host's
-   (~15,677 places nothing can clear). Correction built by a worker on `work/facility-names` (59fa682; tool 273/273); an
-   implementation error against build text 2c, no text change. Put to the owner as options 0 / A (A recommended), on his
-   page. **Waiting for his word.**
-2. Three more from job setup-words #11 (Buffer/maxBuffer missing from the host description; S12 counting RegExp `.test`;
-   an import with `?again` not resolved). A worker is researching and prototyping them on top of 59fa682 (branch
-   `faults-worker` in its worktree); fold its result into the same group and put it to the owner with item 1.
-3. `documents` left with no code: design part 2 §1 already makes it a list error; PROCESS told coordinator #10; ARCH
-   carried it out. Put to the owner as 0 (recommended) / B on his page; no word yet.
-On his word: merge the group into main (p4 merge), record his words in `changes` and the decision record (subject "Who a
-change tells" or a new one), and tell civicsmith's coordinator that the latest version holds the corrections; civicsmith
-moves again only on his instruction at its coordinator.
+civicsmith moved to 1216397 and its first pass of 8 conversions is running. Its jobs keep meeting tool faults; all are in
+`process/research/facility-names-26nov.md` (read it whole first).
+1. **Waiting for his word (A recommended, on his page):** six corrections on `work/facility-names` (59fa682, 891a917,
+   aa42774; tool 278/278): package facilities named `pkg:Export.member`; the product's own members no facility; a member of
+   an unnamed host type named by its declaration (Hash update/digest); Buffer and spawn's maxBuffer described; RegExp
+   `.test` not a test (S12); a `?again` import resolved; a renamed destructuring key not R1; `unknown` read by its kind at
+   the use (instanceof, and a module's own guard placed once at the call). One judgment to keep visible: instanceof a host
+   class now clears ordinary data too, where 02c names it for errors. On "Decision: A": open a pull request from
+   `work/facility-names` into main, merge, record his words in `changes` and the record ("Who a change tells" or a new
+   subject on the tool's reading under the standard), and tell civicsmith's coordinator the version; it moves on his
+   instruction there.
+2. **To research next (from civil-time #3, 10:08Z):** process.versions, node:test's mock.property, Temporal and mock.timers
+   missing from the host description (with Buffer, the gaps are now measured: put C — describe Node from its published
+   types pinned to the product's Node version — to him with its cost); R19 counting a same-named binding as an assignment
+   (looks a tool fault); no form in the standard for a test that replaces a host global (a clock that throws): a design
+   question for him. Coordinator #10 told jobs to work within them and report.
+3. `documents` (no code): told ARCH design part 2 §1 applies; ARCH removed it. On his page as 0 (recommended) / B.
+4. Also on his page, older: C for ROOT's depth (fewer takeovers on a version move); idle compaction's option B; two tidy
+   questions; "Instruction: study C" for the host description.
 
-After the first pass stops: Part D step 8, the owner's review per module (time and cost; places converted; restated facts;
-what waits on a provider; the uses file; whether it serves the provider/user requirement), with PROCESS. Then his word:
-go on 8 at a time, change the method, or abandon. The refactoring restarts after the conversion (his words of 25 Nov).
+After the first pass stops: Part D step 8, his review per module with PROCESS; then his word on going on. The refactoring
+restarts after the conversion.
 
 ## Done in PROCESS #18 (all merged; his words in the record and `changes`)
 
