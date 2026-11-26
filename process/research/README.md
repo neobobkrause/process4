@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 26 Nov 2026
+- `first-pass-figures-26nov.md` — civicsmith ARCH #28's figures for the first 8 conversions (about $150; 14,318 places to 728, 95%; causes; no copies; uses files unchecked); PROCESS's estimate for 204 modules and open questions.
 - `conversion-tells-no-one-26nov.md` — the owner's "Decision: a conversion's merge tells no one." (26 Nov): why (conversions read as changing items told every unconverted importer), the risk, what was built; the five owed civicsmith notices need not be sent.
 - `notify-size-26nov.md` — `notify` cannot send five of civicsmith's conversion notices; researched (worker): a type error gone read as a change (all 150 importers told on a civicsmith-shaped product), reasons carrying whole types (120 MB to 153 KB), memory bounded; merged on "Decision: A".
 - `rules-r15-r19-host-26nov.md` — R15 read by spelling (fault, corrected), R19 counting `!x` as an assignment (fault, corrected), Node features added by hand, option C sized (2.6 MB of @types/node, a second dependency), the clock test's cost (told of every earlier module); merged on "Decision: A".
