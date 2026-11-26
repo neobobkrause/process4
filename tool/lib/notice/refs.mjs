@@ -594,6 +594,9 @@ export function readReferences(tree, moduleId, opts = {}) {
         const fn = d.parent;
         // the unknown parameter of the module's own exported validator
         if (isExported(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id) return true;
+        // the parameter of the module's own guard (`v is T`, R3): its origin is judged at each call
+        const sig = ts.isFunctionLike(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id ? checker.getSignatureFromDeclaration(fn) : undefined;
+        if (sig && checker.getTypePredicateOfSignature(sig)) return true;
         // an element handed to a callback of a list's own method (rows.map((r) => ...))
         const call = fn.parent;
         if (call && ts.isCallExpression(call) && call.arguments.includes(fn) && ts.isPropertyAccessExpression(call.expression) && checker.isArrayType(typeAt(call.expression.expression) ?? { flags: 0 })) return ownChannel(call.expression.expression, depth + 1);
@@ -1005,22 +1008,33 @@ export function readReferences(tree, moduleId, opts = {}) {
 
       // ---- R1: no value of kind any ----
       if ((ts.isIdentifier(n) && !inType(n) && !isDeclNameOrImport(n)) || ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n) || ts.isCallExpression(n) || ts.isNewExpression(n)) {
-        if (!(ts.isIdentifier(n) && n.parent && ts.isPropertyAccessExpression(n.parent) && n.parent.name === n) && !inErrorAssertion(n.getStart(sf))) {
+        // a member's name (`x.name`) or a renamed key taken apart (`{ prefix: p }`) is no value; the value is the whole or the binding
+        const keyName = ts.isIdentifier(n) && n.parent && ((ts.isPropertyAccessExpression(n.parent) && n.parent.name === n) || (ts.isBindingElement(n.parent) && n.parent.propertyName === n));
+        if (!keyName && !inErrorAssertion(n.getStart(sf))) {
           const t = typeAt(n);
           if (t && hasAny(t)) place('R1', n, { what: `a value of kind ${checker.typeToString(t).slice(0, 80)}` });
         }
       }
       // ---- R2: structure given to a value of kind unknown that is not from the module's own channel ----
       if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression)) {
-        const s = checker.getSymbolAtLocation(n.expression);
-        const declared = s && s.valueDeclaration ? checker.getTypeOfSymbol(s) : undefined;
-        // narrowed by instanceof to another module's class (S4 iv), it is that module's value, found by its kind
-        const theirs = kindDecls(typeAt(n.expression)).length > 0;
-        if (declared && hasUnknown(declared) && !theirs && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
+        // the kind at the read, as narrowed there: by instanceof (S4) to a class, or by another module's exported check, it is
+        // that class's or that module's value; narrowed by hand (`in`, a guard of this module) the place is the narrowing (below)
+        const t = typeAt(n.expression);
+        if (t && hasUnknown(t) && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
       }
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InKeyword) {
         const t = typeAt(n.right);
         if (t && ts.isIdentifier(n.right) && hasUnknown(checker.getTypeOfSymbol(checker.getSymbolAtLocation(n.right) ?? { flags: 0 }) ?? t) && !ownChannel(n.right)) place('R2', n, { what: 'narrows a value of kind unknown that is not from this module\'s own channel', waitsOn: 'the owner of the data: its reader' });
+      }
+      // a hand-written guard of this module (`v is T`, R3) gives its argument a shape: a place where that is not its own channel
+      if (ts.isCallExpression(n)) {
+        const sig = checker.getResolvedSignature(n);
+        const pred = sig && checker.getTypePredicateOfSignature(sig);
+        const arg = pred && typeof pred.parameterIndex === 'number' ? n.arguments[pred.parameterIndex] : undefined;
+        const decl = sig?.getDeclaration();
+        const own = decl && !decl.getSourceFile().isDeclarationFile && tree.moduleOfFile(decl.getSourceFile().fileName) === mod.id;
+        const t = arg && typeAt(arg);
+        if (own && t && hasUnknown(t) && !ownChannel(arg)) place('R2', n, { what: `a guard of this module gives a value of kind unknown that is not from this module's own channel the kind ${checker.typeToString(pred.type).slice(0, 80)}`, waitsOn: 'the owner of the data: its reader' });
       }
 
       // ---- R19: narrowing only of a const or a parameter never assigned ----

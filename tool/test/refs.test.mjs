@@ -1220,3 +1220,41 @@ test('loads afresh', async () => {
   write(root, { 'test/u/u.test.mjs': "import { test } from 'node:test';\ntest('gone', async () => { await import('../../src/u/gone.mjs?again'); });\n" });
   assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'S1').map((o) => o.what), ['an import the tool cannot resolve: ../../src/u/gone.mjs?again']);
 });
+
+// ---- two more faults from a product's conversion (process/research/facility-names-26nov.md, b and c) ----
+
+test('R1: a renamed key taken apart (`{ prefix: p }`) is the member\'s kind, not any', () => {
+  const root = caseProduct({ 'src/u/index.mjs': `const ID_TABLE = [{ prefix: 'a', n: 1 }, { prefix: 'b', n: 2 }];
+/** @returns {string} */
+export function prefixes() {
+  let s = '';
+  for (const { prefix: p, n: count } of ID_TABLE) s += p + String(count);
+  const { prefix: first } = ID_TABLE[0] ?? { prefix: '' };
+  return s + first;
+}
+` });
+  assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'R1').map((o) => `${o.line} ${o.what}`), []);
+});
+
+test('R2: a value of kind unknown narrowed by instanceof is read by its narrowed kind; a module\'s own guard on another\'s data is the place, once, at the guard', () => {
+  const root = product(`import { text, rows } from '../q/index.mjs';
+class Mine { constructor() { this.name = 'm'; } }
+/** @typedef {{ name: string }} Named */
+/** @param {unknown} v @returns {v is Named} */
+function isNamed(v) { return typeof v === 'object' && v !== null && 'name' in v && typeof v.name === 'string'; }
+/** @returns {string} */
+export function f() {
+  try { rows(); } catch (e) { if (e instanceof Error) return e.message; }
+  /** @type {unknown} */
+  const m = rows().length ? new Mine() : null;
+  if (m instanceof Mine) return m.name;
+  const own = JSON.parse('{"name":"x"}');
+  if (isNamed(own)) return own.name;
+  const theirs = JSON.parse(text());
+  if (isNamed(theirs)) return theirs.name;
+  return '';
+}
+`);
+  const r2 = read(root, 'u').outside.filter((o) => o.rule === 'R2').map((o) => `${o.line} ${o.what}`);
+  assert.deepEqual(r2, ['15 a guard of this module gives a value of kind unknown that is not from this module\'s own channel the kind Named']);
+});
