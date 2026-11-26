@@ -174,3 +174,43 @@ ids-types.test.mjs).
 c. A value narrowed by `instanceof` (S4's prescribed form) or by the module's own guard is still reported R2 by its declared
 kind unknown (acceptance.test, invariants.test, sha256.mjs's own snapshot, which the module itself writes)."
 (Its fault (a), `x.test(...)` read as a test case, is corrected on this branch.)
+
+## Research on b and c (worker)
+
+Branch `narrowing-worker`, on `work/facility-names` (59fa682, 891a917). TypeScript 5.6.3. Not run on civicsmith.
+
+**(b) `{ prefix: p }` as kind any.** refs.mjs:1007-1008 (was) made every identifier that is not a declaration's name an R1
+candidate. In a binding element `prefix: p` the name is `p`; `prefix` is the `propertyName`, a key, not a value, and
+the checker gives a key in a pattern no type of its own (`getTypeAtLocation` returns its error type, printed `any`). So
+each renamed key was "a value of kind any". An implementation error: R1 (02c:29) is about expressions; the key is none,
+and the binding `p` (correctly typed) is still read. Fix: refs.mjs:1011-1013, a key of a binding element is skipped like
+a member's name in `x.name`. Test: refs.test.mjs:1226 (`for…of` and a plain `const` pattern; failed with two R1 before).
+
+**(c) narrowed `unknown` still R2.** refs.mjs:1015-1019 (was) took the kind of the read's holder from its symbol
+(`getTypeOfSymbol`, the declared `unknown`) and excused only a narrowing to another module's class (`kindDecls` of the
+narrowed kind). `e instanceof Error` (S4's form for a host error) or `m instanceof Mine` (own class) left `e.message`,
+`m.name` an R2. An implementation error against S4 (02c:16) and R2 (02c:30): after `instanceof` the value is the class's
+instance, its shape the class's, not one the module gives it. Fix: refs.mjs:1020-1024 reads the kind at the use
+(`getTypeAtLocation`, the narrowed kind); the hand narrowings keep their place at the narrowing (`in`, 1025-1028, as
+before; a guard, below).
+
+**The module's own guard.** 02c does not say "only instanceof": R3 (02c:31) allows a hand-written guard narrowing to
+the module's own type from a value with no product type; R2 allows giving a shape only where the value is from the
+module's own channel; the conversion table (02c:68) names "a cast or hand check on another module's data" as converted
+to that module's reader. So a guard of the module counts as narrowing, and is a place only when its argument is not from
+the module's own channel. The tool had placed instead each read after the guard (and the `in` checks inside the guard
+body, whose parameter had no origin). Fix: refs.mjs:1029-1038, a call of a guard of this module (`v is T`) whose argument
+is `unknown` and not its own channel is one R2 place at the call; refs.mjs:597-599, a guard's own parameter is judged at
+its calls (as the exported validator's already was). A guard on the module's own channel (`JSON.parse` of its own text or
+file) is no place; on another module's data it stays R2, once. An implementation error; no text change. Test:
+refs.test.mjs:1239 (instanceof Error on a caught value, instanceof an own class, an own guard on own and on foreign data;
+five R2 before, one after).
+
+**Tests.** `npm test`: 278 pass, 0 fail (276 before, two new, each failing before its fix).
+
+**Unknown.** sha256.mjs's snapshot "which the module itself writes": whether the tool's `ownChannel` sees that file as
+the module's own (a path it can evaluate from `import.meta.url`) is not seen; if not, its guard call stays one R2 there.
+`instanceof` a host class on another module's data (not an error) now reads by the class too; 02c names `instanceof` only
+for caught errors, so this follows S4 by extension. A sentence, if PROCESS wants it written (02c, R2): "A value narrowed by
+`instanceof` has the class's shape; a module's own guard gives a shape and is placed where its argument is not from the
+module's own channel."
