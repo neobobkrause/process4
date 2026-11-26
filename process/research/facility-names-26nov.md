@@ -166,3 +166,11 @@ as unclassified facilities (R14) at shape.test.mjs:105."
 
 Both are corrected on this branch (891a917: RegExp `.test` no test; 59fa682: a member of an unnamed host type named by its
 declaration). Coordinator #10 told so as information.
+
+## Two more (civicsmith job record-grammar #4, PR 1689 merged, via ARCH #28 and coordinator #10, 09:55Z), unchanged
+
+"b. A renamed destructuring key (`for (const { prefix: p } of ID_TABLE)`) is reported as a value of kind any (2 R1,
+ids-types.test.mjs).
+c. A value narrowed by `instanceof` (S4's prescribed form) or by the module's own guard is still reported R2 by its declared
+kind unknown (acceptance.test, invariants.test, sha256.mjs's own snapshot, which the module itself writes)."
+(Its fault (a), `x.test(...)` read as a test case, is corrected on this branch.)
