@@ -258,8 +258,11 @@ export function compareItem(b, a, { conversion = false } = {}) {
   // decides.
   if (a.kind === 'value' && b.kind === 'value' && b.code !== a.code && same(bh ?? null, a.handsBack ?? null)) differ('value changed', b.value, a.value);
   // A type error in the item's code counts as a change: a new one, or, while it has one, any change to its code (the
-  // stated kinds then do not bind the code).
-  if (a.typeErrors?.length && (!same(b.typeErrors ?? [], a.typeErrors) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
+  // stated kinds then do not bind the code) (build text 2b, section 6). An error gone is none: stating a type where the
+  // checker read any value takes away its "implicitly has an 'any' type", and the errors the code had before and still
+  // has, its code the same, are no new error (civicsmith, 26 Nov 2026: such a conversion told every module importing it).
+  const had = new Set(b.typeErrors ?? []);
+  if (a.typeErrors?.length && (a.typeErrors.some((e) => !had.has(e)) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
   return parts.length ? { parts, why: whys.join('; ') } : null;
 }
 
