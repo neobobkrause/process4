@@ -113,3 +113,19 @@ tool fault, corrected, removes leftover places; the rest are the job's.
 - **J. Own data read as own.** `ownChannel` also accepts the module's own data text (imported or read from its own
   folder), its own generated files, and the output of a program it starts itself. A caller-named folder stays a place
   (R15). Small; build text 2c's R2 already says it ("read from the module's own channel"). Recommended with A, G1, G2, H.
+
+## A fifth report: more Node features missing (signatures #3, PR 1713, via ARCH #32, ~23:01Z)
+
+Its words: "it has no `atob`/`btoa`, no `crypto.subtle`, no node:crypto `createPrivateKey`, `createPublicKey`, `sign`,
+`webcrypto` or `KeyObject`, no `Buffer#readUInt32BE`, and no spawnSync's `output`. Plain TypeScript 5.6.3 with Node's
+types accepts that code. The R1/S4/R4 places that remain in sshsig.mjs, sign-sshsig.mjs and the tests come from those
+gaps." And: "`assert.ok(Array.isArray(x))` narrows x to `… & any[]` for the rest of the test (R1); ... A loop label
+named like a variable (`outer:` beside `const outer`) also reads as any."
+
+Bearing: H covers the telling: a note that stands only on a host gap is not kept, whatever its rule (R4 places
+already refer to no module, `refs.mjs:1708`). The gaps themselves stay places in the printout the job reads; the
+lasting cure is option C of `rules-r15-r19-host-26nov.md` (Node from its published types), still open with the owner.
+`Array.isArray` narrowing to `any[]` is TypeScript's own typing: a real R1, the job's to write differently. The loop
+label read as a value is a reader fault, folded into H (a label is never a value).
+Figures for the owner's account: runtime-limits 683 -> 18 places, bundler 1,316 -> 259, court-citations 799 -> 128,
+signatures 578 -> 121 (PRs 1712-1715, merged).
