@@ -470,3 +470,21 @@ the block cut (recommended); C only drop old `uses` and group entries. Researche
 `process/research/waiting-work-record-size-25nov.md`.
 
 **The owner's words.** "Decision: 1-A, 2-B1, 6B" — 26 November 2026 (in PROCESS #18's session; 6B is this subject).
+
+### Subject: The tool's reading of a product under the standard
+
+**The rule as it now stands.** The tool reads a product's facilities and kinds as build text 2c and design part 2, section
+7 already say: a package's facility is named `package:Export.member`, the same on every machine; the product's own members
+are no facility; a member of an unnamed host type is named by the declaration it comes from; the host description covers
+Buffer and spawn's `maxBuffer`; a RegExp's `.test(...)` is not a test case (S12); an import with a query (`?again`)
+resolves to its file; a renamed key taken apart is not a value of kind any (R1); a value of kind `unknown` is read by its
+kind at the use, narrowed by `instanceof` or by the module's own guard, the guard placed once at its call (R2). One
+judgment in it: `instanceof` a host class clears ordinary data too, where build text 2c names it for errors.
+
+Why: civicsmith's first conversions (ARCH #28 and its jobs) met each as a tool fault against the text: ~15,677 places that
+nothing could clear, and complaints on ordinary code. Options: 0 no change; A merge the corrections (recommended); C, a
+question for later: describe Node from its published types rather than by hand. Researched in
+`process/research/facility-names-26nov.md`.
+
+**The owner's words.** "Decision: A, as recommended" — 26 November 2026, typed as a comment on his page "Process4 Waiting
+for Bob" on option A, sent to PROCESS #18.
