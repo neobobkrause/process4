@@ -436,13 +436,20 @@ unnecessarily create yet another token." — 22 November 2026.
    cross-session and cross-repository acts are not falsely refused). Where they are missing, the session proposes the
    change and the owner approves it with a click (design part 1, section 3; part 4, section 7; part 7, sections 4 and 5;
    part 10, section 2). On Codex the equivalent is not yet known (part 8, section 2).
+3. **Idle compaction off.** The same setup script that writes the `autoMode` block also writes `"idleCompaction": false`
+   into `~/.claude/settings.json`, so a session left idle for about an hour is not compacted and does not lose what it read
+   (design part 7, sections 1 and 5). It takes effect for sessions started fresh. Unproven: that the harness honours it.
 
 Why: the check was added on the owner's explicit instruction, as a setup prerequisite. Moving PROCESS with the trial was
 option B of three (A the trial moves alone, the owner relays across the account line; B move PROCESS too, one account; C
 build cross-account coordination first).
+Idle compaction: civicsmith ARCH #26 was compacted after 76 idle minutes at 43 percent fill; option A of four (0 no change;
+A turn it off in the environment; B correct the claim that the fill cannot be read; C both), research
+`arch-compacted-fill-unread-25nov.md`. B was not chosen and stays open with him.
 
 **The owner's words.** "Instruction: When process4 development (and product development using process4) moves to another Claude account, the steps involved in starting development under the different account should include a check to make sure that the environment the sessions will be running under includes the proper settings for process4's permissions management strategy." — 19 November 2026.
 On the first account switch: "Decision: B — Move PROCESS to the new account too (to simplify this first account switch)" — 20 November 2026.
+On idle compaction, typed in PROCESS #18's session: "Instruction: Turn idle compaction off" — 26 November 2026.
 
 ### Subject: Publishing a release, and where secret values are kept
 
