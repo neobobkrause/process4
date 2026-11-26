@@ -20,11 +20,11 @@ The design fixes what an area is: for the internal walk a screen or a named grou
 4. That is the candidate list. ARCH adds an area where it doubts how a change will show (the design, part 3, section 3), and may take one away. Each added or removed area carries one line of reason.
 5. ARCH's session writes the list into the round record (`state write`) before any walking session starts: internal areas and external areas, each with its source and the number of the walking session given it.
 
-**Unproven:** that requirement text and step headers name enough for the list to be right.
+A deep module can pull in most of the product; only ARCH's judgment trims that. **Unproven:** that requirement text and step headers name enough for the list to be right.
 
 ## 3. Steps
 
-**Decided here:** a step is a small program that drives a browser through one thing a user does and states what must then be so. It is kept with the module whose requirement it proves, under that module's `tests` paths, in `walk/internal/` or `walk/external/`. The module's test command never runs those two folders (build text 2, section 3). Its first lines are fixed:
+**Decided here:** a step is a small program that drives a browser through one thing a user does and states what must then be so. It is kept with the module whose requirement it proves, under that module's `tests` paths, in `walk/internal/` or `walk/external/`. The module's test command never runs those two folders (build text 2, section 3). Its first lines are fixed: A journey step that no module's requirement covers has no home until ARCH writes the requirement.
 
 ```
 requirement: <module> <requirement number>
@@ -37,7 +37,7 @@ expects: <the document's own words for what must be so>
 - A step runs only in a walk. A job may run its own step on its own machine while it works; nothing requires it and nothing reads the result.
 - The program that runs steps and serves the product on one machine is itself product code in a module ARCH names. A journey's order comes from the step numbers in its page.
 
-**Decided here:** a walk is measured against the document, not against the steps. The walking session reads each page of its areas in full. Whatever the page says that no step covers, the session walks by hand in its browser.
+**Decided here:** a walk is measured against the document, not against the steps. The walking session reads each page of its areas in full. Whatever the page says that no step covers, the session walks by hand in its browser. For a part walked by hand, the record is the session's own words.
 
 ## 4. The internal walk
 
@@ -62,14 +62,14 @@ Workers and the fill level: the design, part 4, section 11. It has no commit and
 - The walking session takes its own copy through the product's own first-use door and so makes its own sign-in. No sign-in passes between sessions or is written anywhere.
 - The owner enters the copies' hosts once among the cloud environment's allowed hosts (build text 4, section 4). The browser is on the session's machine and uses its proxy.
 
-**Unproven:** every part; and whether a product's first-use door allows it is a fact of the product.
+Each round may need several deployments, of unknown length, and more of the account's room. **Unproven:** every part; and whether a product's first-use door allows it is a fact of the product.
 
 **Following a journey.** The session reads the journey's page in full, runs its steps in order from start to end, and walks by hand what no step covers. A journey that cannot be taken to its end is a flaw of the second kind, recorded at the step where it stopped. A journey that ends with a result that is not what the page says is a flaw of the third kind.
 
 **Journeys that use AI.**
 
 - Such a journey is named as an area only once the owner has connected an AI account to the deployment (the design, part 1, section 3). Until then ARCH leaves it out, and the account after the round names it as not walked (the design, part 3, section 3).
-- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. The UX lane sets those words for each journey (the design, part 3, section 3).
+- **Decided here:** the result of a step that uses AI is judged as the design judges a module test: it does not fail for a different but still valid answer. The step's `expects` line gives the journey page's own words for what any proper result has, and the walking session judges by reading the result. The UX lane sets those words for each journey (the design, part 3, section 3). That judgment is a session's, and can differ between sessions.
 
 **How many sessions, and the account's limits. Decided here:**
 
@@ -125,7 +125,7 @@ Among observations: a part of a page that no step covers and that matched when w
 
 1. **Work for a named module.** It names the module: the one in the step's requirement line; for a part walked by hand, the module that owns the screen's code in the module list; where the step itself is wrong, the module that holds the step. Where no requirement covers what the document says, ARCH first writes one, marked not yet met. ARCH's session, by the tool, writes the flaw's number, the module and a link to the comment into the waiting-work record (`state write`). The job block on its pull request carries them, and the job reads the flaw where it lies (`walk read`).
 2. **The document is wrong.** ARCH gives it to the UX lane, which corrects the page. It is named in the account after the round.
-3. **It is none of the three things.** ARCH sets it aside with one line of reason. **Decided here:** each flaw set aside is named in the account after the round with that reason.
+3. **It is none of the three things.** ARCH sets it aside with one line of reason. **Decided here:** each flaw set aside is named in the account after the round with that reason. ARCH judges entries about a product it designed; the account after the round is what lets the owner see each one.
 
 Observations go into the same account. ARCH may write a requirement from one. When ARCH has placed every entry, its session closes the walk issue (`walk close`).
 

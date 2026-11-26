@@ -5,7 +5,7 @@ Length: 48 lines. Last section: "6. Each product's ranking page".
 ## 1. Reading in full
 
 - A session acts only on what it has read in full or measured.
-- Every text a session must read in full, and every set of texts read together, is kept below a measured maximum size.
+- Every text a session must read in full, and every set of texts read together, is kept below a measured maximum size. Nothing can ensure a full reading; keeping below the maximum reliably results in one.
 - The maximums and the fill level are chosen by one yardstick: after a session has read what it must, there is room for a worthwhile piece of correct work and a handover before the fill level.
 - Sessions are refreshed so that compaction is never needed. In the owner's words, the process has "session refresh requirements that rigorously eleminate the need for compaction".
 - Each governing text says at its top how long it is and what its last section is.
