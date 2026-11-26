@@ -255,12 +255,28 @@ export function compareItem(b, a, { conversion = false } = {}) {
   return parts.length ? { parts, why: whys.join('; ') } : null;
 }
 
-/** The parts of the means that differ, for the reason a told job reads (before and after). */
-function partsThatDiffer(b, a) {
+/** The parts of the means (describe's fields) that each word of a change names (compareItem; build text 2b, section 6). */
+const PARTS_OF = {
+  'kind changed': ['kind'], 'accepts more': ['accepts'], 'cannot stand in': ['accepts'], 'hands back differently': ['handsBack', 'message', 'value'],
+  'may now be missing': ['optional'], 'bound changed': ['bounds'], 'errors that can leave it changed': ['throws'],
+  'plain data or instance changed': ['instances'], 'now needs its object as this': ['needsThis'], 'no longer needs its object as this': ['needsThis'],
+  'arguments written into changed': ['writesArguments'], 'channels, settings or files changed': ['channels'], 'value changed': ['value'],
+  'type error in its code': ['typeErrors'],
+};
+
+/**
+ * The parts of the means that differ, for the reason a told job reads (before and after), each as it was and is: the
+ * parts its words (`changes`) name, as build text 5, section 5 has both. A part that differs in no way that is a change
+ * is not among them: one only described (what was read as any value now stated; design part 2, section 7, "Not a
+ * change"), or a type error gone.
+ * @param words the words of the change (compareItem's `parts`)
+ */
+export function partsThatDiffer(b, a, words) {
   const db = describe(b) ?? {}, da = describe(a) ?? {};
+  const named = new Set(words.flatMap((w) => PARTS_OF[w] ?? []));
   const before = {}, after = {};
   for (const k of new Set([...Object.keys(db), ...Object.keys(da)])) {
-    if (JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
+    if (!named.has(k) || JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
     before[k] = db[k] ?? null;
     after[k] = da[k] ?? null;
   }
@@ -433,7 +449,7 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
     if (!b) { fresh.push(item); continue; }
     const c = compareItem(b, a, { conversion });
     if (!c) continue;
-    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a) });
+    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a, c.parts) });
   }
   const mine = named.filter((n) => (n.module ? n.module === moduleId : !!(ma.items[n.item] ?? mb.items[n.item])));
   for (const n of mine) {
