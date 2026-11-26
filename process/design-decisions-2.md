@@ -214,7 +214,10 @@ so to him on the same thread).
    code or tests change, or when the module list moves items into or out of it; never because the Process4 version or
    the facility list changed. Every version of the tool reads uses files written by earlier versions as their version
    meant them. The tool's notes on Node features it does not know are not kept in the file (the owner's decision of 26
-   November 2026).
+   November 2026). A place outside the standard under R14, which concerns only facilities of Node, workerd, the language and
+   packages, refers to no product module and tells no one, in any file, older ones included; except a use of a bare name
+   the tool cannot resolve, which may be the product's own package, and, in an older file, a place waiting on ARCH's
+   facility list, which are read as written (the owner's decision A of 26 November 2026).
 2. **What changed** is each item's means, worked out before and after the merge: its stated types, expanded through every
    type they name; its named types and read-only arguments; and, from its code over a closure that follows calls and data
    within the module, the errors that can leave it, plain data or a class instance, `this`, the arguments it writes into,
@@ -319,6 +322,9 @@ file names the tool version that wrote it, as information only; it is rewritten 
 change, or when the module list moves items into or out of it, never because the Process4 version or the facility list
 changed; every version of the tool reads uses files written by earlier versions as their version meant them; and the
 tool's notes on Node features it does not know are not kept in the file." — 26 November 2026.
+Then, on stored notes in older files still telling every earlier module (a tool fault: an R14 place was written as
+possibly referring to every earlier module), option A, such a place refers to no product module in any file: "Decision:
+A" — 26 November 2026, typed in PROCESS #19's session.
 On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
 can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
 conversion's merge tells no one." — 26 November 2026.
