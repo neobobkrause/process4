@@ -67,9 +67,17 @@ const admitsAll = (c) => !!c && typeof c === 'object' && !Array.isArray(c) && (c
  * change is its module's conversion, only what the reader knows changed (describedBy). `known(before, after)` is the
  * canonical form before with each such part replaced by the kind stated at the same place after, so that only the other
  * differences are judged. Places are matched by field name, and lists item by item (the members of a union only where
- * both have as many).
+ * both have as many). Worked out once for each pair of parts: a part kept once (canon.mjs) gives one part.
  */
+const KNOWN = new WeakMap(); // part before -> part after -> known
 export function known(b, a) {
+  if (!b || !a || typeof b !== 'object' || typeof a !== 'object') return knownOf(b, a);
+  if (!KNOWN.has(b)) KNOWN.set(b, new WeakMap());
+  const byA = KNOWN.get(b);
+  if (!byA.has(a)) byA.set(a, knownOf(b, a));
+  return byA.get(a);
+}
+function knownOf(b, a) {
   if (admitsAll(b) && a && typeof a === 'object' && !Array.isArray(a) && a.k !== undefined && !admitsAll(a)) return a;
   if (Array.isArray(b) && Array.isArray(a)) return b.map((x, i) => (i < a.length ? known(x, a[i]) : x));
   if (!b || !a || typeof b !== 'object' || typeof a !== 'object' || Array.isArray(a)) return b;
@@ -334,10 +342,20 @@ export function memberChanges(b, a, conversion = false) {
   return out.added.length || out.removed.length || out.changed.length || out.optional.length ? out : null;
 }
 
-/** A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out. */
+/**
+ * A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out.
+ * Worked out once for each part (a part kept once, canon.mjs, gives one part).
+ */
+const BY_NAME = new WeakMap(); // names -> part -> the part by name
 function byName(c, names) {
-  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (!c || typeof c !== 'object') return c;
+  if (!BY_NAME.has(names)) BY_NAME.set(names, new WeakMap());
+  const done = BY_NAME.get(names);
+  if (!done.has(c)) done.set(c, byNameOf(c, names));
+  return done.get(c);
+}
+function byNameOf(c, names) {
+  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (typeof c.name === 'string' && names.has(c.name) && ['obj', 'union', 'and'].includes(c.k)) return { k: 'named', name: c.name };
   return Object.fromEntries(Object.entries(c).map(([k, v]) => [k, byName(v, names)]));
 }

@@ -45,12 +45,33 @@ export function makeCanon(checker, tree) {
       ts.TypeFlags.Substitution | ts.TypeFlags.Index));
   }
 
+  // Equal parts are kept once. A kind written out in full wherever it appears repeats the same parts over and over: kinds
+  // that name each other (a grammar's nodes) are written out to the cut of each cycle, millions of parts of a few hundred
+  // distinct ones (civicsmith, 26 Nov 2026: a conversion's means did not fit the machine's memory). Each part made is
+  // looked up by what it holds, its parts already kept once, and the one kept is used. The forms are the same values,
+  // written the same; only the memory they take changes. Nothing changes a form once made.
+  const kept = new Map(); // what a part holds, its own parts by number -> the part
+  const numberOf = new WeakMap(); // a part kept -> its number
+  function keep(c) {
+    if (!c || typeof c !== 'object' || numberOf.has(c)) return c;
+    const key = JSON.stringify(c, (k, v) => (v !== c && v && typeof v === 'object' && numberOf.has(v) ? `\u0000${numberOf.get(v)}` : v));
+    const had = kept.get(key);
+    if (had) return had;
+    kept.set(key, c);
+    numberOf.set(c, kept.size);
+    return c;
+  }
+
   /**
    * @param t the type
    * @param ctx { kinds: Map of data kinds written out (module.name -> declaration), stack: types being written }
    * @param top true when writing the named kind itself (so a handle is opened, not named)
    */
   function canon(t, ctx, top = false) {
+    return keep(canonOf(t, ctx, top));
+  }
+
+  function canonOf(t, ctx, top) {
     const f = t.flags;
     if (f & ts.TypeFlags.Any) return { k: 'any' };
     if (f & ts.TypeFlags.Unknown) return P('unknown');
