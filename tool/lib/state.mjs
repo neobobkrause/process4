@@ -15,6 +15,11 @@ const KEY = /^(roles|lanes|wakes|stop|standing-notes|round|waiting-work|changes|
 export const checkKey = (key) => (KEY.test(key || '') ? key : fail(`no record is named ${key}`));
 
 const keyOf = (body) => body?.split('\n')[0].match(/^<!-- process4-record: ([a-z0-9-]+) -->$/)?.[1] || null;
+// A record too large for one comment goes on in further comments, each marked with its part (build text 5, section 1).
+export const partMark = (key, part) => `process4-record: ${key}, part ${part}`;
+const partOf = (body) => { const m = body?.split('\n')[0].match(/^<!-- process4-record: ([a-z0-9-]+), part (\d+) -->$/); return m ? { key: m[1], part: Number(m[2]) } : null; };
+/** The most characters one record comment holds; GitHub takes 65,536. */
+export const RECORD_LIMIT = 60000;
 
 // The lowest-numbered open issue with the label.
 export function findIssue(gh, slug) {
@@ -22,14 +27,36 @@ export function findIssue(gh, slug) {
   return issues[0] || null;
 }
 
-// Every record of the issue: key -> { id, data, words }. One listing call.
+// Every record of the issue: key -> { id, data, words, more }. One listing call. A record written in parts (its first
+// comment's `parts` above one) is read back as one: each further part's list is added, in order, to the same list of
+// the first, and `parts` is left out of the data. `more` holds the further part comments' ids, by part.
 export function readAll(gh, slug, issue) {
   const out = {};
+  const parts = {};
   for (const c of gh.comments(slug, issue.number)) {
+    const p = partOf(c.body);
+    if (p) {
+      parts[p.key] ??= {};
+      if (!parts[p.key][p.part]) parts[p.key][p.part] = { id: c.id, data: parseBlock(c.body, partMark(p.key, p.part))?.data };
+      continue;
+    }
     const key = keyOf(c.body);
     if (!key || out[key]) continue;
     const b = parseBlock(c.body, mark(key));
-    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '' };
+    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '', more: {} };
+  }
+  for (const [key, rec] of Object.entries(out)) {
+    for (const [part, p] of Object.entries(parts[key] || {})) rec.more[part] = p.id;
+    const n = Number(rec.data?.parts) || 1;
+    if (n <= 1) continue;
+    const { parts: _, ...data } = rec.data;
+    for (let i = 2; i <= n; i++) {
+      const p = parts[key]?.[i]?.data;
+      const field = p && Object.keys(p)[0];
+      if (!field || !Array.isArray(p[field])) fail(`the ${key} record is written in ${n} parts and part ${i} is missing; write the record again`);
+      data[field] = [...(Array.isArray(data[field]) ? data[field] : []), ...p[field]];
+    }
+    rec.data = data;
   }
   return out;
 }
@@ -115,22 +142,53 @@ export function create(gh, slug, keys, log) {
   return { issue, records: have };
 }
 
-// Rewrites one record in place, or makes it where it has no comment yet (a gone comment is made
-// afresh). Returns the body written.
+// The comments of one record: where its body fits one comment, that comment alone. Otherwise its longest list is spread
+// over as many comments as it needs, each under RECORD_LIMIT: the first holds the rest of the record, the list's first
+// items and `parts`; each further part holds only the list's next items. A record with no list, or one item too large
+// for a comment, fails plainly.
+export function recordParts(key, data, words = '') {
+  const one = block(mark(key), data, words);
+  if (one.length < RECORD_LIMIT) return [one];
+  const lists = Object.entries(data || {}).filter(([, v]) => Array.isArray(v)).sort((a, b) => JSON.stringify(b[1]).length - JSON.stringify(a[1]).length);
+  if (!lists.length) fail(`the ${key} record is ${one.length} characters, too large for one comment, and has no list to spread over more`);
+  const [field, items] = lists[0];
+  const chunks = [[]];
+  const first = (n, list) => block(mark(key), { ...data, [field]: list, parts: n }, words);
+  const later = (i, list) => block(partMark(key, i), { [field]: list });
+  for (const item of items) {
+    const i = chunks.length;
+    const cur = chunks[i - 1];
+    const body = i === 1 ? first(99, [...cur, item]) : later(i, [...cur, item]);
+    if (body.length < RECORD_LIMIT) { cur.push(item); continue; }
+    if (!cur.length || later(i + 1, [item]).length >= RECORD_LIMIT) fail(`an entry of the ${key} record is too large for one comment on its own`);
+    chunks.push([item]);
+  }
+  if (first(chunks.length, chunks[0]).length >= RECORD_LIMIT) fail(`the ${key} record is too large for one comment even with its list spread over more`);
+  return chunks.map((list, i) => (i === 0 ? first(chunks.length, list) : later(i + 1, list)));
+}
+
+// Rewrites one record in place, or makes it where it has no comment yet (a gone comment is made afresh). A record too
+// large for one comment is written in parts (recordParts): the further parts first, then the first comment, which names
+// how many parts there are; a further part no longer needed is emptied. Returns the body of the first comment.
 export function writeRecord(gh, slug, issue, records, key, data, words = '') {
-  const body = block(mark(key), data, words);
+  const bodies = recordParts(key, data, words);
   const had = records[key];
-  if (had) {
-    const r = gh.editComment(slug, had.id, body, { allowFail: true });
-    if (r !== null) return body;
-    // GitHub's own words with the failure (build text 5, section 1): a record too large says so.
-    const words = gh.refusal?.() || '';
-    if (readAll(gh, slug, issue)[key]) fail(`GitHub would not rewrite the ${key} record; it stays as it was${words ? `. GitHub said: ${words}` : ''}`);
+  const more = { ...(had?.more || {}) };
+  const put = (id, body, what, part) => {
+    if (id && gh.editComment(slug, id, body, { allowFail: true }) !== null) return;
+    const said = id ? gh.refusal?.() || '' : '';
+    const still = () => { try { const r = readAll(gh, slug, issue)[key]; return part ? !!r?.more[part] : !!r; } catch { return !part; } };
+    if (id && still()) fail(`GitHub would not rewrite the ${what}; it stays as it was${said ? `. GitHub said: ${said}` : ''}`);
+    try {
+      gh.addComment(slug, issue.number, body);
+    } catch (e) {
+      fail(`GitHub would not write the ${what}: ${e.message}`);
+    }
+  };
+  bodies.slice(1).forEach((body, i) => put(more[i + 2], body, `${key} record's part ${i + 2}`, i + 2));
+  put(had?.id, bodies[0], `${key} record`);
+  for (const [part, id] of Object.entries(more)) {
+    if (Number(part) > bodies.length) gh.editComment(slug, id, block(partMark(key, part), { emptied: [] }), { allowFail: true });
   }
-  try {
-    gh.addComment(slug, issue.number, body);
-  } catch (e) {
-    fail(`GitHub would not write the ${key} record: ${e.message}`);
-  }
-  return body;
+  return bodies[0];
 }

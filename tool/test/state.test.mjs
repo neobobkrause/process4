@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { stateRead, stateWrite } from '../lib/commands.mjs';
 import { parseBlock } from '../lib/github.mjs';
-import { LABEL, PRODUCT_RECORDS, laneRefusal, mark, noteEnded, parseRecordFile } from '../lib/state.mjs';
+import { LABEL, PRODUCT_RECORDS, RECORD_LIMIT, laneRefusal, mark, noteEnded, parseRecordFile, partMark, readRecords, recordParts } from '../lib/state.mjs';
 import { Fail } from '../lib/util.mjs';
 import { ctxFor, fakeGitHub, makeRepo, productFiles } from './helpers.mjs';
 
@@ -122,4 +122,45 @@ test('a record file must begin with JSON', () => {
   assert.deepEqual(parseRecordFile('{"a":"}"}\n\nwords {here}'), { data: { a: '}' }, words: 'words {here}' });
   assert.deepEqual(parseRecordFile(''), { data: {}, words: '' });
   assert.throws(() => parseRecordFile('plain words'), /must begin with one JSON value/);
+});
+
+// Choice 6: a record too large for one comment (civicsmith's waiting work, 25 Nov 2026) is written in parts and read
+// back as one.
+test('a record too large for one comment is written in parts, each under the limit, and read back whole', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  const { ctx, out } = ctxFor(root, gh);
+  stateWrite(ctx, undefined, { _: [], create: true });
+  const work = Array.from({ length: 1937 }, (_, i) => ({ module: `m${i % 200}`, kind: 'notice', from: 'office-readers', merged: 1000 + i }));
+  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
+  const mine = () => gh.s.comments.filter((c) => c.body.split('\n')[0].includes(mark('waiting-work')));
+  assert.ok(mine().length > 2);
+  assert.ok(mine().every((c) => c.body.length < RECORD_LIMIT));
+  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work });
+  // Written again shorter, it takes fewer parts; a part no longer needed is emptied, and nothing of it is read.
+  const parts = mine().length;
+  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work: work.slice(0, 10) })) });
+  assert.equal(mine().length, parts);
+  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work: work.slice(0, 10) });
+  // And longer again, it reuses its comments.
+  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
+  assert.equal(mine().length, parts);
+  assert.deepEqual(readRecords(gh, 'o/product').records['waiting-work'].data, { work });
+  out.length = 0;
+  stateRead(ctx, 'waiting-work', { _: [] });
+  assert.match(out.join('\n'), /office-readers/);
+  assert.doesNotMatch(out.join('\n'), /"parts"/);
+});
+
+test('a record in parts with a part missing fails plainly; one item too large for a comment fails plainly', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  const { ctx } = ctxFor(root, gh);
+  stateWrite(ctx, undefined, { _: [], create: true });
+  const work = Array.from({ length: 1937 }, (_, i) => ({ module: `m${i}`, kind: 'notice', from: 'p', merged: i }));
+  stateWrite(ctx, 'waiting-work', { _: [], from: file(root, 'w.json', JSON.stringify({ work })) });
+  gh.s.comments = gh.s.comments.filter((c) => !c.body.startsWith(`<!-- ${partMark('waiting-work', 2)} -->`));
+  assert.throws(() => readRecords(gh, 'o/product'), /the waiting-work record is written in \d+ parts and part 2 is missing; write the record again/);
+  assert.throws(() => recordParts('round', { modules: [{ why: 'x'.repeat(70000) }] }), /an entry of the round record is too large for one comment on its own/);
+  assert.throws(() => recordParts('stop', { words: 'x'.repeat(70000) }), /too large for one comment, and has no list/);
 });
