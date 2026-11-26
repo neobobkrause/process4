@@ -95,3 +95,53 @@ complaint. It also has no maxBuffer in NodeSpawnOptions (build.mjs:201).
 which R4's fresh-load test needs."
 
 Coordinator adds: ARCH carried out the answer on `documents` (it leaves the module list; its files go to setup-words).
+
+## Research on the three (worker)
+
+Tool commit 891a917 on branch faults-worker (on work/facility-names 495b651, which holds 59fa682). "Was" lines are of its
+parent. Each fault reproduced first; each new test fails on the parent and passes on 891a917.
+
+**(a) Buffer, maxBuffer.** host.d.ts is written by hand and covers what the made-up product used. It declared no `Buffer`
+(global or `node:buffer`), gave `readFileSync(path)` with no encoding the result `Uint8Array` (was host.d.ts:22; and
+`fs/promises.readFile`, was 47), whose `toString()` takes no argument, so `bytes.toString("utf8")` is the complaint
+"Expected 0 arguments"; `NodeSpawnOptions` (was 89) had no `maxBuffer`. Each is an S4 place with the checker's words.
+Against the text: an implementation error. Design part 2 §7 (02:101) rests the standard on "each host's descriptions
+of its facilities are true", and build/02c:50 has the tool classify Node's facilities "for the versions it pins"; Node 22
+documents `Buffer` (buffer.html), `readFileSync` handing one back, and `maxBuffer` for execFileSync/spawnSync/exec.
+Fix: host.d.ts:22-51 `Buffer extends Uint8Array` (toString(encoding, start, end), equals, compare, copy, write,
+subarray, slice, indexOf, includes, toJSON), `BufferConstructor` (from, alloc, allocUnsafe, byteLength, concat,
+isBuffer, isEncoding, compare), `node:buffer`/`buffer`; readFileSync and readFile hand back `Buffer` (54, 79);
+NodeSpawnOptions (121) gains maxBuffer, killSignal, shell, windowsHide, and `input` may be bytes. Classification:
+facilities-build.mjs:81-84 Buffer `in` (computes on what it is handed); `BufferConstructor.allocUnsafe` was already
+NEVER (refs.mjs:110) and stays so. facilities.json rebuilt: 1320 in, 43 tests, 586 out (was 1292/43/586); none removed.
+Test: refs.test.mjs:1170.
+
+**(b) S12 and RegExp `.test`.** `isTestCall` (check.mjs, was 636) took any member call named test/it/describe/suite as a
+test call, so `WORD.test(s)` is a test case: with a written-out argument a test of that name, otherwise the S12 place
+"a test whose name is not written out" (refs.mjs:220, 231). An implementation error: S12 (02c:24) names the runner's
+calls `test('…')`, `it('…')`, `describe('…')`. Fix: check.mjs:640-663, a member call counts only on a name imported from
+`node:test`/`test` (`nt.describe`) or on a parameter of a function handed to a test call (`t.test`). Read from the
+syntax, as 02c:52 says S12 is. Test: refs.test.mjs:1187.
+
+**(c) `index.mjs?again`.** The pinned reader resolves a specifier as a path and keeps the query in it, finds no file
+(complaint 2307), and refs.mjs:925 makes it the S1 place "an import the tool cannot resolve". S1 (02c:13) allows a
+written-out relative path "resolved by Node's documented algorithm"; Node's ESM resolver treats a relative specifier
+as a URL, finds the file without its query or fragment, and loads it again for each distinct query (esm.html, "URLs").
+So an import of the module's own file with a query is within S1 (and within S5: it is the module's own file). The "R4"
+the fault names is not the standard's R4 (02c:32, no export hands out unknown or any); presumably civicsmith's own
+requirement on a fresh load. An implementation error. Fix: util.mjs:121 `fileSpecifier` strips `?…`/`#…` from a relative,
+absolute or `file:` specifier only (a package or `#` name is no URL); ts.mjs:54-65 a compiler host that resolves with it,
+used by both readings (46, 81); usesfile.mjs:153 and related.mjs:133 resolve the same way. The load stays distinct at run
+time; the checker reads one file and so gives both loads the same kinds and symbols, which is right for types and uses
+(the reference is to the module itself). A missing file with a query is still an S1 place. Test: refs.test.mjs:1205.
+
+**Tests.** `npm test`: 276 pass, 0 fail (273 before, three new).
+
+**Unknown.** Not run on civicsmith. (a) is the class, not the instance: host.d.ts still describes only part of Node, and
+every other documented member a product uses (spawnSync's Buffer results with no encoding, `Buffer.readUInt32LE`, …) is
+still an S4 place until described; the tool pins no Node descriptions (TypeScript is its one dependency), so each such
+fault comes one at a time. A sentence, if PROCESS wants the class settled in the text (02c, Settings): "The tool's
+description of the host gives every facility of the pinned Node version as Node documents it; a facility it leaves out
+is the tool's fault, reported to PROCESS, not a place of the module's." (b) a test context under another name passed
+on (`const u = t; u.test(...)`) is no longer a test call. (c) the class identity of two loads (an `instanceof` across
+them fails at run time) is not modelled.
