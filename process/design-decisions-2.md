@@ -417,3 +417,25 @@ of two ((i) no change). Researched in `process/research/cleanup-audit-25nov/READ
 
 **The owner's words.** "Decision: B, (ii)" — 25 November 2026 (in PROCESS #14's session; (ii) of the choice on what PROCESS
 reads).
+
+### Subject: The limit on depth, and a fresh ROOT
+
+**The rule as it now stands.** Each takeover puts ROOT one level deeper, because the watcher is ROOT's own child, and a
+session at the harness's limit (eight on Claude Code) can start no session and make no scheduled wake. ROOT reads its depth
+at its start. Three levels above the limit it puts a fresh ROOT on the owner's standing page; two levels above it makes no
+planned takeover, but at its refresh point rewrites its handover record and the coordinator surfaces the fresh ROOT's start
+as blocking. A takeover for a ROOT that has died still happens. The owner starts the fresh ROOT at a pause (design part 4,
+section 6; part 7, section 1; ROOT's rules 6 and 8). It adds no test, gate, review or stop: the owner's act already existed;
+it is asked for one takeover earlier, and a takeover known to break is not made.
+
+Why: process3-probes ROOT went down to depth 7 and its watcher to 8, which could make no wake, so ROOT could not be
+refreshed and the product stopped (25 Nov). The owner asked for the next ROOT to start at the top (option B: a one-time
+scheduled task makes it). Measured on 26 Nov: such a session has no parent but starts with no repository (so no approvals or
+forbidden commands load) and without the tools to start or message sessions, so B could not be built and A stood, as his
+choice provided. Options: 0 no change; A ask one takeover earlier and make none that breaks; B the next ROOT started by a
+scheduled task; C fewer takeovers on a version move. Researched in `process/research/root-lineage-26nov/` and
+`process/research/depth-limit-watcher-25nov.md`.
+
+**The owner's words.** "Decision: B, as recommended" — 26 November 2026, typed as a comment on his page "Process4 Waiting
+for Bob" on option B, sent to PROCESS #18; the recommendation was "B, measured first; if the measurement fails, A". The
+measurement failed; A was built.

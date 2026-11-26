@@ -58,3 +58,13 @@ The test: PROCESS #18 made a one-time scheduled task `trig_011tSa8VwxSHALEZFTbMy
 create a new session on firing, 01:52Z, no notifications) whose session reports its parent, depth, repository, settings and
 whether the approvals loaded. The tool that makes such a task takes no repository: its record shows no folders and no
 source, so the session may start with none.
+
+## The test's result (26 Nov ~01:52Z), and A built
+
+The session (session_018BhcecUgPnk4T5h2sY7PYR, origin `scheduled_trigger`) had no parent (depth 0, M). It started in an
+empty `/home/user` with no repository (M), so no `CLAUDE.md` approvals and no deny list loaded (its own report, M); the
+environment's `autoMode` and `idleCompaction` were there (M). It had no tool to read its session, message another session
+(its `SendMessage` refused: "this cloud session's credential is accepted only for its own work") or start one (M). So it
+cannot hold ROOT: B fails on the repository and on the tools. Archived by PROCESS #18; its one-time task ended itself.
+A built: design part 4 §6, part 7 §1 (the limit's row), ROOT's rules 6 and 8, the record's subject "The limit on depth,
+and a fresh ROOT". C is not chosen; put to the owner once.

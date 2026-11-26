@@ -31,7 +31,7 @@ Everything in this part is specific to Claude Code.
 | Starting instructions | The prompt a session is started with |
 | Model and effort passed on | The starter names both when it starts a session. Not measured |
 | Planned replacement | The parent starts a fresh session and archives the old one |
-| The limit on depth | One session reported a limit of eight. It bounds how many times a watcher can take over before the owner starts a fresh ROOT (part 4, section 6) |
+| The limit on depth | Eight. A session at depth eight was refused starting a session and making a scheduled wake. A session reads its own depth with `get_session` (field `lineage`). A session made by a scheduled task has no parent, but starts with no repository and without the tools to start or message sessions, so it cannot hold a role. The limit bounds how many times a watcher can take over before the owner starts a fresh ROOT (part 4, section 6) |
 | The shared state | Not carried by the harness. It is on GitHub (part 4, section 4) |
 | Connecting the harness to GitHub | The owner connects his GitHub to Claude and installs Claude's GitHub App on the repository |
 | A session's browser | A browser on the session's own machine. |

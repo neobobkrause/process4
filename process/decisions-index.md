@@ -36,3 +36,4 @@ owner's exact dated words and the reasons. Keep it current with each entry writt
 - The walks' five matters — `design-decisions-2.md`
 - Cleaning up Process4 before further improvements — `design-decisions-2.md`
 - What PROCESS reads in full — `design-decisions-2.md`
+- The limit on depth, and a fresh ROOT — `design-decisions-2.md`
