@@ -160,6 +160,12 @@ test('packages and the host: each facility used is recorded with its package; a 
   const [b2, a2] = sides(f, { ...f, 'package.json': { name: 'product', dependencies: { 'left-pad': '1.1.0' } } });
   assert.deepEqual(versionNotices(b2, a2).map((v) => [v.package, v.told.map((t) => t.user), v.told[0].reasons[0].package]), [['left-pad', ['report'], 'left-pad']]);
   assert.deepEqual(versionNotices(b, b), []);
+  // a module with no uses file yet cannot say which packages it uses: it is told of every version change
+  const g = { ...f }; delete g['process/modules/report.uses.json'];
+  const [b3, a3] = sides(g, { ...g, 'package.json': { name: 'product', dependencies: { 'left-pad': '1.1.0' } } });
+  const v3 = versionNotices(b3, a3);
+  assert.deepEqual(v3.map((v) => [v.package, v.told.map((t) => t.user)]), [['left-pad', ['report']]]);
+  assert.match(v3[0].told[0].reasons[0].why, /report has no uses file yet/);
 });
 
 test('a module with no uses file is told when it imports a provider, reads its files by path or starts its program; every one where the tool cannot tell', () => {

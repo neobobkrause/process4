@@ -105,7 +105,7 @@ How that knowledge reaches the tool:
 1. each later module whose uses file names a changed item, or a member of a changed kind, by any route, where the change reaches the use (below);
 2. each module that holds a marked copy of a changed item, or reads a kind relabelled from one;
 3. on any change to the provider's code or test files, whether or not an item changed: each later module with a place outside the standard that may refer to the provider, or a test that replaces or mocks one of its members; each earlier module with an order fault naming it; and each later module with no uses file yet that imports it, reads its files by path or starts its program, or, where the tool cannot tell which, every later module with no uses file;
-4. on a change to a package's version, each module whose uses file names the package; on a change to the host's version, each module that uses a facility of it.
+4. on a change to a package's version, each module whose uses file names the package; on a change to the host's version, each module that uses a facility of it; and each module with no uses file yet.
 
 A change reaches every use of the item, except:
 

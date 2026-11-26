@@ -711,6 +711,12 @@ export function versionNotices(before, after) {
   return changed.map((p) => {
     const told = [];
     for (const user of order) {
+      // A module with no uses file yet cannot say which packages it uses: it is told of every version change (design
+      // part 2, section 7, "Who is told", point 4).
+      if (!files.get(user).length) {
+        told.push({ user, reasons: [{ module: `package ${p}`, package: p, found: 'any change', changes: [], why: `${p}'s version changed (${vb.get(p) ?? 'none'} -> ${va.get(p) ?? 'none'}); ${user} has no uses file yet`, places: [] }] });
+        continue;
+      }
       const facilities = [...new Set(files.get(user).flatMap((f) => f.packages).filter((x) => x.package === p).map((x) => x.facility))].sort();
       if (!facilities.length) continue;
       told.push({ user, reasons: [{ module: `package ${p}`, package: p, found: 'any change', changes: [], why: `${p}'s version changed (${vb.get(p) ?? 'none'} -> ${va.get(p) ?? 'none'}); ${user} uses ${facilities.slice(0, PLACES_SHOWN).join(', ')}${facilities.length > PLACES_SHOWN ? ` and ${facilities.length - PLACES_SHOWN} more` : ''}`, places: [] }] });
