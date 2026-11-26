@@ -69,9 +69,17 @@ const admitsAll = (c) => !!c && typeof c === 'object' && !Array.isArray(c) && (c
  * change is its module's conversion, only what the reader knows changed (describedBy). `known(before, after)` is the
  * canonical form before with each such part replaced by the kind stated at the same place after, so that only the other
  * differences are judged. Places are matched by field name, and lists item by item (the members of a union only where
- * both have as many).
+ * both have as many). Worked out once for each pair of parts: a part kept once (canon.mjs) gives one part.
  */
+const KNOWN = new WeakMap(); // part before -> part after -> known
 export function known(b, a) {
+  if (!b || !a || typeof b !== 'object' || typeof a !== 'object') return knownOf(b, a);
+  if (!KNOWN.has(b)) KNOWN.set(b, new WeakMap());
+  const byA = KNOWN.get(b);
+  if (!byA.has(a)) byA.set(a, knownOf(b, a));
+  return byA.get(a);
+}
+function knownOf(b, a) {
   if (admitsAll(b) && a && typeof a === 'object' && !Array.isArray(a) && a.k !== undefined && !admitsAll(a)) return a;
   if (Array.isArray(b) && Array.isArray(a)) return b.map((x, i) => (i < a.length ? known(x, a[i]) : x));
   if (!b || !a || typeof b !== 'object' || typeof a !== 'object' || Array.isArray(a)) return b;
@@ -210,6 +218,9 @@ function askerOf(b, a) {
   return (part) => isSame(sb.name, part);
 }
 
+/** Whether an item's code has a type error after that it did not have before (compareItem). */
+const newTypeError = (b, a) => { const had = new Set(b.typeErrors ?? []); return !!a.typeErrors?.some((e) => !had.has(e)); };
+
 /**
  * Compares the means of one item before and after: the parts that differ and tell, each with its word, and the one-line
  * why. Only its stated types and bounds tell (the owner's decision of 26 November); any difference in them tells,
@@ -246,21 +257,39 @@ export function compareItem(b, a, { conversion = false } = {}) {
   if (!same(b.bounds ?? [], a.bounds ?? [])) differ('bound changed', b.bounds ?? [], a.bounds ?? []);
   if (!same(b.instances ?? [], a.instances ?? [])) differ('plain data or instance changed', b.instances ?? [], a.instances ?? []);
   if (!!b.needsThis !== !!a.needsThis) differ(a.needsThis ? 'now needs its object as this' : 'no longer needs its object as this', !!b.needsThis, !!a.needsThis);
-  // Its code no longer matching its stated types is a change: a type error it did not have before. A change to its code
-  // while the same errors stand changes no stated type.
-  if (a.typeErrors?.length && !same(b.typeErrors ?? [], a.typeErrors)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
+  // Its code no longer matching its stated types is a change: a type error it did not have before (build text 2b,
+  // section 6). A change to its code while the same errors stand changes no stated type (the owner's decision of 26
+  // November); an error gone is none: stating a type where the checker read any value takes away its "implicitly has an
+  // 'any' type" (civicsmith, 26 Nov 2026: such a conversion told every module importing it).
+  if (newTypeError(b, a)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
   return parts.length ? { parts, why: whys.join('; ') } : null;
 }
 
-/** The parts of an item's means worked out and listed that tell no one (the owner's decision of 26 November). */
-const UNTOLD = new Set(['throws', 'writesArguments', 'channels']);
+/**
+ * The parts of the means (describe's fields) that each word of a change names (compareItem; build text 2b, section 6).
+ * Errors, channels, arguments written into and a constant's value within its type are listed but tell no one, so no
+ * word names them (the owner's decision of 26 November).
+ */
+const PARTS_OF = {
+  'kind changed': ['kind'], 'accepts more': ['accepts'], 'cannot stand in': ['accepts'], 'hands back differently': ['handsBack', 'message', 'value'],
+  'may now be missing': ['optional'], 'bound changed': ['bounds'],
+  'plain data or instance changed': ['instances'], 'now needs its object as this': ['needsThis'], 'no longer needs its object as this': ['needsThis'],
+  'type error in its code': ['typeErrors'],
+};
 
-/** The parts of the means that differ and tell, for the reason a told job reads (before and after). */
-function partsThatDiffer(b, a) {
+/**
+ * The parts of the means that differ, for the reason a told job reads (before and after), each as it was and is: the
+ * parts its words (`changes`) name, as build text 5, section 5 has both. A part that differs in no way that is a change
+ * is not among them: one only described (what was read as any value now stated; design part 2, section 7, "Not a
+ * change"), a type error gone, or a part that tells no one.
+ * @param words the words of the change (compareItem's `parts`)
+ */
+export function partsThatDiffer(b, a, words) {
   const db = describe(b) ?? {}, da = describe(a) ?? {};
+  const named = new Set(words.flatMap((w) => PARTS_OF[w] ?? []));
   const before = {}, after = {};
   for (const k of new Set([...Object.keys(db), ...Object.keys(da)])) {
-    if (UNTOLD.has(k) || JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
+    if (!named.has(k) || JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
     before[k] = db[k] ?? null;
     after[k] = da[k] ?? null;
   }
@@ -286,8 +315,8 @@ const sameOr = (x, y) => same(x ?? null, y ?? null);
  */
 export function memberChanges(b, a, conversion = false) {
   if (!b || !a || b.kind !== a.kind || !MEMBERED.has(a.kind) || (b.message ?? null) !== (a.message ?? null)) return null;
-  for (const k of ['bounds', 'instances', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
-  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional) return null;
+  for (const k of ['bounds', 'instances']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || newTypeError(b, a)) return null;
   const out = { added: [], removed: [], changed: [], optional: [] };
   if (a.kind === 'handle kind') {
     const nb = b.handsBack?.names ?? [], na = a.handsBack?.names ?? [];
@@ -318,10 +347,20 @@ export function memberChanges(b, a, conversion = false) {
   return out.added.length || out.removed.length || out.changed.length || out.optional.length ? out : null;
 }
 
-/** A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out. */
+/**
+ * A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out.
+ * Worked out once for each part (a part kept once, canon.mjs, gives one part).
+ */
+const BY_NAME = new WeakMap(); // names -> part -> the part by name
 function byName(c, names) {
-  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (!c || typeof c !== 'object') return c;
+  if (!BY_NAME.has(names)) BY_NAME.set(names, new WeakMap());
+  const done = BY_NAME.get(names);
+  if (!done.has(c)) done.set(c, byNameOf(c, names));
+  return done.get(c);
+}
+function byNameOf(c, names) {
+  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (typeof c.name === 'string' && names.has(c.name) && ['obj', 'union', 'and'].includes(c.k)) return { k: 'named', name: c.name };
   return Object.fromEntries(Object.entries(c).map(([k, v]) => [k, byName(v, names)]));
 }
@@ -333,8 +372,8 @@ function byName(c, names) {
  */
 function onlyInside(b, a, names, conversion = false) {
   if (!names.size || b.kind !== a.kind || (b.message ?? null) !== (a.message ?? null)) return false;
-  for (const k of ['bounds', 'instances', 'typeErrors']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
-  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional) return false;
+  for (const k of ['bounds', 'instances']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
+  if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || newTypeError(b, a)) return false;
   const known = describedBy(b, a, conversion);
   return same(byName(known(b.accepts, a.accepts) ?? null, names), byName(a.accepts ?? null, names))
     && same(byName(known(b.handsBack, a.handsBack) ?? null, names), byName(a.handsBack ?? null, names));
@@ -432,7 +471,7 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
     if (!b) { fresh.push(item); continue; }
     const c = compareItem(b, a, { conversion });
     if (!c) continue;
-    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a) });
+    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a, c.parts) });
   }
   const mine = named.filter((n) => (n.module ? n.module === moduleId : !!(ma.items[n.item] ?? mb.items[n.item])));
   for (const n of mine) {

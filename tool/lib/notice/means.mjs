@@ -1062,10 +1062,28 @@ export function moduleMeans(tree, moduleId) {
   }
   // M5 for a kind of plain data: whether its values, as the module's items build them, are plain data or class
   // instances. A kind has no code of its own, so its part is that of every item that accepts or hands it back.
+  // The kinds each item names in what it accepts and hands back, read once for each item, each part once (canon.mjs keeps
+  // equal parts once; written out, one item's form can be millions of parts).
+  const namedIn = new Map();
+  const namesOf = (x) => {
+    if (!namedIn.has(x)) {
+      const names = new Set(), seen = new Set();
+      const walk = (c) => {
+        if (!c || typeof c !== 'object' || seen.has(c)) return;
+        seen.add(c);
+        if (!Array.isArray(c) && typeof c.name === 'string') names.add(c.name);
+        for (const v of Object.values(c)) walk(v);
+      };
+      walk(x.accepts);
+      walk(x.handsBack);
+      namedIn.set(x, names);
+    }
+    return namedIn.get(x);
+  };
   for (const [name, it] of Object.entries(items)) {
     if (it.kind !== 'kind' && it.kind !== 'stored rows') continue;
-    const tag = JSON.stringify(`${moduleId}.${it.kind === 'stored rows' ? listing.entries[name].rowKind : name}`);
-    const by = Object.values(items).filter((x) => x.instances && JSON.stringify([x.accepts, x.handsBack]).includes(`"name":${tag}`));
+    const tag = `${moduleId}.${it.kind === 'stored rows' ? listing.entries[name].rowKind : name}`;
+    const by = Object.values(items).filter((x) => x.instances && namesOf(x).has(tag));
     it.instances = [...new Set(by.flatMap((x) => x.instances))].sort();
   }
   // Where each item was read from, kept out of sight (a symbol, not enumerable: no form or comparison shows it), so that

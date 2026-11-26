@@ -1258,3 +1258,132 @@ export function f() {
   const r2 = read(root, 'u').outside.filter((o) => o.rule === 'R2').map((o) => `${o.line} ${o.what}`);
   assert.deepEqual(r2, ['15 a guard of this module gives a value of kind unknown that is not from this module\'s own channel the kind Named']);
 });
+
+// ---- R15 and R19 from a product's conversion (process/research/rules-r15-r19-host-26nov.md) ----
+
+test('R15: a host value is judged by the kind of the target it stands in for: an own alias and the same union spelled out, an argument and a member, read alike', () => {
+  // a list (the host's own kind) handed to a union of host kinds is no relabelling, however the union is written or reached
+  const lists = caseProduct({ 'src/u/index.mjs': `/** @typedef {string | number | null | string[]} Value */
+/** @typedef {{ [k: string]: Value }} Fields */
+/** @typedef {{ tags?: Value, list: Value }} Rec */
+/** @param {Value} v @returns {number} */
+function size(v) { return Array.isArray(v) ? v.length : 0; }
+/** @param {string | number | null | string[]} v @returns {number} */
+function size2(v) { return Array.isArray(v) ? v.length : 0; }
+/** @param {string[]} names @returns {number} */
+export function f(names) {
+  /** @type {Fields} */
+  const fields = {};
+  fields.other = names;
+  fields['tags'] = names;
+  /** @type {Rec} */
+  const rec = { list: names };
+  rec.tags = names;
+  /** @type {Value} */
+  const v = names;
+  return size(names) + size2(names) + size(v) + Object.keys(fields).length + Object.keys(rec).length;
+}
+` });
+  assert.deepEqual(read(lists, 'u').outside.filter((o) => o.rule === 'R15').map((o) => `${o.line} ${o.what}`), []);
+  // a host object given a shape the product writes is a relabelling: by each spelling and each route
+  const shapes = caseProduct({ 'src/u/index.mjs': `import fs from 'node:fs';
+/** @typedef {{ readFileSync(path: string, enc: string): string }} Reader */
+/** @typedef {string | Reader} Source */
+/** @typedef {{ [k: string]: Source }} Fields */
+/** @typedef {{ src?: Source }} Rec */
+/** @param {Source} v @returns {number} */
+function one(v) { return typeof v === 'string' ? 1 : 0; }
+/** @param {string | Reader} v @returns {number} */
+function two(v) { return typeof v === 'string' ? 1 : 0; }
+/** @returns {number} */
+export function f() {
+  /** @type {Fields} */
+  const fields = {};
+  fields.other = fs;
+  /** @type {Rec} */
+  const rec = {};
+  rec.src = fs;
+  /** @type {string | Reader} */
+  const w = fs;
+  return one(fs) + two(fs) + two(w) + Object.keys(fields).length + Object.keys(rec).length;
+}
+` });
+  assert.deepEqual(read(shapes, 'u').outside.filter((o) => o.rule === 'R15').map((o) => `${o.line} ${o.what.split(':')[0]}`),
+    ['14 an assignment', '17 an assignment', '19 a value given a stated type', '20 an argument']);
+});
+
+test('R19: a parameter is assigned only by an assignment to its own binding (by symbol), never by !x or -x or a same-named binding elsewhere; a let is a place as not a const', () => {
+  const root = caseProduct({ 'src/u/index.mjs': `/** @param {string | undefined} zone @returns {string} */
+export function a(zone) {
+  if (!zone) return '';
+  const inner = () => { let zone = 'x'; zone += '1'; return zone; };
+  return zone.toUpperCase() + inner() + String(-zone.length);
+}
+/** @param {string | undefined} zone @param {Array<string | undefined>} zs @returns {string} */
+export function b(zone, zs) {
+  if (zone === undefined) return '';
+  const s = zone.toUpperCase();
+  [zone] = zs;
+  return s;
+}
+/** @param {string | undefined} zone @param {{ zone: string | undefined }} o @returns {string} */
+export function c(zone, o) {
+  if (zone === undefined) return '';
+  const s = zone.toUpperCase();
+  ({ zone } = o);
+  return s;
+}
+/** @param {string | undefined} zone @param {Array<string | undefined>} zs @returns {string} */
+export function d(zone, zs) {
+  if (zone === undefined) return '';
+  const s = zone.toUpperCase();
+  for (zone of zs) void zone;
+  return s;
+}
+/** @returns {string} */
+export function e() {
+  let tz = process.argv[2];
+  if (tz === undefined) return '';
+  return tz.toUpperCase();
+}
+` });
+  assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'R19').map((o) => `${o.line} ${o.what}`), [
+    '10 relies on the narrowed parameter zone, which is assigned',
+    '17 relies on the narrowed parameter zone, which is assigned',
+    '24 relies on the narrowed parameter zone, which is assigned',
+    '32 relies on the narrowed variable tz, which is not a const',
+  ]);
+});
+
+test('the host\'s description holds process.versions and node:test\'s mock.property and mock.timers.setTime, as Node 22 documents them; Temporal, which Node 22 lacks, it does not', () => {
+  const root = caseProduct({
+    'src/u/index.mjs': `import { versions as vs } from 'node:process';
+/** @returns {string} */
+export function versions() {
+  const v = process.versions;
+  return v.node + (v.tz ?? '') + (vs.icu ?? '');
+}
+`,
+    'test/u/u.test.mjs': `import { test, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import { versions } from '../../src/u/index.mjs';
+test('clock', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: 0 });
+  t.mock.timers.setTime(10);
+  const clock = { now: 1 };
+  const p = mock.property(clock, 'now', 2);
+  assert.equal(p.now + p.mock.accessCount(), 3);
+  p.mock.restore();
+  assert.ok(versions().length > 0);
+  assert.equal(typeof globalThis.Temporal, 'undefined');
+});
+`,
+  });
+  const r = read(root, 'u');
+  // described: no checker complaint, no value of kind any, every facility classified
+  assert.deepEqual(r.outside.filter((o) => o.line !== 12 || o.file !== 'test/u/u.test.mjs').filter((o) => ['S4', 'R1'].includes(o.rule) || /leaves out|neither/.test(o.what)).map((o) => `${o.rule} ${o.file}:${o.line} ${o.what}`), []);
+  // process.versions reads the host's build: out, like process.version, so a place outside a boundary module
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'R14').map((o) => `${o.file}:${o.line} ${o.what}`), ['src/u/index.mjs:4 uses NodeProcess.versions, which reaches out, outside a boundary module', 'src/u/index.mjs:5 uses node:process.versions, which reaches out, outside a boundary module']);
+  // Temporal is not a global of Node 22: still the checker's complaint
+  assert.ok(r.outside.some((o) => o.rule === 'S4' && o.file === 'test/u/u.test.mjs' && o.line === 12), places(r).join('; '));
+});
