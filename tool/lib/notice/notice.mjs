@@ -67,9 +67,17 @@ const admitsAll = (c) => !!c && typeof c === 'object' && !Array.isArray(c) && (c
  * change is its module's conversion, only what the reader knows changed (describedBy). `known(before, after)` is the
  * canonical form before with each such part replaced by the kind stated at the same place after, so that only the other
  * differences are judged. Places are matched by field name, and lists item by item (the members of a union only where
- * both have as many).
+ * both have as many). Worked out once for each pair of parts: a part kept once (canon.mjs) gives one part.
  */
+const KNOWN = new WeakMap(); // part before -> part after -> known
 export function known(b, a) {
+  if (!b || !a || typeof b !== 'object' || typeof a !== 'object') return knownOf(b, a);
+  if (!KNOWN.has(b)) KNOWN.set(b, new WeakMap());
+  const byA = KNOWN.get(b);
+  if (!byA.has(a)) byA.set(a, knownOf(b, a));
+  return byA.get(a);
+}
+function knownOf(b, a) {
   if (admitsAll(b) && a && typeof a === 'object' && !Array.isArray(a) && a.k !== undefined && !admitsAll(a)) return a;
   if (Array.isArray(b) && Array.isArray(a)) return b.map((x, i) => (i < a.length ? known(x, a[i]) : x));
   if (!b || !a || typeof b !== 'object' || typeof a !== 'object' || Array.isArray(a)) return b;
@@ -250,17 +258,36 @@ export function compareItem(b, a, { conversion = false } = {}) {
   // decides.
   if (a.kind === 'value' && b.kind === 'value' && b.code !== a.code && same(bh ?? null, a.handsBack ?? null)) differ('value changed', b.value, a.value);
   // A type error in the item's code counts as a change: a new one, or, while it has one, any change to its code (the
-  // stated kinds then do not bind the code).
-  if (a.typeErrors?.length && (!same(b.typeErrors ?? [], a.typeErrors) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
+  // stated kinds then do not bind the code) (build text 2b, section 6). An error gone is none: stating a type where the
+  // checker read any value takes away its "implicitly has an 'any' type", and the errors the code had before and still
+  // has, its code the same, are no new error (civicsmith, 26 Nov 2026: such a conversion told every module importing it).
+  const had = new Set(b.typeErrors ?? []);
+  if (a.typeErrors?.length && (a.typeErrors.some((e) => !had.has(e)) || b.code !== a.code)) differ('type error in its code', b.typeErrors ?? [], a.typeErrors);
   return parts.length ? { parts, why: whys.join('; ') } : null;
 }
 
-/** The parts of the means that differ, for the reason a told job reads (before and after). */
-function partsThatDiffer(b, a) {
+/** The parts of the means (describe's fields) that each word of a change names (compareItem; build text 2b, section 6). */
+const PARTS_OF = {
+  'kind changed': ['kind'], 'accepts more': ['accepts'], 'cannot stand in': ['accepts'], 'hands back differently': ['handsBack', 'message', 'value'],
+  'may now be missing': ['optional'], 'bound changed': ['bounds'], 'errors that can leave it changed': ['throws'],
+  'plain data or instance changed': ['instances'], 'now needs its object as this': ['needsThis'], 'no longer needs its object as this': ['needsThis'],
+  'arguments written into changed': ['writesArguments'], 'channels, settings or files changed': ['channels'], 'value changed': ['value'],
+  'type error in its code': ['typeErrors'],
+};
+
+/**
+ * The parts of the means that differ, for the reason a told job reads (before and after), each as it was and is: the
+ * parts its words (`changes`) name, as build text 5, section 5 has both. A part that differs in no way that is a change
+ * is not among them: one only described (what was read as any value now stated; design part 2, section 7, "Not a
+ * change"), or a type error gone.
+ * @param words the words of the change (compareItem's `parts`)
+ */
+export function partsThatDiffer(b, a, words) {
   const db = describe(b) ?? {}, da = describe(a) ?? {};
+  const named = new Set(words.flatMap((w) => PARTS_OF[w] ?? []));
   const before = {}, after = {};
   for (const k of new Set([...Object.keys(db), ...Object.keys(da)])) {
-    if (JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
+    if (!named.has(k) || JSON.stringify(db[k]) === JSON.stringify(da[k])) continue;
     before[k] = db[k] ?? null;
     after[k] = da[k] ?? null;
   }
@@ -318,10 +345,20 @@ export function memberChanges(b, a, conversion = false) {
   return out.added.length || out.removed.length || out.changed.length || out.optional.length ? out : null;
 }
 
-/** A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out. */
+/**
+ * A canonical form with each kind named in `names` written by its name only, so that what differs inside it is left out.
+ * Worked out once for each part (a part kept once, canon.mjs, gives one part).
+ */
+const BY_NAME = new WeakMap(); // names -> part -> the part by name
 function byName(c, names) {
-  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (!c || typeof c !== 'object') return c;
+  if (!BY_NAME.has(names)) BY_NAME.set(names, new WeakMap());
+  const done = BY_NAME.get(names);
+  if (!done.has(c)) done.set(c, byNameOf(c, names));
+  return done.get(c);
+}
+function byNameOf(c, names) {
+  if (Array.isArray(c)) return c.map((x) => byName(x, names));
   if (typeof c.name === 'string' && names.has(c.name) && ['obj', 'union', 'and'].includes(c.k)) return { k: 'named', name: c.name };
   return Object.fromEntries(Object.entries(c).map(([k, v]) => [k, byName(v, names)]));
 }
@@ -433,7 +470,7 @@ export function changedItems(treeB, treeA, moduleId, { named = [], conversion = 
     if (!b) { fresh.push(item); continue; }
     const c = compareItem(b, a, { conversion });
     if (!c) continue;
-    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a) });
+    out.push({ module: moduleId, item, found: 'means', changes: c.parts, tells: true, why: null, words: c.why, ...partsThatDiffer(b, a, c.parts) });
   }
   const mine = named.filter((n) => (n.module ? n.module === moduleId : !!(ma.items[n.item] ?? mb.items[n.item])));
   for (const n of mine) {

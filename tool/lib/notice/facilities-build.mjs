@@ -74,7 +74,8 @@ const IN_DATE = (name) => name === 'Date' || name === 'DateConstructor' || name 
 // - URL, URLSearchParams, TextEncoder, TextDecoder, structuredClone, queueMicrotask: WHATWG encodings and URL, the
 //   structured clone and the microtask queue, inside the process (globals.html).
 // - process.argv, process.execPath, and reading process.exitCode: values fixed at start or set by the module itself
-//   (process.html; study-references.md 1.5); every other member of process is out.
+//   (process.html; study-references.md 1.5); every other member of process is out (process.versions too: the
+//   host's build, read from it, like process.version; the strings it holds, NodeProcessVersions, are plain data).
 // - process, console, crypto, performance as objects: a use of one of their members is classified by that member.
 // - ImportMeta.url, dirname, filename: the module's own location (esm.html#importmeta); resolve asks the loader: out.
 // - the descriptions' own option and result kinds (NodeDirent, NodeStats and the like): plain data, no facility.
@@ -92,14 +93,14 @@ const IN_NODE = (name) => {
     return true;
   }
   return starts(name, ['URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder', 'NodeAssert', 'assert', 'NodeDirent', 'NodeStats', 'NodeReadOptions', 'NodeRmOptions',
-    'NodeSpawnOptions', 'NodeSpawnResult', 'NodePathLike'])
+    'NodeSpawnOptions', 'NodeSpawnResult', 'NodePathLike', 'NodeProcessVersions'])
     // the host's objects themselves: a use of a member is classified by the member
     || ['process', 'console', 'crypto', 'performance']
     .includes(name)
     || ['structuredClone', 'queueMicrotask', 'NodeProcess.argv', 'NodeProcess.execPath', 'NodeProcess.exitCode', 'ImportMeta.url', 'ImportMeta.dirname', 'ImportMeta.filename'].includes(name);
 };
 // ---- tests: the test runner (test.html), inside a module's tests; used in its code it is a boundary use ----
-const TESTS = (name) => /^(?:node:)?test(\.|$)/.test(name) || starts(name, ['NodeTestContext', 'NodeTestFn', 'NodeMock', 'NodeMockFunction']);
+const TESTS = (name) => /^(?:node:)?test(\.|$)/.test(name) || starts(name, ['NodeTestContext', 'NodeTestFn', 'NodeMock', 'NodeMockFunction', 'NodeMockPropertyContext']);
 // ---- out: everything else Node's descriptions declare ----
 // Source: Node v22 documentation. Files, other processes and threads, streams and the terminal, the network, the
 // environment, the host, the module loader (fs, fs/promises, child_process, worker_threads, readline, os, module,

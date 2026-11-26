@@ -130,6 +130,62 @@ test('describing tells no one only where the item\'s code is unchanged', () => {
   assert.deepEqual(notice(b4, a4, 'dates').told.map((t) => t.user), ['orders']);
 });
 
+// civicsmith, 26 Nov 2026: a conversion that only stated types took away an item's "implicitly has an 'any' type" while a
+// type error its code had before stayed; the list of errors differed, the item counted as changed, and every module
+// importing the provider with no uses file was told.
+test('a type error the code had before and still has, its code the same, is no change; a new one, or the code changed while it has one, is', () => {
+  const RAW = (body) => `\nexport function shout(p) { const n = 1; ${body} }\n`;
+  const STATED = (body) => `\n/** @param {string} p @returns {string} */\nexport function shout(p) { const n = 1; ${body} }\n`;
+  const user = `${ORDERS}import { shout } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const s = () => shout('a');\n`;
+  const f = withUsesFiles(files({
+    'process/modules/order.txt': 'dates\norders\nreport\nlate\n', 'process/modules/late.json': entry('late'),
+    'src/dates/index.mjs': DATES() + RAW('return n.toUpperCase() + p;'), 'src/orders/index.mjs': user,
+    'src/late/index.mjs': "import { shout } from '../dates/index.mjs';\nexport const t = () => shout('b');\n",
+  }));
+  delete f['process/modules/late.uses.json'];
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + STATED('return n.toUpperCase() + p;') });
+  const conv = notice(b, a, 'dates', { conversion: true });
+  assert.deepEqual(conv.changed, []);
+  assert.deepEqual(conv.told, []);
+  // a type error the stated types bring: a change, told as any (late, with no uses file, by point 3)
+  const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + STATED('return n.toUpperCase() + p;').replace('{string} p', '{number} p').replace(' + p;', ' + p.trim();') });
+  const two = notice(b2, a2, 'dates', { conversion: true });
+  assert.deepEqual(two.changed.map((c) => `${c.item}: ${c.changes}`), ['shout: type error in its code']);
+  assert.deepEqual(two.told.map((t) => t.user), ['orders', 'late']);
+  // the code changed while it has one: a change
+  const [b3, a3] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + STATED("return n.toUpperCase() + p + '!';") });
+  assert.deepEqual(notice(b3, a3, 'dates', { conversion: true }).changed.map((c) => c.item), ['shout']);
+});
+
+// civicsmith, 26 Nov 2026: a conversion that stated an early provider's types and added a bound line told its users of
+// the bound, and each reason's before and after also carried what it accepts and hands back, written out in full,
+// though stating them only describes the item (no change, design part 2, section 7).
+test('a reason\'s before and after hold only the parts that changed: a part only described is left out of them', () => {
+  const KIND = (bound) => `/**\n * @typedef {Object} Span\n * @property {number} from\n * @property {number} to\n${bound ? ` * @bound to: ${bound}\n` : ''} */\n`;
+  const RAW = '\nexport function spanOf(x) { return x; }\n';
+  const STATED = '\n/** @param {Span} x @returns {Span} */\nexport function spanOf(x) { return x; }\n';
+  const STATED_N = '\n/** @param {Span} x @returns {number} */\nexport function spanOf(x) { return x.to; }\n';
+  const user = `${ORDERS}import { spanOf } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const s = () => spanOf({ from: 1, to: 2 });\n`;
+  const f = withUsesFiles(files({ 'src/dates/index.mjs': DATES() + KIND() + RAW, 'src/orders/index.mjs': user }));
+  const reasonOf = (r) => r.told.find((t) => t.user === 'orders').reasons.find((x) => x.item === 'spanOf');
+  // at the conversion: what spanOf accepts and hands back is only described; its bound changed
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + KIND('at most 99') + STATED });
+  const conv = notice(b, a, 'dates', { conversion: true });
+  assert.deepEqual(conv.changed.find((c) => c.item === 'spanOf').changes, ['bound changed']);
+  assert.deepEqual(reasonOf(conv).before, { bounds: null });
+  assert.deepEqual(reasonOf(conv).after, { bounds: ['to: at most 99'] });
+  // the same where the code is unchanged and the merge is no conversion: describing is no change there either
+  const plain = notice(b, a, 'dates');
+  assert.deepEqual(Object.keys(reasonOf(plain).after), ['bounds']);
+  // a part that changed besides describing is kept, as it was and is: it handed back text, and now a number
+  const g = withUsesFiles(files({ 'src/dates/index.mjs': DATES() + KIND() + RAW.replace('return x;', 'return String(x);'), 'src/orders/index.mjs': user }));
+  const [b2, a2] = sides(g, { ...g, 'src/dates/index.mjs': DATES() + KIND('at most 99') + STATED_N });
+  const r2 = reasonOf(notice(b2, a2, 'dates', { conversion: true }));
+  assert.deepEqual(r2.changes, ['hands back differently', 'bound changed']);
+  assert.deepEqual(r2.before, { handsBack: 'string', bounds: null });
+  assert.deepEqual(r2.after, { handsBack: 'number', bounds: ['to: at most 99'] });
+});
+
 test('at a conversion only describing tells no one: an item removed, a constant\'s value changed, tell as always (E4)', () => {
   const f = withUsesFiles(files({
     'src/dates/index.mjs': `${DATES()}/** @type {number} */\nexport const LIMIT = 5;\n/** @returns {number} */\nexport function gone() { return 1; }\n`,

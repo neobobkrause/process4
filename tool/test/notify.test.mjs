@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkCmd, listingCmd, notifyCmd } from '../lib/notify.mjs';
 import { loadTree } from '../lib/notice/model.mjs';
 import { notice, noticeText } from '../lib/notice/notice.mjs';
+import { noticeLines, readLines, readNoticeLines } from '../lib/notice/notices.mjs';
 import { moduleMeans } from '../lib/notice/means.mjs';
 import { check } from '../lib/notice/check.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
@@ -534,6 +535,54 @@ test('notify that runs out of memory reading the product says so plainly, tells 
   }
   assert.equal(waitingWork(gh).work, undefined);
   assert.deepEqual(noticeComments(gh, 7), []);
+});
+
+// civicsmith, 26 Nov 2026: the notices of a conversion of an early provider, written as one text, passed the language's
+// longest string ("RangeError: Invalid string length"): each told module's reasons carried the changed item's whole
+// before and after. They now come back as JSON lines, each item's before and after once.
+test('the reading\'s notices come back as JSON lines, each changed item\'s before and after once, and read back as they were', () => {
+  const big = { accepts: `(arg0: { ${'f: string; '.repeat(2000)}})`, bounds: ['n: whole number, 1 to 31'] };
+  const after = { accepts: big.accepts, bounds: ['n: whole number, 1 to 30'] };
+  const c = { module: 'dates', item: 'parseDay', found: 'means', changes: ['bound changed'], tells: true, why: null, words: 'bound changed', before: big, after };
+  const named = { module: 'dates', item: 'formatDay', found: 'named', changes: ['meaning changed'], tells: true, why: 'w; v', before: { meaning: 'w' }, after: { meaning: 'v' } };
+  const reason = (x, user) => ({ module: 'dates', item: x.item, found: x.found, changes: x.changes, why: x.why, route: 'direct', places: [`src/${user}/index.mjs:3`], before: x.before, after: x.after });
+  const users = ['orders', 'report', 'late', 'later'];
+  const report = { provider: 'dates', reader: 'TypeScript 5.6.3', conversion: true, changed: [c, named], fresh: [], summary: 's',
+    told: [...users.map((u) => ({ user: u, reasons: [reason(c, u), reason(named, u)] })),
+      // a reason whose before and after are its own (not the changed item's) is written as it is
+      { user: 'own', reasons: [{ ...reason(c, 'own'), before: { bounds: ['x'] }, after: { bounds: ['y'] } }] },
+      { user: 'none', reasons: [{ module: 'dates', items: ['parseDay'], found: 'any change', changes: [], why: 'none has no uses file yet and imports dates', noUsesFile: 'n' }] }] };
+  const lines = [...noticeLines(report)];
+  assert.equal(lines.length, 1 + 2 + users.length + 2);
+  // the large means is written once, on the changed item's line
+  assert.equal(lines.filter((l) => l.includes('f: string; f: string')).length, 1);
+  assert.ok(Math.max(...lines.map((l) => l.length)) < 2 * JSON.stringify(c).length);
+  const file = join(mkdtempSync(join(tmpdir(), 'p4-lines-')), 'notices.jsonl');
+  writeFileSync(file, lines.map((l) => `${l}\n`).join(''));
+  const [back] = readNoticeLines(file);
+  // the same report, written the same, key order included
+  assert.equal(JSON.stringify(back), JSON.stringify(report));
+  assert.deepEqual(back, report);
+  // each reason holds the changed item's own before and after, not a copy for each told module
+  assert.ok(back.told.slice(0, users.length).every((t) => t.reasons[0].before === back.changed[0].before && t.reasons[1].after === back.changed[1].after));
+  // two notices in one file (a merge that changed two modules), read in order
+  writeFileSync(file, [...noticeLines(report), ...noticeLines({ ...report, provider: 'orders', told: [] })].map((l) => `${l}\n`).join(''));
+  assert.deepEqual(readNoticeLines(file).map((r) => [r.provider, r.told.length]), [['dates', 6], ['orders', 0]]);
+});
+
+test('JSON lines are read a part at a time, a line across parts and characters of more than one byte included', () => {
+  const values = [{ a: 'é→'.repeat(50) }, { b: [1, 2, 3] }, { c: 'x' }, { d: '日本'.repeat(9) }];
+  const file = join(mkdtempSync(join(tmpdir(), 'p4-lines-')), 'x.jsonl');
+  writeFileSync(file, `${values.map((v) => JSON.stringify(v)).join('\n')}\n\n`);
+  for (const size of [1, 5, 7, 64, 1 << 16]) {
+    const got = [];
+    readLines(file, (v) => got.push(v), size);
+    assert.deepEqual(got, values, `part size ${size}`);
+  }
+  writeFileSync(file, values.map((v) => JSON.stringify(v)).join('\n'));
+  const got = [];
+  readLines(file, (v) => got.push(v), 3);
+  assert.deepEqual(got, values);
 });
 
 test('a notice comment GitHub will not write fails with GitHub\'s own words; nobody is told and the notice is owed', () => {

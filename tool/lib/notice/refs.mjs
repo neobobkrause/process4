@@ -662,7 +662,9 @@ export function readReferences(tree, moduleId, opts = {}) {
   function relate(S, T, e, node, how, { source = 'conversion', check = true } = {}) {
     if (!S || !T || S === T) return;
     const sd = kindDecls(S), td = kindDecls(T);
-    const involved = sd.length || td.length || isOwnKind(S) || isOwnKind(T);
+    // a union is involved by its members, whether the product names it (an alias) or spells it out
+    const ownIn = (t) => isOwnKind(t) || !!(t.flags & ts.TypeFlags.Union && t.types.some(isOwnKind));
+    const involved = sd.length || td.length || ownIn(S) || ownIn(T);
     if (!involved) return;
     // R11: both sides of the conversion
     const route = viaOf(e, null);
@@ -682,14 +684,22 @@ export function readReferences(tree, moduleId, opts = {}) {
       place('S4', node, { what: `${how}: ${original.module}'s ${original.item} relabelled as this module's own kind ${ownAlias.name}`, mayRefer: [original.module],
         waitsOn: `this module: ${ownAlias.name} written as ${original.module}'s kind`, item: ownAlias.name, relabels: { provider: original.module, item: original.item } });
     }
-    // R15: a value the host declares, given a kind the product declares
-    if (isObj(S) && hostDeclared(S) && !sd.length && !hostDeclared(T) && (td.length || isOwnKind(T)) && !(S.flags & ts.TypeFlags.Primitive)) {
-      place('R15', node, { what: `${how}: gives ${checker.typeToString(S)}, which the host declares, a kind the product declares`, mayRefer: [ANY] });
-    }
-    if (!check) return;
     // a union is converted member by member: each of its kinds to the kind of the target it stands in for
     const ss = S.flags & ts.TypeFlags.Union ? S.types : [S];
     const tt = T.flags & ts.TypeFlags.Union ? T.types.filter(isObj) : [T];
+    // R15: a value the host declares, given a kind the product declares. Judged by the kind of the target the value
+    // stands in for, never by the target's name: a union written as a product's alias or spelled out, by any route (an
+    // argument, a member, `| undefined` of an optional member), reads alike; a host kind inside it (a list) is no relabelling.
+    for (const s of ss) {
+      if (!isObj(s) || !hostDeclared(s) || kindDecls(s).length) continue;
+      const fits = tt.filter((x) => assignable(s, x));
+      const into = fits.length ? fits : tt.length === 1 ? tt : [];
+      if (into.length && !into.some(hostDeclared) && into.some((x) => kindDecls(x).length || isOwnKind(x))) {
+        place('R15', node, { what: `${how}: gives ${checker.typeToString(s)}, which the host declares, a kind the product declares`, mayRefer: [ANY] });
+        break;
+      }
+    }
+    if (!check) return;
     for (const s of ss) {
       const t = tt.length === 1 ? tt[0] : tt.find((x) => assignable(s, x));
       if (t) structure(s, t, ss.length > 1 ? null : e, node, how, 0);
@@ -869,10 +879,27 @@ export function readReferences(tree, moduleId, opts = {}) {
 
   // ---- the walk ----
   const resolver = makeResolver(tree);
+  // The bindings assigned anywhere in the module (R19), each by the checker's symbol: `=` and the compound and logical
+  // assignments, `++`/`--` (not `!x`, `-x`, which only read), and the targets of an assignment or a for-of/for-in that
+  // takes a value apart (`[x] = …`, `({ x } = …)`, `for (x of …)`)
   const assignedNames = new Set();
+  const addTarget = (e) => {
+    while (e && ts.isParenthesizedExpression(e)) e = e.expression;
+    if (!e) return;
+    if (ts.isIdentifier(e)) { const s = checker.getSymbolAtLocation(e); if (s) assignedNames.add(s); }
+    else if (ts.isBinaryExpression(e) && e.operatorToken.kind === ts.SyntaxKind.EqualsToken) addTarget(e.left);
+    else if (ts.isSpreadElement(e) || ts.isSpreadAssignment(e)) addTarget(e.expression);
+    else if (ts.isArrayLiteralExpression(e)) e.elements.forEach(addTarget);
+    else if (ts.isObjectLiteralExpression(e)) for (const p of e.properties) {
+      if (ts.isPropertyAssignment(p)) addTarget(p.initializer);
+      else if (ts.isShorthandPropertyAssignment(p)) { const s = checker.getShorthandAssignmentValueSymbol(p); if (s) assignedNames.add(s); }
+      else if (ts.isSpreadAssignment(p)) addTarget(p.expression);
+    }
+  };
   for (const sf of files) forEachNode(sf, (n) => {
-    if (ts.isBinaryExpression(n) && n.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && n.operatorToken.kind <= ts.SyntaxKind.LastAssignment && ts.isIdentifier(n.left)) { const s = checker.getSymbolAtLocation(n.left); if (s) assignedNames.add(s); }
-    if ((ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) && ts.isIdentifier(n.operand)) { const s = checker.getSymbolAtLocation(n.operand); if (s) assignedNames.add(s); }
+    if (ts.isBinaryExpression(n) && n.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && n.operatorToken.kind <= ts.SyntaxKind.LastAssignment) addTarget(n.left);
+    if ((ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(n.operator)) addTarget(n.operand);
+    if ((ts.isForOfStatement(n) || ts.isForInStatement(n)) && !ts.isVariableDeclarationList(n.initializer)) addTarget(n.initializer);
   });
   const isJSDocNode = (n) => n.kind >= ts.SyntaxKind.FirstJSDocNode && n.kind <= ts.SyntaxKind.LastJSDocNode;
   const inType = (n) => { for (let p = n; p; p = p.parent) { if (isJSDocNode(p) || ts.isTypeNode(p) && !ts.isExpressionWithTypeArguments(p)) return true; if (ts.isStatement(p) || ts.isSourceFile(p)) return false; } return false; };
@@ -1054,7 +1081,7 @@ export function readReferences(tree, moduleId, opts = {}) {
         const unstable = d && ((ts.isVariableDeclaration(d) && d.parent && !(d.parent.flags & ts.NodeFlags.Const) && ts.isVariableDeclarationList(d.parent)) || (ts.isParameter(d) && assignedNames.has(s)));
         if (unstable && tree.moduleOfFile(d.getSourceFile().fileName) === mod.id) {
           const declared = checker.getTypeOfSymbol(s), flow = typeAt(n);
-          if (flow && declared !== flow && !(declared.flags & ts.TypeFlags.Any) && narrower(flow, declared)) place('R19', n, { what: `relies on the narrowed ${d.parent && ts.isVariableDeclarationList(d.parent) ? 'variable' : 'parameter'} ${n.text}, which is assigned`, mayRefer: productKind(declared) ? [ANY] : [], waitsOn: 'this module: a const copy before narrowing' });
+          if (flow && declared !== flow && !(declared.flags & ts.TypeFlags.Any) && narrower(flow, declared)) place('R19', n, { what: ts.isParameter(d) ? `relies on the narrowed parameter ${n.text}, which is assigned` : `relies on the narrowed variable ${n.text}, which is not a const${assignedNames.has(s) ? ' and is assigned' : ''}`, mayRefer: productKind(declared) ? [ANY] : [], waitsOn: 'this module: a const copy before narrowing' });
         }
       }
 
@@ -1364,7 +1391,10 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (ts.isBinaryExpression(n) && [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken, ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken].includes(n.operatorToken.kind)) {
       if (ts.isObjectLiteralExpression(n.left) || ts.isArrayLiteralExpression(n.left)) takenApart(n.left, typeAt(n.right), n);
       else {
-        const s = ts.isPropertyAccessExpression(n.left) ? checker.getSymbolAtLocation(n.left.name) : checker.getSymbolAtLocation(n.left);
+        // a member's declared kind; a member an index signature gives (`fields.other`) has no symbol of its own (the
+        // checker answers the signature, whose kind it gives as any): its kind is the signature's, read at the target
+        const s0 = ts.isPropertyAccessExpression(n.left) ? checker.getSymbolAtLocation(n.left.name) : checker.getSymbolAtLocation(n.left);
+        const s = s0 && !(s0.flags & ts.SymbolFlags.Signature) ? s0 : undefined;
         relate(typeAt(n.right), s ? checker.getTypeOfSymbol(s) : typeAt(n.left), n.right, n, 'an assignment', { source: 'store' });
       }
     }
