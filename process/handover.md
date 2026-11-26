@@ -54,7 +54,8 @@ uses files.
 1. Environment: the owner moves it to the new account himself (`autoMode`, `idleCompaction` false, secrets).
 2. `node tool/p4.mjs state read handover-process`. Old-account registry at handover: civicsmith ROOT #11
    `session_018BhcegXRx9wyHus76AsBKB`; process3-probes ROOT #15 `session_018Bhcec9ah8YVo8Rcu5w2yz` — both unreachable now.
-3. No live lane. His page: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy (source `coordination/owner_page/desk.html`;
+3. No live lane. His page on the new account (PROCESS #20, 26 Nov ~21:45Z): https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT
+   (pinned; the old account's SY4Ub7f1… cannot be opened here) (source `coordination/owner_page/desk.html`;
    publish with the Artifact tool; land each source change by its own small pull request). Under a new account the page
    may not be editable by you; if not, publish a new page and give him the link.
 4. Flow: `git fetch origin main`, `git checkout -B work/<name> origin/main`, edit, commit (author
