@@ -145,3 +145,14 @@ description of the host gives every facility of the pinned Node version as Node 
 is the tool's fault, reported to PROCESS, not a place of the module's." (b) a test context under another name passed
 on (`const u = t; u.test(...)`) is no longer a test call. (c) the class identity of two loads (an `instanceof` across
 them fails at run time) is not modelled.
+
+## Options, as one group (put to the owner 26 Nov ~09:50Z, replacing the earlier 0 / A)
+
+- **0. No change.** The ~15,677 places stay; Buffer, maxBuffer, RegExp `.test` and `?again` imports go on raising complaints.
+- **A. Merge the four corrections (recommended).** `work/facility-names` (59fa682, 891a917): package facilities named as the
+  list names them; the product's own members no facility; Buffer and the spawn options described; RegExp `.test` not a
+  test; a query on an import resolved to its file. Each an implementation error against build text 2c / design part 2 §7;
+  no text change. Tool tests 276/276. Not run on civicsmith.
+- **C. Describe Node from its published type description, pinned to the product's Node version, instead of by hand (a
+  question, not built).** The hand-written host description covers only part of Node, so its gaps will surface one job at
+  a time. Not researched; to study only on his word. Rule 6: nothing measured beyond the gaps met so far.
