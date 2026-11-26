@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 14:50 UTC, by PROCESS #19. First: nothing needs your word this minute. I am fixing the tool fault that keeps civicsmith's notices from being sent; I recommend you hold civicsmith's next move until that fix is in, so it moves once (below).</p>
+<p class="updated">Updated 26 Nov 2026, about 16:45 UTC, by PROCESS #19. Done: your decision that a conversion tells no one. Waiting for you: your word on the tool corrections, then one move for civicsmith (below).</p>
 </header>
 
 
@@ -52,11 +52,21 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Under way: the notices civicsmith could not send (urgent)</h2>
-<p>civicsmith's first pass of 8 conversions is running on Process4 version 1216397. For five of its seven finished conversions, the tool could not send the notices that tell later modules what to re-check: three times its answer grew too large to hand back, twice it ran out of memory. Nothing is lost: civicsmith's ARCH recorded all five as owed, and no job outside the first 8 is running.</p>
-<p>A helper is now finding the cause, measuring it, and building a correction that changes nobody's notice, only how the result is carried. A second helper is checking two likely faults in how the tool reads two of the coding standard's rules, and the Node items the tool does not yet know. I will put the results to you as one group, with options.</p>
-<p><b>My recommendation for now:</b> do not move civicsmith to 54d7eee yet. When the notice fix is merged, one move takes it to a version holding both that and the earlier corrections, and each move costs a ROOT takeover. If you would rather have the earlier corrections at once, type in civicsmith's coordinator session: <code>Instruction: move civicsmith to the latest Process4 version</code></p>
-<p><b>Also, a smaller one:</b> civicsmith's ARCH removed the module "documents", which had no code, as the design says. I recommend no change to the process.</p>
+<h2>Done: a conversion tells no one</h2>
+<p>On your "Decision: a conversion's merge tells no one." (26 Nov), merged as Process4 version 10164fb: the design, your record and the tool now say a conversion's merge tells no module and the tool reads nothing for it. The five notices civicsmith could not send need not be sent once it runs this version. civicsmith's coordinator is told, as information.</p>
+</section>
+
+<section class="wait">
+<h2>Waiting for you: the tool corrections, then one move for civicsmith</h2>
+<p>Built and tested on working branches (all of the tool's own tests pass); none is merged without your word:</p>
+<ol>
+<li><b>False changes:</b> the tool counted a type error that went away as a change, so a conversion that only stated types told every later importer (150 of 150 on a test product shaped like civicsmith). Corrected: only a new error, or changed code while an error stands, counts. This still matters after a conversion run, for ordinary merges.</li>
+<li><b>Notice size:</b> each told module's reasons carried a full copy of the changed item's types (up to 5 MB each). Now only the parts that changed: 120 MB down to 153 KB on the test, nobody's notice changed. The results come back in parts, and equal type parts are kept once, so a case that ran out of memory at 1 GB now holds about 23 MB.</li>
+<li><b>Two rule-reading faults:</b> the rule against passing a Node value off as the product's own type was read differently for the same thing written two ways; and <code>if (!x)</code> was read as changing <code>x</code>. Both corrected.</li>
+<li><b>Node features added by hand:</b> <code>process.versions</code>, the test library's <code>mock.property</code>, and one timer member. Describing Node from its published type files (option C) is left for later.</li>
+</ol>
+<p><b>Options:</b> 0, no change; A, merge all four as one version (recommended); or name the ones you want. Then, in civicsmith's coordinator session: <code>Instruction: move civicsmith to the latest Process4 version</code></p>
+<p><b>Being researched next:</b> what counts as an interface change (your words of 26 Nov on errors, values within the range and test prerequisites), whether a line left outside the coding standard should tell anyone, and the standard itself in the light of civicsmith's first 8 modules.</p>
 </section>
 
 <section class="card">
@@ -99,9 +109,9 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> runs Process4 version 1216397 and is converting its first 8 modules (7 merged); five of their notices are owed until the tool is fixed. The newest version is 54d7eee, holding the facility-name corrections.</li>
+<li><b>civicsmith</b> runs Process4 version 1216397 and is converting its first 8 modules (7 merged); five notices are owed there, and need not be sent on the newest version, 10164fb.</li>
 <li><b>The trial product</b> (process3-probes) ran the trial of who is told; its ROOT is #14.</li>
-<li><b>PROCESS #19</b> is running, with two helpers at work and no lane.</li>
+<li><b>PROCESS #19</b> is running, with no helper at work and no lane.</li>
 </ul>
 </section>
 </main>
