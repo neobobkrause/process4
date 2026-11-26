@@ -12,7 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
-import { git } from '../util.mjs';
+import { fileSpecifier, git } from '../util.mjs';
 import { readUses } from '../usesfile.mjs';
 import { CODE, hunkRuns, tokensOf } from './running.mjs';
 
@@ -130,7 +130,7 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
 
   // Calls: A -> B. Also a piece -> each piece written inside it, and a file's top -> the top of each file it imports.
   const edges = new Map(pieces.map((p) => [p, new Set()]));
-  const resolveImport = (spec, from) => ts.resolveModuleName(spec, from, options(), ts.sys).resolvedModule?.resolvedFileName ?? null;
+  const resolveImport = (spec, from) => ts.resolveModuleName(fileSpecifier(spec), from, options(), ts.sys).resolvedModule?.resolvedFileName ?? null;
   const imports = new Map(); // rel file -> rel files of the module it imports (or null where unresolved)
   const unresolved = new Map(); // rel file -> [spec]
   const declPiece = (d) => {

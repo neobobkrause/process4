@@ -1164,3 +1164,59 @@ export const kept = one();
   assert.ok(at('wideWhole').includes('Wide whole'), at('wideWhole').join('; '));
   assert.deepEqual(at('wideRead').filter((x) => x.startsWith('Wide')), ['Wide member extra', 'Wide none']);
 });
+
+// ---- three faults from a product's first conversion (process/research/facility-names-26nov.md) ----
+
+test('the host\'s description holds Buffer and the spawn options Node documents: a file read as bytes and decoded, maxBuffer, are no complaint', () => {
+  const root = caseProduct({ 'src/u/index.mjs': `import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { Buffer as B } from 'node:buffer';
+/** @param {string} f @returns {string} */
+export function read(f) {
+  const bytes = readFileSync(f);
+  void execFileSync('ls', [], { maxBuffer: 1024, encoding: 'utf8' });
+  return bytes.toString('utf8') + Buffer.from('a', 'utf8').toString('hex') + String(B.isBuffer(bytes));
+}
+` });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'S4').map((o) => o.what), []);
+  // Buffer computes in the process (buffer.html): no place of its own
+  assert.deepEqual(r.outside.filter((o) => /Buffer/.test(o.what)).map((o) => o.what), []);
+});
+
+test('S12: a RegExp\'s test(...) in a test is no test case; the runner\'s and a test context\'s are', () => {
+  const root = caseProduct({ 'test/u/u.test.mjs': `import { test } from 'node:test';
+import * as nt from 'node:test';
+import assert from 'node:assert/strict';
+const WORD = /^w/;
+test('words', async (t) => {
+  const s = String(Math.max(1, 2));
+  assert.ok(!WORD.test(s));
+  assert.ok(!/^x/.test(s));
+  await t.test('inner', () => { assert.ok(/1|2/.test(s)); });
+  await t.test(s, () => {});
+});
+nt.describe(String(1), () => {});
+` });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => o.rule === 'S12').map((o) => o.line), [10, 12]);
+});
+
+test('S1: a relative import with a query, a fresh load of a module\'s own file, resolves to that file', () => {
+  const root = caseProduct({
+    'src/u/index.mjs': '/** @returns {number} */\nexport function one() { return 1; }\n',
+    'test/u/u.test.mjs': `import { test } from 'node:test';
+import assert from 'node:assert/strict';
+test('loads afresh', async () => {
+  const again = await import('../../src/u/index.mjs?again');
+  const hashed = await import('../../src/u/index.mjs#h');
+  assert.equal(again.one() + hashed.one(), 2);
+});
+`,
+  });
+  const r = read(root, 'u');
+  assert.deepEqual(r.outside.filter((o) => ['S1', 'S4', 'R1'].includes(o.rule)).map((o) => `${o.rule} ${o.line} ${o.what}`), []);
+  // an import of a missing file is still a place
+  write(root, { 'test/u/u.test.mjs': "import { test } from 'node:test';\ntest('gone', async () => { await import('../../src/u/gone.mjs?again'); });\n" });
+  assert.deepEqual(read(root, 'u').outside.filter((o) => o.rule === 'S1').map((o) => o.what), ['an import the tool cannot resolve: ../../src/u/gone.mjs?again']);
+});

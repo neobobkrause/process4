@@ -1408,7 +1408,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     return true;
   }
   function modulesOfSpec(spec, from) {
-    const target = spec.startsWith('.') ? path.resolve(path.dirname(from), spec) : resolver.resolve(spec, from);
+    const target = resolver.resolve(spec, from);
     const o = target ? ownersOfPath(target) : null;
     return o && o.size ? [...o] : [ANY];
   }

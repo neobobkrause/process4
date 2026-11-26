@@ -111,3 +111,11 @@ export const now = () => new Date().toISOString().replace(/:\d\d(\.\d+)?Z$/, 'Z'
 
 // A path entry ending in / is a folder with everything under it; any other names a file.
 export const underPath = (file, p) => (p.endsWith('/') ? file.startsWith(p) : file === p || file.startsWith(`${p}/`));
+
+/**
+ * The file a written-out import names. A relative or absolute specifier is a URL to Node's loader, whose query and
+ * fragment make a distinct load of the same file (Node 22, esm.html, "URLs": "Modules are loaded multiple times if the
+ * import specifier used to resolve them has a different query or fragment"); the file is found without them. Any other
+ * specifier (a package, the product's own name, a `#` name) is not a URL and is kept whole.
+ */
+export const fileSpecifier = (spec) => (/^(\.{1,2}\/|\/|file:)/.test(spec) ? spec.replace(/[?#][\s\S]*$/, '') : spec);

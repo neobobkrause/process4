@@ -78,7 +78,10 @@ const IN_DATE = (name) => name === 'Date' || name === 'DateConstructor' || name 
 // - process, console, crypto, performance as objects: a use of one of their members is classified by that member.
 // - ImportMeta.url, dirname, filename: the module's own location (esm.html#importmeta); resolve asks the loader: out.
 // - the descriptions' own option and result kinds (NodeDirent, NodeStats and the like): plain data, no facility.
+// - Buffer, global and node:buffer: bytes and their encodings, computed on what it is handed (buffer.html); its
+//   allocUnsafe, whose memory is not initialised, is never on a list (refs.mjs, NEVER).
 const IN_NODE = (name) => {
+  if (/^(?:node:)?buffer$/.test(name) || /^(?:node:buffer\.)?Buffer(Constructor)?(\.|$)/.test(name)) return true;
   const m = /^(?:node:)?(path|url|assert|assert\/strict|events|crypto)(?:\.(.+))?$/.exec(name);
   if (m) {
     const [, mod, member = ''] = m;
@@ -104,10 +107,10 @@ const TESTS = (name) => /^(?:node:)?test(\.|$)/.test(name) || starts(name, ['Nod
 // their clears, performance.now, process.hrtime and uptime); randomness (crypto.randomUUID, getRandomValues); the
 // process-wide channels and hooks (diagnostics_channel, async_hooks, perf_hooks, trace_events, wasi, sqlite, sea); and
 // any facility of a Node module not reviewed above.
-const NODE_HOST = (name) => /^node:/.test(name) || /^(fs|fs\/promises|path|url|os|child_process|worker_threads|module|crypto|events|readline|process|assert)(\.|$)/.test(name)
+const NODE_HOST = (name) => /^node:/.test(name) || /^(fs|fs\/promises|path|url|os|child_process|worker_threads|module|crypto|events|readline|process|assert|buffer)(\.|$)/.test(name)
   || /^Node[A-Z]/.test(name) || starts(name, ['process', 'console', 'fetch', 'performance', 'crypto', 'setTimeout', 'setInterval', 'setImmediate', 'clearTimeout',
     'clearInterval', 'clearImmediate', 'ImportMeta', 'ImportAssertions', 'ImportAttributes', 'ImportCallOptions', 'URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder',
-    'structuredClone', 'queueMicrotask']);
+    'structuredClone', 'queueMicrotask', 'Buffer', 'BufferConstructor']);
 
 /** The classification of one facility: 'in', 'tests', 'out', or null (never on a list, or not reviewed: a place). */
 export function classify(name) {
