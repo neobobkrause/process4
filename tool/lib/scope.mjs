@@ -1,8 +1,11 @@
 // The scope of a pull request's tests, and the tests themselves (build text 1, section 5). The tests run once, in
 // the session that owns the work (`p4 test`, tool/lib/testrun.mjs); GitHub's required run only reads the record
 // (`run verdict`).
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { loadConfig, loadModules, ownerOf } from './config.mjs';
 import { relatedList } from './notice/related.mjs';
+import { runningCode } from './notice/running.mjs';
 import { NO_TOKENS, git, run, underPath } from './util.mjs';
 import { JOB } from './round.mjs';
 
@@ -46,8 +49,12 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
     if (d.ok) return out('nothing', `drop of tranche ${drop}: every one of the ${d.count} changed file(s) is main's; none of the tests runs, as on the tranche's pull request into main`);
     note = `drop of tranche ${drop}, but ${d.why}, so it is judged as any other branch: `;
   }
-  const touched = [...new Set(changed.map((f) => ownerOf(modules, f)).filter(Boolean))];
-  if (!touched.length) return out('nothing', "no changed file is under a module's code or tests");
+  const owned = changed.filter((f) => ownerOf(modules, f));
+  if (!owned.length) return out('nothing', "no changed file is under a module's code or tests");
+  // Step 3: a file whose comments or layout alone changed changes no running code (design part 2, section 6).
+  const running = owned.filter((f) => runningCodeChanged(root, mergedBase, f));
+  if (!running.length) return out('nothing', `no changed file under a module's code or tests changes running code: in ${owned.length} file(s) only comments or layout changed`);
+  const touched = [...new Set(running.map((f) => ownerOf(modules, f)))];
 
   const all = git(['ls-files', '-z'], { cwd: root }).split('\0').filter(Boolean);
   const whole = (ms) => ms.map((m) => ({ name: m.name, files: testFiles(all, modules, m) }));
@@ -80,6 +87,20 @@ export function decideScope(root, { base, baseRef, branch, draft, jobBlock = nul
     return out('nothing', `mechanical edit on branch ${branch}, and the trial config asks for no test run`);
   }
   return out('whole module', `branch ${branch} is not a job's: each module touched`, whole(touched));
+}
+
+/**
+ * Whether a changed file changes running code between the base and the checkout (design part 2, section 6; build text
+ * 1, section 5, step 3): a file added or removed does; a code file does where its tokens differ, its comments and
+ * layout left out; any other file (a data file, a setting) does.
+ */
+export function runningCodeChanged(root, base, file) {
+  const was = git(['show', `${base}:${file}`], { cwd: root, allowFail: true });
+  let now;
+  try { now = readFileSync(join(root, file), 'utf8'); } catch { return true; }
+  if (was.code !== 0) return true;
+  const b = runningCode(file, was.stdout), a = runningCode(file, now);
+  return b === null || a === null || b !== a;
 }
 
 // A drop's pull request passes at once only when every file it changes is main's: the same blob,

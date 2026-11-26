@@ -138,6 +138,10 @@ export function makeLister(program, tree) {
             const shape = C.canon(t, k, true);
             k.kinds.delete(`${mod.id}.${exp.name}`);
             entries[name] = { kind: 'kind', shape, bounds: [...bounds, ...nestedBounds(k)], where };
+            // A kind sent between two separately running parts names its channel (`@message stdin`, build text 2b):
+            // part of what it hands back.
+            const message = tagsOf(decl, 'message').map(tagText).join(' ').trim();
+            if (message) entries[name].message = message;
             dataKinds.push(name);
             // Iteration 2: the rows of a shared table, owned by this module.
             for (const tag of tagsOf(decl, 'storedrows')) {

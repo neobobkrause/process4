@@ -14,6 +14,7 @@ import { loadTree } from './model.mjs';
 import { ts, loadReader, makeProgram, options, forEachNode } from './ts.mjs';
 import { git } from '../util.mjs';
 import { readUses } from '../usesfile.mjs';
+import { CODE, hunkRuns, tokensOf } from './running.mjs';
 
 const WALK = /(^|\/)walk\/(internal|external)\//;
 const isTestFile = (rel) => /\.test\.[^/]*$/.test(rel) && !WALK.test(rel);
@@ -28,7 +29,10 @@ export const RULES = {
   step3: 'the whole module',
 };
 
-/** Hunks of `git diff -U0` per file (new-side paths): [{ os, oc, ns, nc }]. */
+/**
+ * Hunks of `git diff -U0` per file (new-side paths): [{ os, oc, ns, nc, runs }]. `runs` is false for a hunk whose change
+ * is comments or layout only (running.mjs): such a line is not a changed line. Every hunk is kept, for mapLine.
+ */
 function hunks(gitRoot, base, after) {
   const out = new Map();
   let file = null;
@@ -37,11 +41,16 @@ function hunks(gitRoot, base, after) {
     const m = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/.exec(l);
     if (m && file) out.get(file).push({ os: +m[1], oc: m[2] === undefined ? 1 : +m[2], ns: +m[3], nc: m[4] === undefined ? 1 : +m[4] });
   }
+  for (const [f, hs] of out) {
+    const at = (c) => { const r = git(['show', `${c}:${f}`], { cwd: gitRoot, allowFail: true }); return r.code === 0 ? tokensOf(f, r.stdout) : null; };
+    const was = CODE.test(f) ? at(base) : null, now = was ? at(after) : null;
+    for (const h of hs) h.runs = hunkRuns(f, was, now, h);
+  }
   return out;
 }
 
-/** The lines of the merged result a hunk changed; a deletion counts as the line where it was. */
-const changedLines = (hs) => hs.flatMap((h) => (h.nc ? Array.from({ length: h.nc }, (_, i) => h.ns + i) : [Math.max(h.ns, 1)]));
+/** The lines of the merged result a hunk changed, comments and layout aside; a deletion counts as the line where it was. */
+const changedLines = (hs) => hs.filter((h) => h.runs).flatMap((h) => (h.nc ? Array.from({ length: h.nc }, (_, i) => h.ns + i) : [Math.max(h.ns, 1)]));
 
 /** A line of the base, where it stands in the merged result (a changed line: where its hunk now starts). */
 function mapLine(hs, line) {
@@ -92,7 +101,7 @@ export function relatedList({ dir, gitRoot, base, after, module, uses = [] }) {
 
   const diff = hunks(gitRoot, base, after);
   const own = new Set(mod.files.map(rel));
-  for (const t of tests) if (diff.has(t)) give(t, RULES.changed);
+  for (const t of tests) if ((diff.get(t) ?? []).some((h) => h.runs)) give(t, RULES.changed);
 
   const program = makeProgram(mod.files);
   const checker = program.getTypeChecker();

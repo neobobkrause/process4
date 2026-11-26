@@ -16,7 +16,7 @@ import { noticeAfterTests, noticeSeq, recordNeed, recordStands } from './testrec
 import { recordsOf, scopeForPR, usesOnly } from './testrun.mjs';
 
 import {
-  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, MEANING_MARK, meaningsOf,
+  JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, jobRecordOf, MEANING_MARK, meaningsOf,
   hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
@@ -142,9 +142,9 @@ function pushLines(a, by, meanings, sames) {
 // on the branch's pull request, a change of meaning under the same means (design part 2, section 7): each a changed item
 // when the pull request merges. --same (repeated) records on it that an item the tool finds changed keeps its domain and
 // range, with one line why: that item then tells no one (design part 2, section 7, "The insides only"). --notice-nothing
-// records, for an open job, that the latest notice that reached it needs no change: its recorded pass then stands for
-// that notice (design part 2, section 7, "What a told module does"); written in the job record and, so that the required
-// run reads it, in the job block. First the uses file of each module the push changes, and of a job's own module, is
+// [--notice <n>] records, for an open job, that the notices that reached it, up to the block's count now or to the n-th
+// it names, need no change: its recorded pass then stands for them (design part 2, section 7, "What a told module
+// does"); written in the job's record alone, which the required run reads. First the uses file of each module the push changes, and of a job's own module, is
 // rewritten from the code as pushed and committed, so the push carries it (design part 2, section 7; usescmd.mjs). No
 // check of the file is made.
 export function push(ctx, a) {
@@ -155,6 +155,8 @@ export function push(ctx, a) {
   if (a.unblocked !== undefined && (by || typeof a.unblocked !== 'string' || !a.unblocked)) fail('say --unblocked "<why>", without --blocked');
   const nothing = a['notice-nothing'];
   if (nothing !== undefined && (typeof nothing !== 'string' || !nothing.trim() || Array.isArray(nothing))) fail('say --notice-nothing "<why>"');
+  if (a.notice !== undefined && nothing === undefined) fail('say --notice <n> only with --notice-nothing "<why>"');
+  noticeNamed(a.notice);
   const items = a.meaning === undefined ? [] : [].concat(a.meaning);
   const sames = a.same === undefined ? [] : [].concat(a.same);
   const words = pushLines(a, by, items, sames);
@@ -188,25 +190,39 @@ export function push(ctx, a) {
   }
   if (nothing !== undefined) {
     const pr = prOf2('record on');
-    recordNoticeNeedsNoChange(ctx, pr.number, nothing.trim());
+    recordNoticeNeedsNoChange(ctx, pr.number, nothing.trim(), noticeNamed(a.notice));
   }
   return 0;
 }
 
+/** The notice count a job names with --notice <n> (the last notice it read), or null where it names none. */
+function noticeNamed(v) {
+  if (v === undefined) return null;
+  const k = Number(v);
+  return Number.isInteger(k) && k > 0 && !Array.isArray(v) ? k : fail('say --notice <n>, the count of the last notice read (the job block\'s notice_seq)');
+}
+
 /**
- * An open job's record that the notices that reached it need no change (design part 2, section 7): the job record's
- * `notice_needs_no_change` { notice_seq, why }, at the job block's notice count, written also into the job block, which
- * the required run reads; its recorded pass then stands for those notices (testrecord.mjs).
+ * An open job's record that the notices that reached it need no change (design part 2, section 7): the job's record's
+ * `notice_needs_no_change` { notice_seq, why }, written only in the job's record, the job's own comment; the job block is
+ * ARCH's and is never written here (design part 4, sections 4 and 11: one writer for each record). `notice_seq` is the
+ * job block's notice count read at the moment of recording, or, where the job names the last notice it read
+ * (`--notice <n>`), that count, never above the block's: the record answers the notices up to it and none that comes
+ * later, so a notice `notify` adds after the job read its block still needs the job's answer. The required run reads
+ * the job's record, and the recorded pass then stands for those notices (testrecord.mjs). Returns the value recorded.
  */
-function recordNoticeNeedsNoChange(ctx, n, why) {
-  const jb = jobBlockOf(ctx.gh.comments(ctx.slug, n));
+function recordNoticeNeedsNoChange(ctx, n, why, named = null, record = null) {
+  const comments = ctx.gh.comments(ctx.slug, n);
+  const jb = jobBlockOf(comments);
   if (!jb) fail(`pull request ${n} has no job block: only a job records that a notice needs no change`);
   const seq = noticeSeq(jb.data);
   if (!seq) fail(`no notice has reached the job of pull request ${n}; there is nothing to record`);
-  const value = { notice_seq: seq, why };
-  writeJobRecord(ctx, n, { ...(ctx.gh.comments(ctx.slug, n).map((c) => parseBlock(c.body, RECORD_MARK)?.data).find(Boolean) ?? {}), notice_needs_no_change: value });
-  ctx.gh.editComment(ctx.slug, jb.comment.id, block(JOB_MARK, { ...jb.data, notice_needs_no_change: value }, jb.words));
-  ctx.log(`recorded on pull request ${n}: the notice(s) that reached the job, to notice ${seq}, need no change (${why}); its recorded pass stands for them`);
+  if (named !== null && named > seq) fail(`the job block of pull request ${n} counts ${seq} notice(s); there is no notice ${named}`);
+  const value = { notice_seq: named ?? seq, why };
+  // `record`, where given, is what the record says beside it (close's nothing_to_change); else it keeps what it says
+  writeJobRecord(ctx, n, { ...(record ?? jobRecordOf(comments)?.data ?? {}), notice_needs_no_change: value });
+  ctx.log(`recorded on pull request ${n}: the notice(s) that reached the job, to notice ${value.notice_seq}, need no change (${why}); its recorded pass stands for them${value.notice_seq < seq ? `; notice(s) ${value.notice_seq + 1} to ${seq} still need the job's answer` : ''}`);
+  return value;
 }
 
 // drop --tranche <name>: the tranche's merge into main run the other way, on its own branch
@@ -371,11 +387,11 @@ export function ready(ctx, n) {
   if (before.merged_at) { ctx.log(`pull request ${n} is merged; there is nothing to mark ready`); return 0; }
   if (before.state === 'closed') { ctx.log(`pull request ${n} is closed; there is nothing to mark ready`); return 0; }
   if (before.draft === false) { ctx.log(`pull request ${n} is ready already; nothing marked`); return 0; }
-  const { jobBlock, record } = recordsOf(ctx, n);
-  const st = recordStands(record?.data, before.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, before.head.ref) });
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, before.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, before.head.ref), jobRecord });
   if (st.ok) ctx.log(st.why);
   else {
-    const need = recordNeed(scopeForPR(ctx, before, { jobBlock, related: false }), jobBlock);
+    const need = recordNeed(scopeForPR(ctx, before, { jobBlock, related: false }), jobBlock, jobRecord);
     if (need.needed) fail(`not marked ready: ${st.why} (${need.why})`);
     ctx.log(`no test record needed: ${need.why}`);
   }
@@ -434,12 +450,12 @@ function conversionReport(ctx, pr, module) {
 // 14. results <pr>: the test record's standing, then the required run's state on the head commit.
 export function results(ctx, n) {
   const pr = ctx.gh.getPR(ctx.slug, n);
-  const { jobBlock, record } = recordsOf(ctx, n);
-  const st = recordStands(record?.data, pr.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, pr.head.ref) });
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, n);
+  const st = recordStands(record?.data, pr.head.sha, jobBlock, { usesOnly: usesOnly(ctx.root, pr.head.ref), jobRecord });
   // Where there is no record, say whether one is needed, as `ready` judges it (recordNeed).
   let none = null;
   if (!record) {
-    try { const need = recordNeed(scopeForPR(ctx, pr, { jobBlock, related: false }), jobBlock); if (!need.needed) none = need.why; } catch { /* say only what the record says */ }
+    try { const need = recordNeed(scopeForPR(ctx, pr, { jobBlock, related: false }), jobBlock, jobRecord); if (!need.needed) none = need.why; } catch { /* say only what the record says */ }
   }
   if (none) ctx.log(`test record: none needed: ${none}`);
   else ctx.log(`test record: ${st.ok ? 'stands' : 'does not stand'}: ${st.why}`);
@@ -471,8 +487,8 @@ function notesInForce(ctx) {
 // uses, directly or through others, earlier in the order, read at the tranche branch's newest commit and at the job's
 // head commit (the union): each with an open job that is not blocked holds it. Returns the jobs it waits for, as lines.
 function jobWaits(ctx, pr, module) {
-  const { jobBlock, record } = recordsOf(ctx, pr.number);
-  if (noticeAfterTests(record?.data, jobBlock)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
+  const { jobBlock, jobRecord, record } = recordsOf(ctx, pr.number);
+  if (noticeAfterTests(record?.data, jobBlock, jobRecord)) fail(`a notice reached ${module}'s job after its tests ran; it must run p4 test again`);
   const issue = findIssue(ctx.gh, ctx.slug);
   const view = readView(ctx, { records: issue ? readAll(ctx.gh, ctx.slug, issue) : {} });
   if (!view.modules.some((m) => m.name === module)) return [];
@@ -562,23 +578,29 @@ export function stateWrite(ctx, key, a) {
 }
 
 // 5. close <pr> [--nothing-to-change "<why>"]: with the flag, first the job's record. A told job that finds nothing to
-// change (design part 2, section 7, "What a told module does") runs no test: where its uses file, rewritten from the
-// code here, differs from its base's, the rewritten file is pushed and the pull request marked ready with no test (its
-// scope is nothing, and the job record says the notices need no change; ARCH merges it as any); otherwise it is closed
-// unmerged.
+// change in its code (design part 2, section 7, "What a told module does") runs no test. Its uses file is rewritten from
+// the code here and pushed where it changed. Where the job declared on its pull request an item of its own that changes
+// with the provider's (push --meaning: a value computed from the changed item, or its bound handed back), or its uses file
+// differs from its base's, the pull request is marked ready with no test (its scope is nothing, and the job's record says
+// it found nothing to change and the notices need no change; ARCH merges it as any, and `notify` on that merge tells the
+// declared items' users); otherwise it is closed unmerged. Only the job's record is written: the job block is ARCH's.
 export function close(ctx, n, a) {
   const why = a['nothing-to-change'];
   if (why !== undefined && (typeof why !== 'string' || !why.trim())) fail('say --nothing-to-change "<why>"');
   const pr = ctx.gh.getPR(ctx.slug, n) || fail(`there is no pull request ${n}`);
   if (pr.state !== 'open') fail(`pull request ${n} is ${pr.merged_at ? 'merged' : pr.state} already`);
   if (why !== undefined) {
-    writeJobRecord(ctx, n, { nothing_to_change: why });
+    const comments = ctx.gh.comments(ctx.slug, n);
+    const jb = jobBlockOf(comments);
+    if (jb && noticeSeq(jb.data)) recordNoticeNeedsNoChange(ctx, n, why.trim(), null, { nothing_to_change: why });
+    else writeJobRecord(ctx, n, { nothing_to_change: why });
     ctx.log(`recorded on pull request ${n}: nothing to change`);
     const module = pr.head?.ref?.match(JOB)?.[1];
-    if (module && usesFileDiffers(ctx, pr, module)) {
-      const jb = jobBlockOf(ctx.gh.comments(ctx.slug, n));
-      if (jb && noticeSeq(jb.data)) recordNoticeNeedsNoChange(ctx, n, why);
-      ctx.log(`the uses file of ${module} differs from ${pr.base.ref}'s: pull request ${n} merges, with no test`);
+    const declared = meaningsOf(comments.map((c) => parseBlock(c.body, MEANING_MARK)?.data).find(Boolean)?.meaning);
+    const usesDiffer = !!module && usesFileDiffers(ctx, pr, module);
+    if (module && (usesDiffer || declared.length)) {
+      if (declared.length) ctx.log(`pull request ${n} declares ${declared.map((x) => x.item).join(', ')} of ${module} changed with its provider: it merges, with no test, and its merge tells their users`);
+      if (usesDiffer) ctx.log(`the uses file of ${module} differs from ${pr.base.ref}'s: pull request ${n} merges, with no test`);
       return ready(ctx, n);
     }
   }

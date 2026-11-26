@@ -120,7 +120,27 @@ test('describing tells no one only where the item\'s code is unchanged', () => {
   const [b2, a2] = sides(f, { ...f, 'src/dates/index.mjs': DATES() + STATED("return x + '';") });
   assert.deepEqual(notice(b2, a2, 'dates').changed.map((c) => `${c.item}: ${c.changes}`), ['raw: cannot stand in,hands back differently']);
   // at the module's conversion, describing with the code changed still tells no one
-  assert.ok(notice(b2, a2, 'dates', { conversion: true }).changed.every((c) => !c.tells));
+  assert.deepEqual(notice(b2, a2, 'dates', { conversion: true }).changed, []);
+  // a stated unknown made specific is describing too: no change where the code is unchanged
+  const UNKNOWN = (body) => `\n/** @param {unknown} x @returns {unknown} */\nexport function raw(x) { ${body} }\n`;
+  const g = withUsesFiles(files({ 'src/dates/index.mjs': DATES() + UNKNOWN('return x;'), 'src/orders/index.mjs': `${ORDERS}import { raw } from '../dates/index.mjs';\n/** @returns {unknown} */\nexport const r = () => raw('a');\n` }));
+  const [b3, a3] = sides(g, { ...g, 'src/dates/index.mjs': DATES() + STATED('return x;') });
+  assert.deepEqual(notice(b3, a3, 'dates').changed, []);
+  const [b4, a4] = sides(g, { ...g, 'src/dates/index.mjs': DATES() + STATED("return x + '';") });
+  assert.deepEqual(notice(b4, a4, 'dates').told.map((t) => t.user), ['orders']);
+});
+
+test('at a conversion only describing tells no one: an item removed, a constant\'s value changed, tell as always (E4)', () => {
+  const f = withUsesFiles(files({
+    'src/dates/index.mjs': `${DATES()}/** @type {number} */\nexport const LIMIT = 5;\n/** @returns {number} */\nexport function gone() { return 1; }\n`,
+    'src/orders/index.mjs': `${ORDERS}import { LIMIT, gone } from '../dates/index.mjs';\n/** @returns {number} */\nexport const most = () => LIMIT + gone();\n`,
+  }));
+  const [b, a] = sides(f, { ...f, 'src/dates/index.mjs': `${DATES()}/** @type {number} */\nexport const LIMIT = 6;\n` });
+  const r = notice(b, a, 'dates', { conversion: true });
+  assert.deepEqual(r.changed.map((c) => `${c.item}: ${c.changes} ${c.tells}`), ['LIMIT: value changed true', 'gone: removed true']);
+  assert.deepEqual(r.told.map((t) => [t.user, t.reasons.map((x) => x.item)]), [['orders', ['LIMIT', 'gone']]]);
+  // the same at no conversion
+  assert.deepEqual(notice(b, a, 'dates').told.map((t) => t.user), ['orders']);
 });
 
 test('a test that replaces or mocks a provider\'s member is a use of type mock, told of any change to the provider\'s files', () => {
@@ -208,12 +228,42 @@ test('notify: a mechanical edit does not tell a module whose files it changed an
     'src/dates/index.mjs': DATES().replace('/** @param {number} n @returns {string} */', '/** @param {string} n @returns {string} */'),
     'src/report/index.mjs': day("'1'"),
   });
-  gh.addComment('o/product', 7, block(TEST_MARK, { commit: 'x', scope: 'whole module', modules: ['dates', 'report'], result: 'pass', passed: 3, failed: 0 }));
+  const head = git(['rev-parse', 'work/rename'], { cwd: root });
+  const record = { commit: head, scope: 'whole module', modules: ['dates', 'report'], result: 'pass', passed: 3, failed: 0 };
+  gh.addComment('o/product', 7, block(TEST_MARK, record));
   const { ctx, out } = ctxFor(root, gh);
   assert.equal(notifyCmd(ctx, 7), 0);
   assert.match(out.join('\n'), /TOLD report/);
-  assert.match(out.join('\n'), /not told, as the pull request changed their files and its test record ran their whole tests: report/);
+  assert.match(out.join('\n'), /not told, as the pull request changed their files and its test record ran their whole tests on the merged result: report/);
   assert.doesNotMatch(out.join('\n'), /waiting work:/);
+});
+
+test('notify: the whole-tests exception holds only for a record of the merged result; a record of an earlier commit, or of related tests, tells', () => {
+  const day = (s) => `${REPORT}import { formatDay } from '../dates/index.mjs';\n/** @returns {string} */\nexport const day = () => formatDay(${s});\n`;
+  const run = (record) => {
+    const root = makeRepo(withUsesFiles(files({ 'src/report/index.mjs': day('1') })));
+    const gh = fakeGitHub();
+    create(gh, 'o/product', ['waiting-work'], () => {});
+    const tested = git(['rev-parse', 'HEAD'], { cwd: root });
+    mergedPR(root, gh, 'work/rename', {
+      'src/dates/index.mjs': DATES().replace('/** @param {number} n @returns {string} */', '/** @param {string} n @returns {string} */'),
+      'src/report/index.mjs': day("'1'"),
+    });
+    const head = git(['rev-parse', 'work/rename'], { cwd: root });
+    gh.addComment('o/product', 7, block(TEST_MARK, record({ head, tested })));
+    const { ctx, out } = ctxFor(root, gh);
+    assert.equal(notifyCmd(ctx, 7), 0);
+    return out.join('\n');
+  };
+  const whole = { scope: 'whole module', modules: ['dates', 'report'], result: 'pass', passed: 3, failed: 0 };
+  // the record ran an earlier commit, before the change: report is told
+  const early = run(({ tested }) => ({ ...whole, commit: tested }));
+  assert.match(early, /told although its test record ran their whole tests, as the record is not of the merged result/);
+  assert.match(early, /waiting work: report \(notice from dates\)/);
+  // a related run is not the whole tests
+  assert.match(run(({ head }) => ({ ...whole, commit: head, scope: 'related' })), /waiting work: report \(notice from dates\)/);
+  // a module the record did not run whole is told
+  assert.match(run(({ head }) => ({ ...whole, commit: head, modules: ['dates'] })), /waiting work: report \(notice from dates\)/);
 });
 
 test('notify: an item the pull request records as keeping its domain and range tells no one; every other change still tells', () => {

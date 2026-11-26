@@ -100,13 +100,28 @@ test('the uses file of the merged result gives the places as they stand now; whe
   moved.uses[0].where[0].line = 7;
   const a = merged({ 'src/orders/index.mjs': `// one\n// two\n${INDEX}`, 'process/modules/orders.uses.json': moved });
   const r = list(a.root, a.base, place('src/orders/index.mjs:5'));
-  // (The two new lines are top-level code of index.mjs, which runs on import: every test file importing it reaches them.)
-  assert.deepEqual(files(r)['test/orders/day.test.mjs'], [REACHES, 'reaches a piece with a line this pull request changed']);
-  assert.deepEqual(files(r)['test/orders/plain.test.mjs'], ['reaches a piece with a line this pull request changed']);
+  // (The two new lines are comments: a line whose change is comments or layout only is not a changed line, so no test
+  // file reaches a changed line.)
+  assert.deepEqual(files(r)['test/orders/day.test.mjs'], [REACHES]);
+  assert.equal(files(r)['test/orders/plain.test.mjs'], undefined);
   // Its uses file names parseDay nowhere now: the notice's place, line 5 in the base, is line 7 in the merged result.
   const gone = { ...usesFile(), uses: [] };
   const b = merged({ 'src/orders/index.mjs': `// one\n// two\n${INDEX}`, 'process/modules/orders.uses.json': gone });
-  assert.deepEqual(files(list(b.root, b.base, place('src/orders/index.mjs:5')))['test/orders/day.test.mjs'], [REACHES, 'reaches a piece with a line this pull request changed']);
+  assert.deepEqual(files(list(b.root, b.base, place('src/orders/index.mjs:5')))['test/orders/day.test.mjs'], [REACHES]);
+  // two lines of code above it: top-level code of index.mjs, which runs on import, so every test file importing it
+  // reaches a changed line
+  const c = merged({ 'src/orders/index.mjs': `const one = 1;\nconst two = one;\n${INDEX}`, 'process/modules/orders.uses.json': moved });
+  const rc = list(c.root, c.base, place('src/orders/index.mjs:5'));
+  assert.deepEqual(files(rc)['test/orders/day.test.mjs'], [REACHES, 'reaches a piece with a line this pull request changed']);
+  assert.deepEqual(files(rc)['test/orders/plain.test.mjs'], ['reaches a piece with a line this pull request changed']);
+});
+
+test('a line whose change is comments or layout only is not a changed line; a test file changed only so is not changed', () => {
+  const { root, base } = merged({
+    'src/orders/sum.mjs': SUM.replace('/** @param {number[]} xs */', '/** @param {number[]} xs the amounts, in cents */').replace('a + b, 0', 'a  +  b,  0'),
+    'test/orders/plain.test.mjs': `// plain, once\n${t('plain', 'plain()')}`,
+  });
+  assert.deepEqual(list(root, base, []).files, []);
 });
 
 test('a test file that reaches a changed line, or was itself added or changed, is related', () => {
@@ -152,6 +167,13 @@ test('the whole module: a reason that says so, or a module with no uses file yet
   assert.deepEqual(r.files.map((f) => f.file), all);
   assert.deepEqual(r.files[0].reasons, ['the whole module: orders has no uses file yet: its whole tests run']);
   assert.equal(r.files.some((f) => /walk/.test(f.file)), false);
+  // a mock's reason and a package's run the whole module too: they name no item to look up
+  for (const reason of [{ module: 'dates', items: [], found: 'any change', changes: [], mock: 'parseDay', why: 'a test of orders mocks parseDay' },
+    { module: 'package node', package: 'node', found: 'any change', changes: [], why: "node's version changed" }]) {
+    const w = list(root, base, [reason]);
+    assert.equal(w.whole, true);
+    assert.match(w.files[0].reasons[0], /^the whole module: a reason from (dates|package node) that names no item/);
+  }
   const none = merged({ 'process/modules/orders.uses.json': 'not json' });
   const n = list(none.root, none.base, place('src/orders/index.mjs:5'));
   assert.deepEqual(n.files.map((f) => f.file), all);
@@ -219,10 +241,13 @@ test('related <pr> lists the same from the session, from the merged result of th
   void join;
 });
 
-test('the shim reads the job block and the test record with its read-only token, and widens no permission', async () => {
+test('the shim reads the job block, the job\'s record and the test record with its read-only token, and widens no permission', async () => {
   const { readFileSync } = await import('node:fs');
   const wf = readFileSync(new URL('../../shims/module-tests.yml', import.meta.url), 'utf8');
   assert.deepEqual(wf.match(/^\s*permissions:\n(\s+\w[\w-]*: \w+\n)+/gm).map((x) => x.replace(/\s+/g, ' ').trim()), ['permissions: contents: read', 'permissions: contents: read']);
-  assert.match(wf, /- name: the job block and the test record\n[\s\S]*case "\$HEAD_REF" in job\/\*\) read_mark process4-job [\s\S]*read_mark process4-test-record /);
-  assert.match(wf, /--job-block "\$RUNNER_TEMP\/job-block\.txt" --test-record "\$RUNNER_TEMP\/test-record\.txt"/);
+  assert.match(wf, /- name: the job block, the job's record and the test record\n[\s\S]*case "\$HEAD_REF" in job\/\*\)\n\s*read_mark process4-job "[^\n]*\n\s*read_mark process4-job-record "[\s\S]*read_mark process4-test-record /);
+  assert.match(wf, /--job-block "\$RUNNER_TEMP\/job-block\.txt" --job-record "\$RUNNER_TEMP\/job-record\.txt" --test-record "\$RUNNER_TEMP\/test-record\.txt"/);
+  // the one job keeps the name of the required check, and no trigger runs with the base's rights
+  assert.match(wf, /^jobs:\n {2}module-tests:\n/m);
+  assert.doesNotMatch(wf, /pull_request_target/);
 });
