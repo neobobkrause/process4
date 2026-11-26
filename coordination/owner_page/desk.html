@@ -48,13 +48,14 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Waiting for you: the tool misreads civicsmith's outside packages</h2>
+<h2>Waiting for you: corrections to the tool from civicsmith's first conversions</h2>
 <p><b>The question.</b> Should I merge the correction?</p>
 <p><b>What happened.</b> civicsmith's ARCH listed what each of its 204 modules uses. The tool named things from outside packages by their file's full path on that one machine, so no package could ever be put on civicsmith's list of outside facilities. It also counted civicsmith's own parts, and two Node features it named wrongly, as outside facilities. That makes about 15,700 places nothing can clear, so every module would stay "not fully readable" and be told of every change. It is a fault in the tool against the written design; no design text changes.</p>
 <ul>
 <li><b>0. No change.</b> The conversion cannot clear those places.</li>
-<li><b>A. Merge the correction (recommended).</b> Built; all 273 of the tool's tests pass. Packages are named as the list names them, the same on every machine; civicsmith's own parts are no longer counted. Not proven: how many of the 15,700 clear on civicsmith. I expect nearly all; one Node feature (Proxy) stays a place by design. civicsmith then moves once more, before its first pass.</li>
+<li><b>A. Merge the corrections (recommended).</b> Built; all 276 of the tool's tests pass. Packages are named as the list names them, the same on every machine; civicsmith's own parts are no longer counted. Also three smaller faults its first conversion met: two standard Node items the tool did not know (Buffer, and a limit on a started program's output), a text-pattern check in tests mistaken for a test, and an import that loads a file a second time. Not proven: how many of the 15,700 clear on civicsmith; I expect nearly all. civicsmith then moves once more.</li>
 </ul>
+<p><b>A question for later (C):</b> the tool describes Node to itself from a text written by hand, which covers only part of Node, so more gaps like Buffer will turn up one job at a time. It could use Node's own published description instead, pinned to the product's Node version. Say "Instruction: study C" if you want me to look into it; otherwise I fix each gap as it is met.</p>
 <p>To choose, reply here starting with "Decision:", for example "Decision: A".</p>
 <p><b>Also, a smaller one:</b> civicsmith's ARCH left one module, "documents", with no code after reorganising its module list, and the tool keeps offering to convert it. The design already says a module with no code is a mistake in the list, which ARCH corrects by moving its requirements elsewhere and removing it. I have told ARCH so. I recommend no change to the process; say "Decision: B" only if you want a module with no code to be able to stay on the list.</p>
 </section>
