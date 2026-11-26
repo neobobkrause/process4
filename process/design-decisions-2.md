@@ -306,7 +306,8 @@ the range, side effects and test prerequisites do not." — 26 November 2026. Th
 program, these last from a brief that dropped a program's interface), option A, a started program's start arguments and
 output tell and four readings stand as built (a class instance and `this` tell; a message's stated channel tells; a
 constant with no stated type tells; changed code under a standing type error does not): "Decision: A" — 26 November
-2026; with the owner's note that ARCH and the lanes, not the tool alone, give jobs the perspective to declare what tells.
+2026; with the owner's note that ARCH and the lanes, not the tool alone, give jobs the perspective to declare what tells. Built: on the converted proof changed items that tell 486 to 216, told without need 309 to 255, missed 7 to 16 (the
+eight error-class cases, as decided, and one setting a started program reads).
 On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
 can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
 conversion's merge tells no one." — 26 November 2026.
