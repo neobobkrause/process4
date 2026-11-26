@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { CONFIG_FILE, fetchLine, loadConfig, loadModules, needConfig, ownerOf, readAt, requiredCheck, requirementsFile } from './config.mjs';
 import { block, parseBlock } from './github.mjs';
-import { noticeReasons } from './noticecomments.mjs';
+import { NOTICE_LIMIT, cutReason, noticeReasons } from './noticecomments.mjs';
 import {
   PROCESS_RECORDS, PRODUCT_RECORDS, checkKey, create, findIssue, laneRefusal, liveNotes,
   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
@@ -336,7 +336,10 @@ export function open(ctx, a) {
       : here || fail('the checkout is detached; name the branch with --branch <b>');
   if (module && name.match(JOB)?.[1] !== module) fail(`${name} is not a job branch of ${module}`);
   const had = ctx.gh.prForBranch(ctx.slug, name);
-  if (had) { printJob(ctx, cfg, had); return 0; }
+  // A job's pull request that opened while GitHub refused its job block (too large, before blocks were cut to fit) is
+  // given its block now; any other open pull request is only printed.
+  const blockless = had && module && !ctx.gh.comments(ctx.slug, had.number).some((c) => parseBlock(c.body, JOB_MARK));
+  if (had && !blockless) { printJob(ctx, cfg, had); return 0; }
   if (!module && typeof a.title !== 'string') fail('say --module <name> or --title "<title>"');
   const base = a['into-main'] ? 'main' : intoBranch(ctx, cfg, a.into);
   if (!module) {
@@ -365,17 +368,38 @@ export function open(ctx, a) {
   // Each notice's reasons for this module: from its entry where it carries them, else from the notice comments on its
   // merged pull request (noticecomments.mjs).
   const comments = new Map();
-  if (notices.length) job.uses = notices.flatMap((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
+  const reasons = notices.map((w) => noticeReasons(ctx.gh, ctx.slug, w, comments));
   // The notices the job carries, by provider and merged pull request, so a re-run of notify knows it has them (no repeats).
   if (notices.length) job.notices = notices.map((w) => ({ from: w.from, merged: Number(w.merged) }));
+  const body = jobBlockBody(job, notices, reasons);
   const n = Number(name.match(JOB)[2]);
-  const pr = ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
-  ctx.gh.addComment(ctx.slug, pr.number, block(JOB_MARK, job));
+  const pr = had || ctx.gh.createPR(ctx.slug, { head: name, base, title: `${module}: job ${n}`, body: `The job for ${module}. Its work is in the job block below.`, draft: true });
+  ctx.gh.addComment(ctx.slug, pr.number, body);
   if (mine.length) {
     writeRecord(ctx.gh, ctx.slug, issue, records, 'waiting-work', { ...records['waiting-work'].data, work: waiting.filter((w) => w.module !== module) });
   }
   printJob(ctx, cfg, pr);
   return 0;
+}
+
+// A starting job's block, kept under the size of one comment as notify keeps a running job's (the owner's decision B of
+// 25 Nov 2026; choice 6): each notice's reasons go in whole where they fit; otherwise every reason loses its before and
+// after (cutReason); where still too large, the largest notices, one by one, are each put as one `whole` reason, which
+// runs the whole module's tests, in notify's words (build text 5, section 5). Fails plainly, before any pull request is
+// opened, where even that does not fit.
+export function jobBlockBody(job, notices, reasons) {
+  if (!notices.length) return block(JOB_MARK, job);
+  const bodyOf = (sets) => block(JOB_MARK, { ...job, uses: sets.flat() });
+  const tooMany = (w, r) => [{ module: w.from, whole: `the notice from ${w.from} (pull request ${Number(w.merged)}) has ${r.length} reasons, too many for the job block; the whole module's tests run` }];
+  let sets = reasons;
+  if (bodyOf(sets).length < NOTICE_LIMIT) return bodyOf(sets);
+  sets = reasons.map((r) => r.map(cutReason));
+  const order = reasons.map((r, i) => i).sort((a, b) => JSON.stringify(sets[b]).length - JSON.stringify(sets[a]).length);
+  for (const i of [-1, ...order]) {
+    if (i >= 0) sets = sets.map((r, j) => (j === i ? tooMany(notices[i], reasons[i]) : r));
+    if (bodyOf(sets).length < NOTICE_LIMIT) return bodyOf(sets);
+  }
+  return fail(`the job block of ${job.module} is too large for one comment even with each notice put as one reason; no pull request is opened`);
 }
 
 // 4. ready <pr>: marks ready only where the test record stands for the head commit, or where nothing needs a record:

@@ -111,3 +111,10 @@ modules of every ordinary change to an early module; options below remove only t
 point-3 notices buy one session's reading per later module with no test, at O(n²) sessions, while the provider's own tests
 and the walks stay. B1 changes the design text and needs the owner's "Decision:". Without B1, put to him that the first pass
 of 8 runs about 200–1,600 told jobs outside its scope before it can stop.
+
+## The owner's decision (26 Nov 2026)
+
+Typed in PROCESS #18's session: "Decision: 1-A, 2-B1, 6B" — the group put on his page "Process4 Waiting for Bob"
+(05:45Z): 1-A the tool's fault fixed (a host version first written tells no one); 2-B1 a conversion's merge tells no module
+by point 3; 6B a record in parts, a starting job's block cut to fit (research `waiting-work-record-size-25nov.md`). Built
+as one version, so civicsmith moves once.

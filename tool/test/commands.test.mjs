@@ -4,12 +4,12 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { CONVERSION_MARK, JOB_MARK, RECORD_MARK, branch, close, latestVersion, merge, open, push, ready, results, stateWrite } from '../lib/commands.mjs';
 import { block, parseBlock } from '../lib/github.mjs';
-import { writeNotice } from '../lib/noticecomments.mjs';
+import { cutReason, writeNotice } from '../lib/noticecomments.mjs';
 import { mark } from '../lib/state.mjs';
 import { TEST_MARK, noticeAfterTests, recordNeed, recordStands } from '../lib/testrecord.mjs';
 import { usesOnly } from '../lib/testrun.mjs';
 import { MEANING_MARK } from '../lib/round.mjs';
-import { git, parseArgs } from '../lib/util.mjs';
+import { Fail, git, parseArgs } from '../lib/util.mjs';
 import { commit, config, converted, ctxFor, fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
 
 function product() {
@@ -193,7 +193,8 @@ test('open --module copies each waiting notice\'s reasons for its module from th
   assert.equal(job.kind, 'told');
   assert.deepEqual(job.work, ['notice from dates (pull request 7)', 'notice from dates (pull request 8)', 'notice from dates (pull request 9)']);
   // Every part's reasons of this module, in order; an older entry that carries its reasons, as is; not another module's.
-  assert.deepEqual(job.uses, [...big, { module: 'dates', entry: 'old' }, day]);
+  // Too large whole for one comment, the reasons go in without their before and after (choice 6).
+  assert.deepEqual(job.uses, [...big.map(cutReason), { module: 'dates', entry: 'old' }, day]);
   // The notices it carries, so a re-run of notify skips it whatever its state (no repeats).
   assert.deepEqual(job.notices, [{ from: 'dates', merged: 7 }, { from: 'dates', merged: 8 }, { from: 'dates', merged: 9 }]);
   const waiting = parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work;
@@ -655,4 +656,61 @@ test('close --nothing-to-change: where the tool rewrites the module\'s uses file
   close(ctx, other.number, { _: [], 'nothing-to-change': 'nothing reaches dates' });
   assert.equal(other.state, 'closed');
   assert.match(out.join('\n'), /closed pull request 2 unmerged/);
+});
+
+// Choice 6: a starting job's block is kept under the size of one comment, as notify keeps a running job's, and a job's
+// pull request that opened while GitHub refused its block gets its block at the next open.
+const limited = () => fakeGitHub({
+  addComment(slug, n, body) {
+    if (body.length > 65536) throw new Fail('GitHub refused: gh: Validation Failed (HTTP 422); Body is too long (maximum is 65536 characters)');
+    const c = { id: this.s.nextComment++, on: n, body }; this.s.comments.push(c); return c;
+  },
+});
+
+test('open --module cuts a starting job\'s block to fit one comment: before and after first, then the largest notices one by one', () => {
+  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const gh = limited();
+  converted(gh, ['dates', 'orders']);
+  const { ctx } = ctxFor(root, gh);
+  const r = (i, size) => ({ module: 'dates', entry: `e${i}`, changes: ['bound changed'], lines: [`src/orders/index.mjs:${i}`, 'z'.repeat(size)], through: null, before: { handsBack: 'x'.repeat(2000) }, after: { handsBack: 'y'.repeat(2000) } });
+  // Notice 7: small reasons that fit once cut; notice 8: reasons too large even cut (their lines alone pass the limit).
+  writeNotice(gh, 'o/product', 7, 'dates', [['orders', Array.from({ length: 30 }, (_, i) => r(i, 10))]]);
+  writeNotice(gh, 'o/product', 8, 'dates', [['orders', Array.from({ length: 20 }, (_, i) => r(i, 3000))]]);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }, { module: 'orders', kind: 'notice', from: 'dates', merged: 8 }] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  branch(ctx, 'job/orders/1');
+  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
+  const c = gh.s.comments.find((x) => parseBlock(x.body, JOB_MARK));
+  assert.ok(c.body.length < 60000);
+  const job = parseBlock(c.body, JOB_MARK).data;
+  assert.equal(job.uses.length, 31);
+  assert.ok(job.uses.slice(0, 30).every((u) => u.before === undefined && /left out/.test(u.cut)));
+  assert.deepEqual(job.uses[30], { module: 'dates', whole: 'the notice from dates (pull request 8) has 20 reasons, too many for the job block; the whole module\'s tests run' });
+  assert.deepEqual(job.notices, [{ from: 'dates', merged: 7 }, { from: 'dates', merged: 8 }]);
+});
+
+test('open --module gives a job\'s pull request that has no block its block, and opens no second pull request', () => {
+  const root = makeRepo({ ...productFiles(), 'process/modules/orders.md': '- **R1** [met] one\n' });
+  git(['push', '-q', 'origin', 'main:refs/heads/tranche'], { cwd: root });
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  const { ctx } = ctxFor(root, gh);
+  writeNotice(gh, 'o/product', 7, 'dates', [['orders', [{ module: 'dates', entry: 'Day', changes: ['bound changed'], lines: ['src/orders/index.mjs:6'], through: null }]]]);
+  const f = join(root, 'ww.json');
+  writeFileSync(f, JSON.stringify({ work: [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }] }));
+  stateWrite(ctx, 'waiting-work', { _: [], create: true, from: f });
+  branch(ctx, 'job/orders/1');
+  // As on civicsmith (filings, 1669): the pull request opened, and GitHub refused its block.
+  const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true });
+  assert.equal(open(ctx, { _: [], module: 'orders' }), 0);
+  assert.equal(gh.s.prs.length, 1);
+  const blocks = gh.s.comments.filter((c) => c.on === pr.number && parseBlock(c.body, JOB_MARK));
+  assert.equal(blocks.length, 1);
+  assert.deepEqual(parseBlock(blocks[0].body, JOB_MARK).data.notices, [{ from: 'dates', merged: 7 }]);
+  // Its notice has left waiting work; a second open only prints the block.
+  assert.deepEqual(parseBlock(gh.s.comments.find((c) => c.body.includes(mark('waiting-work'))).body, mark('waiting-work')).data.work, []);
+  open(ctx, { _: [], module: 'orders' });
+  assert.equal(gh.s.comments.filter((c) => c.on === pr.number && parseBlock(c.body, JOB_MARK)).length, 1);
 });

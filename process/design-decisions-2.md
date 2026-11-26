@@ -229,6 +229,11 @@ so to him on the same thread).
 5. **The reason printed.** A notice names each changed item the module uses, how it was found (its means, ARCH's work, the
    job's declaration), the one-line why, and the places from the module's uses file: file, line, and for tests the test
    case's name.
+6. **A conversion that changes no item tells no one by point 3.** Its statement that it changes no behaviour stands for
+   the places outside the standard and the modules with no uses file, as a job's record that an item is unchanged stands
+   for that item. A conversion that changes an item tells as any merge (decision 2-B1).
+7. **A version first written is not a change of version.** A package or the host that had no version before (the
+   facility list's first writing) tells no one; a real change of version tells as point 4 says (decision 1-A).
 
 Retired: decision 3B of 25 November (a user the tool cannot follow fully told only where its files name the entry), and
 the rule it narrowed, that such a user is told of every change that tells any user; both rested on inferring uses.
@@ -245,6 +250,13 @@ no standard; B the standard without the rules on types; C the full standard, wit
 `process/research/not-followed-told-everything-25nov.md`, `notify-1356-anything-to-stated-25nov.md`,
 `notify-1356-still-197-25nov.md`, `same-name-entries-25nov.md`, `notify-rerun-repeats-25nov.md` and
 `narrowing-decision-2-25nov/`, and `who-is-told-25nov.md`.
+Items 6 and 7: the trial on process3-probes (26 Nov) found the facility list's first writing read as a change of the
+host's version, telling all six modules (a tool fault against the design), and that converting a product sends O(n²)
+notices by point 3 (1,596 in civicsmith's first pass of 8, about 20,700 over 204 modules). Options: for the first, 0 no
+change, A the tool fixed; for the second, 0 no change, B1 a conversion tells no one by point 3, B2 notices dropped at the
+receiving module's conversion, B3 only the record in parts. Researched in `process/research/conversion-notices-26nov.md`
+and `trial-who-is-told-26nov.md`. A conversion that changes an item still tells by point 3, as the owner's page put it
+("A conversion that changes what a module offers still tells its users").
 
 **The owner's words.** All 25 November 2026; the early provider's three fixes and the unknown kind's three are under "How
 `notify` reads the product" and "How a notice reaches a user".
@@ -278,6 +290,8 @@ left open; PROCESS asked once whether to record them as decisions, and he answer
 changes are still properly factored into the decision of who to notify and who not to notify
 2. a told module that finds nothing to change, should not still run its related tests before it closes" — 25 November
 2026, about 23:10 UTC.
+On a version first written, and a conversion's notices, with the record in parts below: "Decision: 1-A, 2-B1, 6B" — 26
+November 2026 (in PROCESS #18's session).
 
 ### Subject: How `notify` reads the product
 
@@ -439,3 +453,20 @@ scheduled task; C fewer takeovers on a version move. Researched in `process/rese
 **The owner's words.** "Decision: B, as recommended" — 26 November 2026, typed as a comment on his page "Process4 Waiting
 for Bob" on option B, sent to PROCESS #18; the recommendation was "B, measured first; if the measurement fails, A". The
 measurement failed; A was built.
+
+### Subject: A record that outgrows one comment, and a starting job's block
+
+**The rule as it now stands.** A record of the shared state is one comment, or more where it outgrows one: its longest
+list is spread over as many comments as it needs, each under 60,000 characters, the first holding the rest of the record
+and how many parts there are; it is read back as one. A record with no list, or one entry too large for a comment alone,
+fails plainly. A starting job's block is kept under 60,000 characters at `open` as at `notify`: reasons first lose their
+before and after, then the largest notices each become one reason that runs the whole module's tests; an `open` that
+still cannot fit opens nothing. A job's pull request that opened without its block gets it at the next `open` (design
+part 4, section 4; build text 5, sections 1 and 5; build text 1b, commands 3 and 17). It refuses no work for size.
+
+Why: civicsmith's waiting-work record (1,937 entries) passed GitHub's 65,536-character limit, so notices for modules with
+no open job were lost, and two jobs' pull requests opened with no block. Options: A no change; B the record in parts and
+the block cut (recommended); C only drop old `uses` and group entries. Researched in
+`process/research/waiting-work-record-size-25nov.md`.
+
+**The owner's words.** "Decision: 1-A, 2-B1, 6B" — 26 November 2026 (in PROCESS #18's session; 6B is this subject).
