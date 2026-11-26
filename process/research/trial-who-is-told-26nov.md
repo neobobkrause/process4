@@ -47,3 +47,27 @@ civicsmith moves only on his instruction at its coordinator.
 
 A product of a few small modules cannot show civicsmith's cost of conversion, its volume of notices, or a module whose
 tests near two hours. Those are the first pass of 8 civicsmith modules (Part D, step 7), which stops for his review.
+
+## The result (relayed by process3-probes coordinator #6, 26 Nov ~05:28Z, from ARCH #7's account in process3-probes' `process/decisions-arch.md`, PR 424)
+
+Provider `units`; users `shipping` (the grams function and the `Weight` type) and `invoice` (`Weight` only). Each change a
+made-up requirement, merged as ordinary work, its notice read at merge.
+- Insides only (how `units` reads weight text): told no module. As expected.
+- An optional "rounding mode" argument added to the grams function (default unchanged, no new error): told `shipping` only;
+  `invoice` not told; `shipping` needed no change. As expected (accepting more tells its users).
+- A changed default (an exact half gram rounds down): told `shipping` only; `shipping`'s cost changed at one boundary (100.5 g
+  now 100 g / 150p, was 101 g / 300p), it changed one test and declared its own change, which told `invoice`; `invoice`
+  declared its own, which told no one. Each hop told only its own direct users and stopped at the end of the chain.
+- Cost read: five job sessions, about US$28.6; ARCH and coordinator unmeasured; steps 5–6 about 45 minutes. No process fault.
+
+ARCH's four findings, unchanged: "(a) first creation of the facility list was mis-read by the tool as a host-version change
+and told all six modules spuriously; (b) converting a previously-unconverted product generates O(n^2) moot inter-module
+notices via places-outside-the-standard; (c) the planned "change the means cannot show" example turned out means-visible
+because an earlier job wrote the tie-break onto a marked bound line (so the coding standard made it an interface change) —
+the declaration path was still exercised; (d) the change of meaning cascaded two further hops with no ARCH placement, each
+hop telling exactly its next user and stopping at the module with no users."
+
+Proven once, on a six-module product: a notice reached exactly its users for a change to the insides, a change its means
+show, and a declared change carried along a chain. Not shown: a change of meaning its means cannot show (c); that a told
+job ran only its related tests (not reported); anything at civicsmith's scale. (a) and (b) are measured, and are looked
+into before civicsmith moves (research `conversion-notices-26nov.md`).
