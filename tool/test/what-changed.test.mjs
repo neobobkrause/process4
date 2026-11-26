@@ -1,7 +1,8 @@
 // What counts as a change (design part 2, section 7; build text 5, section 6): an item whose type is written differently
 // but means the same is unchanged, as the type checker finds it; accepting more is a change, which tells its users; only
-// a change of an item's stated types or bounds tells (the owner's decision of 26 November): errors, channels, arguments
-// written into and a constant's value within its type tell no one; describing is no change only where the item's code
+// a change of an item's stated types or bounds tells (the owner's decision of 26 November), a program it starts (its
+// start arguments and output) among them: errors, other channels, arguments written into and a constant's value within
+// its type tell no one; describing is no change only where the item's code
 // is unchanged; and the facts worked out from the code, listed though they tell no one, are exact where the language
 // decides them.
 import assert from 'node:assert/strict';
@@ -246,6 +247,24 @@ export function trim(line) { return line.trim(); }
 
 // civicsmith, 26 Nov 2026: a conversion stated the types of a module whose kinds name each other; each kind written out
 // in full wherever it appears made millions of parts of a few hundred distinct ones, and the means did not fit memory.
+test('a program the item starts: its start arguments and output streams tell; a file it writes, or a setting it reads, does not', () => {
+  const index = `import { spawn } from 'node:child_process';
+export const PROGRAM = new URL('./worker.mjs', import.meta.url).pathname;
+/** @param {(line: string) => void} onLine @returns {void} */
+export function start(onLine) { const c = spawn(process.execPath, [PROGRAM]); c.stdout.on('data', (/** @type {unknown} */ d) => onLine(String(d))); }
+`;
+  const worker = (body) => ({ 'src/p/worker.mjs': `${body}\n` });
+  const run = (b, a) => changes(index, index, { extraB: worker(b), extraA: worker(a) });
+  const out = "process.stdout.write('a');";
+  // its output stream and its start arguments are what start hands back and accepts (the owner's correction of 26 Nov)
+  assert.deepEqual(run(out, "process.stderr.write('a');"), ['start: the program it starts changed']);
+  assert.deepEqual(run(out, "process.stdout.write(process.argv[2] ?? 'a');"), ['start: the program it starts changed']);
+  // a file it writes and a setting it reads are other channels: they tell no one
+  assert.deepEqual(run(out, `import { writeFileSync } from 'node:fs';\nwriteFileSync('kept.txt', 'a');\n${out}`), []);
+  assert.deepEqual(run(out, "process.stdout.write(process.env.CURRENCY ?? 'a');"), []);
+  assert.deepEqual(moduleMeans(product({ p: index }, worker(out)), 'p').items.start.program, ['writes standard output']);
+});
+
 test('equal parts of the means are kept once, written the same; a kind\'s instances are read from the items that name it', () => {
   loadReader();
   const p = `/**\n * @typedef {Object} Leaf\n * @property {'leaf'} tag\n * @property {Tree[]} kids\n */

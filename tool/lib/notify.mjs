@@ -64,6 +64,7 @@ export function listingText(l) {
     if (e.needsThis) L.push('      needs its object as this');
     if (e.writesArguments) L.push(`      writes into: ${e.writesArguments.join(', ')}`);
     if (e.channels) L.push(`      channels, settings and files: ${e.channels.join('; ')}`);
+    if (e.program) L.push(`      the program it starts: ${e.program.join('; ')}`);
     if (e.typeErrors) L.push(`      type errors: ${e.typeErrors.join('; ')}`);
   }
   return L.join('\n');

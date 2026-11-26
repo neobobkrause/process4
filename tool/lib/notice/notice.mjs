@@ -5,18 +5,19 @@
 // every item whose means differs, or that is removed, is a changed item. Only a change of an item's stated types or
 // bounds tells (the owner's decision of 26 November): what it accepts and hands back, expanded, with the parts that are
 // type facts (its sort, a member that may be missing, plain data or an instance, its object as `this`, a message's
-// channel), its bound lines, and a new type error in its code. Errors that can leave it, channels, settings and files
-// it reads or writes, arguments it writes into, and a constant's value within its type are worked out and listed, and
-// tell no one. Any difference in what it accepts tells, accepting more included (the owner's decision of 25 November,
-// "Who a change tells", item 3); the words `accepts more` and `cannot stand in` only say which. A new item tells no
-// one, unless it changes what a name already used resolves to (resolvesAnew). Describing an item (a part read as any value, with no stated type
-// or a stated `unknown`, now stated narrower) is no change where the item's code is unchanged or the merge is the
-// module's conversion (a merged job whose block's kind is `conversion`); at a conversion every other change tells as
-// always. Added to these: the items whose meaning ARCH names in the work it placed, and the pull request declares
-// (`named`): a name or a declaration may add a changed item, never remove one; and taken off: an item the tool found
-// changed that the pull request records as keeping its domain and range (`sameAs`, push --same). A provider's error or
-// channel that passes through a later module's item (its uses file's `takesIn`) does not make that item changed; a
-// provider's type does, being written out in the item's own stated types.
+// channel; for a program it starts, the program's start arguments and the streams it writes out), its bound lines, and
+// a new type error in its code. Errors that can leave it, other channels, settings and files it reads or writes,
+// arguments it writes into, and a constant's value within its type are worked out and listed, and tell no one. Any
+// difference in what it accepts tells, accepting more included (the owner's decision of 25 November, "Who a change
+// tells", item 3); the words `accepts more` and `cannot stand in` only say which. A new item tells no one, unless it
+// changes what a name already used resolves to (resolvesAnew). Describing an item (a part read as any value, with no
+// stated type or a stated `unknown`, now stated narrower) is no change where the item's code is unchanged or the merge
+// is the module's conversion (a merged job whose block's kind is `conversion`); at a conversion every other change
+// tells as always. Added to these: the items whose meaning ARCH names in the work it placed, and the pull request
+// declares (`named`): a name or a declaration may add a changed item, never remove one; and taken off: an item the tool
+// found changed that the pull request records as keeping its domain and range (`sameAs`, push --same). A provider's
+// error or channel that passes through a later module's item (its uses file's `takesIn`) does not make that item
+// changed; a provider's type does, being written out in the item's own stated types.
 //
 // Who is told (design part 2, section 7, "Who is told"): a lookup in the later modules' uses files, with no user's code
 // read. Each module whose uses file names a changed item or a member of a changed type (by its provider and name,
@@ -201,7 +202,7 @@ export function describe(it) {
   if (it.handsBack !== undefined) d.handsBack = render(it.handsBack);
   if (it.optional) d.optional = true;
   if (it.bounds?.length) d.bounds = it.bounds;
-  for (const k of ['throws', 'instances', 'writesArguments', 'channels', 'typeErrors']) if (it[k]?.length) d[k] = it[k];
+  for (const k of ['throws', 'instances', 'writesArguments', 'channels', 'program', 'typeErrors']) if (it[k]?.length) d[k] = it[k];
   if (it.needsThis) d.needsThis = true;
   if (it.value !== undefined) d.value = it.value;
   if (it.message) d.message = it.message;
@@ -256,6 +257,9 @@ export function compareItem(b, a, { conversion = false } = {}) {
   if (!!a.optional && !b.optional) differ('may now be missing', false, true);
   if (!same(b.bounds ?? [], a.bounds ?? [])) differ('bound changed', b.bounds ?? [], a.bounds ?? []);
   if (!same(b.instances ?? [], a.instances ?? [])) differ('plain data or instance changed', b.instances ?? [], a.instances ?? []);
+  // A program it starts: the start arguments it reads and the streams it writes out are what the item accepts and hands
+  // back (design part 2, section 7); its settings, files and other channels tell no one.
+  if (!same(b.program ?? [], a.program ?? [])) differ('the program it starts changed', b.program ?? [], a.program ?? []);
   if (!!b.needsThis !== !!a.needsThis) differ(a.needsThis ? 'now needs its object as this' : 'no longer needs its object as this', !!b.needsThis, !!a.needsThis);
   // Its code no longer matching its stated types is a change: a type error it did not have before (build text 2b,
   // section 6). A change to its code while the same errors stand changes no stated type (the owner's decision of 26
@@ -273,7 +277,7 @@ export function compareItem(b, a, { conversion = false } = {}) {
 const PARTS_OF = {
   'kind changed': ['kind'], 'accepts more': ['accepts'], 'cannot stand in': ['accepts'], 'hands back differently': ['handsBack', 'message', 'value'],
   'may now be missing': ['optional'], 'bound changed': ['bounds'],
-  'plain data or instance changed': ['instances'], 'now needs its object as this': ['needsThis'], 'no longer needs its object as this': ['needsThis'],
+  'plain data or instance changed': ['instances'], 'the program it starts changed': ['program'], 'now needs its object as this': ['needsThis'], 'no longer needs its object as this': ['needsThis'],
   'type error in its code': ['typeErrors'],
 };
 
@@ -315,7 +319,7 @@ const sameOr = (x, y) => same(x ?? null, y ?? null);
  */
 export function memberChanges(b, a, conversion = false) {
   if (!b || !a || b.kind !== a.kind || !MEMBERED.has(a.kind) || (b.message ?? null) !== (a.message ?? null)) return null;
-  for (const k of ['bounds', 'instances']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
+  for (const k of ['bounds', 'instances', 'program']) if (!same(b[k] ?? [], a[k] ?? [])) return null;
   if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || newTypeError(b, a)) return null;
   const out = { added: [], removed: [], changed: [], optional: [] };
   if (a.kind === 'handle kind') {
@@ -372,7 +376,7 @@ function byNameOf(c, names) {
  */
 function onlyInside(b, a, names, conversion = false) {
   if (!names.size || b.kind !== a.kind || (b.message ?? null) !== (a.message ?? null)) return false;
-  for (const k of ['bounds', 'instances']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
+  for (const k of ['bounds', 'instances', 'program']) if (!same(b[k] ?? [], a[k] ?? [])) return false;
   if (!!b.needsThis !== !!a.needsThis || !!b.optional !== !!a.optional || newTypeError(b, a)) return false;
   const known = describedBy(b, a, conversion);
   return same(byName(known(b.accepts, a.accepts) ?? null, names), byName(a.accepts ?? null, names))
