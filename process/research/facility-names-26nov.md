@@ -214,3 +214,20 @@ the module's own (a path it can evaluate from `import.meta.url`) is not seen; if
 for caught errors, so this follows S4 by extension. A sentence, if PROCESS wants it written (02c, R2): "A value narrowed by
 `instanceof` has the class's shape; a module's own guard gives a shape and is placed where its argument is not from the
 module's own channel."
+
+## More from civicsmith job civil-time #3 (PR 1692, via ARCH #28 and coordinator #10, 10:08Z), unchanged
+
+"the tool's host description omits process.versions (civil-time reads tz/ICU versions for R25; now read as unknown and
+narrowed). The tool also seems to treat any same-named binding elsewhere in a file as an assignment for R19 ... I worked
+within both without changing behaviour." And: "R26's clock test (invariants.test.mjs, 18 places: S8, R14, S4, R1) replaces
+globalThis.Date and globalThis.Temporal so that any clock read throws. The standard has no form for this: S8 forbids the
+writes; mock.method on a host global is flagged S12; the tool's description of node:test has no mock.property and its
+library has no Temporal; mock.timers is unclassified (R14). I kept the test as it was rather than weaken it."
+
+Reading (PROCESS #18, not yet researched by a worker): four more gaps in the hand-written host description (process.versions,
+node:test's mock.property, Temporal, mock.timers' classification) — now measured repeatedly, so option C (describe Node from
+its published types, pinned to the product's Node version) has a measured cause. R19's same-named binding looks like a tool
+fault (a binding elsewhere is not an assignment). Replacing a host global in a test (a clock that throws) has no form in the
+standard: a design question for the owner (a form for a test to replace a host facility, e.g. node:test's mock on a host
+global, read as a mock use of the host), not a tool fault. For PROCESS #19: research these three; put C, R19 and the test
+form to the owner as one group with, or after, A.
