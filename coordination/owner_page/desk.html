@@ -22,19 +22,20 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 01:25 UTC, by PROCESS #17. First: start PROCESS #18 (steps below). Done: who is told of a change is on main. Also waiting: idle sessions being compacted, and a fresh ROOT for the trial product.</p>
+<p class="updated">Updated 26 Nov 2026, about 01:35 UTC, by PROCESS #18. First: the path to civicsmith, step 1 is a fresh ROOT on the trial product. Done: idle compaction is off.</p>
 </header>
 
 
 
 
 <section class="wait">
-<h2>Waiting for you: start PROCESS #18</h2>
-<p>I have reached the fill level where a fresh PROCESS takes over, at a natural pause: no helper running, everything merged, my handover written.</p>
+<h2>Waiting for you: the path to civicsmith</h2>
+<p>civicsmith moves to the new version of Process4 only after it has been tried on the trial product (process3-probes). In order:</p>
 <ol>
-<li>Open <b>https://claude.ai/code</b>, start a new session with repository <b>neobobkrause/process4</b> only, branch <b>main</b>, environment <b>BioDefault</b>, Auto mode.</li>
-<li>Give it this prompt:<div class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read, as your starting text says: the design in full, process/README.md, process/decisions-index.md, process/research/README.md, process/lanes/civicsmith/README.md, and process/handover.md — read it last and continue from it. You keep the owner&#x27;s standing page &quot;Process4 Waiting for Bob&quot; at https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy; update it in place.</div></li>
-<li>It names itself <b>PROCESS #18</b>. Then archive the session named <b>PROCESS #17</b> (its menu, <b>Archive</b>).</li>
+<li><b>Yours, now: start a fresh ROOT on the trial product.</b> Its ROOT is too deep in the chain of sessions to hand over again (choice 5, below). The steps are on the trial product's coordinator's page. A fresh ROOT restarts every role there, so they also come up with idle compaction off.</li>
+<li><b>Mine, meanwhile:</b> write down what the trial will try, and put choice 6 back to you (civicsmith's list of waiting work must be split into parts before civicsmith can run on the new version).</li>
+<li><b>Yours, once I say the plan is written:</b> in the trial product's coordinator session, type:<div class="draft">Instruction: move process3-probes to the latest Process4 version</div>. The trial then runs; I report what it showed.</li>
+<li><b>Yours, once the trial is clean and choice 6 is built:</b> in civicsmith's coordinator session, type:<div class="draft">Instruction: move civicsmith to the latest Process4 version</div>. Its ARCH then works on the first 8 modules only, and stops there for your review.</li>
 </ol>
 </section>
 
@@ -45,18 +46,10 @@ a{color:var(--accent)}
 <p><b>No product uses it yet.</b> Next: the trial on the trial product, which needs a fresh ROOT from you; then civicsmith moves only when you tell its coordinator to move it, and its first pass of 8 modules stops for your review.</p>
 </section>
 
-<section class="wait">
-<h2>Waiting for you: sessions that sit idle are compacted</h2>
-<p><b>The question.</b> Should sessions stop being compacted when they sit idle?</p>
-<p><b>What happened.</b> civicsmith's ARCH session lost what it had read. It was not because it filled up. It was 43 percent full, below the 50 percent point where it would hand over. It had been idle for 76 minutes, waiting on merges. When it woke, Claude Code shrank its memory to a summary. Claude Code's own notice said so: "Compacted using a summary written while you were away", and it names a setting that turns this off. Your design says refreshes must make compaction unnecessary, but it only knew about compaction when a session fills up. Any role idle for about an hour is exposed. ARCH is the most exposed, and ROOT wakes only hourly.</p>
-<p><b>A second finding.</b> ARCH's handover notes say it cannot read how full it is. That is wrong, and has been passed down from ARCH to ARCH. The figure reads 0 only until a session finishes its first reply; after that it is real. Proven: ARCH #26 had a real figure available at about 80 points and never looked again after its first minute. My own session showed the same.</p>
-<ul>
-<li><b>0. No change.</b> Idle roles keep being compacted and carry on from a summary.</li>
-<li><b>A. Turn idle compaction off.</b> The setup script of the environment the sessions run in already writes one settings block for every session. It would also write <code>"idleCompaction": false</code>. I propose the change through Claude Code's own approval prompt, and you approve it with one click there. It applies to sessions started after that. Cost: a session waking after a long idle re-reads its memory at full price, roughly $1 to $3 each time (estimated, not measured). Not proven: that the setting works. Its only source is Claude Code's notice. The next idle hour of a fresh session will show it.</li>
-<li><b>B. Correct the claim.</b> The design will say the figure is real after a session's first reply. I tell civicsmith's coordinator that ARCH's note is wrong. Text only.</li>
-<li><b>C. A and B (recommended).</b> A removes what happened; B removes the false belief that would hide the other kind of compaction.</li>
-</ul>
-<p>To choose, reply here starting with "Decision:", for example "Decision: C". You may also set these options aside.</p>
+<section class="card">
+<h2>Done: idle compaction is off</h2>
+<p>On your instruction ("Instruction: Turn idle compaction off", 26 Nov), the environment the sessions run in now tells every session started from now on not to compact itself while idle. You approved it in Claude Code's prompt; the design (part 7) and your record say so (merged as 1813890). Sessions already running keep the old behaviour until they are replaced. Not proven: that the setting works; the next idle hour of a fresh session will show it.</p>
+<p><b>Still open, when convenient:</b> ARCH's handover notes say it cannot read how full it is. That is wrong: the figure is real after a session's first reply. Option B was to correct the design and tell civicsmith's coordinator. Text only. Say "Decision: B" if you want it.</p>
 </section>
 
 
@@ -82,9 +75,9 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> has dropped its refactoring tranche and has no tranche open; the refactoring restarts once the new version is confirmed on the trial product. It runs Process4 version 55db8e4 until you tell its coordinator to move it.</li>
+<li><b>civicsmith</b> has dropped its refactoring tranche and has no tranche open; the refactoring restarts once the new version is confirmed on the trial product. It runs Process4 version 55db8e4 until you tell its coordinator to move it. The newest version is 1813890.</li>
 <li><b>The trial product</b> (process3-probes) is quiet; it needs a fresh ROOT from you (choice 5's cause).</li>
-<li><b>PROCESS #17</b> has handed over and waits for you to start PROCESS #18; it has no lane running.</li>
+<li><b>PROCESS #18</b> is running (session named PROCESS #18); it has no lane running. You may archive the session named <b>PROCESS #17</b> if you have not.</li>
 </ul>
 </section>
 </main>
