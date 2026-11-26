@@ -47,3 +47,24 @@ The worker's trace, every fact marked measured or inferred: `trace.md`. Earlier 
 
 Recommended: B, measured first; if the measurement fails, A. C only if B fails (with B depth no longer matters).
 Choice 5 is folded into this group.
+
+## The owner's choice, and the test (26 Nov 2026)
+
+His words, typed as a comment on his page "Process4 Waiting for Bob" (thread on option B, sent to PROCESS #18,
+2026-11-26T01:46Z, attributed by the service to the owner): "Decision: B, as recommended" — that is B, the test first; A if
+the test fails.
+
+The test: PROCESS #18 made a one-time scheduled task `trig_011tSa8VwxSHALEZFTbMynfk` ("PROCESS depth test (one-time)",
+create a new session on firing, 01:52Z, no notifications) whose session reports its parent, depth, repository, settings and
+whether the approvals loaded. The tool that makes such a task takes no repository: its record shows no folders and no
+source, so the session may start with none.
+
+## The test's result (26 Nov ~01:52Z), and A built
+
+The session (session_018BhcecUgPnk4T5h2sY7PYR, origin `scheduled_trigger`) had no parent (depth 0, M). It started in an
+empty `/home/user` with no repository (M), so no `CLAUDE.md` approvals and no deny list loaded (its own report, M); the
+environment's `autoMode` and `idleCompaction` were there (M). It had no tool to read its session, message another session
+(its `SendMessage` refused: "this cloud session's credential is accepted only for its own work") or start one (M). So it
+cannot hold ROOT: B fails on the repository and on the tools. Archived by PROCESS #18; its one-time task ended itself.
+A built: design part 4 §6, part 7 §1 (the limit's row), ROOT's rules 6 and 8, the record's subject "The limit on depth,
+and a fresh ROOT". C is not chosen; put to the owner once.
