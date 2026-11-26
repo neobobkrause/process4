@@ -1,0 +1,11 @@
+{
+  "process_folder": "process/",
+  "test_command": "node --test",
+  "language_reader": {
+    "name": "typescript",
+    "version": "5.6.3",
+    "source": [
+      "**/*.mjs"
+    ]
+  }
+}

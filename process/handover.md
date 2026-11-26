@@ -1,48 +1,46 @@
 # PROCESS handover
 
-Written 25 Nov 2026 ~18:50Z by **PROCESS #15** (`session_018Bhcef6v3MqKry2Wh57iiK`) at its refresh point (past 50 percent),
-at a natural pause: nothing half done, everything merged. Your successor is **PROCESS #16**: read the generation in
-`handover-process` (15), name yourself `PROCESS #16` with set-session-title, record generation 16 and your session there
-(the record starts with the JSON block; keep the registry), and message each ROOT in the registry your address. Your fill
-(`get_session`, `context_usage`) reads 0 until your first turn ends, then is real (written at each turn's end); refresh at
-the first natural pause after 50 percent. Never `git add -A`.
+Written 26 Nov 2026 ~00:40Z by **PROCESS #17** (`session_018Bhcec7gbFKBzcgnG5iqoh`), a safety rewrite while running (near its refresh point; fill ~46 percent). If you are its successor, you are **PROCESS #18**: read the generation in
+`handover-process` (17), name yourself `PROCESS #18` with set-session-title, record generation 18 and your session there
+(keep the registry), and message each ROOT in the registry your address. Your fill (`get_session`, `context_usage`) reads
+0 until your first turn ends, then is real. Never `git add -A`; put `.claude/worktrees/` in `.git/info/exclude`.
 
-**Your reading** (the owner's decision (ii), 25 Nov): the design in full, `process/README.md`, `process/decisions-index.md`,
-`process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. Open a decision entry, a build text
-or a research file, or give it to a worker, when a question touches it.
+**Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
+`process/research/README.md`, `process/lanes/civicsmith/README.md`, and this handover. On `work/decision-c` there is also
+`build/README.md`, the index of the build texts' sections, which PROCESS reads in full once it reaches main.
 
-## START HERE: the owner is reviewing the design for "who uses what"; wait for his marked decision
+## START HERE: `work/decision-c-design` holds the design, tool and texts; final checks running
 
-The design document, for his review and comments: **"Process4: who uses what — the design for your decision"**,
-https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (a Claude Docs doc; doc id `789cbf2d-7c33-4d7f-9248-31ac8a329a51`, its
-one tab's body node `3212463b-6df3`; edit with the Claude_Docs tools; read with `sinceRev` from rev 47, PROCESS #15's
-last write). His standing page links to it. Comments on it may arrive; answer each in its thread with a doc comment.
+Branch `work/decision-c-design` (head 6626d3e or later) = decision C + facility decision + the design of who is told
+(part 2 §6–8, rewritten on his request of 25 Nov ~22:55Z) + the tool and texts built to it + a footprint reduction.
+His decisions recorded there (`design-decisions-2.md` "Who a change tells" item 3 and words at its end;
+`design-decisions.md` "The reading values"): accepting more tells users (23:07Z); a job's `same` record and a told job
+that changes nothing runs no test (~23:11Z, on his "yes"); his 14 Nov domain/range words (verified in process3 2a43eb5);
+"Decision: 0" (26 Nov ~00:00Z): part 2 stays whole while no product runs on Codex. His words: "You don't need a decision
+to build it, though you do need a decision when we decide to use it." — so merging to main is on his recorded decisions;
+a product moves only on his instruction at its coordinator. "The need for rigor and accuracy must survive any footprint
+reduction." His page for reading part 2 §7–8: https://claude.ai/artifact/42z6GsY6bEZQ6ZVuXFSioZ (regenerate with
+`md2html.py`, kept in research `precision-26nov/` if the scratchpad is gone — else rewrite it).
 
-What it holds (he asked for it in this shape, 25 Nov): Part A the coding standard for references to earlier modules
-(S1–S13, R1–R12, and from the studies R14–R22); Part B the conversion job (identify every reference, standard or not;
-convert; the metadata file `process/modules/<module>.uses.json` with reference, type, route and place incl. code/test and
-the test case's name); Part C the notification tool (users told on a change of **means**, decided by the tool with
-certainty; a change of **meaning** under the same types declared by the job, and named by ARCH's work order — both
-duties called out at his request; an accidental change of meaning is a provider bug caught by its own tests); Part D the
-plan (record, texts, tool, proof, trial on process3-probes, civicsmith's move, first pass of 8 real modules, his review);
-E what it replaces in his rulings; F options 0/A/B/C, C recommended; G civicsmith now; H not proven; "Is it
-load-bearing?" (yes, on two premises: the checker works as documented; Node's descriptions are accurate).
+Done: design check (28 findings) and final check (13; five misses fixed: a middle module's own items changing with a
+provider's are declared by its told job, which then merges; re-exports; order faults without a uses file; new name
+through `export *`; conversion tells real changes); one writer per record (the job writes only its record; the required
+run reads it: `shims/module-tests.yml`); scope ignores comments/layout; footprint: 98 cuts (10,226 bytes); sets: job
+168,933, ARCH 169,040, PROCESS 162,072 (before texts3). Tool 266/266. Original proof 112/958/846/0.
 
-Grounds, all in `process/research/uses-metadata-25nov/`: `design.md` (PROCESS's design and **all the owner's words of 25
-Nov, exact, in §6** — conversation, none marked), `every-reference.md`, `standard.md`, `changes.md`, `proof.md`,
-`means.md`, `tool-map.md`, `texts.md`, `civicsmith-state.md`, `study-references.md` (the reference side from the
-language: R14–R22), `study-changes.md` (the change side: the means is decidable; "unchanged" reduces to the halting
-problem; the sound within-module dependence rule, control and data; the 118 needed users classified).
+Running at 00:40Z 26 Nov: `work/decision-c-texts3` (texts for the tool's new flags: `push --notice <n>`, `run verdict
+--job-record`, test record `modules`, `message`, new change words) and `work/decision-c-cutcheck` (verifies each cut lost
+nothing: `cut-check.md`). Next: restore anything a cut lost; join texts3; run `npm test`; then ONE pull request
+`work/decision-c-design` → main, body quoting his decisions; merge once `tool-tests` passes; update his page (the "Being
+built" card and the waiting items) and notify his phone. Then Part D (trial on process3-probes needs a fresh ROOT from
+him; civicsmith moves only on his instruction at its coordinator).
 
-Note: `design.md` §2–§5 is an earlier stage; the document is the current statement. On his decision, fold the document
-into the design and texts.
+Later, for him, one at a time: a job reads ~31,600 bytes it never acts on (footprint study item 4: a reading-set change);
+the idle-compaction choice; choice 5; the two tidy questions; who keeps his standing page.
 
-**On his "Decision:"** (rule 3): record his exact words, **rewriting in place** the existing entries in
-`design-decisions-2.md` — "Who a change tells", "How `notify` reads the product", "How a notice reaches a user", the
-merge wait in "The round" — retiring the replaced rulings (3B of 25 Nov morning; the told job's third reading of 20 Nov;
-the merge wait's reading of 24 Nov) with their dates; no new entries beside them (his instruction). Design part 2 §7
-point 1 ("No list is kept by hand") is replaced. Then Part D, in order. Nothing is built before his decision. He asked
-for the first pass to use the finished tool on 8 real modules whose files are kept once confirmed — no throwaway sample.
+The design document for him: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (Claude Doc `789cbf2d-…`, body node
+`3212463b-6df3`, rev 92). He asked it to state only the design (no options, no history); keep it so. Its title in his
+list still reads "…for your decision": only he can rename it in a browser.
 
 ## Also waiting for him (on his page "Process4 Waiting for Bob")
 
@@ -51,10 +49,13 @@ for the first pass to use the finished tool on 8 real modules whose files are ke
   environment's setup script also writes `"idleCompaction": false`; propose by the harness's approval prompt), B
   (correct part 7 §1: the fill is real after a session's first turn; tell civicsmith's coordinator ARCH's "fill
   unreadable" note is wrong), C both (recommended). Undecided.
+- Two open items from the tidy study (`tidy-25nov.md` §5): which branch an urgent fix is built on, against "one lasting
+  tranche branch" (#20); and whether the design's status line should still say nothing has run (#21). For him.
 - Choice 5 (depth limit, 5B recommended) undecided; process3-probes needs a fresh ROOT from him. Choice 6 (waiting work
-  in parts) waits until who-is-told is settled (his words: "That's not a decision, it's a reality.").
+  in parts) waited until who-is-told was settled (his words: "That's not a decision, it's a reality."); decision C settles
+  it, and the design document (C5) says the split is still needed: put it back to him once decision C has landed.
 - Later, one at a time (from PROCESS #14): who keeps his one standing page; the unproven two-hour background command; a
-  job's reading set at 170,742 of 175,000.
+  job's reading set (now 166,734 of 175,000 on `work/decision-c`, so no longer pressing).
 
 ## civicsmith
 
@@ -68,6 +69,14 @@ for the first pass to use the finished tool on 8 real modules whose files are ke
 
 ## Lessons
 
+- Do not keep re-running measurements on the proof as evidence (his words, 25 Nov ~22:45Z, in `precision-26nov/README.md`):
+  they rarely reflect the real workflow, cost tokens and time, and convince you of conclusions later found wrong. Reason
+  from the texts and the workflow context; measure only when he asks.
+
+- Judge a false result in the process's context (his words above): ask why the change is made and who knows. A measurement
+  that replays changes as if no role or job acted overstates misses; never bring him backups for duties another role holds.
+  A worker's widening can open a miss (the callback confirmation): check each against `misses.md` before joining.
+
 - The owner wants load-bearing designs: "every reference means every reference". Never claim certainty with exceptions;
   separate a hidden reference from a bug; settle by study of the language, not sampling.
 - Record his conversation words exactly in the research (`design.md` §6); ask once before recording anything as his
@@ -75,6 +84,10 @@ for the first pass to use the finished tool on 8 real modules whose files are ke
 - Workers survive a session restart; list `subagents/` in full (a `tail` hid them once, and duplicates were launched).
 - Docs: one section per call; read with `sinceRev` before editing; never retype his edits.
 - Workers: run the tool's tests only as `cd tool && npm test` or by file.
+- Two workers building halves of the tool need named ownership of files, one shared data form (build text 2c), and one
+  of them to join both; a study worker with fresh eyes found 25 contradictions the builders missed. Check a worker's
+  defaults for silent misses (the facility classification first defaulted to "in").
+- The design document states only the design: no options, no history, no "as today" (his words, 25 Nov).
 
 ## Start checks
 

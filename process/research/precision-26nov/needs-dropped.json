@@ -1,0 +1,6 @@
+{
+ "A01-stored-row-shape": { "reports": "reports reads bookings only through bookings' reader list (converted from reading the table bookings by name and casting its rows), which reads each row back through find; the change keeps rows in a short form and find reads them back, so list hands back the same Bookings and reports' tests pass" },
+ "Y05-row-cast-at-write": { "reports": "as A01: rows written without the first day, read back by find, so bookings' reader list, all that reports reads, hands back the same Bookings; reports' tests pass" },
+ "U01-table-renamed-mark-forgotten": { "reports": "the change renames the table in all of bookings' own code, its reader list too; reports reads only through list, so it reads the renamed table; reports' tests pass (the forgotten @storedrows mark now matters to no other module)" },
+ "U02-table-name-in-constant-rows-compact": { "reports": "as A01: rows kept without the first day under a named constant, read back by find; reports reads only through bookings' reader list; reports' tests pass" }
+}

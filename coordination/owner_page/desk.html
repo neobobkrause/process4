@@ -22,44 +22,38 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 25 Nov 2026, about 18:45 UTC, by PROCESS #16. The design for who uses what waits for your review and decision, and the choice about idle sessions being compacted. One small step: archive PROCESS #15.</p>
+<p class="updated">Updated 25 Nov 2026, about 22:35 UTC, by PROCESS #17. Waiting for you: whether "accepts more" should still tell modules that hand a function on (first below); needless notices your rule calls for; idle sessions being compacted.</p>
 </header>
 
 
-<section class="wait">
-<h2>Waiting for you, one click: archive PROCESS #15</h2>
-<p>PROCESS #16 is running and has picked up from its handover. Open the session named <b>PROCESS #15</b> in your list of sessions at <b>https://claude.ai/code</b>, open its menu, and click <b>Archive</b>. It then shows as archived.</p>
+
+
+<section class="card">
+<h2>PROCESS #17 is running</h2>
+<p>Started 25 Nov, about 21:00 UTC. It has told the trial product's and civicsmith's ROOT where to find it. If you have not yet, archive the session named <b>PROCESS #16</b> (its menu, <b>Archive</b>).</p>
 </section>
 
 <section class="wait">
-<h2>Waiting for you: the corrected design for who uses what</h2>
-<p><b>The full design, to review and comment on</b> (now in four parts, A to D, with "Is it load-bearing?" answered): <a href="https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk">Process4: who uses what — the design for your decision</a>. Comment there; give your decision here or in my session. The summary below is the same in short.</p>
-<p><b>Bottom line.</b> I recommend choice C, now corrected. Under the standard, every reference to an earlier module is found by the tool, or sits at a place the tool lists as not yet in the standard; such a place is told of every change until it is converted. Nothing is silently missed.</p>
-<p><b>How the gaps were closed.</b> The helper wrote 27 small test cases and ran each under two versions of the type checker. Under today's settings, each gap hid its reference and the checker said nothing. Under twelve added rules, every gap was found: 50 runs out of 50. Two ordinary cases raised nothing, so the rules do not flag good code. The rules, in plain words:</p>
+<h2>Waiting for you: "accepts more" can still break a module</h2>
+<p><b>The question.</b> Should a change the type checker confirms as "accepts more" still tell the modules that hand the function on, or build their own value of what it accepts?</p>
+<p><b>Why.</b> A job may add an optional parameter, or an optional field to what a function accepts, without ARCH, because accepting more tells no one. But a module that hands that function on as a callback can break (the callback is then given an extra value that lands in the new parameter), and so can a module that passes in its own wider record. The type checker cannot see this; the job cannot, because it does not see how later modules use it; ARCH is not involved. Only the tool can, from that module's uses file. Shown in the proof; the record case has no example there. With this and three tool faults I am correcting (they do not change a rule), the proof's code kept to the standard has no miss that ARCH, the jobs and the tool together cannot catch, judged by the rules rather than measured: the proof does not act out what ARCH and the jobs would declare.</p>
 <ul>
-<li>Nothing has an unknown type.</li>
-<li>Data that comes from another module, through a file, a message, storage or the environment, is read only through that module's own reader, never relabelled by hand.</li>
-<li>The tool itself checks every conversion between types, so it does not rely on the checker's known blind spots.</li>
-<li>Nothing writes onto another module's values behind the checker's back, and nothing switches the checker off.</li>
+<li><b>0. No change.</b> Such breaks are found at the broken module's next job or a walk.</li>
+<li><b>A. Tell those modules (recommended).</b> No more needless notices on the proof.</li>
 </ul>
-<p>One setting the tool uses today, on caught errors, hides a reference now; it is turned the other way. What the result rests on: the type checker working as documented, the same trust we already place in reading imports at all.</p>
-<p><b>Copies, as you put it: a bug.</b> A module that writes out a value another module owns, such as a limit, a text or a name, has a bug. The rule: every fact is obtained from the module that owns it. A fact fixed in code is imported, which costs nothing at run time; a fact that is set or stored is read from its owner's reader, and any cache sits inside that reader, never as a copy in the module that uses it. Obtained that way, it is a reference, and found. Where obtaining is impossible, as in a test's deliberately written-out expected answer or a data file, it is marked with your naming convention and read as a reference. The tool also lists every literal exactly equal to a value an earlier module offers, to help the job. A breach of the rule is caught like any other bug, by the job, the module's tests and the walks; I do not claim the tool finds every bug, only every reference.</p>
-<p><b>The rest stands as before.</b> Before a job finishes, the tool lists every item that may have changed (it missed none of the 150 recorded changes), and the job marks each one by a short guide; an item left unmarked counts as changed. Who is told is a lookup. Jobs that change no running code run no tests. The first job on each module, run in parallel where order allows, does three things:</p>
-<ol>
-<li>It converts the module's references to the standard, and imports or marks its copies.</li>
-<li>It states the module's types.</li>
-<li>It lets the tool write the module's uses file.</li>
-</ol>
-<p><b>Choice:</b></p>
-<ul>
-<li><b>0. No change.</b> civicsmith cannot go on.</li>
-<li><b>A. A file each job writes, without a standard.</b> Rests on each job's care.</li>
-<li><b>B. The standard without the rules on types.</b> Certain for direct references only.</li>
-<li><b>C. The full standard, corrected (recommended).</b></li>
-</ul>
-<p><b>Not proven:</b> what it costs to bring civicsmith's code under these rules, above all the types; and how reliably jobs mark changes and copies. The first pass of 8 real modules measures both. Then you decide to go on, change the method, or abandon it, and the files written are kept or corrected accordingly.</p>
-<p><b>Your record.</b> Your decision rewrites in place the existing entries on who is told, how the tool reads the product, how a notice reaches a module, and the merge wait. It retires your earlier rulings on these, 3B among them, and replaces "No list is kept by hand".</p>
-<p>To choose, reply here starting with "Decision:", for example "Decision: C, with the first pass of 8". The full design is in <code>process/research/uses-metadata-25nov/design.md</code>; the proof of the gaps is in <code>every-reference.md</code> beside it.</p>
+<p>To choose, reply in my session starting with "Decision:". You may also set this aside.</p>
+</section>
+
+<section class="wait">
+<h2>Still waiting for you: needless notices that your rule calls for</h2>
+<p>On the converted proof, about 162 needless notices remain. 75 are a module using exactly what changed whose use is not affected (for example a limit lowered that it never comes near). No tool can decide that without running its tests, and your rule "any change to either a provider's domain or range necessitates that its users be retested" calls for telling it; its told job runs only its related tests and closes. <b>Do you accept these?</b> The other 87 come from limits on what the tool can prove (shared state, a whole record held but the changed part never touched), which I keep narrowing where it can be proven.</p>
+</section>
+
+<section class="card">
+<h2>Being built: who uses what, your two decisions</h2>
+<p>Your words, recorded exactly: "Decision: C, the full standard, with the first pass of 8; build the conversion job, the notification tool, and the tool that keeps each module's uses file current on every module job." (25 Nov, 18:51 UTC) and "Decision: use the simplification: the tool carries Node's and workerd's facility classification; ARCH names the boundary modules and classifies the packages its product uses." (20:26 UTC).</p>
+<p>The design, your record, the build texts, the job's and ARCH's instructions and the tool all sit together on one branch, <code>work/decision-c</code>, evolved in place, with no contradictions known. The tool's 224 tests pass. On the proof's 150 recorded changes plus 13 further breaks, 112 modules needed telling and none was missed, <b>but that was not the whole truth</b>: when the proof's code is rewritten to keep the standard (as civicsmith's will be), the needless notices fall from 846 to 281, and <b>16 modules that needed telling are missed</b>. Before, they were told only because code outside the standard hears of every change. Eleven are changes to how one module's separate program writes its output or must be started; two are two parameters of the same kind swapping places; three are known single cases. The causes and options are above. Nothing goes to main, and civicsmith does not move, until this is closed. A study with fresh eyes fixed 25 contradictions and folded duplicated rules, and the reading limits are comfortable again (a job reads 166,734 bytes of 175,000).</p>
+<p>Before it reaches main, as one pull request: the precision work above, and a fresh check that tool and texts agree. Then the trial, civicsmith's move on your instruction, and the first pass of 8 modules, which stops for your review.</p>
 </section>
 
 <section class="wait">
@@ -83,6 +77,7 @@ a{color:var(--accent)}
 <li><b>civicsmith's refactoring tranche is dropped</b>, on your decision (carried out 25 Nov, 17:05 UTC): its code and tests are back to main's; the refactoring plan, the lanes' design work, the requirements and the module list are kept; 14 requirements that only the dropped tranche met are back to not yet met; no tranche is open until the provider/user fix is in and confirmed.</li>
 <li><b>Choice 5, the depth limit</b> (I recommend 5B): ask you for a fresh ROOT one handover earlier, and make no planned handover that is known to break. Text only. The trial product (process3-probes) needs a fresh ROOT from you now; its coordinator's page has the steps.</li>
 <li><b>Choice 6 waits</b> until who is told is corrected, as you said. Meanwhile civicsmith's notices for modules with no open job are not written down, and its filings and following jobs stay stuck; civicsmith's coordinator knows.</li>
+<li><b>Two questions from the tidy study,</b> for when you have a moment: which branch an urgent fix is built on, given that there is one lasting tranche branch; and whether the design should still call itself "proposed, nothing here has run", now that products run on it.</li>
 </ul>
 </section>
 
@@ -113,7 +108,7 @@ a{color:var(--accent)}
 <ul>
 <li><b>civicsmith</b> has dropped its refactoring tranche and has no tranche open; the refactoring restarts once the design for who uses what is decided, built and confirmed. It runs Process4 version 55db8e4.</li>
 <li><b>The trial product</b> (process3-probes) is quiet; it needs a fresh ROOT from you (choice 5's cause).</li>
-<li><b>PROCESS #16</b> is running; it has no lane running.</li>
+<li><b>PROCESS #17</b> is running; it has no lane running. It is now making the tool more precise about who is told (B above).</li>
 </ul>
 </section>
 </main>

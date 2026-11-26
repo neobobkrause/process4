@@ -1,0 +1,45 @@
+needed 108, told 379, told without need 286, missed 15
+
+Told without need, by class (a user with reasons of several classes is counted once, in the first of A, other, B1, B4, B5, B3, B2, outside):
+  A        92
+  B1       14
+  B2       0
+  B3       64
+  B4       0
+  B5       0
+  outside  96
+  other    20
+  of which with reasons of several classes:
+    A+outside: 14
+    A+other: 13
+    B3+outside: 10
+    other+B1+B3: 6
+    other+B3: 4
+    A+B3+outside: 2
+    A+B3: 2
+    A+other+B3: 2
+    other+B5: 2
+    other+B1: 1
+    A+B1+outside: 1
+    B1+B3+outside: 1
+    A+B1+B3: 1
+    B1+B3: 1
+
+Missed:
+  A14-copy-of-kind-in-the-middle front; changed: money Amount: cannot stand in, hands back differently, bound changed; money add: cannot stand in, hands back differently, bound changed; money amount: hands back differently, bound changed; money formatAmount: cannot stand in, bound changed; money splitEvenly: cannot stand in, hands back differently, bound changed
+  X01-optional-param-callback billing; changed: money formatAmount: accepts more (tells no one)
+  X09-message-channel billing; changed: nothing
+  Y06-channel-line-built-first billing; changed: nothing
+  Z03-blank-line-after-each-message billing; changed: nothing
+  Z04-stream-chosen-into-variable billing; changed: nothing
+  V03-refusals-through-console-error billing; changed: nothing
+  W01-meter-start-argument billing; changed: nothing
+  W02-meter-ready-line billing; changed: nothing
+  U04-messages-encoded-by-named-function billing; changed: nothing
+  U05-start-environment-through-node-process billing; changed: nothing
+  U08-same-kind-parameters-swap-places billing; changed: nothing
+  T05-meter-ready-line-console-log billing; changed: nothing
+  T07-price-function-parameters-swap billing; changed: nothing
+  T09-messages-pretty-printed billing; changed: nothing
+
+Each told without need:
