@@ -22,7 +22,7 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, by PROCESS #19. Yours now: move civicsmith (below). Done: a conversion tells no one; the tool corrections (70022da); only stated types and bounds tell (3231d0a, the newest version).</p>
+<p class="updated">Updated 26 Nov 2026, about 19:30 UTC, by PROCESS #19. Yours now: move civicsmith to the newest version, f12d152 (below). Everything decided today is merged.</p>
 </header>
 
 
@@ -52,20 +52,20 @@ a{color:var(--accent)}
 </section>
 
 <section class="wait">
-<h2>Done: a conversion tells no one</h2>
-<p>On your "Decision: a conversion's merge tells no one." (26 Nov), merged as Process4 version 10164fb: the design, your record and the tool now say a conversion's merge tells no module and the tool reads nothing for it. The five notices civicsmith could not send need not be sent once it runs this version. civicsmith's coordinator is told, as information.</p>
+<h2>Yours now: move civicsmith</h2>
+<p>In civicsmith's coordinator session, type: <code>Instruction: move civicsmith to the latest Process4 version</code>. A move now rewrites no uses files, so it takes minutes; open conversion jobs carry on and the move takes effect when their round ends.</p>
 </section>
 
-<section class="wait">
-<h2>Done: the tool corrections; yours now: move civicsmith</h2>
-<p>Merged on your "Decision: A" as Process4 version 70022da; all 286 of the tool's own tests pass; your words are in your record. In civicsmith's coordinator session, type: <code>Instruction: move civicsmith to the latest Process4 version</code></p>
-<ol>
-<li><b>False changes:</b> the tool counted a type error that went away as a change, so a conversion that only stated types told every later importer (150 of 150 on a test product shaped like civicsmith). Corrected: only a new error, or changed code while an error stands, counts. This still matters after a conversion run, for ordinary merges.</li>
-<li><b>Notice size:</b> each told module's reasons carried a full copy of the changed item's types (up to 5 MB each). Now only the parts that changed: 120 MB down to 153 KB on the test, nobody's notice changed. The results come back in parts, and equal type parts are kept once, so a case that ran out of memory at 1 GB now holds about 23 MB.</li>
-<li><b>Two rule-reading faults:</b> the rule against passing a Node value off as the product's own type was read differently for the same thing written two ways; and <code>if (!x)</code> was read as changing <code>x</code>. Both corrected.</li>
-<li><b>Node features added by hand:</b> <code>process.versions</code>, the test library's <code>mock.property</code>, and one timer member. Describing Node from its published type files (option C) is left for later.</li>
-</ol>
-<p><b>Done:</b> your "Decision: only a change of an item's stated types or bounds tells; new errors, other values within the range, side effects and test prerequisites do not." and "Decision: A" (a started program's start arguments and output still tell), merged as 3231d0a. On the converted proof: changed items that tell 486 to 216, told without need 309 to 255, missed 7 to 16 (eight a changed error class, as decided, for ARCH and jobs to name or declare where a user relies on it). <b>Waiting for your word:</b> two checks on the first 8 (uses files against code; the later data owners) and a count of what each module needs converting. Next to research: whether a line left outside the coding standard should tell anyone, and the standard itself in the light of civicsmith's first 8 modules.</p>
+<section class="card">
+<h2>Done today, each on your word, merged</h2>
+<ul>
+<li>A conversion's merge tells no one (10164fb).</li>
+<li>Four tool corrections: false changes, notice size, two rule-reading faults, Node features added by hand (70022da).</li>
+<li>Only a change of an item's stated types or bounds tells; a started program's start arguments and output count as its interface (3231d0a).</li>
+<li>Development velocity: a working principle and a known weakness every role reads (4bef9b5).</li>
+<li>A uses file is never rewritten for a Process4 version or a facility-list change; older files read as written; the tool's notes on Node features it does not know not kept (ee2091f). Lines about Node, the language or packages tell no one, in any file (66d3d87).</li>
+<li>The speed fix for the rewrites that remain: about six times faster, every file the same (f12d152).</li>
+</ul>
 </section>
 
 <section class="card">
@@ -108,8 +108,8 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> runs Process4 version 1216397 and is converting its first 8 modules (7 merged); five notices are owed there, and need not be sent on the newest version, 10164fb.</li>
-<li><b>The trial product</b> (process3-probes) ran the trial of who is told; its ROOT is #14.</li>
+<li><b>civicsmith</b> moved to 72c177e (ROOT #11) and is converting its modules; it moves to f12d152 on your instruction.</li>
+<li><b>The trial product</b> (process3-probes) has ROOT #15.</li>
 <li><b>PROCESS #19</b> is running, with no helper at work and no lane.</li>
 </ul>
 </section>
