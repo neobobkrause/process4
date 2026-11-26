@@ -1,66 +1,71 @@
 # PROCESS handover
 
-Written 26 Nov 2026 ~10:15Z by **PROCESS #18** (`session_018BhcegQp6kkojsnYHjDzsr`) at its refresh point (fill ~48 percent, at a natural pause: no worker running, everything pushed). If you are its
-successor, you are **PROCESS #19**: read the generation in `handover-process` (18), name yourself `PROCESS #19` with
-set-session-title, record generation 19 and your session there (keep the registry), and message each ROOT in the registry
-your address. Your fill (`get_session`, `context_usage`) is real after your first turn ends. Never `git add -A`; put
-`.claude/worktrees/` in `.git/info/exclude`. In `tool/`, check TypeScript is 5.6.3 (`npm ci` if not) before running tests.
+Written 26 Nov 2026 ~19:45Z by **PROCESS #19** (`session_018Bhcec84vDYoFHq35xmbGS`), at a natural pause (no worker running,
+everything merged), because **the owner is moving Process4 and civicsmith to another Claude account** (this account's
+quota is nearly spent). If you are its successor, you are **PROCESS #20**: read the generation in `handover-process` (19),
+name yourself `PROCESS #20` with set-session-title, record generation 20 and your session there, and keep the registry.
+Your fill (`get_session`, `context_usage`) is real after your first turn ends. Never `git add -A`; put
+`.claude/worktrees/` in `.git/info/exclude`. In `tool/`, check TypeScript is 5.6.3 (`npm ci` if not) before tests.
 
 **Your reading** (the owner's decision (ii)): the design in full, `process/README.md`, `process/decisions-index.md`,
 `process/research/README.md`, `process/lanes/civicsmith/README.md`, `build/README.md`, and this handover.
 
-## START HERE: first, `notify` fails on civicsmith (urgent, `notify-size-26nov.md`); the six corrections are merged (54d7eee, his "Decision: A, as recommended"); more faults to research
+## START HERE: the account switch (build text 6)
 
-civicsmith moved to 1216397 and its first pass of 8 conversions is running. Its jobs keep meeting tool faults; all are in
-`process/research/facility-names-26nov.md` (read it whole first).
-1. **Waiting for his word (A recommended, on his page):** six corrections on `work/facility-names` (59fa682, 891a917,
-   aa42774; tool 278/278): package facilities named `pkg:Export.member`; the product's own members no facility; a member of
-   an unnamed host type named by its declaration (Hash update/digest); Buffer and spawn's maxBuffer described; RegExp
-   `.test` not a test (S12); a `?again` import resolved; a renamed destructuring key not R1; `unknown` read by its kind at
-   the use (instanceof, and a module's own guard placed once at the call). One judgment to keep visible: instanceof a host
-   class now clears ordinary data too, where 02c names it for errors. On "Decision: A": open a pull request from
-   `work/facility-names` into main, merge, record his words in `changes` and the record ("Who a change tells" or a new
-   subject on the tool's reading under the standard), and tell civicsmith's coordinator the version; it moves on his
-   instruction there.
-2. **To research next (from civil-time #3, 10:08Z):** process.versions, node:test's mock.property, Temporal and mock.timers
-   missing from the host description (with Buffer, the gaps are now measured: put C — describe Node from its published
-   types pinned to the product's Node version — to him with its cost); R19 counting a same-named binding as an assignment
-   (looks a tool fault); no form in the standard for a test that replaces a host global (a clock that throws): a design
-   question for him. Coordinator #10 told jobs to work within them and report.
-3. `documents` (no code): told ARCH design part 2 §1 applies; ARCH removed it. On his page as 0 (recommended) / B.
-4. Also on his page, older: C for ROOT's depth (fewer takeovers on a version move); idle compaction's option B; two tidy
-   questions; "Instruction: study C" for the host description.
+The ROOT addresses in the registry are the OLD account's and cannot be reached from the new one (sessions are scoped to
+one account). The owner starts each product's ROOT in the new account (civicsmith first; ROOT's own start message to
+PROCESS goes to the old PROCESS and is lost). So on your start: list this account's sessions (`list_sessions`) and find
+each product's live ROOT by its name (`civicsmith ROOT #<n>`, `process3-probes ROOT #<n>`); write those addresses into
+the registry; message each ROOT your address so it records you in its roles record's `process` field. If a ROOT is not
+yet started, say so on the owner's page and wait for it. A ROOT that messages you its address: update the registry.
 
-After the first pass stops: Part D step 8, his review per module with PROCESS; then his word on going on. The refactoring
-restarts after the conversion.
+civicsmith (`neobobkrause/civicsmith-copy`, tranche branch `p4-tranche`) was converting all modules (the owner's
+instruction at its coordinator: every module in order, conversions only) on Process4 72c177e. Its ARCH was pushing the
+move to db9d6e5 (main, holding everything below) when the switch began. If the move did not merge, the owner repeats
+"Instruction: move civicsmith to the latest Process4 version" at the new coordinator; on the new version a move rewrites no
+uses files.
 
-## Done in PROCESS #18 (all merged; his words in the record and `changes`)
+## Done in PROCESS #19 (all merged on the owner's words; each in the record and `changes`)
 
-- Idle compaction off ("Instruction: Turn idle compaction off"): BioDefault's setup script writes `"idleCompaction": false`.
-  Option B (correct "fill unreadable") not chosen; still open on his page.
-- ROOT's depth ("Decision: B, as recommended"): B tested (a scheduled task's session has no parent but no repository and
-  no session tools), failed, so A built: ROOT asks for a fresh ROOT three levels from the limit and makes no planned
-  takeover two levels from it. Option C (fewer takeovers on a version move) asked on his page.
-- The trial of who is told on process3-probes: notices reached exactly their users (`trial-who-is-told-26nov.md`).
-- "Decision: 1-A, 2-B1, 6B" built as 26fbf9e (2-B1 narrowed: a conversion that changed an item tells as any merge).
+- A conversion's merge tells no one (10164fb).
+- Tool corrections, "Decision: A": a type error gone is no change; notices carry only changed parts, in parts; R15 by union
+  member; R19 real assignments only; `process.versions`, `mock.property`, `mock.timers.setTime` (70022da).
+- Only a change of an item's stated types or bounds tells; a started program's start arguments and output are its
+  interface; new errors, values within the type, side effects, test prerequisites do not (3231d0a). ARCH names and jobs
+  declare a change of meaning or of an error a user relies on.
+- Development velocity: a working principle (design part 1 §6) and a known weakness (§7) (4bef9b5).
+- A uses file names its tool version as information only; rewritten only when its module's code or tests change, or a
+  module-list move; earlier versions' files read as written; no notes on unknown Node features (ee2091f). An R14 place
+  refers to no product module and tells no one, in any file (66d3d87).
+- The speed fix for uses-file rewrites: shared parsed files, up to four readers, files identical (f12d152).
+
+## Open, not yet put to the owner
+
+- civicsmith's first-pass figures (`first-pass-figures-26nov.md`): ~95% of places converted; tests replacing a host global
+  (clock, fetch, Date) have no form in the standard (three modules); "data owners come later in the order". The owner
+  said to stop measuring and let the conversion run show; bring only what the run reports.
+- Older items on his page: C for ROOT's depth; correcting "fill unreadable" (B); two tidy questions; option C (Node from
+  published types, sized in `rules-r15-r19-host-26nov.md`).
+- A started program's standard input is not counted in its interface (`types-and-bounds-only-26nov.md`); left, nothing
+  measured behind it.
 
 ## Registry and start checks
 
-1. Environment BioDefault, `neobobkrause/process4` only; `~/.claude/settings.json` has `autoMode` and `idleCompaction`.
-2. `node tool/p4.mjs state read handover-process`: process3-probes ROOT #13 `session_018Bhcecg31mQpQJXnaeMMXw`; civicsmith
-   ROOT #10 `session_018Bhceg3cdHS2ZcDWQCDacr`. civicsmith coordinator #10 `session_018BhceewN4fx361Kuj2Ktyk`, ARCH #28
-   `session_018Bhcee2HTc21twW9aRyNPp`.
+1. Environment: the owner moves it to the new account himself (`autoMode`, `idleCompaction` false, secrets).
+2. `node tool/p4.mjs state read handover-process`. Old-account registry at handover: civicsmith ROOT #11
+   `session_018BhcegXRx9wyHus76AsBKB`; process3-probes ROOT #15 `session_018Bhcec9ah8YVo8Rcu5w2yz` — both unreachable now.
 3. No live lane. His page: https://claude.ai/artifact/SY4Ub7f1vwHN6fjvxz23iy (source `coordination/owner_page/desk.html`;
-   publish with the Artifact tool; land each source change by its own small pull request).
+   publish with the Artifact tool; land each source change by its own small pull request). Under a new account the page
+   may not be editable by you; if not, publish a new page and give him the link.
 4. Flow: `git fetch origin main`, `git checkout -B work/<name> origin/main`, edit, commit (author
    `Claude <noreply@anthropic.com>`, trailers), `p4 push`, `p4 open --title`, `p4 ready <n>`, then `p4 merge <n>` (retry
-   while the check runs or "waiting N s since the last merge"). Keep the `changes` record's JSON valid.
-5. His page comments sent to Claude carry his decisions too (attributed "the user (owner)"); reply in the thread.
-6. Speak to him in plain words, short, bottom line first; say what is proven and what is not.
+   while the check runs). Keep the `changes` record's JSON valid.
 
-## Lessons
+## Lessons (the durable ones are now in design part 1 §6–7)
 
-- Reason from the texts and the workflow; measure only when he asks. Judge a false result in the process's context.
-- He wants load-bearing designs; never claim certainty with exceptions.
-- A worker's branch in a worktree cannot be checked out in the main checkout; `git branch -f <name> <commit>`.
-- Check a worker's choices against his words (2-B1 was built wider than his page said; narrowed).
+- Weigh development velocity in every choice; caution is a cost. Do not propose measuring or testing before acting; the
+  real run reports what matters. He was angered, rightly, by proposals to measure, by an hour-long rewrite nobody foresaw,
+  and by false positives defended as "safe".
+- Follow a choice through to what it makes each role do at civicsmith's size, before proposing it.
+- His marked words only; when one "Decision: A" could answer two open questions, apply it to the one just put and ask
+  about the other.
