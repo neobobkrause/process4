@@ -22,51 +22,46 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 27 Nov 2026, about 06:15 UTC, by PROCESS #20, on your new Claude account. This page is now your standing page. The old one (the link ending SY4Ub7f1…) stays with the old account; I cannot open or change it from here.</p>
+<p class="updated">Updated 27 Nov 2026, about 07:10 UTC, by PROCESS #21. civicsmith is halted on your word since 06:06 UTC.</p>
 </header>
 
 <section class="wait">
-<h2>Yours now: start PROCESS #21</h2>
-<p>PROCESS #20 has reached its refresh point; everything is saved and merged, and its handover holds your ask to study what happened to civicsmith's last tranche, and the choice A, B and C. Open a new session on <code>neobobkrause/process4</code>, branch <code>main</code>, Auto mode, and paste:</p>
-<p class="draft">You are PROCESS for Process4, in this repository (neobobkrause/process4) on main, Auto mode. Read your starting text at starting_texts/process.md in full and follow it. Before acting, fetch the newest main (git fetch origin main) and be at its tip. Then read, as your starting text says: the design in full (every file of design/, the parts 00 to 10 and their lettered companions), process/README.md, process/decisions-index.md, process/research/README.md, process/lanes/civicsmith/README.md, build/README.md, and process/handover.md — read it last and continue from it. You keep the owner's standing page "Process4 Waiting for Bob" at https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT; update it in place.</p>
-<p>What you should see: it names itself PROCESS #21 and tells you it has taken over. Then archive the session named PROCESS #20 (its menu, Archive).</p>
+<h2>Yours now: what went wrong in civicsmith's tranche, and one choice (X and Y)</h2>
+<p>I read the whole record of the tranche: every coordinator, every ARCH, case-checker and PROCESS #20. What it shows, each point quoted in <code>process/research/tranche-t3-study-27nov.md</code>:</p>
+<ol>
+<li><b>Your "conversions only" did not reach civicsmith in time.</b> civicsmith's record held only "convert the first 8 modules … then stop for my review". PROCESS #19's handover said you had asked for every module, conversions only, and PROCESS #20 told you at 21:22 that this was in ARCH's record. It was not, and PROCESS #20 had not checked. That fault is PROCESS's. Your marked decision came at 02:52, without the sentence that would have held fixes back.</li>
+<li><b>ARCH chose what came next.</b> You confirmed the review was done, and the coordinator left the next step to ARCH. The design lets ARCH decide a tranche's scope. At 22:01 it first ran the four fixes the first eight conversions had found, case-checker's among them, then added more modules to convert, three times, on its own judgment.</li>
+<li><b>The process cannot hold a tranche to conversions.</b> Naming a module in the scope also brings in its unfinished requirements. A flaw that a job reports is always work. Slots go to the earliest modules first. So fixes in early modules always came ahead of conversions in later ones, before your decision and after it.</li>
+<li><b>Conversions made new fixes.</b> When a module states its types, the tool's checks then refuse code in other modules that disagrees. Each refusal became a fix job, and each fix's merge sent checks to the modules that use it: in one stretch, 14 checks that found nothing to change. The design says a conversion starts no such chain.</li>
+<li><b>case-checker waited, it did not block.</b> Its tests passed three times, and it waited about six hours to merge. Each time ARCH tried, a module it uses had just got a new job, and nothing stops that. In the record, it held one of the slots while it waited, a quarter of them after you set four, but no other job's merge. It merged at 03:49.</li>
+<li>Faults in the tool cost time too: notices to 199 modules, GitHub's limits, and gaps in its picture of Node. Each is fixed or waiting below.</li>
+</ol>
+<p>The choice, proposed together (one change in the tool and its texts):</p>
+<ul>
+<li><b>X. A tranche of conversions only.</b> On your word at the coordinator, ARCH records a scope of conversions only. While it stands, a module's only work is its conversion. Fixes, unfinished requirements and flaws found by jobs wait in the waiting-work record for the next tranche. Nothing else merges, so no notices or checks follow, and no walks. It removes work and adds no check. Not proven: whether a later module's conversion can always finish while a fault its provider needs stays waiting.</li>
+<li><b>Y. A job that has passed is not kept waiting by newer work.</b> A ready job no longer waits for a job opened on a module it uses after its own tests passed. If that newer job later changes something this module uses, its merge tells this module, as any merge does. This corrects the six-hour wait and adds nothing.</li>
+</ul>
+<p>Recommended: X and Y. "No change" is always open. Left as it is for now: whether stating a module's types should refuse other modules' code inside a conversions-only tranche (point 4). Nothing is measured yet beyond this tranche. Type in PROCESS's session, for example: <code>Decision: X and Y</code>, or one, or "no change".</p>
 </section>
 
 <section class="wait">
-<h2>Waiting: tool faults, one choice (A, B and C) — put it to PROCESS #21</h2>
-<p><b>Since 04:24 UTC civicsmith's pdf-pixels conversion is stopped:</b> a package's own file adds to the browser's address type (URL), and the tool then counts every use of the host's URL as a use of a later module, refusing 63 lines of correct code. Other work goes on.</p>
+<h2>Waiting: tool faults, one choice (A, B and C)</h2>
+<p><b>Since 04:24 UTC civicsmith's pdf-pixels conversion is stopped</b> (now halted with the rest): a package's own file adds to the browser's address type (URL), and the tool then counts every use of the host's URL as a use of a later module, refusing 63 lines of correct code.</p>
 <ul>
 <li><b>A.</b> A member reached by a special key (the one that lets code loop over a stream) is named in the tool's records by a number that shifts whenever its module changes, so users can be told of changes that are not real. Name it by its key instead; older records read as the same.</li>
 <li><b>B.</b> Anything the host declares stays the host's, whatever a package adds to it; a package's file never makes something a product module's. This unblocks pdf-pixels.</li>
+<li><b>C.</b> Fill the gaps in the tool's picture of the host that jobs reported: the web's Request and Response kinds, WebAssembly and Proxy. These are four reports, two of them since 05:20.</li>
 </ul>
-<p>Recommended: both, as one small tool change; then one more civicsmith move. Type in PROCESS's session: <code>Decision: A and B</code>, or name one, or "no change".</p>
+<p>Recommended: all three, as one tool change, with X and Y if you choose them; then one civicsmith move. Type: <code>Decision: A, B and C</code>, or name some, or "no change".</p>
 </section>
 
 <section class="wait">
-<h2>Yours now: move civicsmith onto the newest version</h2>
-<p>Merged (about 02:15 UTC): every limit GitHub publishes is now honoured across your whole account, at about 95 percent, and nothing GitHub does not name is added (your K1–K5, your decision on published limits, and A on the margin). The same version holds C and D (what each role reads) and D on ROOT. In civicsmith's coordinator session, type:</p>
-<p class="draft">Instruction: move civicsmith to the latest Process4 version, now</p>
-<p>What you should see: the coordinator records it; ARCH moves civicsmith in two small pull requests; open jobs restart from their branches; the coordinator tells you in one line when every session is on it. From this move on, ROOT is not replaced for a version move. Not proven: how the shares feel at civicsmith's real pace; a job that waits for its share prints a line naming it.</p>
-</section>
-
-<section class="card">
-<h2>Done: C and D, what each role reads</h2>
-<p>Merged (about 01:40 UTC). The design and build texts are split by who reads them, each section keeping its number; 73 pieces of history are gone. A job reads 117,561 bytes instead of 177,670; ARCH 167,439, back under the limit; walkers about 46,000. civicsmith takes it with its next move to the latest version (after the current one); one line at its coordinator when you choose: <code>Instruction: move civicsmith to the latest Process4 version</code>.</p>
-</section>
-
-<section class="wait">
-<h2>Next for you: civicsmith's version, once its coordinator is up</h2>
-<p><b>Done:</b> civicsmith's ROOT is running on this account as <b>civicsmith ROOT #12</b> (it renamed your "Civicsmith development restart" session at about 21:18 UTC) and is starting its watcher, ARCH and coordinator. I have recorded it and sent it my address.</p>
-<p>When the switch began, civicsmith's ARCH was moving it to the newest Process4 version. If its new coordinator says that move did not finish, type there: <code>Instruction: move civicsmith to the latest Process4 version</code>. A move now rewrites no uses files, so it takes minutes.</p>
-</section>
-
-<section class="wait">
-<h2>Done: PROCESS #20 is running here</h2>
+<h2>Waiting: PROCESS reads more than its limit</h2>
+<p>You asked whether the texts PROCESS read at its start are over their limits. No single text is: the largest is half the limit. The "too large" note at my start was the screen limit of one command that printed two files at once. But what PROCESS must read together is 179,585 bytes, counted as your record says ("its starting text, the design … and its handover"), against the limit of 175,000. Your C and D split of the design added 3,287 bytes, and K1–K5 a little more, with no size check after the split. ARCH's reading is at 99 percent before civicsmith's own documents are added; I will study that before putting anything to you.</p>
 <ul>
-<li>Started about 21:15 UTC, named itself, and recorded itself (generation 20) in the process's shared state.</li>
-<li><b>The environment is ready; nothing for you to approve.</b> I read this account's environment ("BIO"): it carries the permissions settings the roles need and idle compaction is off. My own session loaded both.</li>
-<li>Nothing was lost on the process's side: Process4's main branch, its shared state and its records are on GitHub and read as before.</li>
+<li><b>Z.</b> PROCESS reads the civicsmith lane's index only when a lane question comes up, and keeps its handover under 3,000 bytes. The starting texts' own list of sizes is corrected. That brings it to about 173,000 bytes. Text only.</li>
 </ul>
+<p>Recommended: Z. Type <code>Decision: Z</code>, or "no change".</p>
 </section>
 
 <section class="card">
@@ -105,9 +100,9 @@ a{color:var(--accent)}
 <section>
 <h2>Where everything stands</h2>
 <ul>
-<li><b>civicsmith</b> was converting all its modules, in order, when the switch began. ROOT #12 is restarting it on this account; its coordinator will confirm nothing was lost.</li>
+<li><b>civicsmith</b> is halted on your word (06:06 UTC) on Process4 7916c03, at round 2 of tranche t3. About 38 of its modules are in scope, and fourteen jobs were interrupted. Its ROOT #13 and coordinator #16 know PROCESS #21.</li>
 <li><b>The trial product</b> (process3-probes): no ROOT on this account.</li>
-<li><b>PROCESS #20</b> is running, with no helper at work and no lane.</li>
+<li><b>PROCESS #21</b> is running, with no helper at work and no lane. You may archive the session named PROCESS #20.</li>
 </ul>
 </section>
 </main>

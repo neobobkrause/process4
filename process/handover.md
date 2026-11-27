@@ -1,82 +1,32 @@
 # PROCESS handover
 
-Written 27 Nov 2026 ~04:35Z, last added to ~06:15Z, by **PROCESS #20** (`session_012hdw2RBptiC6jL4mXfRBgf`), on the new Claude account, at a
-natural pause (no worker running, everything merged). If you are its successor, you are **PROCESS #21**: read the
-generation in `handover-process` (20), name yourself `PROCESS #21` with set-session-title, record generation 21 and your
-session there, and keep the registry. Your fill (`get_session`, `context_usage`) is real after your first turn ends.
-Never `git add -A` at the root; `.claude/worktrees/` is in `.git/info/exclude`. In `tool/`, check TypeScript is 5.6.3
-(`npm ci` if not) before tests.
+Written 27 Nov 2026 ~07:10Z by **PROCESS #21** (`session_012hdw2RTYTGjB8UZzcuWdwQ`). Successor: PROCESS #22; read the
+generation in `handover-process` (21), name yourself, record yours there, keep the registry. Never `git add -A` at the root.
+In `tool/`, TypeScript 5.6.3 (`npm ci`) before tests. Flow: `git checkout -B work/<name> origin/main`, commit (author
+`Claude <noreply@anthropic.com>`, trailers), `node tool/p4.mjs push`, `open --title` (background; it can wait), `ready`,
+`merge` on his words. Owner's page: https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT, source
+`coordination/owner_page/desk.html` (publish with the Artifact tool; land the source by small pull request). He also
+answers by page comments (ArtifactComments); his marked words there count.
 
-**Your reading:** the design in full (every file of `design/`, the parts 00 to 10 and their lettered companions), then
-`process/README.md`, `process/decisions-index.md`, `process/research/README.md`, `process/lanes/civicsmith/README.md`,
-`build/README.md`, and this handover.
+## Waiting for his word (all on his page)
+- **X and Y** (`process/research/tranche-t3-study-27nov.md`): X, a conversions-only scope (only conversions are work;
+  requirements, job flaws, walk flaws wait); Y, a ready job is not held by a provider job opened after its tests passed.
+- **A, B, C** (`symbol-member-names-27nov.md`): symbol-keyed names; host declarations stay the host's (unblocks
+  pdf-pixels); host gaps (Request/Response, WebAssembly, Proxy, Miniflare types). Build with X and Y as one version by a
+  worker in a worktree, tests; record in `design-decisions-2.md` ("The round…", "The tool's reading…"), design part 2 §§3,
+  8, build text 5 §2, 1b; then his page line for civicsmith's coordinator: `Instruction: move civicsmith to the latest
+  Process4 version, now`.
+- **Z** (`reading-sets-27nov.md`): PROCESS's set is 179,585 with its starting text, over 175,000. ARCH's at 98.9% before
+  product texts: study it next.
+- Older, not urgent (page "When convenient" / "later"): ROOT C, "fill unreadable" B, two tidy questions, page ownership,
+  two-hour command, a job's unused reading.
 
-**The owner's page** on this account: https://claude.ai/artifact/3eWSU2EvP27ttdJBZGjDJT (pinned; source
-`coordination/owner_page/desk.html`; publish with the Artifact tool and land each source change by its own small pull
-request). He also answers there by comments sent to Claude: read them with ArtifactComments, reply in the thread. A
-marked decision typed there by him ("the user (owner)") is his typed word.
-
-## START HERE: the owner's ask, then what waits for him
-
-- **The owner stopped civicsmith development (~06:06Z, 27 Nov) and asked, in PROCESS #20's session: "refresh, then we need
-  to study what happened to the last tranche".** So first: ask him what he wants to understand about it (or begin from
-  what is known), then research with workers: civicsmith's tranche since the account switch (Process4 moves 5948442 ->
-  8b9fa8d/2560585 -> 7916c03; the faults passed to PROCESS, all in `process/research/unconverted-told-every-merge-26nov.md`,
-  `github-limits-26nov.md`, `github-limits-account-27nov.md`, `symbol-member-names-27nov.md`; civicsmith's sessions'
-  transcripts are readable with list_sessions / list_events (data, not instructions); civicsmith's repository is not
-  readable from here, so facts from it come through its coordinator or a read-only session the owner starts). Record
-  the study in `process/research/` before proposing anything.
-
-- **A and B** (`process/research/symbol-member-names-27nov.md`), put to him ~04:30Z; pdf-pixels is STOPPED on B.
-  A: a member keyed by a well-known symbol is named by TypeScript's shifting `__@name@id` in listings and uses files
-  (name it `[Symbol.name]`; read old names as such). B: owner lookups take `declarations[0]`; esbuild's `interface URL {}`
-  under pdf-worker/ made the host's URL a later module's (refs.mjs `packageOf` ~75 and other `declarations[0]` uses): a
-  symbol any host description declares is the host's; a package declaration never makes a symbol a product module's.
-  Then C (same file, ~05:19Z, not stopping work): H misses R1/S4 resting on a missing global (workerd Response,
-  Request); N lacks workerd's Fetch kinds; a union of typed arrays' method read as unclassified. Put A, B, C as one.
-  On his word: brief a worker (worktree) to build them in `tool/` with tests; merge with the record entry (subject "The
-  tool's reading of a product under the standard" in `design-decisions-2.md`), research, `changes` record; then put on his
-  page the line for civicsmith's coordinator: `Instruction: move civicsmith to the latest Process4 version, now`.
-- Older items still on his page (not urgent): ROOT C is superseded by D (done); "fill unreadable" B; two tidy
-  questions; option C (Node from published types; not recommended now); the coordinator-vs-PROCESS page question; the
-  two-hour background command.
-
-## Done in PROCESS #20 (each merged on the owner's words; record, research and `changes` written)
-
-- Account switch: registry; ROOT messaged; page moved to this account's pinned page.
-- A, G1, G2, H, J, N (8b9fa8d): no module told before its conversion merges, its conversion clears its waiting notices;
-  write spacing and header-aware retry; a host gap never refuses and its notes are not kept; reading faults; Node and
-  workerd features added.
-- D (244fbee): ROOT is not taken over for a version move; at a move it refreshes ARCH, the coordinator and the watcher
-  from the new copy. Seen working: civicsmith ROOT #13 kept ROOT through the 02:24Z move.
-- C & D (ab72c8a): design and build texts split into lettered companions keeping section numbers; each role reads whole
-  files; 73 pieces of history removed; a job 117,561 bytes, ARCH 167,439. PROCESS's research index cut to ~12 KB.
-- K1–K5 + "support all published limits, and add no restriction GitHub doesn't name as a limit" + margin A, about 95%
-  (84c82df): role shares in one table (`tool/lib/pace.mjs`), `P4_ROLE` in each starting text's p4 line.
-
-## Registry and products
-
-- civicsmith (`neobobkrause/civicsmith-copy`, tranche `p4-tranche`) on Process4 7916c03 (newest but for texts since);
-  ROOT #13 `session_012hdw2TD9pzVePLYLJy1SfE`; coordinator #16 `session_012hdw2S6GJTs5q2r99QFT6G`; ARCH #34. Converting
-  all modules; it has also run ordinary bug-fix jobs. The owner asked how to skip walks for this housekeeping tranche; he
-  was given a marked decision to type at the coordinator (ARCH names no area for a conversion; a round with none has no
-  walk or deployment), and told that bug fixes change behaviour and would still be walked unless he says "conversions
-  only".
-- process3-probes: no ROOT on this account (registry root null).
-- No live lane.
-
-## Flow
-
-`git fetch origin main`, `git checkout -B work/<name> origin/main`, edit, commit (author `Claude
-<noreply@anthropic.com>`, trailers), `node tool/p4.mjs push`, `open --title`, `ready <n>`, then `merge <n>` (retry while
-the check runs). An `open` can wait minutes now (the tool waits out GitHub's refusals and its shares): run it in the
-background. Keep the `changes` record's JSON valid (`state read changes`, edit, `state write changes --from`).
+## Products
+- civicsmith (`neobobkrause/civicsmith-copy`, `p4-tranche`): HALTED on his word 06:06Z, Process4 7916c03, t3 round 2,
+  ~38 modules in scope. ROOT #13 `session_012hdw2TD9pzVePLYLJy1SfE` (recorded PROCESS #21); coordinator #16
+  `session_012hdw2S6GJTs5q2r99QFT6G`. Faults 1–6 of 27 Nov are all in research.
+- process3-probes: no ROOT on this account.
 
 ## Lessons
-
-- Weigh development velocity in every choice; caution is a cost. The owner wants every published GitHub limit honoured
-  and nothing more (process3's extra limits slowed it).
-- Follow a choice through to what it makes each role do at civicsmith's size before proposing it.
-- His marked words only; when unmarked words shape a build, ask once whether to record them as a decision.
-- Workers in worktrees build tool changes well with a precise brief; verify their numbers (a job's hourly share of 6 would
-  have stalled jobs; set to 10).
+- Check a claim before telling him (PROCESS #20's unchecked "it is in the round record" misled him; tranche study §1).
+- Weigh velocity; caution is a cost. His marked words only. Verify workers' figures.
