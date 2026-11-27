@@ -184,3 +184,18 @@ Bearing:
 - C (published types) would close Node's gaps but not workerd's (a third package, @cloudflare/workers-types). Still not
   recommended now; with H widened a gap can no longer stop work, only leave places for a later pass.
 Group now: A, G1, G2, H, J, N, each widened as above. H and N unblock ooxml and csv-reader.
+
+## Built (worker, 27 Nov 2026; tool tests 293 -> 312, all pass)
+On the owner's "Decision: A, G1, G2, H, J, N" (27 Nov, 00:22 UTC). A: notify drops every module without a merged
+conversion before writing anything, counts and names them; a conversion's notify removes only that module's waiting
+notices. G1: every non-GET `gh api` write starts at least 1 s after the last, slots reserved under a lock in
+`$TMPDIR/p4-writes.json`. G2: writes run with `-i`; retry-after, else the reset where nothing remains, else 60/120/240/480
+s; then "run the command again after <UTC>"; a rate block is never taken for an ordinary refusal. H: one host-gap
+judgement shared by `uses` and `check` (unknown host globals, destructured members, calls only the description's
+signature rejects); "cannot tell" in `check`; R1 (and a cast's R2 from `any`) traced to a gap not kept; a loop label is
+no value; R4, R16's other branch and R17 not traced (R4 refers to no module). J: own channel follows imported own data,
+files in a folder the module made, its own program's output, `get` on its own Map; R17 symbol members; 2531; a closure
+handed to an error assertion; TS 5.5 inferred predicates; `new Map()` and iterable defaults left (TypeScript really types
+them with `any`); R17 assign/spread and R6 conditional/direct are misses, reported, not widened. N: the reported Node
+and workerd features added and classified (`facilities.json` only gains names); descriptor-taking fs functions make no
+S5 place.
