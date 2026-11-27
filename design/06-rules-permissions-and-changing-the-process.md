@@ -14,7 +14,7 @@ Part 6's other sections: 2 in `06b-`; 5 in `06c-`; 7 in `06d-`; 8 in `06e-`.
 
 - The list of forbidden commands takes these away from every session outright: every direct push, every GitHub command, the ordinary merge commands, overwriting a branch's history, deleting branches, and writing files through GitHub's web interface. So the tool is each session's only door to GitHub. The one exception: a session's first command fetches its copy of the process, the tool with it, and that fetch is not made by the tool.
 - Sessions act as a second GitHub account that can push and merge but cannot change settings. No branch can be deleted or overwritten. The tranche branch takes a session's change only by pull request with its required run passing.
-- GitHub's published limits are kept to: sessions stay within them with a margin and obey GitHub's own rate-limit responses. The tool spaces the writes that create content, and on a refusal waits as long as GitHub says, longer at each try (build text 1, section 3).
+- GitHub's published limits are kept to: sessions stay within them with a margin and obey GitHub's own rate-limit responses. GitHub's limits are the whole account's (80 content writes a minute, 500 an hour), and no client can see how near it is, so the tool counts its own: each role's session holds a share of each, together within about 83 percent of the limits, ARCH's share covering the jobs it opens; a write beyond a share waits for room, writes that change nothing are not made, and a machine GitHub has refused writes nothing until GitHub's wait ends (build text 1, section 3).
 
 ## 4. Working rules that exist because of the permission checker
 

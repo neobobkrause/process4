@@ -596,9 +596,12 @@ the principle and the known-weakness row as drafted." — 26 November 2026, type
 ### Subject: GitHub's limits
 
 **The rule as it now stands.** Sessions stay within GitHub's published limits with a margin and obey its rate-limit
-answers (design part 6, section 3). The tool starts each write that creates or changes content (a comment, an issue, a
-pull request, marking it ready, a merge) at least one second after the last such write on the same machine, as GitHub
-advises; reads are not paced; a push keeps to six a minute and a merge to one a minute into a branch. On a refused write
+answers (design part 6, section 3). The limits are the whole account's and cannot be read, so the tool counts its own on
+each machine: every content write and push at least one second after the last; each role's share per minute (66 in all
+with eight jobs, 82.5 percent of 80) and per hour (about 416, 83 percent of 500), ARCH's hourly share counting 6 for each
+job it opens, since every job passes through ARCH; a write beyond a share waits; no write that changes nothing; a machine
+GitHub has refused writes nothing until the wait ends; `branch` paced as pushes are; `next-job` keeps what is final of
+merged pull requests instead of re-reading them (build text 1, section 3; decision K1–K5 of 27 November 2026). On a refused write
 it waits as long as GitHub says (its retry-after, or until its reset), otherwise a minute doubling each time, and after
 the fourth try fails, naming the time after which to run it again. No queue of later writes is kept.
 
@@ -614,3 +617,10 @@ the retry; G3 bring back process3's account-wide counting (not recommended). Res
 that it doesn't exceed github limits? If not, then we need to explore adding that tooling back into the process." — 26
 November 2026, in PROCESS #20's session. Then: "Decision: A, G1, G2, H, J, N" — 27 November 2026, 00:22 UTC, typed as a
 comment on his page "Process4 Waiting for Bob", sent to PROCESS #20.
+Then, on the limits across the whole account (his words in conversation: "We also need to research the github limit
+honoring support and look to add that support to process4. Until we do, we run a real risk of my github account being
+suspended for exceeding published limits. (That happened last month before process3 had those limits.)"; researched in
+`process/research/github-limits-account-27nov.md`: 500 an hour could be passed at civicsmith's pace, pushes near
+process3's before its suspension; options 0, K1 cut writes, K2 shares a minute by role, K3 the hour held by ARCH, K4 a
+pause on refusal, K5 pushes and next-job's reads, G3 a shared ledger, not recommended): "Decision: K1–K5" — 27 November
+2026, about 01:52 UTC, typed in PROCESS #20's session.
