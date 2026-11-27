@@ -81,8 +81,8 @@ function writeTestRecord(ctx, n, data, words) {
   if (had) ctx.gh.editComment(ctx.slug, had.id, body); else ctx.gh.addComment(ctx.slug, n, body);
 }
 
-// After a pass, the newest required run on the head is run again, so that a run which started before the record
-// was written reads it. A run that has passed already is left; a refusal (a run still going) is said and passed over.
+// After a pass on a pull request that is not a draft, the newest required run on the head is run again, so that a run
+// which started before the record was written reads it. A run that has passed already is left; a refusal (a run still going) is said and passed over.
 function askRerun(ctx, head) {
   const required = requiredCheck(ctx.root);
   const runs = (ctx.gh.runsForHead(ctx.slug, head) || []).filter((r) => r.name === required)
@@ -168,7 +168,11 @@ export function testCmd(ctx, n, { runner = runModules } = {}) {
     }
     return 1;
   }
-  askRerun(ctx, head);
+  // A draft cannot merge, and leaves draft only by `ready`, whose ready_for_review event starts a required run that reads
+  // the record when it runs (shims/module-tests.yml): no run is asked for again (the owner's decision K1). Read after the
+  // record is written, so a pull request marked ready meanwhile is asked for as before.
+  if (ctx.gh.getPR(ctx.slug, n)?.draft === true) ctx.log(`pull request ${n} is a draft: ready asks for the required run, which reads this record`);
+  else askRerun(ctx, head);
   return 0;
 }
 

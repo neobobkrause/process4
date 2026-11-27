@@ -160,6 +160,9 @@ test('walk text fills the walking-session template, leaving no placeholders', ()
   assert.equal(walkText(t.ctx, 1), 0);
   const text = t.out.join('\n');
   assert.match(text, /You are walking session 1 for o\/product/);
+  // the filled text carries its role for the tool's pacing (K2), and keeps under 8,192 bytes
+  assert.match(text, /`p4` means `P4_ROLE=walker node /);
+  assert.ok(Buffer.byteLength(text) <= 8192);
   assert.match(text, /the external walk/);
   assert.match(text, /The walk issue is 77/);
   assert.match(text, /Your copy is walk-ext-1 at https:\/\/ext1\.example\./);

@@ -15,28 +15,28 @@ const answers = (...rs) => {
 test('a rate-limit answer is waited on and tried again', () => {
   const e = answers({ code: 1, stderr: 'HTTP 403: API rate limit exceeded' }, { code: 0, stdout: '{"ok":1}' });
   const waits = [];
-  const gh = makeGh({ exec: e.exec, wait: (ms) => waits.push(ms) });
+  const gh = makeGh({ exec: e.exec, wait: (ms) => waits.push(ms), pace: () => {} });
   assert.deepEqual(gh(['api', 'x']), { ok: 1 });
   assert.deepEqual(waits, [60000]);
 });
 
 test('a write is tried up to four times again, then fails with GitHub\'s words', () => {
   const e = answers(...Array(6).fill({ code: 1, stderr: 'HTTP 502: Bad Gateway' }));
-  const gh = makeGh({ exec: e.exec, wait: () => {} });
+  const gh = makeGh({ exec: e.exec, wait: () => {}, pace: () => {} });
   assert.throws(() => gh(['api', 'x']), (err) => err instanceof Fail && /502/.test(err.message));
   assert.equal(e.calls.length, 5);
 });
 
 test('any other refusal is not tried again', () => {
   const e = answers({ code: 1, stderr: 'HTTP 422: Validation Failed' });
-  const gh = makeGh({ exec: e.exec, wait: () => {} });
+  const gh = makeGh({ exec: e.exec, wait: () => {}, pace: () => {} });
   assert.throws(() => gh(['api', 'x']), /422/);
   assert.equal(e.calls.length, 1);
 });
 
 test('a call allowed to fail answers null and keeps GitHub\'s words until the next call', () => {
   const e = answers({ code: 1, stderr: 'gh: Validation Failed (HTTP 422)\nbody is too long' }, { code: 0, stdout: '{"ok":1}' });
-  const gh = makeGh({ exec: e.exec, wait: () => {} });
+  const gh = makeGh({ exec: e.exec, wait: () => {}, pace: () => {} });
   assert.equal(gh(['api', 'x'], { allowFail: true }), null);
   assert.equal(gh.refused, 'gh: Validation Failed (HTTP 422) body is too long');
   gh(['api', 'y']);
@@ -46,7 +46,7 @@ test('a call allowed to fail answers null and keeps GitHub\'s words until the ne
 test('a refusal keeps GitHub\'s own message from standard output, thrown or kept', () => {
   const body = JSON.stringify({ message: 'Validation Failed', errors: [{ resource: 'IssueComment', code: 'custom', field: 'body', message: 'body is too long (maximum is 65536 characters)' }], status: '422' });
   const refused = { code: 1, stderr: 'gh: Validation Failed (HTTP 422)', stdout: body };
-  const gh = makeGh({ exec: answers(refused, refused).exec, wait: () => {} });
+  const gh = makeGh({ exec: answers(refused, refused).exec, wait: () => {}, pace: () => {} });
   const words = 'gh: Validation Failed (HTTP 422); GitHub said: Validation Failed; body is too long (maximum is 65536 characters)';
   assert.throws(() => gh(['api', 'x']), (e) => e instanceof Fail && e.message === `GitHub refused: ${words}`);
   assert.equal(gh(['api', 'x'], { allowFail: true }), null);
@@ -95,9 +95,9 @@ test('every write starts at least a second after the last write of any p4 comman
   const file = paceFile();
   const calls = [];
   const exec = (args) => { calls.push([c.t, args]); return { code: 0, stdout: methodOf(args) === 'GET' ? '{"r":1}' : headed('201 Created', { 'Content-Type': 'application/json' }, '{"id":5}') }; };
-  const gh = makeGh({ exec, wait: c.wait, nowMs: c.nowMs, paceFile: file });
+  const gh = makeGh({ exec, wait: c.wait, nowMs: c.nowMs, paceFile: file, role: 'arch' });
   // another p4 command on the same machine, sharing the file
-  const other = makeGh({ exec, wait: c.wait, nowMs: c.nowMs, paceFile: file });
+  const other = makeGh({ exec, wait: c.wait, nowMs: c.nowMs, paceFile: file, role: 'arch' });
   assert.deepEqual(gh(['api', '-X', 'POST', 'repos/o/p/issues/1/comments', '--input', '-'], { input: '{}' }), { id: 5 });
   assert.deepEqual(gh(['api', 'repos/o/p/pulls/1']), { r: 1 });
   assert.deepEqual(gh(['api', 'repos/o/p/pulls/2']), { r: 1 });
@@ -107,16 +107,16 @@ test('every write starts at least a second after the last write of any p4 comman
   assert.deepEqual(c.waits, [1000]);
   const writes = calls.filter(([, a]) => methodOf(a) !== 'GET');
   assert.deepEqual(writes.map(([t]) => t - writes[0][0]), [0, 1000, 6000]);
-  // a write asks for the answer's headers; a read does not
-  assert.ok(writes.every(([, a]) => a[1] === '-i'));
-  assert.ok(calls.filter(([, a]) => methodOf(a) === 'GET').every(([, a]) => !a.includes('-i')));
+  // every call asks for the answer's headers, reads as well as writes
+  assert.ok(calls.every(([, a]) => a[1] === '-i'));
 });
 
 test('writePace never gives two writes the same start, and waits outside its lock', () => {
   const c = clock();
   const file = paceFile();
-  for (let i = 0; i < 3; i++) writePace({ file, nowMs: c.nowMs, wait: () => {} });
-  assert.equal(JSON.parse(readFileSync(file, 'utf8')).last, c.t + 2000);
+  const t0 = c.t;
+  for (let i = 0; i < 3; i++) writePace({ file, nowMs: c.nowMs, wait: c.wait, role: 'arch' });
+  assert.equal(JSON.parse(readFileSync(file, 'utf8')).last, t0 + 2000);
   assert.equal(existsSync(`${file}.lock`), false);
 });
 

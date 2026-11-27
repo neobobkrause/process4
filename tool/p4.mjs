@@ -9,6 +9,7 @@ import * as c from './lib/commands.mjs';
 import { github } from './lib/github.mjs';
 import { checkCmd, listingCmd, notifyCmd, relatedCmd } from './lib/notify.mjs';
 import { usesCmd } from './lib/usescmd.mjs';
+import { roleFor, useRole } from './lib/pace.mjs';
 import { walkOpen, walkClose, walkWrite, walkRead, walkText, walkAreas } from './lib/walk.mjs';
 import { releasePrepare, releasePublish } from './lib/release.mjs';
 import { parseBlock } from './lib/github.mjs';
@@ -89,10 +90,10 @@ const commands = {
 
 // What each command does, printed by --help (or -h) and nothing else: a help flag never acts.
 export const HELP = {
-  branch: 'branch <name> [--into <branch>]: makes job/<module>.<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it.',
+  branch: 'branch <name> [--into <branch>]: makes job/<module>.<n> or work/<what> from the newest commit of the tranche branch (process.json), else of --into or the default branch, and pushes it (paced as push is).',
   push: 'push [--blocked <module>[,<module>] "<why>" | --unblocked "<why>"] [--meaning <item> "<was; is now>"]... [--same <item> "<why its domain and range are the same>"]... [--notice-nothing "<why>" [--notice <n>]]: first rewrites, from the code at the current commit, the uses file of each module whose code or tests the branch changes against its base (a job\'s: its own module) and, where the branch changes the module list, of each module it touches and each user whose uses file names one, and where it changes the facility list, of every module, and commits any that changed; then pushes the current working branch (job/, work/ or drop/) to the same-named branch, never forced; with --blocked (repeated, or names joined by commas), writes the job\'s record on its pull request; with --unblocked, rewrites that record to say the job goes on, where ARCH ended the block by its own decision; with --meaning (repeated, each with its line), declares in the pull request\'s meaning comment a change of meaning under the same means, which makes the item a changed item when the pull request merges; with --same (repeated, each with its line), records in that comment that an item the tool finds changed keeps its domain and range, so that item tells no one when the pull request merges (every other changed, named or declared item still tells); with --notice-nothing, records in the job\'s record alone (never in the job block, which is ARCH\'s) that the notices that reached the open job need no change (notice_needs_no_change, with the job block\'s notice_seq read at that moment, or the n named by --notice, the last notice the job read, never above the block\'s), so its recorded pass stands for those notices and none that comes later. A record any flag writes keeps notice_needs_no_change. A told job that finds nothing to change in its code but whose own item changes with the provider\'s (a value computed from the changed item, or its bound handed back) declares it with --meaning, then runs close --nothing-to-change.',
   open: 'open --module <name> | --title "<t>" [--into-main | --into <branch>] [--branch <b>]: opens a draft pull request (from a detached checkout, name the branch with --branch); for a job writes the job block, with the items ARCH named as changing meaning (the module\'s `meaning` entries in waiting work), and prints its starting instructions. With one open already, prints it and its job block.',
-  test: 'test [<pr>] [--branch <b>]: runs the pull request\'s tests in this checkout, which must be clean and at the pull request\'s head commit: the scope decided on the merge of the head into the base\'s newest commit, then each module\'s check and its test files. Prints each module as it starts and ends. Writes the test record on the pull request, rewritten in place, naming the modules run; after a pass asks GitHub to run the required run again; exit 1 on a fail, with the last lines of the failing output.',
+  test: 'test [<pr>] [--branch <b>]: runs the pull request\'s tests in this checkout, which must be clean and at the pull request\'s head commit: the scope decided on the merge of the head into the base\'s newest commit, then each module\'s check and its test files. Prints each module as it starts and ends. Writes the test record on the pull request, rewritten in place, naming the modules run; after a pass on a pull request that is not a draft asks GitHub to run the required run again (a draft\'s run comes from ready); exit 1 on a fail, with the last lines of the failing output.',
   ready: 'ready [<pr>] [--branch <b>]: marks the pull request ready (named by number, by --branch, or the current branch\'s one open pull request), which asks for the required run; only where its test record stands for the head commit, or for an earlier commit from which the head differs only in the module\'s uses file, after every notice the job\'s record does not say needs no change; or where nothing needs one (scope nothing: no changed file under a module, or only comments and layout changed; every notice that reached the job one the job\'s record says needs no change; and, for a told job, its record that it found nothing to change). Otherwise marks nothing and says why: run test. On a conversion job, once marked, writes the conversion\'s report on the pull request: places outside the standard gone, by rule; copies; places still outside, with what each waits on; the time from opening; the cost, unmeasured where it cannot be read.',
   results: 'results [<pr>] [--branch <b>]: prints whether the test record stands for the head commit (or for an earlier commit from which the head differs only in the module\'s uses file) and what it holds, then the required run\'s state on the head commit (pull request named by number, by --branch, or the current branch), and for a failure the last lines of its output.',
   merge: 'merge <pr>: merges with a merge commit at the head commit, unless the owner holds it; for a job, refuses (exit 1) when a notice reached it after its tests ran that it has not recorded as needing no change (push --notice-nothing), and merges nothing while a module it uses (a provider its uses file names, or without one a module it imports, directly or through others, earlier in the order) has an open job not blocked, printing waits for <module> (pull request <n>).',
@@ -125,15 +126,19 @@ export const HELP = {
 const LOCAL = new Set(['listing', 'check', 'uses']);
 export function context(name, overrides = {}) {
   const root = overrides.root || repoRoot();
-  return {
+  const ctx = {
     root,
     slug: name.startsWith('run ') || LOCAL.has(name) ? null : repoSlug(root),
     gh: github,
     log: console.log,
     wait: sleep,
     nowMs: () => Date.now(),
+    // the role this machine's pacing is held to (pace.mjs): P4_ROLE, as the session's starting text sets it
+    role: roleFor(root),
     ...overrides,
   };
+  useRole(ctx.role);
+  return ctx;
 }
 
 export function main(argv, overrides) {
