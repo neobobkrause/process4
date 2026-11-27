@@ -476,7 +476,10 @@ at its start. Three levels above the limit it puts a fresh ROOT on the owner's s
 planned takeover, but at its refresh point rewrites its handover record and the coordinator surfaces the fresh ROOT's start
 as blocking. A takeover for a ROOT that has died still happens. The owner starts the fresh ROOT at a pause (design part 4,
 section 6; part 7, section 1; ROOT's rules 6 and 8). It adds no test, gate, review or stop: the owner's act already existed;
-it is asked for one takeover earlier, and a takeover known to break is not made.
+it is asked for one takeover earlier, and a takeover known to break is not made. ROOT is taken over only at its fill
+level or when it has died, never for a version move: at a move it fetches the new copy, refreshes ARCH, the coordinator
+and the watcher from it, and goes on, reading the new version's texts at its next takeover (decision D of 27 November
+2026; design part 4, section 6; part 6, section 7; ROOT's rule 5).
 
 Why: process3-probes ROOT went down to depth 7 and its watcher to 8, which could make no wake, so ROOT could not be
 refreshed and the product stopped (25 Nov). The owner asked for the next ROOT to start at the top (option B: a one-time
@@ -489,6 +492,14 @@ scheduled task; C fewer takeovers on a version move. Researched in `process/rese
 **The owner's words.** "Decision: B, as recommended" — 26 November 2026, typed as a comment on his page "Process4 Waiting
 for Bob" on option B, sent to PROCESS #18; the recommendation was "B, measured first; if the measurement fails, A". The
 measurement failed; A was built.
+Raised again by the owner on 27 November (conversation): "An issue that was raised yesterday but never addressed is that
+watcher is supposed to refresh ROOT so that ROOT depth never is more than 1. But the way the process is actually working
+is that the watcher is converting to being ROOT then it spawns the new watcher. So each refresh results in a higher
+depth." PROCESS #20 explained that only his own start makes a top-level ROOT, and that takeovers for version moves make
+the depth climb (civicsmith ROOT #12 replaced about twenty minutes after he started it); options 0, C (take over on a
+move only when ROOT's own texts changed), D (take over only at the fill level or on death; recommended), in
+`process/research/root-lineage-26nov/README.md`. His words: "(What makes it climb fast is how often ROOT is replaced)
+Decision: D, as recommended" — 27 November 2026, about 00:28 UTC, typed in PROCESS #20's session.
 
 ### Subject: A record that outgrows one comment, and a starting job's block
 
