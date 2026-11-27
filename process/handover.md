@@ -23,7 +23,7 @@ answers by page comments (ArtifactComments); his marked words there count.
 
 ## Products
 - civicsmith (`neobobkrause/civicsmith-copy`, `p4-tranche`): HALTED on his word 06:06Z, Process4 7916c03, t3 round 2,
-  ~38 modules in scope. ROOT #13 `session_012hdw2TD9pzVePLYLJy1SfE` (recorded PROCESS #21); coordinator #16
+  ~38 modules in scope. ROOT #14 `session_012hdw2Qwh67ymDJtvrqyMTm` (took over 22:07Z; told PROCESS #21 is live); coordinator #16
   `session_012hdw2S6GJTs5q2r99QFT6G`. Faults 1–6 of 27 Nov are all in research.
 - process3-probes: no ROOT on this account.
 
