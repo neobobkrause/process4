@@ -22,23 +22,20 @@ a{color:var(--accent)}
 <main>
 <header>
 <h1>What is waiting for you</h1>
-<p class="updated">Updated 26 Nov 2026, about 23:58 UTC, by PROCESS #20, on your new Claude account. This page is now your standing page. The old one (the link ending SY4Ub7f1…) stays with the old account; I cannot open or change it from here.</p>
+<p class="updated">Updated 27 Nov 2026, about 01:05 UTC, by PROCESS #20, on your new Claude account. This page is now your standing page. The old one (the link ending SY4Ub7f1…) stays with the old account; I cannot open or change it from here.</p>
 </header>
 
 <section class="wait">
-<h2>Yours now: one choice about notices and GitHub's limits — two jobs are stopped on it</h2>
-<p><b>Since 23:53 UTC four finished pieces of work are held:</b> two conversions (ooxml, csv-reader) cannot pass, because the tool's description of Node's text decoder is incomplete and it refuses their correct code; two more (format-registry, and case-checker's fix) use those modules and cannot merge before them. The round cannot finish until the tool is corrected and civicsmith moves to it. H and N below unblock them; other conversions go on.</p>
-<p>Each ordinary merge in civicsmith tells all 199 modules not yet converted, even when nothing they use changed. Writing those notices got the sessions' GitHub account blocked for about half an hour (lifted about 22:50 UTC); three notices are owed. Six corrections, best taken together:</p>
-<ul>
-<li><b>A.</b> A module is not told of changes until its conversion merges; its conversion clears what waited for it. Ends the 199-module notices and about 199 follow-up jobs.</li>
-<li><b>G1.</b> At least one second between the tool's comment writes, as GitHub advises.</li>
-<li><b>G2.</b> When GitHub says wait, wait as long as it says, longer each time, then stop and say when to rerun.</li>
-<li><b>H.</b> A gap in the tool's description of Node never refuses a module's code, and a "may come from any module" note that exists only because of such a gap is not kept, so it tells no one.</li>
-<li><b>J.</b> Correct the reading faults the conversion jobs report: a module's own data, files it writes and its own program's output read as someone else's; a deliberate bad input in an error test refused, against your rule; and a few smaller ones.</li>
-<li><b>N.</b> Add to the tool's description of Node the features the jobs found missing: the text decoder in full, streams, compression, signing, files and others, about fifty.</li>
-</ul>
-<p>Without H and J, a converted module keeps notes that tell it of every change after the sweep. Recommended: all six. Not recommended now: describing Node from its published types (option C), which closes the gaps for good but makes each run of the tool about three times slower to read and needs a second dependency.</p>
-<p>Type in PROCESS's session, for example: <code>Decision: A, G1, G2, H, J, N</code>, or name the ones you want, or "no change". Then I build and merge, and give you the one line for civicsmith's coordinator.</p>
+<h2>Yours now: move civicsmith onto the corrected version</h2>
+<p>Your six changes (A, G1, G2, H, J, N) and D are merged into Process4 (about 01:00 UTC; all 312 of the tool's tests pass). In civicsmith's coordinator session, type:</p>
+<p class="draft">Instruction: move civicsmith to the latest Process4 version, now</p>
+<p>"Now" restarts its open jobs from their branches on the new version, which costs little. What you should see: the coordinator records it, ARCH moves civicsmith in two small pull requests, and the coordinator tells you in one line when every session is on the new version. Then the four held pieces of work (ooxml, csv-reader, format-registry, case-checker's fix) can pass and merge, and the three owed notices need not be sent.</p>
+<p>Not proven yet: that the move clears all four; their own jobs re-run their tests on the new version and will show it.</p>
+</section>
+
+<section class="card">
+<h2>Next, already chosen: C and D for what each role reads</h2>
+<p>On your "Decision: C &amp; D": the design and build texts split by who reads them, and history removed. Built after civicsmith's move, then a second short move.</p>
 </section>
 
 <section class="wait">
