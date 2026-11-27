@@ -5,6 +5,7 @@ governing text (design part 5 §3): PROCESS reads this index in full and opens a
 line per file, with its outcome; keep it current.
 
 ## 27 Nov 2026
+- `symbol-member-names-27nov.md`: a member keyed by a well-known symbol is named by TypeScript's shifting internal id in listings and uses files (office-readers #15); options 0, A (name it by its symbol; read old names; recommended).
 - `github-limits-account-27nov.md`: GitHub's limits across the whole account (80/min, 500/h); the tool's writes counted; options K1-K5, G3; "Decision: K1–K5" (27 Nov).
 - `job-reading-27nov.md`: trimming a job's reading set, over the 175,000-byte maximum; options 0, A–D; "Decision: C & D".
 
