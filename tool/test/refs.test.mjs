@@ -936,11 +936,12 @@ export const trap = () => new Proxy({}, {});
   const tree = loadTree(root);
   const { reading, data } = usesReading(tree, 'u', 'a'.repeat(40));
   const notes = reading.outside.filter((o) => o.unknownHost).map((o) => `${o.rule} ${o.line}`);
-  assert.deepEqual(notes, ['R14 1', 'S4 6']);
-  // the file keeps every other place, Proxy's among them, and the places the unknown values make (R1, a value of kind any)
+  // the values of kind any that only the gaps make (R1) are notes on the host too (the owner's decision H, 27 Nov 2026)
+  assert.deepEqual(notes, ['R14 1', 'R1 4', 'R1 6', 'S4 6']);
+  // the file keeps every other place, Proxy's among them
   const kept = (list) => list.map((o) => `${o.rule} ${o.line}`);
   assert.deepEqual(kept(data.outside), kept(reading.outside.filter((o) => !o.unknownHost)));
-  assert.ok(kept(data.outside).includes('R14 8') && kept(data.outside).includes('R1 4'), kept(data.outside).join(', '));
+  assert.ok(kept(data.outside).includes('R14 8') && !kept(data.outside).includes('R1 4'), kept(data.outside).join(', '));
   const { ctx, out } = ctxFor(root, fakeGitHub());
   assert.equal(usesCmd(ctx, 'u'), 0);
   const text = out.join('\n');

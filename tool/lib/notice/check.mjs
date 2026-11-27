@@ -12,6 +12,7 @@ import path from 'node:path';
 import { ts, loadReader, makeProgram, tagText, forEachNode, NODE_DESCRIPTION } from './ts.mjs';
 import { carrierOf } from './carriers.mjs';
 import { declaredUses, placeMayRefer } from '../usesfile.mjs';
+import { makeHostGap } from './refs.mjs';
 
 /**
  * Complaints that mean "I cannot tell", never a disagreement. Decided here:
@@ -56,7 +57,7 @@ function isInsideComment(sf, pos) {
   return before >= 0 && before > close;
 }
 
-const POSSIBLY_UNDEFINED = new Set([2532, 2533, 18047, 18048, 18049]);
+const POSSIBLY_UNDEFINED = new Set([2531, 2532, 2533, 18047, 18048, 18049]);
 const MEMBERSHIP = new Set(['includes', 'indexOf', 'lastIndexOf', 'has']);
 /** The assertions whose first argument deliberately exercises an error condition (design part 2, section 6). */
 const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
@@ -70,15 +71,57 @@ function walk(n, f) { forEachNode(n, (m) => { f(m); }); }
  * properly identified and communicated (design part 2, section 6). That is not one of the two approved refusals, so a
  * reader's complaint inside such a span is "cannot tell", never a disagreement (build text 1b, command 18). Decided here: the signal is the enclosing assertion, the one place the test marks the value as deliberate.
  */
-function errorAssertionSpans(sf) {
+export function errorAssertionSpans(sf) {
   const spans = [];
+  /** A function the assertion is handed by name, stored before in a closure: what it was stored as is as deliberate. */
+  const stored = (e, depth = 0) => {
+    while (e && (ts.isParenthesizedExpression(e) || ts.isNonNullExpression(e))) e = e.expression;
+    if (!e || depth > 3) return;
+    if (ts.isArrowFunction(e) || ts.isFunctionExpression(e) || ts.isFunctionDeclaration(e)) { spans.push([e.getStart(sf), e.end]); return; }
+    if (ts.isArrayLiteralExpression(e)) { for (const x of e.elements) stored(x, depth + 1); return; }
+    if (ts.isElementAccessExpression(e)) { stored(e.expression, depth + 1); return; }
+    if (!ts.isIdentifier(e)) return;
+    // the name's declaration in this file: a variable written once with a function or a list of them, a function
+    // declared, or the variable of a for-of over such a list
+    const decl = declarationIn(sf, e);
+    if (!decl) return;
+    if (ts.isFunctionDeclaration(decl)) stored(decl, depth + 1);
+    else if (ts.isVariableDeclaration(decl) && decl.initializer) stored(decl.initializer, depth + 1);
+    else if (ts.isVariableDeclaration(decl) && decl.parent?.parent && ts.isForOfStatement(decl.parent.parent)) stored(decl.parent.parent.expression, depth + 1);
+  };
   walk(sf, (n) => {
     if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) && ERROR_ASSERTIONS.has(n.expression.name.text)) {
       const a0 = n.arguments[0];
-      if (a0) spans.push([a0.getStart(sf), a0.end]);
+      if (!a0) return;
+      spans.push([a0.getStart(sf), a0.end]);
+      stored(a0);
     }
   });
   return spans;
+}
+/**
+ * The declaration a name refers to, by scope alone (no checker: a test file's own names): the nearest enclosing block,
+ * function or file that declares it by `const`/`let`/`var`, a function declaration, or a for-of's variable.
+ */
+function declarationIn(sf, id) {
+  const name = id.text;
+  for (let scope = id.parent; scope; scope = scope.parent) {
+    let found = null;
+    const look = (n) => {
+      if (found) return;
+      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.name.text === name && n.name !== id) found = n;
+      else if (ts.isFunctionDeclaration(n) && n.name?.text === name) found = n;
+    };
+    if (ts.isBlock(scope) || ts.isSourceFile(scope) || ts.isModuleBlock(scope)) {
+      for (const st of scope.statements) {
+        if (ts.isVariableStatement(st)) st.declarationList.declarations.forEach(look);
+        else look(st);
+      }
+    } else if (ts.isForOfStatement(scope) && ts.isVariableDeclarationList(scope.initializer)) scope.initializer.declarations.forEach(look);
+    else if (ts.isFunctionLike(scope) && scope.parameters?.some((p) => ts.isIdentifier(p.name) && p.name.text === name)) return null;
+    if (found) return found;
+  }
+  return null;
 }
 /** The reader ran out of stack (a RangeError of the JavaScript engine). */
 const outOfStack = (e) => e instanceof RangeError && /call stack/i.test(e.message);
@@ -392,6 +435,7 @@ export function check(tree, moduleId, opts = {}) {
   let program = opts.analysis?.program ?? ownProgram();
   let checker = program.getTypeChecker();
   let saidBy = makeClaims(checker, tree, mod);
+  let hostGap = makeHostGap(checker);
   const refusals = [];
   const cannotTell = [];
   const moduleOfDecl = (decl) => tree.moduleOfFile(decl.getSourceFile().fileName);
@@ -496,6 +540,10 @@ export function check(tree, moduleId, opts = {}) {
         const rt = checker.getTypeAtLocation(node.parent.expression);
         if ([rt.symbol, rt.aliasSymbol].some((s) => (s?.declarations ?? []).some((x) => x.getSourceFile().fileName === NODE_DESCRIPTION))) { cannotTell.push({ at, code: d.code, why: "a part of Node the tool's description of Node leaves out", text }); continue; }
       }
+      // A complaint that rests only on the tool's description of the host, which leaves out or writes too small what the
+      // code uses (`new TextDecoder(label, options)`): the host is neither a comment of the module nor a provider's stated
+      // interface, so never a refusal (the owner's decision H, 27 Nov 2026; the same judgement as the reading's, refs.mjs).
+      if (hostGap(d, text, node)) { cannotTell.push({ at, code: d.code, why: "a part of the host the tool's description of it leaves out or writes too small", text }); continue; }
       // Iteration 6: a property added to an error object (err.code = '...'), Node's own way.
       if (d.code === 2339 && ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) {
         const rt = checker.getTypeAtLocation(node.parent.expression);
@@ -562,7 +610,7 @@ export function check(tree, moduleId, opts = {}) {
       // terms in one function) runs it out of stack. Not read: "cannot tell", never a refusal. Its state after that is
       // not to be trusted, so the files after it are read afresh.
       cannotTell.push({ at: rel(f), code: 'stack', why: 'the reader ran out of stack on this file (an expression nested too deeply to follow): not read', text: e.message });
-      program = ownProgram(); checker = program.getTypeChecker(); saidBy = makeClaims(checker, tree, mod);
+      program = ownProgram(); checker = program.getTypeChecker(); saidBy = makeClaims(checker, tree, mod); hostGap = makeHostGap(checker);
     }
   }
 

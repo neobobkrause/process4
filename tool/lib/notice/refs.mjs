@@ -23,7 +23,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ts, loadReader, makeStandardProgram, forEachNode, lineOf, tagsOf, tagText } from './ts.mjs';
 import { makeLister } from './listing.mjs';
 import { carrierOf } from './carriers.mjs';
-import { isTestCall } from './check.mjs';
+import { errorAssertionSpans, isTestCall } from './check.mjs';
 import { handCopies, makeResolver, readFacilities, readUses, sideOf, UNRESOLVED_WAIT } from '../usesfile.mjs';
 import { underPath } from '../util.mjs';
 
@@ -106,6 +106,13 @@ export function qualifiedName(checker, sym, pkg = packageOf(sym)) {
       break;
     }
   }
+  // a member read on a choice of object kinds the library or a description names as one (IteratorResult's done and value):
+  // named by that name, as the classification names it, not by the bare member
+  const union = sym.links?.containingType;
+  if (union && union.flags & ts.TypeFlags.Union && union.aliasSymbol && union.types.every((u) => u.flags & ts.TypeFlags.Object) && name === sym.name) {
+    const key = /^__@([A-Za-z]+)@\d+$/.exec(String(sym.escapedName));
+    name = `${fq(union.aliasSymbol)}.${key ? `[Symbol.${key[1]}]` : sym.name}`;
+  }
   name = name.replace(/^global\./, '');
   if (pkg && pkg !== HOST) name = `${pkg}:${name.replace(/^"[^"]*"\.?/, '')}`;
   return name;
@@ -120,10 +127,79 @@ const HOST_NAMES = new Set([2580, 2591, 2867, 2868]);
 const NO_EXPORT = new Set([2305, 2614, 2724]);
 /** "Property 'y' does not exist on type 'X'" (with or without a suggestion). */
 const NO_MEMBER = new Set([2339, 2551]);
+/** "Cannot find name 'x'" (with or without a suggestion). */
+const NO_NAME = new Set([2304, 2552]);
+/**
+ * The global names of the hosts (Node 22's globals.html; the WHATWG and Web Crypto interfaces Node and workerd both
+ * give; workerd's own), whatever the tool's description of them: a complaint that one cannot be found is a gap in the
+ * description, never the product's.
+ */
+const HOST_GLOBALS = new Set(['process', 'Buffer', 'global', 'globalThis', 'require', 'module', 'exports', '__dirname', '__filename',
+  'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setImmediate', 'clearImmediate', 'queueMicrotask', 'structuredClone',
+  'console', 'crypto', 'Crypto', 'SubtleCrypto', 'CryptoKey', 'CryptoKeyPair', 'performance', 'fetch', 'Request', 'Response', 'Headers', 'FormData',
+  'AbortController', 'AbortSignal', 'Event', 'EventTarget', 'CustomEvent', 'MessageChannel', 'MessagePort', 'MessageEvent', 'BroadcastChannel',
+  'WebSocket', 'URL', 'URLSearchParams', 'URLPattern', 'TextEncoder', 'TextDecoder', 'TextEncoderStream', 'TextDecoderStream', 'atob', 'btoa',
+  'Blob', 'File', 'ReadableStream', 'ReadableStreamDefaultReader', 'ReadableStreamBYOBReader', 'ReadableByteStreamController',
+  'ReadableStreamDefaultController', 'WritableStream', 'WritableStreamDefaultWriter', 'TransformStream', 'TransformStreamDefaultController',
+  'ByteLengthQueuingStrategy', 'CountQueuingStrategy', 'CompressionStream', 'DecompressionStream', 'DOMException', 'navigator', 'caches',
+  'HTMLRewriter', 'scheduler', 'WorkerGlobalScope', 'DigestStream', 'FixedLengthStream', 'IdentityTransformStream']);
+/**
+ * The checker's complaints about a call: the number of its arguments, an argument the parameter will not take (an
+ * object written in place with a member the parameter does not name, or one missing), no signature that matches,
+ * nothing to call.
+ */
+const SIGNATURE = new Set([2554, 2555, 2556, 2557, 2575, 2345, 2769, 2353, 2561, 2322, 2559, 2739, 2740, 2741, 2349, 2351]);
+
+/**
+ * Whether a checker's complaint stands only because the tool's description of Node or workerd lacks what the code
+ * uses (the owner's decisions of 26 and 27 Nov 2026: such a gap never refuses code, and a note standing only on it is
+ * not kept): one of the hosts' global names (TypeScript's own codes for Node's, or a host global the description
+ * leaves out); a member a host module does not export; a member of a kind Node's or workerd's description declares, read
+ * or taken apart; a call of a facility the description declares, whose arguments its signature there does not take (a
+ * signature the description writes too small: `new TextDecoder(label, options)`). Shared by the reading (refs.mjs) and
+ * the check (check.mjs), so both judge alike.
+ */
+export function makeHostGap(checker) {
+  const typeAt = (n) => { try { return checker.getTypeAtLocation(n); } catch { return undefined; } };
+  const resolved = (s) => { if (s && s.flags & ts.SymbolFlags.Alias) { try { return checker.getAliasedSymbol(s); } catch { return undefined; } } return s; };
+  const hostKind = (t) => [t?.aliasSymbol, t?.symbol].some((s) => !!s && isHostFacility(s));
+  /** The call whose callee, or one of whose arguments (an object or list written in place included), is at node. */
+  function callAt(node) {
+    let cur = node;
+    for (let i = 0; i < 16 && cur?.parent; i++) {
+      const p = cur.parent;
+      if (ts.isCallExpression(p) || ts.isNewExpression(p)) return p.expression === cur || (p.arguments ?? []).includes(cur) ? p : null;
+      if ((ts.isPropertyAccessExpression(p) && p.name === cur) || ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p) || ts.isObjectLiteralExpression(p)
+        || ts.isArrayLiteralExpression(p) || ts.isParenthesizedExpression(p) || ts.isSpreadElement(p) || ts.isSpreadAssignment(p)) { cur = p; continue; }
+      return null;
+    }
+    return null;
+  }
+  return function hostGap(d, msg, node) {
+    if (HOST_NAMES.has(d.code)) return true;
+    if (NO_NAME.has(d.code)) return !!node && ts.isIdentifier(node) && HOST_GLOBALS.has(node.text);
+    if (NO_EXPORT.has(d.code)) { const m = /'"([^"]+)"'/.exec(msg)?.[1]; return !!m && isHostModule(m); }
+    if (NO_MEMBER.has(d.code) && node?.parent) {
+      if (ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) return hostKind(typeAt(node.parent.expression));
+      if (ts.isBindingElement(node.parent) && (node.parent.propertyName ?? node.parent.name) === node) return hostKind(typeAt(node.parent.parent));
+    }
+    if (SIGNATURE.has(d.code) && node) {
+      const call = callAt(node);
+      const callee = call && (ts.isPropertyAccessExpression(call.expression) ? call.expression.name : call.expression);
+      if (!callee) return false;
+      const s = resolved(checker.getSymbolAtLocation(callee));
+      if (s && (s.declarations ?? []).length && isHostFacility(s)) return true;
+      let sig;
+      try { sig = checker.getResolvedSignature(call); } catch { sig = undefined; }
+      const decl = sig?.declaration;
+      return !!decl && !!decl.symbol && isHostFacility(decl.symbol);
+    }
+    return false;
+  };
+}
 
 const PROTOCOL = ['then', 'toJSON', 'valueOf', 'toString', 'constructor'];
 const PRIMITIVE = ['toString', 'valueOf'];
-const ERROR_ASSERTIONS = new Set(['throws', 'rejects', 'doesNotThrow', 'doesNotReject']);
 const HOOKS = new Set(['before', 'after', 'beforeEach', 'afterEach']);
 /** Facilities that are never on a facility list (study-references §1.5), each with the rule it breaks. */
 const NEVER = new Map([
@@ -157,6 +233,8 @@ const REFLECT_READS = new Set(['ObjectConstructor.keys', 'ObjectConstructor.valu
 const WIDENS = new Set(['ObjectConstructor.values', 'ObjectConstructor.entries', 'ObjectConstructor.assign']);
 /** Host facilities whose arguments name files, programs, workers or modules (S2, S5, S6), and which arguments. */
 const FS = /^"node:fs(\/promises)?"\.(\w+)$/;
+/** File functions that take an open file's descriptor, not a path (fs.html: closeSync(fd) and its kin). */
+const BY_DESCRIPTOR = new Set(['closeSync', 'close', 'fstatSync', 'fstat', 'fsyncSync', 'readSync', 'writeSync', 'ftruncateSync', 'fchmodSync', 'fchownSync']);
 const TWO_PATHS = new Set(['renameSync', 'copyFileSync', 'rename', 'copyFile', 'cp', 'cpSync', 'linkSync', 'symlinkSync']);
 const PROGRAMS = /^"node:child_process"\.(spawn|spawnSync|execFile|execFileSync|fork|exec|execSync)$/;
 const WILD = '\u0000';
@@ -371,7 +449,12 @@ export function readReferences(tree, moduleId, opts = {}) {
     const side = mod.tests.includes(sf.fileName) ? 'test' : 'code';
     const mayR = [...new Set(mayRefer)].filter((m) => m !== mod.id);
     const old = outside.get(k);
-    if (old) { old.mayRefer = [...new Set([...old.mayRefer, ...mayR])]; return; }
+    if (old) {
+      old.mayRefer = [...new Set([...old.mayRefer, ...mayR])];
+      // a place the same as a note on the host, but standing on its own, is kept
+      if (old.unknownHost && !unknownHost) delete old.unknownHost;
+      return;
+    }
     outside.set(k, { rule, file, side, line, what, ...(item ? { item } : {}), ...(relabels ? { relabels } : {}), mayRefer: mayR.includes(ANY) ? [ANY] : mayR, waitsOn, tests: side === 'test' ? testsAt(node) : [], ...(unknownHost ? { unknownHost } : {}) });
   }
   const modulesOf = (decls) => [...new Set(decls.map((d) => entryOf(d)?.module).filter(Boolean))];
@@ -402,6 +485,64 @@ export function readReferences(tree, moduleId, opts = {}) {
   const hasAny = hasFlag(ts.TypeFlags.Any);
   const hasUnknown = hasFlag(ts.TypeFlags.Unknown);
   const typeAt = (n) => { try { return checker.getTypeAtLocation(n); } catch { return undefined; } };
+  const hostGap = makeHostGap(checker);
+  /**
+   * The places of the checker's complaints that stand only on a gap in the tool's description of the host (hostGap),
+   * and the imports of a host module it does not describe: what a value of kind any may come from there.
+   */
+  let gaps = null;
+  function gapNodes() {
+    if (gaps) return gaps;
+    gaps = new Set();
+    for (const [sf, list] of complaints) for (const d of list) {
+      if (d.start === undefined) continue;
+      const node = nodeAtPos(sf, d.start);
+      if (!node) continue;
+      const msg = ts.flattenDiagnosticMessageText(d.messageText, ' ');
+      if (d.code === 2307 || d.code === 7016) {
+        if (!isHostModule(/'([^']+)'/.exec(msg)?.[1] ?? '')) continue;
+        let at = node;
+        while (at && !ts.isImportDeclaration(at) && !ts.isImportEqualsDeclaration(at) && !ts.isCallExpression(at) && !ts.isSourceFile(at)) at = at.parent;
+        if (at && !ts.isSourceFile(at)) gaps.add(at);
+        continue;
+      }
+      if (hostGap(d, msg, node)) gaps.add(node);
+    }
+    return gaps;
+  }
+  const anyAt = (e) => { const t = typeAt(e); return !!t && !!(t.flags & ts.TypeFlags.Any); };
+  /**
+   * Whether an expression's value is of kind any only because of a gap in the tool's description of the host: the
+   * member, name or call the description leaves out, or a value made from one (a member read, an element, a call of
+   * it, a const or a name taken apart that holds it). Such a place is a note on the host, not kept (build text 2c).
+   */
+  function fromHostGap(e, depth = 0) {
+    if (!e || depth > 8) return false;
+    const g = gapNodes();
+    if (!g.size) return false;
+    while (ts.isParenthesizedExpression(e) || ts.isAwaitExpression(e) || ts.isNonNullExpression(e) || ts.isAsExpression?.(e) || ts.isSatisfiesExpression?.(e)) e = e.expression;
+    if (g.has(e)) return true;
+    if (ts.isPropertyAccessExpression(e)) return g.has(e.name) || (anyAt(e.expression) && fromHostGap(e.expression, depth + 1));
+    if (ts.isElementAccessExpression(e)) return anyAt(e.expression) && fromHostGap(e.expression, depth + 1);
+    if (ts.isCallExpression(e) || ts.isNewExpression(e)) return fromHostGap(e.expression, depth + 1);
+    if (ts.isIdentifier(e)) {
+      for (const d of checker.getSymbolAtLocation(e)?.declarations ?? []) {
+        let imp = d;
+        while (imp && (ts.isImportSpecifier(imp) || ts.isNamedImports(imp) || ts.isNamespaceImport(imp) || ts.isImportClause(imp))) imp = imp.parent;
+        if (imp && (ts.isImportDeclaration(imp) || ts.isImportEqualsDeclaration(imp)) && g.has(imp)) return true;
+        if (ts.isVariableDeclaration(d) && ts.isIdentifier(d.name) && d.initializer) return fromHostGap(d.initializer, depth + 1);
+        if (ts.isBindingElement(d)) {
+          if (g.has(d.name) || (d.propertyName && g.has(d.propertyName))) return true;
+          let h = d.parent;
+          while (h && !ts.isVariableDeclaration(h) && !ts.isParameter(h)) h = h.parent;
+          if (h && ts.isVariableDeclaration(h) && h.initializer && anyAt(h.initializer)) return fromHostGap(h.initializer, depth + 1);
+        }
+      }
+    }
+    return false;
+  }
+  /** A loop's label (`outer:`, `break outer`): a name of no value. */
+  const isLabel = (n) => !!n.parent && ((ts.isLabeledStatement(n.parent) && n.parent.label === n) || (ts.isBreakOrContinueStatement(n.parent) && n.parent.label === n));
   const isOwnKind = (t) => [t.aliasSymbol, t.symbol].some((s) => (s?.declarations ?? []).some((d) => tree.moduleOfFile(d.getSourceFile().fileName) === mod.id && !d.getSourceFile().isDeclarationFile));
   const hostDeclared = (t) => [t.aliasSymbol, t.symbol].some((s) => (s?.declarations ?? []).some((d) => isHostFile(d.getSourceFile())));
   const productKind = (t) => kindDecls(t).length > 0 || isOwnKind(t);
@@ -605,7 +746,15 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (ts.isCallExpression(e)) {
       const f = calleeFacility(e);
       if (f === 'JSON.parse') return ownChannel(e.arguments[0], depth + 1);
-      if (f && FS.test(f)) { const c = classifyPath(evaluate(e.arguments[0], e.getSourceFile().fileName)); return !c.unknown && !c.cwd && !c.others.length; }
+      if (f && FS.test(f)) {
+        const c = classifyPath(evaluate(e.arguments[0], e.getSourceFile().fileName));
+        // a file in the module's own folder, or in a temporary folder the module made itself (mkdtemp): what it wrote
+        return (!c.unknown && !c.cwd && !c.others.length) || madeTemp(e.arguments[0]);
+      }
+      // what a program the module starts itself prints: its own script, run by node or as a program
+      if (f && PROGRAMS.test(f)) return ownProgram(e, PROGRAMS.exec(f)[1]);
+      // a value the module put into a map of its own (a variable or field it declares, never one its caller hands it)
+      if (ts.isPropertyAccessExpression(e.expression) && e.expression.name.text === 'get' && ownMap(e.expression.expression)) return true;
       // rows of a shared table the module itself owns (@storedrows), named through the store's carrier
       const c = carrierOf(checker, e);
       if (c?.kind === 'table' && c.names?.length) return c.names.every((t) => ownTables().has(t));
@@ -615,7 +764,16 @@ export function readReferences(tree, moduleId, opts = {}) {
     }
     if (ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e)) return ownChannel(e.expression, depth + 1);
     if (ts.isIdentifier(e)) {
-      const d = checker.getSymbolAtLocation(e)?.valueDeclaration;
+      const sym = checker.getSymbolAtLocation(e);
+      // a name imported from another file of the module itself: its data file (JSON), or a const it declares there
+      if (sym && sym.flags & ts.SymbolFlags.Alias) {
+        const target = resolve(sym);
+        const td = target?.valueDeclaration ?? target?.declarations?.[0];
+        if (!td || td.getSourceFile().isDeclarationFile || tree.moduleOfFile(td.getSourceFile().fileName) !== mod.id) return false;
+        if (ts.isSourceFile(td)) return true;
+        return ts.isVariableDeclaration(td) && !!td.initializer && !!(td.parent.flags & ts.NodeFlags.Const) && ownChannel(td.initializer, depth + 1);
+      }
+      const d = sym?.valueDeclaration;
       if (d && ts.isVariableDeclaration(d) && d.initializer && d.parent.flags & ts.NodeFlags.Const) return ownChannel(d.initializer, depth + 1);
       if (d && ts.isParameter(d)) {
         const fn = d.parent;
@@ -623,13 +781,88 @@ export function readReferences(tree, moduleId, opts = {}) {
         if (isExported(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id) return true;
         // the parameter of the module's own guard (`v is T`, R3): its origin is judged at each call
         const sig = ts.isFunctionLike(fn) && tree.moduleOfFile(fn.getSourceFile().fileName) === mod.id ? checker.getSignatureFromDeclaration(fn) : undefined;
-        if (sig && checker.getTypePredicateOfSignature(sig)) return true;
+        if (sig && checker.getTypePredicateOfSignature(sig) && writtenGuard(fn)) return true;
         // an element handed to a callback of a list's own method (rows.map((r) => ...))
         const call = fn.parent;
         if (call && ts.isCallExpression(call) && call.arguments.includes(fn) && ts.isPropertyAccessExpression(call.expression) && checker.isArrayType(typeAt(call.expression.expression) ?? { flags: 0 })) return ownChannel(call.expression.expression, depth + 1);
       }
     }
     return false;
+  }
+  /**
+   * Whether a function's guard (`v is T`) is written by hand: in its own return type, its @returns, or a @type on it or
+   * on the variable or member that holds it. TypeScript 5.5 infers a guard from a body that only narrows (`(x) =>
+   * typeof x === 'number'`): no one wrote it, so it is no hand-written guard (R3), and its body's narrowing is judged
+   * where it stands.
+   */
+  function writtenGuard(fn) {
+    if (!fn) return false;
+    const hasPredicate = (node) => { let found = false; forEachNode(node, (x) => { if (ts.isTypePredicateNode(x)) found = true; }); return found; };
+    let rt;
+    try { rt = fn.type ?? ts.getJSDocReturnType(fn); } catch { rt = undefined; }
+    if (rt) return ts.isTypePredicateNode(rt);
+    const host = fn.parent && (ts.isVariableDeclaration(fn.parent) || ts.isPropertyAssignment(fn.parent) || ts.isPropertyDeclaration(fn.parent)) ? fn.parent : null;
+    let jt;
+    try { jt = ts.getJSDocType(fn) ?? (host ? ts.getJSDocType(host) ?? (host.parent?.parent && ts.isVariableStatement(host.parent.parent) ? ts.getJSDocType(host.parent.parent) : undefined) : undefined); } catch { jt = undefined; }
+    return !!jt && hasPredicate(jt);
+  }
+  /** Is a path made inside a temporary folder the module made itself (mkdtemp, mkdtempSync), joined onto or written so? */
+  function madeTemp(e, depth = 0) {
+    if (!e || depth > 6) return false;
+    while (ts.isParenthesizedExpression(e) || ts.isAwaitExpression(e) || ts.isNonNullExpression(e)) e = e.expression;
+    if (ts.isCallExpression(e)) {
+      const f = calleeFacility(e);
+      if (f === '"node:fs".mkdtempSync' || f === '"node:fs/promises".mkdtemp') return true;
+      if (f === '"node:path".join' || f === '"node:path".resolve') return madeTemp(e.arguments[0], depth + 1);
+      return false;
+    }
+    if (ts.isTemplateExpression(e)) return !e.head.text && madeTemp(e.templateSpans[0]?.expression, depth + 1);
+    if (ts.isBinaryExpression(e) && e.operatorToken.kind === ts.SyntaxKind.PlusToken) return madeTemp(e.left, depth + 1);
+    if (ts.isIdentifier(e)) {
+      const d = resolve(checker.getSymbolAtLocation(e))?.valueDeclaration;
+      return !!d && ts.isVariableDeclaration(d) && !!d.initializer && !!(d.parent.flags & ts.NodeFlags.Const) && madeTemp(d.initializer, depth + 1);
+    }
+    return false;
+  }
+  /** Does every value a path evaluates to name a file of this module's own folders? */
+  function insideModule(arg) {
+    const v = arg && evaluate(arg, arg.getSourceFile().fileName);
+    return !!v && v.length > 0 && v.every((x) => {
+      if (x === '<node>' || x.includes(WILD)) return false;
+      const p = x.startsWith('file://') ? fileURLToPath(x) : x;
+      const o = p.startsWith('/') ? ownersOfPath(p) : null;
+      return !!o && o.size === 1 && o.has(mod.id);
+    });
+  }
+  /** A program the module starts itself (its result, its output): a script of its own, run by node, or itself the program. */
+  function ownProgram(call, how) {
+    const args = call.arguments ?? [];
+    if (how === 'fork') return insideModule(args[0]);
+    if (!['spawn', 'spawnSync', 'execFile', 'execFileSync'].includes(how)) return false;
+    const prog = evaluate(args[0], call.getSourceFile().fileName);
+    if (!prog || !prog.every((x) => x === '<node>')) return insideModule(args[0]);
+    // node: the first of its arguments that is no flag is the script it runs
+    const list = args[1];
+    if (!list || !ts.isArrayLiteralExpression(list)) return false;
+    for (const el of list.elements) {
+      if (ts.isSpreadElement(el)) return false;
+      const v = evaluate(el, call.getSourceFile().fileName);
+      if (!v) return false;
+      if (v.every((x) => x.startsWith('-'))) continue;
+      return insideModule(el);
+    }
+    return false;
+  }
+  /** A map the module itself declares: a variable or a field of its own files (the language's Map), not a parameter. */
+  function ownMap(e) {
+    while (ts.isParenthesizedExpression(e) || ts.isNonNullExpression(e)) e = e.expression;
+    const t = typeAt(e);
+    const ms = t?.symbol;
+    if (!ms || ms.name !== 'Map' || !(ms.declarations ?? []).some((d) => isLanguageFile(d.getSourceFile().fileName))) return false;
+    const s = ts.isPropertyAccessExpression(e) ? checker.getSymbolAtLocation(e.name) : ts.isIdentifier(e) ? checker.getSymbolAtLocation(e) : undefined;
+    const d = s?.valueDeclaration;
+    return !!d && !d.getSourceFile().isDeclarationFile && tree.moduleOfFile(d.getSourceFile().fileName) === mod.id
+      && (ts.isVariableDeclaration(d) || ts.isPropertyDeclaration(d) || ts.isPropertyAssignment(d) || ts.isPropertyAccessExpression(d) || ts.isBinaryExpression(d));
   }
   let ownTableNames = null;
   const ownTables = () => (ownTableNames ??= new Set(mod.public.some((f) => program.getSourceFile(f)) ? Object.keys(listingOf(mod.id).entries).filter((k) => k.startsWith('table:')).map((k) => k.slice(6)) : []));
@@ -763,9 +996,14 @@ export function readReferences(tree, moduleId, opts = {}) {
       place('R17', node, { what: `${how}: ${checker.typeToString(S)} given a kind with an index signature`, mayRefer: [ANY] });
     }
     for (const p of checker.getPropertiesOfType(S)) {
-      const protocol = PROTOCOL.includes(p.name) || p.escapedName.startsWith('__@');
-      if (protocol && !checker.getPropertyOfType(T, p.name) && (p.declarations ?? []).some((d) => entryOf(d) || tree.moduleOfFile(d.getSourceFile().fileName) === mod.id)) {
-        place('R17', node, { what: `${how}: drops ${p.name}, which the language calls by itself`, mayRefer: [ANY] });
+      const symbolKeyed = String(p.escapedName).startsWith('__@');
+      const protocol = PROTOCOL.includes(p.name) || symbolKeyed;
+      // a member keyed by a symbol (Symbol.asyncIterator) is looked up by its own internal name: the checker's lookup by
+      // a written name escapes that name again and never finds it
+      const kept = symbolKeyed ? checker.getPropertiesOfType(T).some((q) => q.escapedName === p.escapedName) : !!checker.getPropertyOfType(T, p.name);
+      if (protocol && !kept && (p.declarations ?? []).some((d) => entryOf(d) || tree.moduleOfFile(d.getSourceFile().fileName) === mod.id)) {
+        const shown = symbolKeyed ? String(p.escapedName).replace(/^__@([A-Za-z]+)@\d+$/, '[Symbol.$1]') : p.name;
+        place('R17', node, { what: `${how}: drops ${shown}, which the language calls by itself`, mayRefer: [ANY] });
       }
     }
     for (const tp of checker.getPropertiesOfType(T)) {
@@ -955,8 +1193,8 @@ export function readReferences(tree, moduleId, opts = {}) {
     const fileName = sf.fileName;
     const isTest = mod.tests.includes(fileName);
     if (isTest) testIndex(sf);
-    const errorSpans = [];
-    if (isTest) forEachNode(sf, (n) => { if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) && ERROR_ASSERTIONS.has(n.expression.name.text) && n.arguments[0]) errorSpans.push([n.arguments[0].getStart(sf), n.arguments[0].end]); });
+    // the first argument of each deliberate error assertion, and a function stored before and handed to one (check.mjs)
+    const errorSpans = isTest ? errorAssertionSpans(sf) : [];
     const inErrorAssertion = (pos) => errorSpans.some(([s, e]) => pos >= s && pos < e);
 
     // R10: comments that silence the checker
@@ -1026,7 +1264,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     };
 
     forEachNode(sf, (n) => {
-      if (ts.isIdentifier(n)) nameUse(n);
+      if (ts.isIdentifier(n) && !isLabel(n)) nameUse(n);
       // an import that names nothing (import '…'), and export * from '…': the module object is used
       if ((ts.isImportDeclaration(n) && !n.importClause) || (ts.isExportDeclaration(n) && !n.exportClause)) {
         if (n.moduleSpecifier && ts.isStringLiteral(n.moduleSpecifier)) loadOf(n.moduleSpecifier.text, n, 'import');
@@ -1061,12 +1299,13 @@ export function readReferences(tree, moduleId, opts = {}) {
       }
 
       // ---- R1: no value of kind any ----
-      if ((ts.isIdentifier(n) && !inType(n) && !isDeclNameOrImport(n)) || ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n) || ts.isCallExpression(n) || ts.isNewExpression(n)) {
+      if ((ts.isIdentifier(n) && !inType(n) && !isDeclNameOrImport(n) && !isLabel(n)) || ts.isPropertyAccessExpression(n) || ts.isElementAccessExpression(n) || ts.isCallExpression(n) || ts.isNewExpression(n)) {
         // a member's name (`x.name`) or a renamed key taken apart (`{ prefix: p }`) is no value; the value is the whole or the binding
         const keyName = ts.isIdentifier(n) && n.parent && ((ts.isPropertyAccessExpression(n.parent) && n.parent.name === n) || (ts.isBindingElement(n.parent) && n.parent.propertyName === n));
         if (!keyName && !inErrorAssertion(n.getStart(sf))) {
           const t = typeAt(n);
-          if (t && hasAny(t)) place('R1', n, { what: `a value of kind ${checker.typeToString(t).slice(0, 80)}` });
+          // a value of kind any only because the tool's description of the host leaves out what made it: a note on the host
+          if (t && hasAny(t)) place('R1', n, { what: `a value of kind ${checker.typeToString(t).slice(0, 80)}`, unknownHost: fromHostGap(n) });
         }
       }
       // ---- R2: structure given to a value of kind unknown that is not from the module's own channel ----
@@ -1074,7 +1313,10 @@ export function readReferences(tree, moduleId, opts = {}) {
         // the kind at the read, as narrowed there: by instanceof (S4) to a class, or by another module's exported check, it is
         // that class's or that module's value; narrowed by hand (`in`, a guard of this module) the place is the narrowing (below)
         const t = typeAt(n.expression);
-        if (t && hasUnknown(t) && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
+        // the value itself of kind unknown (or one of its choices): a method of a list or map that holds unknown values
+        // (`cache.get`) gives nothing a shape; what it hands back is judged where it is read
+        const isUnknown = t && (t.flags & ts.TypeFlags.Unknown || (t.flags & ts.TypeFlags.Union && t.types.some((u) => u.flags & ts.TypeFlags.Unknown)));
+        if (isUnknown && !isAssignTarget(n) && !ownChannel(n.expression)) place('R2', n, { what: `reads ${n.name.text} of a value of kind unknown that is not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
       }
       if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.InKeyword) {
         const t = typeAt(n.right);
@@ -1086,7 +1328,7 @@ export function readReferences(tree, moduleId, opts = {}) {
         const pred = sig && checker.getTypePredicateOfSignature(sig);
         const arg = pred && typeof pred.parameterIndex === 'number' ? n.arguments[pred.parameterIndex] : undefined;
         const decl = sig?.getDeclaration();
-        const own = decl && !decl.getSourceFile().isDeclarationFile && tree.moduleOfFile(decl.getSourceFile().fileName) === mod.id;
+        const own = decl && !decl.getSourceFile().isDeclarationFile && tree.moduleOfFile(decl.getSourceFile().fileName) === mod.id && writtenGuard(decl);
         const t = arg && typeAt(arg);
         if (own && t && hasUnknown(t) && !ownChannel(arg)) place('R2', n, { what: `a guard of this module gives a value of kind unknown that is not from this module's own channel the kind ${checker.typeToString(pred.type).slice(0, 80)}`, waitsOn: 'the owner of the data: its reader' });
       }
@@ -1483,20 +1725,6 @@ export function readReferences(tree, moduleId, opts = {}) {
     const o = target ? ownersOfPath(target) : null;
     return o && o.size ? [...o] : [ANY];
   }
-  /**
-   * Whether a checker's complaint stands only because the tool's description of Node or workerd lacks what the code
-   * uses: one of Node's global names (TypeScript's own codes for them); a member a host module does not export; a
-   * member of a kind Node's or workerd's description declares.
-   */
-  function hostGap(d, msg, node) {
-    if (HOST_NAMES.has(d.code)) return true;
-    if (NO_EXPORT.has(d.code)) { const m = /'"([^"]+)"'/.exec(msg)?.[1]; return !!m && isHostModule(m); }
-    if (NO_MEMBER.has(d.code) && node?.parent && ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) {
-      const t = typeAt(node.parent.expression);
-      return [t?.aliasSymbol, t?.symbol].some((s) => !!s && isHostFacility(s));
-    }
-    return false;
-  }
   function nodeAtPos(sf, pos) {
     let found = null;
     for (let n = sf; n;) {
@@ -1536,7 +1764,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (f && TIMERS.has(f) && args[0] && (ts.isStringLiteral(args[0]) || ts.isTemplateExpression(args[0]))) place('S9', n, { what: `${f} of a text` });
     // S5, S6: files, programs and workers by a path the tool works out
     const fsm = f && FS.exec(f);
-    if (fsm) {
+    if (fsm && !BY_DESCRIPTOR.has(fsm[2])) {
       pathArgument('S5', args[0], n, `${fsm[2]} of a path`);
       if (TWO_PATHS.has(fsm[2])) pathArgument('S5', args[1], n, `${fsm[2]} to a path`);
     }
@@ -1657,7 +1885,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (!S || !T) return;
     relate(S, T, n.expression, n, 'a cast');
     if (hasUnknown(S) || (S.flags & ts.TypeFlags.Any)) {
-      if (!ownChannel(n.expression)) place('R2', n, { what: `gives a value of kind ${checker.typeToString(S)} the kind ${checker.typeToString(T)}: decoding a value not from this module's own channel`, waitsOn: 'the owner of the data: its reader' });
+      if (!ownChannel(n.expression)) place('R2', n, { what: `gives a value of kind ${checker.typeToString(S)} the kind ${checker.typeToString(T)}: decoding a value not from this module's own channel`, waitsOn: 'the owner of the data: its reader', unknownHost: !!(S.flags & ts.TypeFlags.Any) && fromHostGap(n.expression) });
       return;
     }
     if (!assignable(S, T)) place('R16', n, { what: `a cast from ${checker.typeToString(S)} down to ${checker.typeToString(T)}`, mayRefer: [ANY] });
@@ -1719,7 +1947,7 @@ export function readReferences(tree, moduleId, opts = {}) {
     if (!ts.isFunctionLike(n) || !n.parameters) return;
     let sig; try { sig = checker.getSignatureFromDeclaration(n); } catch { sig = undefined; }
     const pred = sig && checker.getTypePredicateOfSignature(sig);
-    if (!pred?.type) return;
+    if (!pred?.type || !writtenGuard(n)) return;
     const param = sig.getParameters()[pred.parameterIndex ?? 0];
     const from = param ? checker.getTypeOfSymbol(param) : undefined;
     if (!isOwnKind(pred.type) || (from && productKind(from) && !hasUnknown(from))) place('R3', n, { what: `a guard to ${checker.typeToString(pred.type)} from ${from ? checker.typeToString(from) : 'a value'}`, mayRefer: modulesOf([...kindDecls(pred.type), ...(from ? kindDecls(from) : [])]), waitsOn: 'this module, or the provider: its class or guard' });

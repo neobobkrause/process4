@@ -2,7 +2,8 @@
 // catch, so notify reads the product here and says plainly when this process could not finish. Reads, on standard
 // input, { dirB, dirA, mods, named, sameAs, out }: the product written out before and after the merge; the modules to
 // read that were there before, each { module, filesChanged, conversion }; the items whose meaning ARCH named or the pull
-// request declared; those it records as keeping their domain and range; and the file to write the notices into.
+// request declared; those it records as keeping their domain and range; where given, the only modules that may be told
+// (`mayTell`: those whose conversion may have merged); and the file to write the notices into.
 //
 // The notices are written into that file one JSON line at a time (noticeLines), never as one text: a notice of an early
 // provider can tell a hundred modules, each reason carrying the changed item's parts before and after, and one text of
@@ -83,7 +84,7 @@ export function readNoticeLines(file) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  const { dirB, dirA, mods, named = [], sameAs = [], out } = JSON.parse(readFileSync(0, 'utf8'));
+  const { dirB, dirA, mods, named = [], sameAs = [], mayTell = null, out } = JSON.parse(readFileSync(0, 'utf8'));
   try {
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     const fd = openSync(out, 'w');
@@ -93,7 +94,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
         for (const m of mods) {
           const report = notice(treeB, treeA, m.module, {
             named: named.filter((n) => n.module === m.module || !n.module), filesChanged: m.filesChanged, conversion: m.conversion,
-            sameAs: sameAs.filter((x) => x.module === m.module || !x.module),
+            sameAs: sameAs.filter((x) => x.module === m.module || !x.module), mayTell,
           });
           for (const line of noticeLines(report)) writeSync(fd, `${line}\n`);
         }

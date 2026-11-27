@@ -15,8 +15,11 @@ import { NOTICE_LIMIT, NOTICE_MARK, cutReason, noticeParts, noticeReasons, write
 import { JOB_MARK, MEANING_MARK, RECORD_MARK } from '../lib/round.mjs';
 import { create, mark } from '../lib/state.mjs';
 import { Fail, git } from '../lib/util.mjs';
-import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
+import { commit, config, converted, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
 import { withUsesFiles } from './usesfiles.mjs';
+
+// GitHub in memory, each module's conversion merged before the test began: each may be told (the owner's decision A).
+const convertedGitHub = () => { const gh = fakeGitHub(); converted(gh, ['dates', 'orders', 'report']); return gh; };
 
 // GitHub that fails on any reach: listing and check read the checkout only.
 const untouchable = new Proxy({}, { get: (_, k) => () => { throw new Error(`reached GitHub: ${String(k)}`); } });
@@ -130,7 +133,7 @@ test('listing prints a module\'s listing at HEAD or at a named commit, and write
 
 test('notify tells the users of a changed item, found in their uses files: their reasons on the merged pull request, waiting work naming the notice, once per provider and user', () => {
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   const { issue, records } = create(gh, 'o/product', ['waiting-work'], () => {});
   gh.editComment('o/product', records['waiting-work'].id, `<!-- ${mark('waiting-work')} -->\n\`\`\`json\n{"work":[{"module":"report","kind":"walk-flaw","flaw":"t1-1-I-1-1","link":"x"}]}\n\`\`\`\n`);
   assert.ok(issue);
@@ -169,7 +172,7 @@ test('notify tells the users of a changed item, found in their uses files: their
 test('notify adds a notice to a told user\'s open job block, once, and the rest to waiting work', () => {
   // The owner's decision of 24 Nov 2026, item 2: a notice reaches a running job at once.
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   // orders has an open told job into the tranche, blocked; report has only a pull request into main, which is no job's.
   gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
@@ -205,7 +208,7 @@ test('notify adds a notice to a told user\'s open job block, once, and the rest 
 // The owner's decision B of 25 Nov 2026, items 2 and 3 (notify 1350 and 1356 on civicsmith).
 test('no repeats: a told user whose job of any state already names the notice is skipped; nothing is written for it', () => {
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   // orders' job carried the notice and merged; report's job named it and was closed.
   gh.s.prs.push({ number: 20, state: 'closed', merged_at: '2026-11-20T11:00:00Z', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
@@ -227,7 +230,7 @@ test('no repeats: a told user whose job of any state already names the notice is
 
 test('a job merged while its block took the notice did not carry it: the block is put back and the notice waits', () => {
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
   const before = block(JOB_MARK, { module: 'orders', work: ['R1'], kind: 'ordinary' });
@@ -248,7 +251,7 @@ test('a job block stays under one comment\'s size: reasons without their words, 
   // The reasons orders is told, read from a first run with no open job.
   const reasonsOf = () => {
     const root = makeRepo(productFiles());
-    const gh = fakeGitHub();
+    const gh = convertedGitHub();
     create(gh, 'o/product', ['waiting-work'], () => {});
     mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
     notifyCmd(ctxFor(root, gh).ctx, 7);
@@ -262,7 +265,7 @@ test('a job block stays under one comment\'s size: reasons without their words, 
   const fill = (uses) => NOTICE_LIMIT - 10 - (withNotice(0, uses) - 0);
   const run = (k) => {
     const root = makeRepo(productFiles());
-    const gh = fakeGitHub();
+    const gh = convertedGitHub();
     create(gh, 'o/product', ['waiting-work'], () => {});
     gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
     gh.addComment('o/product', 20, block(JOB_MARK, data(k)));
@@ -288,7 +291,7 @@ test('a job block stays under one comment\'s size: reasons without their words, 
 test('a job block too full even for one reason still takes the notice at once: its earlier uses give way', () => {
   // Design part 2, section 7: a notice reaches an open job at once; part 6, section 5: nothing is refused for size.
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   gh.s.prs.push({ number: 20, state: 'open', head: { ref: 'job/orders.1', sha: 'h'.repeat(40) }, base: { ref: 'tranche' } });
   // Earlier uses that fill the block, with no before and after to leave out.
@@ -447,7 +450,7 @@ test('a conversion\'s merge tells no one, even where it changed an item; nothing
   }
   // the same change merged by an ordinary job tells orders
   const root = makeRepo(files);
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') + STATED });
   gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['R1'], kind: 'ordinary' }));
@@ -502,7 +505,7 @@ export function createBoxes() {
 
 test('a change of meaning ARCH names in the job block, or the pull request declares in its meaning comment, is a changed item; it adds, never removes', () => {
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   // Its code changes formatDay in no way the means show.
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
@@ -587,7 +590,7 @@ test('JSON lines are read a part at a time, a line across parts and characters o
 
 test('a notice comment GitHub will not write fails with GitHub\'s own words; nobody is told and the notice is owed', () => {
   const root = makeRepo(productFiles());
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
   const add = gh.addComment;
@@ -1236,4 +1239,85 @@ test('a user that builds a value of a handle kind, a test implementing it withou
   assert.deepEqual(kindNotice(P('string', 'a day'), { files }).told, { u: ['Clock.now'] });
   // what it hands back changed
   assert.deepEqual(kindNotice(P('number', 'an instant'), { files }).told.u, ['Clock.now']);
+});
+
+// The owner's decision A, 27 Nov 2026: a module is not told of any change until its conversion merges; its conversion
+// clears what waited for it.
+test('a module whose conversion has not merged is not told of a provider\'s changed item (point 1), into neither its open job nor waiting work; a converted one is', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  converted(gh, ['dates', 'orders']);
+  // report has merged an ordinary job but no conversion, and its conversion is open: it is not yet converted
+  gh.s.earlier.push({ number: 950, state: 'closed', merged_at: '2026-11-02T00:00:00Z', closed_at: '2026-11-02T00:00:00Z', head: { ref: 'job/report.1', sha: 'c'.repeat(40) }, base: { ref: 'tranche' },
+    comments: [{ id: 9950, on: 950, body: block(JOB_MARK, { module: 'report', work: ['x'], kind: 'ordinary' }) }] });
+  create(gh, 'o/product', ['waiting-work'], () => {});
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  const open = gh.createPR('o/product', { head: 'job/report.2', base: 'tranche', title: 'report: job 2', draft: false });
+  const conv = gh.addComment('o/product', open.number, block(JOB_MARK, { module: 'report', work: ['conversion: bring the module into the coding standard'], kind: 'conversion' }));
+  const blockWas = conv.body;
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  const text = out.join('\n');
+  assert.match(text, /3 items changed in a way that tells; 1 module\(s\) told\. 1 module\(s\) not yet converted left untold\./);
+  assert.match(text, /TOLD orders/);
+  assert.doesNotMatch(text, /TOLD report/);
+  assert.match(text, /1 module\(s\) left untold, as their conversion has not merged: report/);
+  assert.equal(gh.s.comments.find((c) => c.id === conv.id).body, blockWas);
+  assert.deepEqual(waitingWork(gh).work, [{ module: 'orders', kind: 'notice', from: 'dates', merged: 7 }]);
+  assert.deepEqual(noticeComments(gh, 7).map((d) => Object.keys(d.users)), [['orders']]);
+});
+
+test('a module with no uses file yet whose conversion has not merged is not told of any change by point 3; once converted it is', () => {
+  const files = withUsesFiles({ ...productFiles(), 'process/modules/order.txt': 'dates\norders\nreport\nold\n',
+    'process/modules/old.json': entry('old'), 'src/old/index.mjs': "import { formatDay } from '../dates/index.mjs';\nexport const f = formatDay;\n" });
+  delete files['process/modules/old.uses.json'];
+  // the reading itself: point 1 and point 3
+  const before = mkdtempSync(join(tmpdir(), 'p4-untold-')), after = mkdtempSync(join(tmpdir(), 'p4-untold-'));
+  write(before, files);
+  write(after, { ...files, 'src/dates/index.mjs': DATES('1 to 30') });
+  const r = notice(before, after, 'dates', { mayTell: ['dates', 'orders'] });
+  assert.deepEqual(r.told.map((t) => t.user), ['orders']);
+  assert.deepEqual(r.untold, ['report', 'old']);
+  assert.match(r.summary, /1 module\(s\) told\. 2 module\(s\) not yet converted left untold\.$/);
+  // a change to the files that changes no item: only old would hear of it (point 3)
+  for (const [may, told] of [[['dates', 'orders', 'report'], []], [['dates', 'orders', 'report', 'old'], ['old']]]) {
+    const root = makeRepo(files);
+    const gh = fakeGitHub();
+    converted(gh, may);
+    create(gh, 'o/product', ['waiting-work'], () => {});
+    mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 31', " + ''") });
+    const { ctx, out } = ctxFor(root, gh);
+    assert.equal(notifyCmd(ctx, 7), 0);
+    const text = out.join('\n');
+    assert.deepEqual((waitingWork(gh).work ?? []).map((w) => w.module), told);
+    if (told.length) assert.match(text, /TOLD old/);
+    else assert.match(text, /1 module\(s\) left untold, as their conversion has not merged: old/);
+  }
+});
+
+test('a conversion\'s merge clears every notice waiting for its module, in one rewrite, and nothing else; with none waiting nothing is written', () => {
+  const root = makeRepo(productFiles());
+  const gh = fakeGitHub();
+  const { records } = create(gh, 'o/product', ['waiting-work'], () => {});
+  const work = [
+    { module: 'dates', kind: 'notice', from: 'package left-pad', merged: 3 },
+    { module: 'dates', kind: 'walk-flaw', flaw: 't1-1-I-1-1', link: 'x' },
+    { module: 'orders', kind: 'notice', from: 'dates', merged: 4 },
+    { module: 'dates', kind: 'notice', from: 'package other', merged: 5 },
+  ];
+  gh.editComment('o/product', records['waiting-work'].id, block(mark('waiting-work'), { work }));
+  mergedPR(root, gh, { 'src/dates/index.mjs': DATES('1 to 30') });
+  gh.addComment('o/product', 7, block(JOB_MARK, { module: 'dates', work: ['conversion'], kind: 'conversion' }));
+  const edits = [];
+  const edit = gh.editComment;
+  gh.editComment = (...a) => { edits.push(a[1]); return edit(...a); };
+  const { ctx, out } = ctxFor(root, gh);
+  assert.equal(notifyCmd(ctx, 7), 0);
+  assert.deepEqual(waitingWork(gh).work, [work[1], work[2]]);
+  assert.equal(edits.length, 1);
+  assert.match(out.join('\n'), /2 notice\(s\) waiting for dates cleared, as its conversion \(pull request 7\) merged/);
+  // run again: nothing waits for dates now, and nothing is written
+  edits.length = 0;
+  assert.equal(notifyCmd(ctx, 7), 0);
+  assert.equal(edits.length, 0);
 });
