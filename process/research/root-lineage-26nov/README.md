@@ -93,3 +93,6 @@ Options:
   fresh ROOT rarer still. Text only (ROOT's and the watcher's starting texts, design part 4 §6, part 6 §7's "ROOT
   refreshes the standing roles").
 Recommended: D. Depth can never stay at 1 without the owner's own start; D makes the climb slow.
+The owner's choice: "(What makes it climb fast is how often ROOT is replaced) Decision: D, as recommended" — 27 November
+2026, about 00:28 UTC, typed in PROCESS #20's session. Built as text: design part 4 §6, part 6 §7, ROOT's rule 5, the
+record's subject "The limit on depth, and a fresh ROOT".
