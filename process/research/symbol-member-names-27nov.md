@@ -58,3 +58,16 @@ Recommended: A and B together, one version; B unblocks pdf-pixels.
   API kinds (Response, Request, Headers, fetch's init) described; a method of a union of host kinds classified as each
   member's. Small; no text change.
 Recommended now: A, B and C as one version.
+
+## Two more (neither stops work; civicsmith halted on the owner's word since 06:06Z), ~06:09Z
+
+1. sheet-worker #4 (PR 1778): "the tool has no description of Request, Response or WebAssembly used as a value ("Cannot
+   find name 'Response'", "Cannot use namespace 'WebAssembly' as a value"). It marks the first line "not kept", but the
+   `any` that flows on from it is kept as R1 places, about 70 here. Also, the WebAssembly.Module type resolves to
+   esbuild's declaration and is listed as an esbuild facility (R14). And Miniflare's getR2Bucket is typed as
+   Request_2<any>." (C again; the esbuild case is B.)
+2. op-grades #5 (PR 1781): "the tool's classification of host facilities leaves out the language's Proxy, so `uses`
+   lists the R14 place at bio-plane/src/op-grades/declared.mjs:74. The lib's ProxyHandler and Reflect.get hand back any,
+   so R1 is listed at line 75." (N/C: Proxy classified; ProxyHandler's and Reflect.get's `any` is TypeScript's own typing,
+   a real R1 the job writes around, or a host gap if judged so.)
+C widened: WebAssembly as a value, Proxy, Miniflare's types as the package declares them.
