@@ -22,12 +22,19 @@ per write.
 | Durable Objects rows written ($1/M; 50M included) | ~0.2M | ~0.6M | $0 |
 | Durable Objects rows read ($0.001/M; 25B included) | small | small | $0 |
 | Durable Objects storage ($0.20/GB-month; 1 GB included); process3's 8,937 small files | well under 1 GB | | $0 |
-| Durable Objects duration ($12.50 per million GB-s; the 400,000 included already used up by this account: 1,242,406 used) | active about an hour a day | active all month | $0.17 to $4.05 |
+| Durable Objects duration ($12.50 per million GB-s, billed in whole millions; this account used 1,242,406 GB-s, billed $25.00) | a few thousand GB-s if the object can hibernate | up to 331,776 GB-s if it never can | $0, or $12.50 if it pushes the account's total into the next million |
 | D1 instead: rows written ($1/M; 50M), rows read ($0.001/M; 25B), storage ($0.75/GB; 5 GB); no duration charge | | | $0 |
 | KV instead: writes ($5/M; 1M included) | ~43k | ~125k | $0; but KV is eventually consistent, unfit for this |
 
-The ceiling for duration: one object billed at 128 MB (0.125 GB) for every second of a 30-day month is 324,000 GB-s, $4.05.
-**About $0 to $4 a month on top of the $5 plan the account already pays; $0 with D1.** For comparison, the invoice's $168.44
+Duration is billed only while an object is active and cannot hibernate, always at 128 MB (counted as 0.128 GB); an idle
+object that cannot hibernate stays billed until evicted 70–140 s after its last request; one that can hibernate (plain
+requests, no timers or open connections) is not billed while idle (`f-cloudflare-docs.md`). The ceiling for one object
+running every second of a 30-day month is 331,776 GB-s. Billable duration "is rounded up to the next billable unit", a
+million GB-s: the invoice bills 1,242,406 GB-s as $25.00, two such units (the docs' example subtracts the 400,000 included
+first, which would give one unit; the invoice's figure is what was charged). So added duration costs nothing until it
+carries the account's total over the next million, then $12.50.
+**About $0 a month on top of the $5 plan the account already pays, built to hibernate or on D1; at worst $12.50 a month, if
+an object kept running carries the account's duration into the next million.** For comparison, the invoice's $168.44
 was $126.00 container memory, $25.00 Durable Objects duration, $7.02 container disk, $5.42 container CPU and $5.00 the plan:
 the product's own running, not state.
 
@@ -35,7 +42,9 @@ the product's own running, not state.
 - Whether a process may use this account: Process4's approvals name no Cloudflare account; a product's development
   account is for deploying that product (design part 9). Using it, or a separate account, needs his approvals' wording.
 - Reaching it: from sessions, the Cloudflare API host or a Worker's address must be allowed in the environment's network,
-  with the key held as a network secret. Cloudflare's own API rate limit and the Durable Objects billing rules are being
-  checked against Cloudflare's documentation (a worker's report to follow); the duration ceiling above does not depend on
-  them.
+  with the key held as a network secret for that exact host (`*.r2.cloudflarestorage.com` is allowed by default;
+  `api.cloudflare.com` and `*.workers.dev` are not). D1 through Cloudflare's REST API shares 1,200 requests per 5 minutes
+  with all other API use by that user, and going over blocks every call for 5 minutes; Cloudflare calls that API "best
+  suited for administrative use". A Worker in front of one Durable Object (strongly consistent, single-threaded,
+  transactions) or of D1 avoids that limit. KV is eventually consistent; R2 allows one write a second per key.
 - Ties Process4 to one host (design parts 1–6 name none).
