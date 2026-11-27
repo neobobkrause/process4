@@ -1,14 +1,14 @@
-Length: 128 lines. Last section: "6. An interface listing, and an item's means".
+Length: 129 lines. Last section: "6. An interface listing, and an item's means".
 
 # Process4 build text 2b: the structured comment and the interface listing
 
-Sections 5 and 6 of build text 2, in their own file; their numbers are kept. Sections 1 to 4 and 7 to 9 are in `02-the-forms.md`, whose section 1 names the proof ("proof:" paths below are in its folder), and section 10, the coding standard, in `02c-the-coding-standard.md`. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.**
+Sections 5 and 6 of build text 2, in their own file; their numbers are kept. Sections 1 to 4, 8 and 9 are in `02-the-forms.md`, section 7 in `02d-the-process-config.md`, and section 10, the coding standard, in `02c-the-coding-standard.md`. **Status: proposed. The tool reads these forms, but nothing here has run in a process in force.**
 
 Marks and examples: as build text 2.
 
 ## 5. A structured comment
 
-These are the proof's forms (proof: `product/money/src/index.mjs`, and `bookings` and `door` beside it), for plain JavaScript under TypeScript's reader. Comments are JSDoc blocks, which running code never sees.
+These are the forms for plain JavaScript under TypeScript's reader. Comments are JSDoc blocks, which running code never sees.
 
 **What a module accepts and hands back.** Each export of the module's interface files (section 6) has a block with `@param` and `@returns`, or `@type`. A kind with a name is a `@typedef`. The kinds of error raised are `@throws {Kind}`. A kind of another module is brought in by `/** @import { Price } from '../pricing/index.mjs' */`.
 
@@ -71,13 +71,13 @@ Each operation's line is written from its table's named kinds, since the standar
 
 The mark `@carriesop <members>`, on the handle's kind or on a function, names what carries a call by name. The tool reads the name from each call's first argument: a text written out, a choice of such texts, or a request line beginning `op=<name>&`. `door.call('priceof', { sku })` in `orders` is a use of `pricing`'s entry `op:priceof`. A name not written out is a place outside the standard (S7). When a second module starts to answer a name, the tool tells that operation's users.
 
-**Three more marks the proof ran.** A member that may be missing is optional in the listing. A kind sent between two separately running parts is marked `@message stdin` or `@message stdout`. Rows of a shared table are `@storedrows <table>` on the rows' kind, with `@carriestable get list put remove` on the store's handle, and are read as calls by name are.
+**Three more marks.** A member that may be missing is optional in the listing. A kind sent between two separately running parts is marked `@message stdin` or `@message stdout`. Rows of a shared table are `@storedrows <table>` on the rows' kind, with `@carriestable get list put remove` on the store's handle, and are read as calls by name are.
 
 **Unproven:** these forms with no refusal to hold a module to them: that a module imports only another's interface files, and that messages and stored rows carry their marks.
 
 ## 6. An interface listing, and an item's means
 
-These are the proof's forms (proof: `tool/p3tool.mjs`, `tool/lib/listing.mjs`, `canon.mjs`), for the stated part of an item's means (the design, part 2, section 7). The tool makes a listing from the reader's own checker over the module's **interface files**, the files its entry names in `public` (build text 2, section 3). It is also what the two approved refusals read (build text 1b, command 18).
+These are the forms for the stated part of an item's means (the design, part 2, section 7). The tool makes a listing from the reader's own checker over the module's **interface files**, the files its entry names in `public` (build text 2, section 3). It is also what the two approved refusals read (build text 1b, command 18).
 
 A listing is an object for each **entry**, an item of the module; the text below is a printing of it.
 
@@ -98,7 +98,7 @@ Listing of pricing
 - An entry has a sort (function, value, kind, handle kind, method, class, class member, operation table, operation, stored rows) and, as they apply: what it accepts, what it hands back, its bound lines, a message's channel, whether a member may be missing, and the reader's printed declaration of it with comments removed.
 - A kind of plain data is written out in full, fields in name order, with its name kept, in every entry that accepts it or hands it back, and its bound lines go with it. A handle kind is written by name. Arguments are `arg0`, `arg1`: compared by place, not by name. Explanations in comments are in no entry. A constant's value is kept.
 
-**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. Where what it accepts or hands back is written differently, the reader's checker is asked about the two declarations themselves, read in one program: a part it finds identical, and each side assignable to the other, is unchanged (a kind's name given, dropped or changed, a type parameter renamed, a handle kind renamed with the same members); anything the checker can tell apart is a change. Only a change of an item's stated types or bounds tells (the owner's decision of 26 November): what it accepts and hands back, its sort, a member that may be missing, plain data or an instance, its object as `this`, a message's channel, a program it starts (that program's start arguments and the streams it writes out), its bound lines, and a new type error. The errors that can leave it, its other channels, settings and files, the arguments it writes into, and a constant's value within its type are worked out and listed, and tell no one. With no difference the notice says `No item's means changed.` and tells only the modules that hear of any change to the provider's files (build text 5, section 6). Otherwise each item that differs gets one or more of these words:
+**Comparing.** Each item's means is compared before and after (build text 5, section 6), entry by entry. Where what it accepts or hands back is written differently, the reader's checker is asked about the two declarations themselves, read in one program: a part it finds identical, and each side assignable to the other, is unchanged (a kind's name given, dropped or changed, a type parameter renamed, a handle kind renamed with the same members); anything the checker can tell apart is a change. Only a change of an item's stated types or bounds tells: what it accepts and hands back, its sort, a member that may be missing, plain data or an instance, its object as `this`, a message's channel, a program it starts (that program's start arguments and the streams it writes out), its bound lines, and a new type error. The errors that can leave it, its other channels, settings and files, the arguments it writes into, and a constant's value within its type are worked out and listed, and tell no one. With no difference the notice says `No item's means changed.` and tells only the modules that hear of any change to the provider's files (build text 5, section 6). Otherwise each item that differs gets one or more of these words:
 
 | Word | When | Told |
 |---|---|---|
@@ -126,4 +126,4 @@ Notice for a change to pricing (TypeScript 5.6.3)
 ```
 
 - What is not a change (describing among it), a change ARCH named or a pull request declared, and an item a job records as the same (`push --same`, build text 5, section 5) are the design's (part 2, section 7); `notify` applies them to these words.
-- **Unproven:** the comparison of means, which is built and passes the tool's own tests but has not run on a product. The proof compared listings alone (build text 2, section 1).
+- **Unproven:** the comparison of means, which is built and passes the tool's own tests but has not run on a product.

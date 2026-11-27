@@ -118,8 +118,9 @@ lands it by his click): "Decision: option B" — 20 November 2026.
 ### Subject: The design document carries no history
 
 **The rule as it now stands.** The design document (the files in `design/`) states the design as it now stands and carries
-no history of how it evolved, beyond naming where a figure or a quotation comes from (design part 0, section 1; part 5,
-section 4). The owner's dated decisions are in this record; the reasons and evidence in the background document and the
+no history at all: only what a session needs to act on. Where a figure or a quotation comes from is kept in this record and
+in the research, not in the design, and the owner's quoted words carry no dates there (design part 0, sections 1 and 3;
+part 5, section 4; the owner's decision C & D of 27 November 2026, which reaches the build texts and starting texts too). The owner's dated decisions are in this record; the reasons and evidence in the background document and the
 research. So the design carries no draft or version lineage, no dated decision provenance or labels such as "decision C"
 and "fault D", no references to the predecessor process, no working-file or evidence paths, no change narratives, and no
 authorship marks ("Claude decided", "Reading", "Settled"); a rule a mark introduced stands plainly. The marks legend (part 0,
@@ -337,6 +338,10 @@ under 175,000).
   keeps the index current. So research can grow without the role's reading set passing the maximum (design part 4, section
   3; part 5, section 3; part 6, section 7; the lane's and PROCESS's starting texts; the starting-texts index). This replaced
   "every later session of the lane reads it first".
+- **Each role reads whole files holding only what it acts on.** A design part or build text whose sections serve
+  different roles is kept in more than one file, a main file and lettered companions (`04b-`, `04c-`), each section keeping
+  its part's number, so every reference stays true; each starting text names the files its role reads (design part 0,
+  section 4; build text index; starting-texts index). PROCESS reads every file of the design.
 - What PROCESS reads in full is the subject "What PROCESS reads in full".
 
 Why: the trial's fault 8 (19 November 2026) corrected the job's starting text. Research read in full had put a lane's reading
@@ -346,6 +351,14 @@ four (A no change; B research through an index; C condense research; D measure l
 
 **The owner's words.** On fault 8: "Decision: adopt the fixes for faults 7 and 8 in PR #13" — 19 November 2026.
 On research through an index (option B): "decision:B" — 22 November 2026. "Decision: all as you've recommended" — 22 November 2026.
+On a job's reading (in conversation, then as a comment on his page sent to PROCESS #20): "There isn't be any history in the
+material read by a job, only what the job actually needs. Decision: study how to properly trim the 31k of text each job
+reads but never uses." — 27 November 2026, 00:27 UTC. The study (`process/research/job-reading-27nov.md`) found a job's set
+at 177,379 bytes and ARCH's at 176,983, both over the 175,000 maximum; options 0, A (named sections), B (a separate text),
+C (split the texts by reader), D (remove history); C and D recommended. His choice: "Decision: C & D" — 27 November 2026,
+about 00:37 UTC, typed in PROCESS #20's session. Built: a job reads 117,561 bytes (123,568 with its starting text), ARCH
+167,439, the coordinator 132,889, ROOT and the watcher about 76,000, a lane 83,697, a walker about 46,000; 73 pieces of
+history removed.
 
 ### Subject: The smaller readings (part 10, section 1, item 7)
 

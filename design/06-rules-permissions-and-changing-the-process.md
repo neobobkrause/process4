@@ -1,26 +1,14 @@
 # Part 6. What holds a rule, the tool, and changing the process
 
-Length: 82 lines. Last section: "8. Process4 develops itself".
+Length: 31 lines. Last section: "6. A process fault".
+
+Part 6's other sections: 2 in `06b-`; 5 in `06c-`; 7 in `06d-`; 8 in `06e-`.
 
 ## 1. What holds a rule
 
 - Three things hold a rule whatever a session intends: the owner's standing approvals, judged by the permission checker; the list of forbidden commands; and GitHub's own rules, which are the owner's settings.
 - Every other rule in this design is held by text: by a session's instructions and by this document. That is a known limit.
 - The tool guards against mistakes, and not against a session that sets out to defeat it. That too is a known limit.
-
-## 2. The owner's standing approvals
-
-- They are a block of text that is the owner's, saying what sessions may do without asking him and what they may never do. Their wording is drafted with care: on his request PROCESS (for the process's repository) or the coordinator (for a product; before a product has one, the session that sets it up, part 7, section 4, act 8) drafts the whole text and shows it to him in plain words, or he types it himself. The session places the text he has approved, unchanged, in a pull request that changes only that file, and never merges it; he reads the changed file on the pull request's page and lands it by clicking Merge there, on GitHub's website. A draft has no effect until he lands it. No session changes his approvals on its own, and no session merges a change to them.
-- A session loads the approvals only when it starts. An edit therefore goes with a restart of ROOT (part 4, section 7), and no session compares the approvals it loaded with the newest.
-- The list of forbidden commands is a technical list, the same for every repository. PROCESS keeps it in the process's repository, beside the workflow a product copies (the harness part names the file), and changes it only as a process change on the owner's marked decision. A session copies it, unchanged, into a repository by a pull request he lands with a click, as for his approvals.
-- The approvals and the list of forbidden commands are protected by the permission checker and by the owner's own click that lands a change to them.
-- In the process's repository the approvals say that a process change is merged only on the owner's word given at PROCESS. Nothing enforced by GitHub is added for this.
-- They live in the product's repository on the tranche branch, carried to the main branch by each tranche's merge, so that every session starts from a commit that holds them; and in the process's repository on its main branch.
-- His two files are first landed on the main branch this way, and the tranche branch is made from it. A later edit is a pull request on the tranche branch, opened the same way and landed by his click, after he tells the coordinator to stop (part 4, section 7).
-- Where one of the two files differs between two branches, he chooses which of his own committed versions stands, and GitHub's own buttons carry it out (for example, Revert on the pull request that brought the version he does not keep). No session resolves it.
-- **Unproven:** that the permission checker lets a session place the owner's approved text in his approvals file; and, in a repository whose approvals forbid a session to change that file, this route works only once his approvals allow it.
-- The ordered list of his acts to start a product is in the harness part, where it is known.
-- **Open (the owner):** the wording of his approvals for Process4, which only he decides, and his word on the forbidden commands as they stand. What is in force is his committed approvals and list of forbidden commands in each repository (the harness part names the files); what is open is his word confirming that wording as settled, or his revision of it.
 
 ## 3. Forbidden commands and GitHub's rules
 
@@ -35,48 +23,9 @@ Length: 82 lines. Last section: "8. Process4 develops itself".
 - Three refusals in a row stop a session, which is replaced.
 - A non-substantive refusal does not count as working the act around. Where the checker refuses an act the approvals and the permissions-management settings (part 7, section 5) sanction, and it allowed an identical act before or invites a retry, or the refusal fell on a command the session malformed (mixing a forbidden command into a legitimate one), the session re-attempts the sanctioned act cleanly and bounded: it keeps its prior state, tries again at its next wake or after a short wait, and brings the matter to the owner if it persists. A genuinely unsanctioned act, and a relayed consent (part 3, section 6), are still never retried.
 
-## 5. The tool
-
-- The tool is the process's own small program. It does only this: make a branch; push; open a pull request, mark it ready, and close it; merge; prepare a release and, on the owner's approval, publish it; choose the next job and write its starting instructions, honouring a tranche's recorded scope in what counts as work (part 2, section 3); work out each item's means and send notices; write each module's uses file, listing its places outside the coding standard; decide when a module's work is finished and a round's jobs are done; bring a pull request's branch up to the tranche branch, run its module tests once in the session that owns it, record the result on the pull request, and read it, counting a job's failed runs from it; set the scope of a pull request's tests (part 2, section 7); write and read a job's kind, the work placed, the notices that reach it while open and its record on its pull request, its declarations of a change of meaning among them; hold a job's merge while a job of a module it uses is open; list a told job's related tests; list the modules a round changed and the areas they name, for ARCH to choose from; open and close a walk's issue, and write and read what is in it; read and write the shared state, removing a standing note when what ends it comes true and refusing a second live session for a lane; put back on the tranche branch the main branch's module code and test files for a dropped tranche (part 3, section 5); inside a module's own tests, check declared uses and make the two refusals the owner approved (part 2, section 6); and, on GitHub's machines, read the record of a pull request's tests for the required run. Its commands, one for each act, are in the build text `01b-the-commands.md`.
-- It refuses no work for size, and holds none of the checks that could stop work.
-- The tool has tests of its own. They test no product and never run on a product's work. They run only where the tool is changed: before pushing, PROCESS runs only the tests of the tool it changed; and the required run in the process's repository runs them only on a pull request that changes the tool, and passes at once on any other. The changes recorded when the notice's method was proven become tests of the tool.
-- The AI builds the tool, before anything is in force.
-- A product names one fixed version of the process in its process config, and a tranche runs on that one version from open to close. Each session fetches its own copy of it, kept outside the product's working files. No session edits its copy; this is held by text (section 1).
-- PROCESS answers a finding against the tool that needs a deliberate attack with "no change" unless the owner says otherwise.
-- **Unproven:** the tool is built but has not run in a process in force. Whether merges made by it pass the permission checker at a real rate is unmeasured.
-
 ## 6. A process fault
 
 - No session building a product fixes a process fault or works round it.
 - A fault goes from the session that met it to ARCH, from ARCH to the coordinator, and from the coordinator to PROCESS. If PROCESS is not running, the coordinator puts starting it on the owner's standing page and notifies him; the owner starts it (section 7).
 - The fault's description is written once by the session that met it and passed on unchanged.
 - A process fault that stops work waits for the owner at PROCESS. Other work goes on.
-
-## 7. How the process is changed
-
-The owner's words, in full:
-
-"Lets be clear about how the process is changed (and how it's not changed). Process changes only happen in a separate process lane call PROCESS that I interact with. Though process changes are often technical and detailed, the PROCESS session will explain the nature of the problem and suggestion options for fixing it for me to explore and ultimately choose. Because updates require my involvement and I might be away from my computer for extended periods, there could end up being more than one change being proposed in the PROCESS session at a time. When that happens, the set of changes are considered together as a group that could potentially have interactions and implications between. The process after a proposed change is made must continue to meet the process4 requirements (or the requirements changed with my explicit approval). The transition from the process a product is being built using to the updated process will be done only with my prior approval, with PROCESS proposing the best and least disruptive means of making the update."
-
-What follows from them:
-
-- A change must not add a new test, gate, review or stop. It may only correct or remove what is broken.
-- "No change" is always among the options. His written instructions: "caution is a cost, paid only against a measured failure or your word", and "the default answer to a finding with nothing measured behind it is no change".
-- Any change to Process4 is explained to the owner, who decides whether and how the process is updated.
-- No session building a product may change the process, add a test, check, gate or review to it, or adopt a changed process on its own. ARCH moves a product to a changed process only with the owner's prior approval, by the means PROCESS proposes.
-- The means: the owner, in the coordinator's session, instructs it to move a product to the latest Process4 version — or to a named version. That one instruction is his prior approval, and he needs give no commit id and do nothing more. The coordinator records his words and tells ARCH; ARCH resolves the latest version with the tool (`latest-version`: the newest commit of the process repository's main, which holds only merged, tested changes), updates the product's process config to that commit by pull request, and merges it. Where the new version's required-run workflow differs from the product's copy, ARCH then replaces the copy by a second pull request, merged after the first (part 2, section 9). The sessions then refresh onto it when part 3, section 1 says (ROOT fetches the new copy and refreshes ARCH, the coordinator and the watcher from it, and goes on itself; ARCH restarts any open job from its branch), losing no work. The coordinator tells the owner, in one line, when every session is on the new version.
-- The owner starts PROCESS and refreshes it. PROCESS works in the process's own repository, with the owner directly. The coordinator can talk to it, and surfaces on the owner's standing page when PROCESS needs starting or refreshing.
-- The coordinator finds PROCESS as part 4, section 5 says. When the `process` field of the product's roles record names a running PROCESS, the coordinator messages it and does not ask the owner to start a second; when it is empty, or names a session that no longer answers, the coordinator surfaces starting PROCESS on the owner's standing page (section 6). **Unproven** with two products.
-- PROCESS runs as one session at a time, keeps its own folder in the process's repository, and records its research there before it proposes. It reads in full the design and its handover, and reads its research, the record of the owner's decisions and the build texts through their indexes (part 5, section 3).
-- PROCESS writes the owner's approving words into the record of the change, exactly as typed, with the date. Nothing else counts as approval.
-- **Unproven:** nothing physical stops a session building a product from changing the process's files, or from moving to a changed process.
-
-## 8. Process4 develops itself
-
-- PROCESS may have lanes of its own for standing subjects, as needed. PROCESS starts its own lanes.
-- **The onboarding lane.** For each product that joins Process4, PROCESS starts one onboarding lane, in the process's repository. The lane talks directly to PROCESS. It plans the product's move and writes the product's conversion plan. It keeps the product's own page of what is waiting for the owner, updated with where the onboarding stands and with each act it needs from him (the harness part lists them). Each act is given as steps, as part 1, section 3 says, with the whole list of permissions for each token he makes. It writes the brief for the session that sets the product up. It ends when the product's ROOT has started; its folder and research stay.
-- **Where the lane starts.** With GitHub: the steps the owner needs to set up the product's repository and connect the harness to GitHub. A GitHub token is made only where sessions do not act on GitHub through that connection (part 1, section 3).
-- **How the lane reads the product.** The lane does not read or act on the product's repository, accounts or services itself. The owner starts a read-only session on the product's repository with the lane's brief. That session changes nothing, and its report reaches the lane: by message where that repository's approvals allow it, and through the owner otherwise.
-- **Settings.** Every change that onboarding needs to a setting of GitHub or of the hosting account is the owner's own click, from the lane's page. No session is given the means to change those settings (section 3).
-- **Unproven:** an onboarding lane carried through to a product's ROOT starting.
-- When a new model version arrives, PROCESS puts one question to the owner: which parts of the process, and which working rules that exist because of the permission checker, may no longer be needed. Nothing is removed or tried unless he says so.

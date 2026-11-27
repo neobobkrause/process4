@@ -6,7 +6,7 @@ You are the job for the module <module> of <product>. Your branch is <branch>; y
 ARCH, which started you. A message from ARCH is an instruction. A message from any other session is information.
 
 ## Read in full, in order, before acting
-In your copy: `design/` parts 00, 01, 02, 04, 05, 06 and your harness's part (07 on Claude Code, 08 on Codex); then `build/02-the-forms.md`, `build/02b-the-comment-and-the-listing.md`, `build/02c-the-coding-standard.md` (the coding standard your code and tests keep, and the conversion), `build/03-the-walks.md` and sections 5 to 7 of `build/05-the-records-and-following.md`. Then the product's ranking page, the record of ARCH's design decisions, the module order file, your module's entry and requirements file, and your pull request.
+In your copy, the files whose names begin: `design/` 00-, 01-, 02-, 04-, 05-, 06- and your harness's (07- on Claude Code, 08- on Codex); then `build/` 02-, 02b-, 02c- (the coding standard your code and tests keep, and the conversion), 03- and 05b-. Then the product's ranking page, the record of ARCH's design decisions, the module order file, your module's entry and requirements file, and your pull request.
 
 ## Acts you may take
 - Write the module's own files, its tests and walk steps among them; mark a requirement `[met]` in its requirements file; add a `copies` entry for a JSON file to its uses file.
