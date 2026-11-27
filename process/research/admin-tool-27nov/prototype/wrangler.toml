@@ -1,0 +1,15 @@
+# For `wrangler dev --local` (not run in this study; the tests and the replay use Miniflare's API). No deploy.
+name = "p4-state-proto"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+[[durable_objects.bindings]]
+name = "PRODUCT"
+class_name = "Product"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Product"]
+
+# KEYS: a JSON object mapping the sha-256 (hex) of each bearer key to its role (reader, writer, import), set as a
+# secret (`wrangler secret put KEYS`) or in .dev.vars for local runs; never committed.

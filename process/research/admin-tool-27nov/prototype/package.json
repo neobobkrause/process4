@@ -1,0 +1,9 @@
+{
+  "name": "p4-state-proto",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Local prototype of a Process4 state service: a Worker with one SQLite-backed Durable Object per product.",
+  "scripts": { "test": "node --test test/*.test.mjs", "replay": "node replay/t3.mjs" },
+  "devDependencies": { "miniflare": "4.20260730.0" }
+}
