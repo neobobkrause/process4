@@ -54,5 +54,5 @@ Recommended: C and D together (every role reads whole files, ARCH back under the
 quick fix is wanted first.
 
 ## The owner's choice
-"Decision: C & D" — 27 November 2026, about 00:50 UTC, typed in PROCESS #20's session. To be built after the group A,
+"Decision: C & D" — 27 November 2026, about 00:37 UTC, typed in PROCESS #20's session. To be built after the group A,
 G1, G2, H, J, N merges (both change design parts 02, 04 and 06), so civicsmith's held work is not kept waiting for it.
