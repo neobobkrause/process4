@@ -5,6 +5,7 @@ text). Research is background, not governing text (design part 5, section 3): PR
 a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
 
 ## 27 Nov 2026
+- `github-limits-account-27nov.md` — the owner: the account risks suspension until limits are honoured across it; GitHub's limits (80/min, 500/h unseen by clients; suspension wording); the tool's writes counted by command and role; 500/h can be exceeded today, pushes near process3's pre-suspension rate; options 0, K1 cut writes, K2 per-minute shares by role, K3 the hour held by ARCH, K4 local pause, K5 pushes and next-job reads, G3 (not recommended); K1-K5 recommended.
 - `job-reading-27nov.md` — the owner's decision to study trimming a job's reading (worker): a job's set is 177,379 bytes, over the 175,000 maximum (ARCH 176,983); ~85,000 never used, ~3,100 history; options 0, A (read named sections, 114,566), B, C (split texts by reader; recommended with D), D (remove history).
 
 ## 26 Nov 2026
