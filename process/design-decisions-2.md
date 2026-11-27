@@ -214,7 +214,8 @@ so to him on the same thread).
    code or tests change, or when the module list moves items into or out of it; never because the Process4 version or
    the facility list changed. Every version of the tool reads uses files written by earlier versions as their version
    meant them. The tool's notes on Node features it does not know are not kept in the file (the owner's decision of 26
-   November 2026). A place outside the standard under R14, which concerns only facilities of Node, workerd, the language and
+   November 2026), nor is a place of any rule that stands only on such a gap; and such a gap never makes the check refuse
+   a module's code: it is "cannot tell" (decision H of 27 November 2026). A place outside the standard under R14, which concerns only facilities of Node, workerd, the language and
    packages, refers to no product module and tells no one, in any file, older ones included; except a use of a bare name
    the tool cannot resolve, which may be the product's own package, and, in an older file, a place waiting on ARCH's
    facility list, which are read as written (the owner's decision A of 26 November 2026).
@@ -244,7 +245,9 @@ so to him on the same thread).
    case's name.
 6. **A conversion's merge tells no one.** It changes no behaviour, so no user has anything to re-check; `notify` reads
    nothing for it. An accidental change of behaviour is caught by the provider's own tests at its interface and by the
-   walks (the owner's decision of 26 November 2026, replacing 2-B1 and its narrowing).
+   walks (the owner's decision of 26 November 2026, replacing 2-B1 and its narrowing). **Before its conversion merges, a
+   module is told of nothing,** by any point; its conversion works on the tranche's newest code, and its merge clears the
+   notices already waiting for it (decision A of 27 November 2026).
 7. **A version first written is not a change of version.** A package or the host that had no version before (the
    facility list's first writing) tells no one; a real change of version tells as point 4 says (decision 1-A).
 
@@ -272,6 +275,12 @@ and `trial-who-is-told-26nov.md`. A conversion that changes an item still tells 
 ("A conversion that changes what a module offers still tells its users"). Item 6 rewritten 26 Nov 2026: the tool read conversions that only stated types as changing items (a type error gone
 counted as a change), so every unconverted importer was told, and five of civicsmith's notices were too large to send;
 the owner's view that a conversion run should notify no one. Researched in `process/research/notify-size-26nov.md`.
+Item 6's second sentence and item 1's host-gap words, 27 Nov 2026: after the account switch each ordinary merge on
+civicsmith told all 199 unconverted modules (698,539 places with "may refer to any earlier module", most in the modules'
+own unconverted code), queuing about 199 follow-up jobs, holding merges, and tripping GitHub's write limit; converted
+modules kept such places only from gaps in the tool's description of Node; and one gap refused correct code, stopping
+two jobs. Options: 0 no change; A (recommended); B hold ordinary work during the sweep. Researched in
+`process/research/unconverted-told-every-merge-26nov.md`.
 
 **The owner's words.** All 25 November 2026; the early provider's three fixes and the unknown kind's three are under "How
 `notify` reads the product" and "How a notice reaches a user".
@@ -328,6 +337,9 @@ A" — 26 November 2026, typed in PROCESS #19's session.
 On a conversion's notices (in PROCESS #19's session, after PROCESS #19 explained that a conversion run in module order
 can only tell modules not yet converted, and that the tool had read conversions as changing items): "Decision: a
 conversion's merge tells no one." — 26 November 2026.
+On notices before a module's conversion, GitHub's limits, and the tool's reading faults (A, G1, G2, H, J, N, put as one
+group in PROCESS #20's session and on his page): "Decision: A, G1, G2, H, J, N" — 27 November 2026, 00:22 UTC, typed as
+a comment on his page "Process4 Waiting for Bob", sent to PROCESS #20.
 
 ### Subject: How `notify` reads the product
 
@@ -521,7 +533,13 @@ or assigned to a member; R19 counts only real assignments, found by symbol (taki
 only among prefix operators). The host description also covers `process.versions`, node:test's `mock.property` and
 `mock.timers.setTime`, added by hand; option C waits. `notify` counts only a new type error, or changed code while one
 stands, as a change; a reason carries only the parts that changed; the reading's result comes back in parts and equal
-type parts are kept once.
+type parts are kept once. A module's own channel (R2) includes its own data text, the files it writes or generates, the
+output of a program it starts itself, and a table it declares; a symbol-keyed member is found by its symbol (R17);
+"possibly null" is "cannot tell" in every form; a value passed on purpose in an error assertion is "cannot tell" however
+the function reaches the assertion (decision J of 27 November 2026). The host description also covers the text decoder
+in full, streams and blobs, compression, Web Crypto and Node's signing and keys, workerd's digest stream, node:zlib,
+node:http, node:sqlite, and the file, buffer and process functions civicsmith's jobs met, added by hand (decision N);
+option C still waits.
 
 Why: civicsmith's first conversions (ARCH #28 and its jobs) met each as a tool fault against the text: ~15,677 places that
 nothing could clear, and complaints on ordinary code. The second group (26 Nov): two rule-reading faults (R15, R19), Node
@@ -538,6 +556,9 @@ version): "Decision: A" — 26 November 2026, typed in PROCESS #19's session.
 On the uses files' rewriting (the tool type-checked each module from scratch, 15–20 s a module on civicsmith; shared
 files now read once and modules read in up to four processes, every file the same): "Decision: A, the speed fix" — 26
 November 2026, typed in PROCESS #19's session. Researched in `process/research/uses-rewrite-slow-26nov.md`.
+On the reading faults and Node's features civicsmith's conversion jobs reported after the account switch (J and N, in
+the group of 27 November; researched in `process/research/unconverted-told-every-merge-26nov.md`): "Decision: A, G1,
+G2, H, J, N" — 27 November 2026, 00:22 UTC, typed as a comment on his page, sent to PROCESS #20.
 
 ### Subject: Development velocity
 
@@ -560,3 +581,25 @@ at every start. Researched in `process/research/weakness-implications-26nov.md`.
 and implementation choices made by and for process4 and products like civicsmith and all others." Then: "Decision:
 every design and implementation choice, for Process4 and each product, weighs its effect on development velocity; add
 the principle and the known-weakness row as drafted." — 26 November 2026, typed in PROCESS #19's session.
+
+### Subject: GitHub's limits
+
+**The rule as it now stands.** Sessions stay within GitHub's published limits with a margin and obey its rate-limit
+answers (design part 6, section 3). The tool starts each write that creates or changes content (a comment, an issue, a
+pull request, marking it ready, a merge) at least one second after the last such write on the same machine, as GitHub
+advises; reads are not paced; a push keeps to six a minute and a merge to one a minute into a branch. On a refused write
+it waits as long as GitHub says (its retry-after, or until its reset), otherwise a minute doubling each time, and after
+the fourth try fails, naming the time after which to run it again. No queue of later writes is kept.
+
+Why: on 26 November three `notify` runs at once on civicsmith each wrote hundreds of large comments with no spacing;
+GitHub blocked the sessions' account from creating content for about half an hour, for every repository, and the tool's
+retry, which never saw GitHub's wait time, hit it again every minute. GitHub allows 80 content-creating requests a minute
+and 500 an hour and warns that writing on while limited may ban an integration. process3 had counted those limits and
+later retired the counting; its notices were files written in one push. Options: 0 no change; G1 pace writes; G2 correct
+the retry; G3 bring back process3's account-wide counting (not recommended). Researched in
+`process/research/github-limits-26nov.md`.
+
+**The owner's words.** In conversation first: "Does process4 still have the same safeguards that process3 had to ensure
+that it doesn't exceed github limits? If not, then we need to explore adding that tooling back into the process." — 26
+November 2026, in PROCESS #20's session. Then: "Decision: A, G1, G2, H, J, N" — 27 November 2026, 00:22 UTC, typed as a
+comment on his page "Process4 Waiting for Bob", sent to PROCESS #20.

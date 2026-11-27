@@ -68,3 +68,28 @@ environment's `autoMode` and `idleCompaction` were there (M). It had no tool to 
 cannot hold ROOT: B fails on the repository and on the tools. Archived by PROCESS #18; its one-time task ended itself.
 A built: design part 4 §6, part 7 §1 (the limit's row), ROOT's rules 6 and 8, the record's subject "The limit on depth,
 and a fresh ROOT". C is not chosen; put to the owner once.
+
+## Raised again by the owner, 27 Nov 2026 (~00:40Z, in PROCESS #20's session, conversation)
+
+His words: "An issue that was raised yesterday but never addressed is that watcher is supposed to refresh ROOT so that
+ROOT depth never is more than 1. But the way the process is actually working is that the watcher is converting to being
+ROOT then it spawns the new watcher. So each refresh results in a higher depth."
+
+What the texts say: design part 4 §6 and the record ("The limit on depth, and a fresh ROOT") say a takeover makes the
+watcher ROOT and puts it one level deeper; nothing says ROOT stays at depth 1. What the harness allows (measured above):
+a session another session starts is always one level below it; a session made by a scheduled task is at the top but has
+no repository and cannot start or message sessions. So no session can make a top-level ROOT; only the owner can.
+
+Seen today: civicsmith ROOT #12 (started by the owner, depth 0) was replaced by ROOT #13 at 21:37Z, about twenty minutes
+after it started, for the version move to 5948442 (ROOT #13's message). Each takeover for a move costs one level.
+
+Options:
+- 0. No change: A stands; the owner starts a fresh ROOT when his page asks (about every five takeovers).
+- C. ROOT takes over on a version move only when the move changed what ROOT itself reads; otherwise it fetches the new
+  copy and starts the other roles from it, and goes on.
+- D. ROOT takes over only at its fill level, or when it has died: on a version move it fetches the new copy and starts
+  the other roles from it, and reads its own new texts at its next takeover. ROOT's own acts (wakes, starts, the roles
+  record) do not change with a version; its fill grows slowly (hourly wakes), so takeovers become rare and the owner's
+  fresh ROOT rarer still. Text only (ROOT's and the watcher's starting texts, design part 4 §6, part 6 §7's "ROOT
+  refreshes the standing roles").
+Recommended: D. Depth can never stay at 1 without the owner's own start; D makes the climb slow.
