@@ -22,3 +22,22 @@ Options:
   read a name of the old form in an older uses file as the symbol it stands for, so no file needs rewriting and old and
   new names match. Small; no text change (design part 2 §7 already names items by their name).
 Recommended: A. Whether it explains #1745's 238 reasons is not known; the rebuilt tool on that merge would show it.
+
+## A second fault, which STOPS a job: a package's declaration merged into a host global (pdf-pixels #6, PR 1767, ~04:24Z)
+
+Its words, via ARCH #34 and coordinator #16: "`p4 check pdf-pixels` refuses 63 "order faults". Each one is a use of the
+global `URL` (`new URL(...)`), credited to module pdf-worker as "pdf-worker/node_modules/esbuild/lib/main.d.ts:URL". The
+cause: esbuild's main.d.ts declares `interface URL {}`, which merges into the global URL. The tool's `packageOf` / owner
+lookup (tool/lib/notice/refs.mjs) takes `sym.declarations[0]`, which here is esbuild's file. Because that file sits under
+pdf-worker/, the host's URL becomes a reference to a later product module. ... The refusal still appeared with
+pdf-worker/node_modules moved aside. No real use of pdf-worker exists, but `p4 test` will fail on it." pdf-pixels is
+recorded blocked.
+
+Read in the tool: several places take a symbol's owner from `declarations[0]` (refs.mjs, e.g. ~452, ~1059, ~1119). A
+global the host declares can gain declarations from any package's ambient file, and the first may be the package's,
+inside a product module's folder. A tool fault against design part 2 §1 and §6 (a use of a later module is refused only
+where it is one) and build text 2c (a host facility is the host's). Its effect: a false refusal, a stopped job.
+
+- **B. A symbol any host description declares is the host's,** whatever else merges into it; a declaration in a package
+  (under any `node_modules`) never makes a symbol a product module's. Small; no text change.
+Recommended: A and B together, one version; B unblocks pdf-pixels.
