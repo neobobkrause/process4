@@ -6,8 +6,7 @@ make determinations like that, you may need to design and perhaps even build the
 the point where you have a solid understanding of the challenges, opportunities, speed, reliability, and so forth."
 Earlier the same day: "Let's not worry about building a completely artificial test of Cloudflare potential usage. Your
 measurement tests are known far and wide as not being at all real world." So: build to understand the design (what is
-hard, what breaks, what it costs to write and keep), and report local timings only as local, never as a forecast of the
-real thing.
+hard, what breaks, what it costs to write and keep). Amended the same day at his word: no timing or speed measurement of any kind.
 
 ## The 22 opportunities (the owner's review document, https://claude.ai/artifact/RDKPVKMMCVcQ3EuUrudb3A)
 A course and direction: A1 tranche charter (his exact words + a kind; the tool hands out only the work the kind allows);
@@ -36,5 +35,5 @@ decides merges' waits). Open the design (`design/`) where a claim depends on it.
   `p4` command that writes. Do not push, message sessions, or touch any Cloudflare account or `api.cloudflare.com`. Public
   packages from npm may be installed, but only under the scratchpad
   `/tmp/claude-0/-home-user-process4/03580b3f-d13c-5078-90d5-6603d38ec2c1/scratchpad/`.
-- Facts with their source; inference marked **I**; anything not shown marked **U**. A local timing is labelled local.
+- Facts with their source; inference marked **I**; anything not shown marked **U**.
 - Write your report to the path you are given and reply with a summary under 300 words.

@@ -4,7 +4,7 @@ Asked in brief 2 (`brief-2.md`): the tool designed to build from, so its challen
 `tool/` (read 27 Nov), build text 5, the starting texts, Claude Code's hooks reference (`code.claude.com/docs/en/hooks.md`,
 fetched 27 Nov, "hooks docs"). **I** marks inference, **U** unproven. A prototype of the core was built to find what is
 hard (section 9): `/tmp/claude-0/-home-user-process4/03580b3f-d13c-5078-90d5-6603d38ec2c1/scratchpad/proto/` (store, server,
-hook, 7 tests passing). Its timings are local, on this container with node:sqlite in memory, and forecast nothing.
+hook, 7 tests passing).
 
 ## 0. The shape in one paragraph
 
@@ -63,7 +63,7 @@ automatically be submitted atomically" (`f-cloudflare-docs.md` §1). Sessions *s
 each request whole, in arrival order, in `transactionSync`: no lost write, no lock in the tool, however many send at once.
 His property holds more strongly (no session writes state), and "one writer for each record" becomes "one sender for each
 event kind", checked by the service instead of held by text. Load: 270–450 acts an hour (part G) against a soft limit of
-1,000 requests a second. Local: the prototype applied 5,000 events in 208 ms (42 µs each; not a forecast of a DO).
+1,000 requests a second.
 
 ### 2.3 Ids, idempotency, ordering, clocks
 
@@ -242,9 +242,8 @@ and owed acts are shown only after `merge`/`close` and in `brief`.
 
 Every hook exits 0 on every path, network calls bounded (2 s events, 3 s reads); a failing hook is documented as
 non-blocking ("The action goes ahead") unless `onFailure: "block"`, never set here. An unsent event goes to the spool,
-sent by the next hook or command. Local, prototype: service refusing connections, the hook ended in
-48 ms with the event spooled; a server that accepted and never answered, with an 800 ms bound, 836 ms, exit 0, no block;
-service up, one spooled and one new event, 68 ms (all local).
+sent by the next hook or command. In the prototype, with the service refusing, hanging or up, every hook exited 0 and
+kept any unsent event for later.
 
 ### 5.5 Stated by the docs versus unproven in cloud sessions
 

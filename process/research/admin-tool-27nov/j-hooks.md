@@ -4,8 +4,7 @@ Claude Code 2.1.332 (`claude --version`). All runs were nested headless runs, `c
 --output-format json --no-session-persistence --strict-mcp-config < /dev/null`, started from a fresh git repository at
 the scratchpad's `hooks-test/` (hook scripts, logs, `runN.json` stay there), each run with its own `.claude/settings.json`. `haiku`
 resolved to `claude-haiku-5-5` (run JSON, `modelUsage`). Docs: https://code.claude.com/docs/en/hooks.md, fetched 27 Nov; "docs L" means the line in that
-fetched file. Facts give their source, **I** marks inference, **U** marks anything not shown. All timings are local, from
-this container, and are not a forecast.
+fetched file. Facts give their source, **I** marks inference, **U** marks anything not shown. No timing figures are kept (the owner, 27 Nov).
 
 ## Result in one line per use
 - **B2, recording session acts (PostToolUse):** works for built-in tools. The hook got the harness's own `tool_response`.
@@ -13,8 +12,7 @@ this container, and are not a forecast.
 - **B3, owed acts kept working (Stop):** works. One block sent the model back to work and it wrote the owed file.
 - **C1, a brief at fixed points (SessionStart; PostToolUse `additionalContext`):** works. Both strings reached the model
   word for word.
-- **E2, hooks as callers:** a failing call did not break the session. The hook's time is added to the turn as it runs
-  (local: +2.0 s for a 2 s timeout). Project hooks ran with no trust step in `-p`.
+- **E2, hooks as callers:** a failing call did not break the session. The hook's time is added to the turn as it runs. Project hooks ran with no trust step in `-p`.
 
 ## 1. PostToolUse, matcher "Bash" (run 1)
 The prompt asked the model to run `echo hello`. The hook appended its stdin to `logs/t1.jsonl` (fact, that log). The fields
@@ -23,7 +21,7 @@ it got:
 `permission_mode` ("default"), `effort` ({"level":"medium"}), `hook_event_name` ("PostToolUse"), `tool_name` ("Bash"),
 `tool_input` ({"command":"echo hello","description":"Print hello via echo"}), `tool_response` ({"stdout":"hello",
 "stderr":"","interrupted":false,"isImage":false,"noOutputExpected":false}), `tool_use_id` ("toolu_01Qj…"), and
-`duration_ms` (52).
+`duration_ms`.
 The hook's environment had `CLAUDE_PROJECT_DIR` set to the repository root (fact: the logged `project_dir`).
 - For a failed call, `tool_response` "is the error text as a string" (docs L2375). Calls that fail also fire a separate
   `PostToolUseFailure` event, "or an MCP tool returned an error result" (docs L2469–2471). "For tool calls that fail, add
@@ -57,7 +55,7 @@ The prompt was only "Reply with the single word: hi". The hook script logs its i
 - First Stop: `stop_hook_active:false`, `last_assistant_message:"hi"`. The hook blocked.
 - The model went on. It tried Bash first; `-p` refused that (`permission_denials`, because Bash was not allowed). It then
   used Write (`--allowedTools Write`) and created `OWED.txt`. A PostToolUse Write hook logged the file.
-- Second Stop: `stop_hook_active:true`, so the hook let the turn end. 4 turns, 12.0 s wall (local).
+- Second Stop: `stop_hook_active:true`, so the hook let the turn end. 4 turns.
 - The run's `result` holds only the last message ("I wrote `OWED.txt` …"). The "hi" is not in it. **I:** a parent that
   reads `result` sees the text after the gate, not the reply before it.
 - Stop input adds `stop_hook_active`, `last_assistant_message`, `background_tasks`, `session_crons` to the common fields.
@@ -79,13 +77,12 @@ wrapped in that label. The input had `source:"startup"`, along with `cwd`, `hook
 
 ## 5. A network call that fails, with a 2 s timeout (runs 5 and 5b)
 - Run 5: the hook called curl `-m 2` on `http://192.0.2.1` with no proxy, then on `https://p4-state.invalid` through the
-  proxy. Both failed at once: exit 7 after 0.009 s, and exit 56 (proxy CONNECT 502) after 0.31 s. The session was
-  unharmed (`is_error:false`, `result` "hello\n\ndone"). Local `duration_ms`: 3,440.
-- Run 5b: a silent host, a local socket that accepts and never answers (127.0.0.1:47999), with curl `-m 2`. curl exited 28
-  after 2.011 s and the hook exited 0. The session was unharmed (`is_error:false`). Stream events
+  proxy. Both failed at once: exit 7, and exit 56 (proxy CONNECT 502). The session was
+  unharmed (`is_error:false`, `result` "hello\n\ndone").
+- Run 5b: a silent host, a local socket that accepts and never answers (127.0.0.1:47999), with curl `-m 2`. curl exited 28 at its
+  timeout and the hook exited 0. The session was unharmed (`is_error:false`). Stream events
   (`--include-hook-events`) showed `hook_started`, then `hook_response` with `exit_code:0` and `outcome:"success"`. The
-  tool_use was at 21:37:19.426 and the tool result went back at 21:37:21.547, a 2.1 s gap. Local `duration_ms` was 5,359,
-  against 3,169 to 3,440 for the same prompt without the slow hook. So the hook's time is added in full, as it runs.
+  hook's time is added to the turn, as it runs.
 - Default timeout is 600 s for command hooks (docs L427). `"async": true` runs a hook "in the background without blocking"
   but "can't block or control Claude's behavior" (docs L457, L4263). Not run here (**U** locally).
 - **I:** with exit 0 the call fails silently and the act goes unrecorded. A recorder needs a local spool, such as an
@@ -124,16 +121,16 @@ for B2 would be `mcp__claude-code-remote__(create_session|archive_session|send_m
 ## 8. Cost of each run (from the run JSON)
 Hooks use no tokens; the turns they cause do.
 
-| run | what | turns | input | cache write | cache read | output | USD | local duration_ms |
-|---|---|---|---|---|---|---|---|---|
-| 0 | no hooks, "ok" | 1 | 2 | 11,208 | 26,829 | 4 | 0.00251 | 2,130 |
-| 1 | PostToolUse Bash log | 2 | 4 | 9,427 | 66,779 | 83 | 0.00260 | 3,169 |
-| 2 | one-command `if` / script | 3 | 6 | 9,577 | 104,999 | 161 | 0.00305 | 4,715 |
-| 3 | Stop block once | 4 | 8 | 19,279 | 135,173 | 839 | 0.00563 | 10,806 |
-| 4 | SessionStart line | 1 | 2 | 9,359 | 28,730 | 275 | 0.00230 | 6,048 |
-| 5 | network fails at once | 2 | 4 | 8,871 | 67,339 | 83 | 0.00249 | 3,440 |
-| 5b | silent host, 2 s timeout | 2 | 4 | 8,868 | 67,339 | 77 | 0.00249 | 5,359 |
-| 7 | PostToolUse additionalContext | 2 | 4 | 9,492 | 66,803 | 248 | 0.00269 | 5,096 |
+| run | what | turns | input | cache write | cache read | output | USD |
+|---|---|---|---|---|---|---|---|
+| 0 | no hooks, "ok" | 1 | 2 | 11,208 | 26,829 | 4 | 0.00251 |
+| 1 | PostToolUse Bash log | 2 | 4 | 9,427 | 66,779 | 83 | 0.00260 |
+| 2 | one-command `if` / script | 3 | 6 | 9,577 | 104,999 | 161 | 0.00305 |
+| 3 | Stop block once | 4 | 8 | 19,279 | 135,173 | 839 | 0.00563 |
+| 4 | SessionStart line | 1 | 2 | 9,359 | 28,730 | 275 | 0.00230 |
+| 5 | network fails at once | 2 | 4 | 8,871 | 67,339 | 83 | 0.00249 |
+| 5b | silent host, 2 s timeout | 2 | 4 | 8,868 | 67,339 | 77 | 0.00249 |
+| 7 | PostToolUse additionalContext | 2 | 4 | 9,492 | 66,803 | 248 | 0.00269 |
 
 About 9,000 to 11,000 tokens of cache write and 27,000 to 67,000 of cache read come with every haiku run (system prompt
 and tools). One Stop block roughly doubled the run (run 3 against run 1: +2 turns, +10k cache write, about 2.2× the cost).

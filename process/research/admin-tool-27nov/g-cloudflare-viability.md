@@ -3,14 +3,10 @@
 The owner, 27 Nov (conversation): "What about speed, latency, integration with the tool's code, and other issues? Is this a
 viable/attractive option given that github account limits simply can't support the tool's expected traffic?"
 
-## Measured here (PROCESS #21's container, 27 Nov ~22:30Z)
-- A read of the shared state through the tool (`p4 state read handover-process`: find the issue, list its comments): 0.90–
-  0.98 s for the whole command, of which starting node is 0.03 s.
-- An HTTPS request to Cloudflare's edge from this container (public `cdn-cgi/trace`, no account touched): 0.33 s the first
-  time (connection set-up), 0.11–0.12 s after; served from Ashburn (`colo=IAD`).
-- Not measured: a Worker in front of a Durable Object (no such Worker exists). By the docs, an object lives in the data
-  centre near its first caller and stays there (`f-cloudflare-docs.md`); from sessions in the same region **I** about one
-  edge round trip plus a few milliseconds.
+## Speed
+Timings taken here on 27 Nov were withdrawn at the owner's word the same day (measurements made outside the real
+solution are not relied on). What the documentation states: a Durable Object lives in the data centre near its first
+caller and stays there, and handles about 1,000 requests a second (`f-cloudflare-docs.md`).
 
 ## Is GitHub's limit the reason? What the record shows
 GitHub's content-write limit is the whole account's: 80 a minute, 500 an hour (design part 6 §3). civicsmith at 8 slots
@@ -21,9 +17,8 @@ commands read every job pull request's comments (B, cross-cutting). So: today's 
 does not, at civicsmith's pace. Not measured.
 
 ## Speed and latency
-- A call to a Worker: about 0.1–0.2 s **I**; GitHub, as measured, about 0.45 s a call, and every write also spaced and
-  counted against the account's shares (K1–K5; `tool/lib/pace.mjs`), which can make a write wait.
-- One Durable Object handles about 1,000 requests a second (docs, soft limit); process3's busiest hour was 173 writes.
+- Every GitHub write is spaced and counted against the account's shares (K1–K5; `tool/lib/pace.mjs`), which can make a
+  write wait; the state service has no such budget.
 - Strongly consistent: a session reads what the last write left (docs). GitHub comments are too, but a record over 65,536
   characters is written in parts, not at once (C §1.3).
 
@@ -53,6 +48,6 @@ does not, at civicsmith's pace. Not measured.
   the new environment.
 
 ## Assessment (for the owner)
-Viable, and attractive for the full tool: faster per call, no GitHub write budget spent on state, no comment size limit,
+Viable, and attractive for the full tool: no GitHub write budget spent on state, no comment size limit,
 no lost writes, cross-repository reads solved, near-zero cost. Against: new code to build and keep (Worker and object), a
 second service, his approvals and settings, the checker unproven on the new host, and Process4 tied to one host.
