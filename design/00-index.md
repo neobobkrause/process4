@@ -1,13 +1,13 @@
 # Process4: the design
 
-Length: 90 lines. Last section: "6. Words used".
+Length: 104 lines. Last section: "6. Words used".
 
 **Status: proposed. Nothing here is in force and nothing here has run.**
 
 ## 1. What this is
 
-- This is the design of Process4, in eleven parts. It is "the process4 requirements" and is what sessions follow.
-- It states the design as it now stands. It carries no history of how the design came to be, beyond naming where a figure or a quotation comes from.
+- This is the design of Process4, in eleven parts, some of them kept in more than one file (section 4). It is "the process4 requirements" and is what sessions follow.
+- It states the design as it now stands. It carries no history: only what a session needs to act on. Where a figure or a quotation comes from is kept in the record of the owner's decisions and in the research, not here.
 - It names no product. A product's own facts and the steps to bring it under Process4 belong to that product's conversion plan, which the product's onboarding lane writes (part 6, section 8).
 - Parts 1 to 6 name no hosting provider and use harness-neutral terms. A harness is named there only in part 5, where a figure comes from one. Part 7 says what carries each term on Claude Code, part 8 on Codex, part 9 on Cloudflare.
 
@@ -17,7 +17,7 @@ Process4 is **proposed** now. It is **on trial** from the owner's acceptance: us
 
 ## 3. Marks used in every part
 
-- Words in quotation marks are the owner's, exactly as typed, unless the marks only name a term, a mark or an option. Where a quotation is not among his typed words and comes through an earlier record, the line says which record.
+- Words in quotation marks are the owner's, exactly as typed, unless the marks only name a term, a mark or an option.
 - **Open:** not settled. The line says who settles it.
 - **Unproven:** the rule depends on something never shown to work. Part 10 gathers these.
 
@@ -25,19 +25,33 @@ A rule with no mark is the owner's ruling, or follows from one directly.
 
 ## 4. The parts
 
-| Part | File | Subject |
-|---|---|---|
-| 0 | `00-index.md` | This page, and the words used |
-| 1 | `01-purpose-owner-and-decisions.md` | What Process4 is for; the owner and the AI; how his words become decisions; working principles |
-| 2 | `02-modules-jobs-tests-and-the-notice.md` | Modules, requirements, jobs, slots, module tests, the notice to user modules, changes that are not a job's |
-| 3 | `03-tranche-rounds-walks-and-release.md` | The tranche, rounds, the two walks, deployment, release, support beyond the process |
-| 4 | `04-roles-and-sessions.md` | Each role; starting, refreshing and replacing sessions; messages; the shared state; when something goes wrong |
-| 5 | `05-reading-and-documents.md` | Reading in full; the maximums; the documents and records |
-| 6 | `06-rules-permissions-and-changing-the-process.md` | What holds a rule; the tool; how the process is changed |
-| 7 | `07-harness-claude-code.md` | What carries each term on Claude Code, and the owner's acts to start a product there |
-| 8 | `08-harness-codex.md` | What carries each term on Codex, and what is not known |
-| 9 | `09-hosting-cloudflare.md` | What carries each hosting term on Cloudflare |
-| 10 | `10-open-and-unproven.md` | What is open, with whom; what is unproven; the trial |
+A part in more than one file keeps its section numbers: "part 4, section 6" is section 6 in whichever of part 4's files holds it. Each file names at its top where its part's other sections are.
+
+| Part | File | Sections | Subject |
+|---|---|---|---|
+| 0 | `00-index.md` | 1-6 | This page, and the words used |
+| 1 | `01-purpose-owner-and-decisions.md` | 6, 7 | Working principles; known weaknesses of AI sessions |
+| 1 | `01b-purpose-and-the-owner.md` | 1-5 | Purpose; where the process stops; the owner's acts; his decisions; putting things to him |
+| 2 | `02-modules-jobs-tests-and-the-notice.md` | 1-4, 6-8 | Modules, requirements, jobs, module tests, the notice, interfaces |
+| 2 | `02b-slots-and-other-changes.md` | 5, 9 | Slots; changes that are not a job's |
+| 3 | `03-tranche-rounds-walks-and-release.md` | 2, 3 | A round; the two walks |
+| 3 | `03b-the-tranche-and-release.md` | 1, 4-8 | Opening and ending a tranche; after each round; release; urgent fix; support |
+| 4 | `04-roles-and-sessions.md` | 4, 8, 10, 11 | The shared state; messages; when something goes wrong; smaller rules |
+| 4 | `04b-roles-and-refresh.md` | 1-3, 5, 7, 9 | The roles; who starts whom; lanes; refresh; the one way back; what the owner sees |
+| 4 | `04c-root-and-the-watcher.md` | 6 | ROOT and the watcher |
+| 5 | `05-reading-and-documents.md` | 1, 2, 6 | Reading in full; the four values; each product's ranking page |
+| 5 | `05b-records-of-decisions.md` | 5 | The records of decisions |
+| 5 | `05c-short-texts-two-documents.md` | 3, 4 | Keeping texts under the maximums; the two documents |
+| 6 | `06-rules-permissions-and-changing-the-process.md` | 1, 3, 4, 6 | What holds a rule; forbidden commands; working rules; a process fault |
+| 6 | `06b-the-approvals.md` | 2 | The owner's standing approvals |
+| 6 | `06c-the-tool.md` | 5 | The tool |
+| 6 | `06d-changing-the-process.md` | 7 | How the process is changed |
+| 6 | `06e-process4-develops-itself.md` | 8 | Process4 develops itself; the onboarding lane |
+| 7 | `07-harness-claude-code.md` | 1, 2 | What carries each term on Claude Code; reading, as measured |
+| 7 | `07b-unproven-acts-settings.md` | 3-5 | Not proven there; the owner's acts to start a product; the permissions-management settings |
+| 8 | `08-harness-codex.md` | 1-3 | What carries each term on Codex, and what is not known |
+| 9 | `09-hosting-cloudflare.md` | 1-3 | What carries each hosting term on Cloudflare |
+| 10 | `10-open-and-unproven.md` | 1-6 | What is open, with whom; what is unproven; the trial |
 
 ## 5. The build texts
 
@@ -57,7 +71,7 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Process fault:** a fault in the process itself and not in the product: a rule of this design that cannot be kept, a fault in the tool, or a stop that nothing called for.
 - **Architecture bug and implementation error:** an architecture bug is a fault in the design itself; an implementation error is a fault in code or text that does not follow the design (part 1, section 6).
 - **Held merge:** a merge the owner has told the coordinator to hold until he approves it.
-- **Foundations:** the owner's own earlier document of the reasons and evidence behind the process.
+- **Foundations:** the owner's own document of the reasons and evidence behind the process.
 - **Trial repository:** the throwaway repository in which the process is rehearsed before any product uses it.
 - **Module:** one part of the product, with its own code files, tests and requirements file. The product is one ordered list of modules, and a module may use only modules before it.
 - **Provider and user:** a **provider** is a module that provides a service to other modules through an interface; a **user** is a module that uses the service of another module through the provider's interface.
@@ -87,4 +101,4 @@ How the tool, the forms, the walks and each role's starting text are made is wri
 - **Deploy token:** the secret value that lets a session deploy to the development account. It is made once for a product, with every permission its development will need (part 1, section 3). **Hosting provider:** where a product is hosted and released.
 - **Fill level:** how full a session's context window is. **Refresh:** the planned replacement of a role's session by a fresh one.
 - **Lane:** a standing design responsibility for one area of a product. **The UX lane** is the lane for the user's experience: the screens and the journeys. **Design pages:** the pages a lane keeps its designs on, where the owner works with it. **Onboarding lane:** the lane of PROCESS that plans one product's move onto Process4 (part 6, section 8).
-- **Process config:** the product's short file of process settings. What it holds, among other fields (each is in the build text `02-the-forms.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the process folder and the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.
+- **Process config:** the product's short file of process settings. What it holds, among other fields (each is in build text 2, section 7, `02d-the-process-config.md`): the process version it runs on, the default slot number, its lanes, its hosting provider and development account, the process folder and the folder of the walks' documents, the commands that build, serve and walk the product on one machine, the most external walkers, and the language reader the tool uses. **The language reader** is the program that reads the product's code for the tool.

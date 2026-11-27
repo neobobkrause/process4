@@ -22,13 +22,13 @@ For a session to do, and to report.
 
 4. The tool itself. Written: build texts `01-the-tool-and-the-required-run.md` and `01b-the-commands.md`. Built, and its own tests pass; it has not run in a process in force. Unproven there: a session that holds one repository fetching the tool's copy; and it assumes the process's repository is public.
 5. Each role's starting text. Drafted: eight texts in the folder `starting_texts/`, each under 8,192 bytes. None has been put before the permission checker, and each has ten numbered rule lines or fewer, as part 4, section 11 counts them.
-6. The form of a structured comment and of an interface listing. Written: build text `02b-the-comment-and-the-listing.md`. The proof they come from is named in build text 2, section 1.
-7. The form of the module list, a requirements file and the process config. Written in build text `02-the-forms.md`.
+6. The form of a structured comment and of an interface listing. Written: build text `02b-the-comment-and-the-listing.md`.
+7. The form of the module list, a requirements file and the process config. Written in build text 2 (`02-the-forms.md`, `02d-the-process-config.md`).
 8. The required run. Written in build text `01-the-tool-and-the-required-run.md`. Built, and not run in a process in force.
-9. The walks. Written: build text `03-the-walks.md`. Nothing in it has run.
+9. The walks. Written: build text 3 (`03-the-walks.md`, `03b-areas-and-the-walks.md`, `03c-to-try-first.md`). Nothing in it has run.
 10. Left unsettled by the forms text: helpers under one module's tests that another module imports, which the interface listing does not cover; one written form for messages between two separately running parts of a product; and how the owner's record of decisions is split when it outgrows the maximum.
 11. The steps of an account switch, and what is read to show that it lost no work. The switch includes confirming the new account's environment carries the process's permissions-management settings (part 7, section 5); the steps, on the sessions' side and his, and what is read, are written in build text 6 (`06-the-account-switch.md`), still unproven.
-12. The forms of the shared state's records, the means and what the tool means by "reaches". Written: build text `05-the-records-and-following.md`. Nothing in it has run.
+12. The forms of the shared state's records, the means and what the tool means by "reaches". Written: build text 5 (`05-the-records-and-following.md`, `05b-pull-request-comments.md`, `05c-the-means.md`). Nothing in it has run.
 13. What is read to show that archived sessions do not use up the account's room.
 14. Part 2 is over the Codex single-text figure (part 5, section 2). Before a product runs on Codex, the Codex figure is measured or part 2 is split.
 
@@ -36,7 +36,7 @@ For a session to do, and to report.
 
 Process4 has never run; its tool is built and passes its own tests. Nothing below has been shown to work as this design uses it.
 
-- **The tool,** and merges made by it passing the permission checker at a real rate. That a program run by a session can reach GitHub has been seen (part 7, section 3).
+- **The tool,** and merges made by it passing the permission checker at a real rate. A program run by a session reaches GitHub (part 7, section 3).
 - **The shared state,** and a successor starting only from it.
 - **A ROOT started by a plain prompt** coming up on the owner's newest approvals and acting as ROOT.
 - **Replacing ARCH while jobs are open.**
@@ -56,7 +56,7 @@ Process4 has never run; its tool is built and passes its own tests. Nothing belo
 - **Cross-repository acts.** Cross-repository messaging between roles works. A cross-repository session-lifecycle act is refused even with the permissions-management settings in place (ROOT archiving the process-repository PROCESS session), so PROCESS is started and refreshed by the owner, not ROOT (part 6, section 7).
 - **The owner's approvals placed by a session:** whether the permission checker lets a session place his approved text in his approvals file, and the route in a repository whose approvals forbid it (part 6, section 2).
 - **The owner's acts to start a product** (part 7, section 4), an onboarding lane carried through to a product's ROOT starting (part 6, section 8), and that nothing physical stops a product's session from changing the process (part 6, section 7).
-- **Everything listed as not proven on Claude Code** in part 7. A session fetching its copy of the process has been seen.
+- **Everything listed as not proven on Claude Code** in part 7. A session fetching its copy of the process works.
 - **Everything on Codex not marked measured in part 8.**
 
 ## 4. The trial

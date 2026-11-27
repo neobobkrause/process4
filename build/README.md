@@ -1,10 +1,11 @@
 # The build texts: the index
 
-Length: 88 lines. Last section: "Build text 6".
+Length: 110 lines. Last section: "Build text 6".
 
 PROCESS reads this index in full and reads a build text, or gives it to a worker, when a question touches it; it reads a
 text in full before it changes it (design part 5, section 3). One line for each text and each section. Keep it current
-with each change.
+with each change. A text in more than one file keeps its section numbers; each file names at its top where the text's other
+sections are.
 
 ## Build text 1
 
@@ -24,14 +25,14 @@ with each change.
 
 ## Build text 2
 
-`02-the-forms.md`: the forms of the files the design names (sections 5 and 6 in 2b, 10 in 2c).
-- 1. The notice's proof the forms come from, and what it did not prove.
+`02-the-forms.md`: the forms of the files the design names (sections 5 and 6 in 2b, 7 in 2d, 10 in 2c).
+- 1. What the forms of sections 5 and 6 are for, and what is not proven.
 - 2. Where everything is: `process.json`, the process folder, each form's place and writer.
 - 3. The module list: the order file, each module's entry (`name`, `files`, `tests`, `public`), how the order is read.
 - 4. A module's requirements file: one line each, permanent numbers, `[met]`, who changes which part, the screen or journey ending.
-- 7. The process config, field by field.
 - 8. The ranking page, the owner's and ARCH's decision records, and a job's three comments.
-- 9. Not settled: the proof's forms, another language, messages between running parts, a decision record past the maximum.
+- 9. Not settled: the forms on a real product, another language, messages between running parts, a decision record past the
+  maximum.
 
 ## Build text 2b
 
@@ -39,20 +40,33 @@ with each change.
 - 5. A structured comment: JSDoc forms, `@bound`, which kind code checks or builds, the operations table, calls by name, the other marks.
 - 6. An interface listing, entries and their names (a message's kind with its channel), comparing means, the words a change gets and who each tells.
 
+## Build text 2d
+
+`02d-the-process-config.md`: section 7 of build text 2.
+- 7. The process config, field by field.
+
 ## Build text 2c
 
 `02c-the-coding-standard.md`: section 10 of build text 2.
-- 10. The coding standard (a reference; S1 to S13; R1 to R22, no R9; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form (its `mock` uses, `packages` and `takesIn`).
+- 10. The coding standard (a reference; S1 to S13; R1 to R22, R9 not used; the checker's settings), the facility list, how each rule is read, the conversion and its table, the uses file's form (its `mock` uses, `packages` and `takesIn`).
 
 ## Build text 3
 
-`03-the-walks.md`: how a walk is made (sections begin at 2).
-- 2. Areas: the documents as pages, how ARCH names a round's areas.
+`03-the-walks.md`: how a walk is made (sections 2, 4, 5 and 7 in 3b, 8 in 3c).
 - 3. Steps: a step's form and home, who writes it, a walk measured against the document.
+- 6. The walk issue, the comment's form, a flaw's and an observation's form, how ARCH turns a flaw into work.
+
+## Build text 3b
+
+`03b-areas-and-the-walks.md`: sections 2, 4, 5 and 7 of build text 3.
+- 2. Areas: the documents as pages, how ARCH names a round's areas.
 - 4. The internal walk, its two commands, one area as one command.
 - 5. The external walk: one copy per walking session, journeys that use AI, how many walkers.
-- 6. The walk issue, the comment's form, a flaw's and an observation's form, how ARCH turns a flaw into work.
 - 7. When a walk is without flaws, and what the tool needs from it.
+
+## Build text 3c
+
+`03c-to-try-first.md`: section 8 of build text 3.
 - 8. What to try first in the trial repository.
 
 ## Build text 4
@@ -66,15 +80,23 @@ with each change.
 
 ## Build text 5
 
-`05-the-records-and-following.md`: the records, and what the tool follows.
+`05-the-records-and-following.md`: the records, and what the tool follows (section 5 in 5b, 6 and 7 in 5c).
 - 1. The shared-state issue: label, marks, finding, reading, writing, a failed write, one writer each.
 - 2. The eight records and their JSON forms (roles with `process`, lanes, wakes, stop, standing notes, round with scope, waiting work, handover with `generation`).
 - 3. What ends each kind of standing note.
 - 4. The process's repository: its three records and the `products` registry.
+- 8. Unproven, and not settled.
+
+## Build text 5b
+
+`05b-pull-request-comments.md`: section 5 of build text 5.
 - 5. The comments on pull requests: the job block, the job's record (the notices that need no change among it), the conversion's report, the declaration (meaning, and items recorded as the same), the test record and the heads it stands for, the notice comments.
+
+## Build text 5c
+
+`05c-the-means.md`: sections 6 and 7 of build text 5.
 - 6. How the tool works out the means (the closure's order, the implicit members, a module that keeps no state) and who is told, from the uses files' fields.
 - 7. How the tool makes a told job's related tests.
-- 8. Unproven, and not settled.
 
 ## Build text 6
 
