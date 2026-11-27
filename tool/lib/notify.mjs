@@ -9,14 +9,14 @@ import { loadTree } from './notice/model.mjs';
 import { readNoticeLines } from './notice/notices.mjs';
 import { loadReader, readerVersion } from './notice/ts.mjs';
 import { moduleMeans } from './notice/means.mjs';
-import { describe, noticeText, versionNotices } from './notice/notice.mjs';
+import { describe, noticeSummary, noticeText, versionNotices } from './notice/notice.mjs';
 import { check } from './notice/check.mjs';
 import { relatedList } from './notice/related.mjs';
 import { block, parseBlock } from './github.mjs';
 import { NOTICE_LIMIT, fitReasons, writeNotice } from './noticecomments.mjs';
-import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, jobBlockOf, meaningsOf } from './round.mjs';
+import { JOB, JOB_MARK, MEANING_MARK, describe as workLine, hasConverted, jobBlockOf, meaningsOf } from './round.mjs';
 import { noticeSeq, testRecordOf } from './testrecord.mjs';
-import { readRecords, writeRecord } from './state.mjs';
+import { findIssue, readAll, readRecords, writeRecord } from './state.mjs';
 import { isUsesPath } from './usesfile.mjs';
 import { fail, git, run } from './util.mjs';
 
@@ -109,13 +109,13 @@ function changedModules(root, before, after, B, A) {
  * one: notify then says so plainly.
  * P4_READ_HEAP_MB, where set, is that process's heap in megabytes (for a test of running out).
  */
-function readNotices(dirB, dirA, mods, n, named, sameAs) {
+function readNotices(dirB, dirA, mods, n, named, sameAs, mayTell = null) {
   const child = fileURLToPath(new URL('./notice/notices.mjs', import.meta.url));
   const heap = process.execArgv.filter((a) => /^--(max-old-space-size|stack-size)=/.test(a));
   if (process.env.P4_READ_HEAP_MB) heap.push(`--max-old-space-size=${Number(process.env.P4_READ_HEAP_MB)}`);
   // The notices come back in a file of JSON lines, beside the two folders, read a line at a time (notices.mjs).
   const out = join(dirname(dirA), 'notices.jsonl');
-  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs, out }), encoding: 'utf8', maxBuffer: 1 << 26 });
+  const r = spawnSync(process.execPath, [...heap, child], { input: JSON.stringify({ dirB, dirA, mods, named, sameAs, mayTell, out }), encoding: 'utf8', maxBuffer: 1 << 26 });
   if (r.status === 0) return readNoticeLines(out);
   const err = `${r.stderr ?? ''}${r.error ? ` ${r.error.message}` : ''}`;
   if (/heap out of memory|Allocation failed|out of memory|ENOMEM/i.test(err) || r.signal === 'SIGABRT' || r.signal === 'SIGKILL' || r.status === 134) {
@@ -137,11 +137,12 @@ function readNotices(dirB, dirA, mods, n, named, sameAs) {
 //   cut or left out);
 // - a job merged or closed while its block was written did not carry the notice: the block is put back as it was, and
 //   the user counts as having no open job.
-// Returns the told users with no open job, whose notices wait for their next job.
-function toOpenJobs(ctx, base, told, n, mergedAt) {
+// Returns the told users with no open job, whose notices wait for their next job. `prs` are the pull requests into the
+// tranche branch, read once by notify.
+function toOpenJobs(ctx, base, told, n, mergedAt, prs) {
   if (!base || base === 'main') return told;
   // Every job pull request into the tranche branch that was still open when the merge was made.
-  const jobs = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || '')
+  const jobs = (prs ?? ctx.gh.allPRs(ctx.slug, base)).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || '')
     && (p.state === 'open' || !mergedAt || !p.closed_at || p.closed_at >= mergedAt));
   const blocks = new Map();
   const blockOf = (pr) => {
@@ -199,14 +200,23 @@ export function notifyCmd(ctx, n) {
   const before = git(['rev-parse', `${after}^1`], { cwd: ctx.root });
   // A conversion's merge tells no one (the owner's decision, 26 Nov 2026; design part 2, section 7): it changes no
   // behaviour, so no user has anything to re-check. Nothing is read and nothing is written.
+  // Its conversion settles what waited for the module (the owner's decision A, 27 Nov 2026): the conversion works on the
+  // tranche's newest code, so every notice waiting for the module is cleared from the waiting-work record, in one
+  // rewrite, and only where there is one; its other waiting work stays.
   const merged = jobBlockOf(ctx.gh.comments(ctx.slug, n))?.data;
   if (merged?.kind === 'conversion') {
-    ctx.log(`pull request ${n} is the conversion of ${pr.head?.ref?.match(JOB)?.[1] ?? merged.module ?? 'its module'}: a conversion's merge tells no one. Nobody is told.`);
+    const module = pr.head?.ref?.match(JOB)?.[1] ?? merged.module ?? null;
+    ctx.log(`pull request ${n} is the conversion of ${module ?? 'its module'}: a conversion's merge tells no one. Nobody is told.`);
+    if (module) clearNotices(ctx, module, n);
     return 0;
   }
   const base = tempBase();
   let told = [];
   let tranche = null;
+  let prs = null;
+  const untold = new Set();
+  let mayTell = null;
+  let isConverted = null;
   try {
     // Both products are written out first. Which modules the merge changed is read from the module lists and the
     // changed file names alone; only when one changed, or an item's meaning was named or declared, is the code read: the
@@ -216,6 +226,30 @@ export function notifyCmd(ctx, n) {
     const dirA = writeOut(ctx.root, after, base);
     const treeB = loadTree(dirB), treeA = loadTree(dirA);
     tranche = treeA.cfg.tranche_branch;
+    // A module whose conversion has not merged into the tranche branch is told of nothing (the owner's decision A, 27 Nov
+    // 2026). The pull requests into the tranche branch are read once: only a module with a merged job may have had its
+    // conversion; those that are told are then looked at one by one (hasConverted).
+    if (tranche && tranche !== 'main') {
+      prs = ctx.gh.allPRs(ctx.slug, tranche);
+      const jobPRs = prs.filter((p) => p.base?.ref === tranche);
+      mayTell = [...new Set(jobPRs.filter((p) => p.merged_at).map((p) => p.head?.ref?.match(JOB)?.[1]).filter(Boolean))];
+      const blocks = new Map();
+      const blockOf = (k) => { if (!blocks.has(k)) blocks.set(k, jobBlockOf(ctx.gh.comments(ctx.slug, k))?.data ?? null); return blocks.get(k); };
+      const yes = new Map();
+      isConverted = (m) => { if (!yes.has(m)) yes.set(m, hasConverted(jobPRs, blockOf, m)); return yes.get(m); };
+    }
+    // The told modules that may have had their conversion are looked at one by one; one with no merged conversion is
+    // left untold too.
+    const settle = (r, toldOf) => {
+      for (const u of r.untold ?? []) untold.add(u);
+      if (!isConverted) return false;
+      const not = r.told.filter((t) => !isConverted(toldOf(t)));
+      if (!not.length) return false;
+      for (const t of not) untold.add(toldOf(t));
+      r.told = r.told.filter((t) => !not.includes(t));
+      r.untold = [...(r.untold ?? []), ...not.map(toldOf)];
+      return true;
+    };
     ctx.log(`pull request ${n}: before ${before.slice(0, 10)} (first parent), after ${after.slice(0, 10)} (the merge commit)`);
     // The items whose meaning ARCH named in the work it placed (the job block's `meaning`), and the pull request's
     // declaration (its `process4-meaning` comment); and whether it is a conversion (its describing tells no one, nor
@@ -235,7 +269,8 @@ export function notifyCmd(ctx, n) {
     const conversion = job?.kind === 'conversion' ? jobModule : null;
     // A package's or the host's version changed (design part 2, section 7, point 4): the modules that use it, by their
     // uses files.
-    for (const v of versionNotices(treeB, treeA)) {
+    for (const v of versionNotices(treeB, treeA, { mayTell })) {
+      settle(v, (t) => t.user);
       ctx.log(`Notice for a change to the version of ${v.package}: ${v.was ?? 'none'} -> ${v.now ?? 'none'}; ${v.told.length} module(s) told.`);
       for (const t of v.told) {
         ctx.log(`  TOLD ${t.user}\n      package ${v.package}: ${t.reasons[0].why}`);
@@ -250,10 +285,11 @@ export function notifyCmd(ctx, n) {
     } else {
       readerNote(ctx, treeA);
       const read = mods.filter((m) => treeB.byId.has(m));
-      const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named, sameAs).map((r) => [r.provider, r]) : []);
+      const reports = new Map(read.length ? readNotices(dirB, dirA, read.map((m) => ({ module: m, filesChanged: changed.includes(m), conversion: m === conversion })), n, named, sameAs, mayTell).map((r) => [r.provider, r]) : []);
       for (const m of mods) {
         if (!treeB.byId.has(m)) { ctx.log(`${m} is a new module: its items are new, and nobody is told.`); continue; }
         const r = reports.get(m);
+        if (settle(r, (t) => t.user)) r.summary = noticeSummary(r);
         ctx.log(noticeText(r));
         for (const t of r.told) told.push({ module: t.user, kind: 'notice', from: m, merged: n, uses: t.reasons });
       }
@@ -277,11 +313,15 @@ export function notifyCmd(ctx, n) {
     }
     const unspared = whole && !ranWhole.size ? [...new Set(told.filter((t) => record.modules.includes(t.module) && changed.includes(t.module)).map((t) => t.module))] : [];
     if (unspared.length) ctx.log(`told although its test record ran their whole tests, as the record is not of the merged result (${String(record.commit).slice(0, 10)}): ${unspared.join(', ')}`);
+    if (untold.size) {
+      const names = [...untold];
+      ctx.log(`${names.length} module(s) left untold, as their conversion has not merged: ${names.slice(0, 10).join(', ')}${names.length > 10 ? ` and ${names.length - 10} more` : ''}`);
+    }
   } finally {
     rmSync(base, { recursive: true, force: true });
   }
   if (!told.length) return 0;
-  told = toOpenJobs(ctx, tranche, told, n, pr.merged_at);
+  told = toOpenJobs(ctx, tranche, told, n, pr.merged_at, prs);
   if (!told.length) return 0;
   // The reasons first, on the merged pull request, one notice for each changed module; then the record that names them.
   for (const from of [...new Set(told.map((t) => t.from))]) {
@@ -297,6 +337,20 @@ export function notifyCmd(ctx, n) {
   writeRecord(ctx.gh, ctx.slug, issue, records, 'waiting-work', { ...had, work });
   ctx.log(`waiting work: ${told.map((t) => `${t.module} (notice from ${t.from})`).join(', ')}; each waits for the module's next job`);
   return 0;
+}
+
+// The notices waiting for a module, cleared from the waiting-work record at its conversion's merge: one rewrite, only
+// where any waits; every other entry stays.
+function clearNotices(ctx, module, n) {
+  const issue = findIssue(ctx.gh, ctx.slug);
+  if (!issue) return;
+  const records = readAll(ctx.gh, ctx.slug, issue);
+  const had = records['waiting-work']?.data;
+  const work = Array.isArray(had?.work) ? had.work : [];
+  const cleared = work.filter((w) => w.module === module && w.kind === 'notice');
+  if (!cleared.length) return;
+  writeRecord(ctx.gh, ctx.slug, issue, records, 'waiting-work', { ...had, work: work.filter((w) => !cleared.includes(w)) });
+  ctx.log(`waiting work: ${cleared.length} notice(s) waiting for ${module} cleared, as its conversion (pull request ${n}) merged: ${cleared.map((w) => workLine(w)).join('; ')}`);
 }
 
 // 18. check <module> [--files <list>]: inside module tests. Exit 1 if any part disagrees.

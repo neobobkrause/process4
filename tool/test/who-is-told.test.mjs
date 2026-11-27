@@ -16,7 +16,10 @@ import { MEANING_MARK } from '../lib/round.mjs';
 import { create } from '../lib/state.mjs';
 import { TEST_MARK } from '../lib/testrecord.mjs';
 import { git } from '../lib/util.mjs';
-import { commit, config, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
+import { commit, config, converted, ctxFor, fakeGitHub, makeRepo, write } from './helpers.mjs';
+
+// GitHub in memory, each module's conversion merged before the test began: each may be told (the owner's decision A).
+const convertedGitHub = () => { const gh = fakeGitHub(); converted(gh, ['dates', 'orders', 'report']); return gh; };
 import { withUsesFiles } from './usesfiles.mjs';
 
 const entry = (name, over = {}) => ({ name, files: [`src/${name}/`], tests: [`test/${name}/`], public: [`src/${name}/index.mjs`], ...over });
@@ -317,7 +320,7 @@ function mergedPR(root, gh, branch, files, n = 7) {
 test('notify: a mechanical edit does not tell a module whose files it changed and whose tests its record ran whole', () => {
   const day = (s) => `${REPORT}import { formatDay } from '../dates/index.mjs';\n/** @returns {string} */\nexport const day = () => formatDay(${s});\n`;
   const root = makeRepo(withUsesFiles(files({ 'src/report/index.mjs': day('1') })));
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   // formatDay now takes text: one change covering dates and its one user, report, whose whole tests the record ran
   mergedPR(root, gh, 'work/rename', {
@@ -338,7 +341,7 @@ test('notify: the whole-tests exception holds only for a record of the merged re
   const day = (s) => `${REPORT}import { formatDay } from '../dates/index.mjs';\n/** @returns {string} */\nexport const day = () => formatDay(${s});\n`;
   const run = (record) => {
     const root = makeRepo(withUsesFiles(files({ 'src/report/index.mjs': day('1') })));
-    const gh = fakeGitHub();
+    const gh = convertedGitHub();
     create(gh, 'o/product', ['waiting-work'], () => {});
     const tested = git(['rev-parse', 'HEAD'], { cwd: root });
     mergedPR(root, gh, 'work/rename', {
@@ -364,7 +367,7 @@ test('notify: the whole-tests exception holds only for a record of the merged re
 
 test('notify: an item the pull request records as keeping its domain and range tells no one; every other change still tells', () => {
   const root = makeRepo(withUsesFiles(files({ 'src/report/index.mjs': `${REPORT}import { formatDay } from '../dates/index.mjs';\n/** @returns {string} */\nexport const day = () => formatDay(1);\n` })));
-  const gh = fakeGitHub();
+  const gh = convertedGitHub();
   create(gh, 'o/product', ['waiting-work'], () => {});
   mergedPR(root, gh, 'job/dates/7', {
     'src/dates/index.mjs': DATES().replace('@returns {number}', '@returns {number | null}').replace('/** @param {number} n @returns {string} */', '/** @param {number} n @returns {string} @bound n: zero or more */'),
@@ -450,7 +453,8 @@ test('a uses file in the oldest form the tool wrote is read by check and notify 
   assert.ok(!byNow.some((r) => r.item === 'Row'), JSON.stringify(byNow));
   // the older file's places are read as written: each that may refer to any earlier module hears of any change to it
   assert.deepEqual(byOld.filter((r) => r.outside).map((r) => r.outside), ['R14 src/u/index.mjs:2', 'R1 src/u/index.mjs:8']);
-  assert.deepEqual(byNow.filter((r) => r.outside).map((r) => r.outside), ['R1 src/u/index.mjs:8']);
+  // today's file keeps neither the note on node:dgram nor the value of kind any only that gap makes (R1; decision H)
+  assert.deepEqual(byNow.filter((r) => r.outside).map((r) => r.outside), []);
 });
 
 test('an R14 place refers to no product module, in a file of any tool\'s writing; a name the tool could not resolve may be the product\'s, and still tells', () => {

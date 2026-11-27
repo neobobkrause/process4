@@ -70,7 +70,17 @@ const IN_DATE = (name) => name === 'Date' || name === 'DateConstructor' || name 
 // - node:events: EventEmitter, listeners kept on the object, called in the process (events.html); except the
 //   process-wide defaults (defaultMaxListeners, setMaxListeners, captureRejections).
 // - node:crypto: hashing and comparing what it is handed (createHash, createHmac, hash, timingSafeEqual, getHashes);
-//   its random sources are out (crypto.html#cryptorandombytessize-callback).
+//   keys made from what it is handed (KeyObject, createPrivateKey, createPublicKey), verifying a signature (verify), and
+//   ciphers whose key and IV are handed in (createCipheriv, createDecipheriv); its random sources are out
+//   (crypto.html#cryptorandombytessize-callback), and so is sign, whose signature is random for some keys (ECDSA,
+//   RSA-PSS: crypto.html#cryptosignalgorithm-data-key-callback); webcrypto as an object, and its subtle, by member.
+// - node:zlib: compressing and decompressing what it is handed, at once or as a stream in the process (zlib.html).
+// - Web Crypto's SubtleCrypto (webcrypto.html; w3c.github.io/webcrypto), crypto.subtle: digest, importKey, exportKey,
+//   verify and decrypt compute on what they are handed; sign and encrypt are out (random for some algorithms: ECDSA,
+//   RSA-PSS, RSA-OAEP), and so is every member not reviewed. workerd's crypto.DigestStream: a digest of what is written.
+// - atob, btoa (globals.html), Blob (buffer.html#class-blob), the WHATWG streams (webstreams.html: ReadableStream,
+//   WritableStream, their readers, writers and controllers, AbortSignal as a pipe's option), CompressionStream and
+//   DecompressionStream (globals.html): bytes and text in memory, inside the process.
 // - URL, URLSearchParams, TextEncoder, TextDecoder, structuredClone, queueMicrotask: WHATWG encodings and URL, the
 //   structured clone and the microtask queue, inside the process (globals.html).
 // - process.argv, process.execPath, and reading process.exitCode: values fixed at start or set by the module itself
@@ -83,20 +93,31 @@ const IN_DATE = (name) => name === 'Date' || name === 'DateConstructor' || name 
 //   allocUnsafe, whose memory is not initialised, is never on a list (refs.mjs, NEVER).
 const IN_NODE = (name) => {
   if (/^(?:node:)?buffer$/.test(name) || /^(?:node:buffer\.)?Buffer(Constructor)?(\.|$)/.test(name)) return true;
-  const m = /^(?:node:)?(path|url|assert|assert\/strict|events|crypto)(?:\.(.+))?$/.exec(name);
+  const m = /^(?:node:)?(path|url|assert|assert\/strict|events|crypto|zlib)(?:\.(.+))?$/.exec(name);
   if (m) {
     const [, mod, member = ''] = m;
     if (mod === 'path') return !['resolve', 'relative', 'toNamespacedPath'].includes(member.split('.').pop());
     if (mod === 'url') return member !== 'pathToFileURL';
     if (mod === 'events') return !/^(defaultMaxListeners|setMaxListeners|captureRejections)/.test(member.split('.').pop());
-    if (mod === 'crypto') return ['createHash', 'createHmac', 'hash', 'timingSafeEqual', 'getHashes'].includes(member.split('.')[0]);
+    if (mod === 'crypto') {
+      // node:crypto's webcrypto and the global crypto (globals.html) as objects: subtle, and workerd's DigestStream
+      if (['webcrypto', 'webcrypto.subtle', 'subtle', 'DigestStream'].includes(member) || member.startsWith('DigestStream.')) return true;
+      return ['createHash', 'createHmac', 'hash', 'timingSafeEqual', 'getHashes', 'KeyObject', 'createPrivateKey', 'createPublicKey', 'verify',
+        'createCipheriv', 'createDecipheriv'].includes(member.split('.')[0]);
+    }
     return true;
   }
   return starts(name, ['URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder', 'NodeAssert', 'assert', 'NodeDirent', 'NodeStats', 'NodeReadOptions', 'NodeRmOptions',
-    'NodeSpawnOptions', 'NodeSpawnResult', 'NodePathLike', 'NodeProcessVersions'])
+    'NodeSpawnOptions', 'NodeSpawnResult', 'NodePathLike', 'NodeProcessVersions', 'NodeMemoryUsage', 'NodeCpuUsage', 'NodeKeyInput', 'NodeCipher',
+    'NodeDecipher', 'NodeZlibInput', 'NodeZlibOptions', 'NodeBrotliOptions', 'NodeZlibStream', 'NodeBufferSource', 'NodeAlgorithmIdentifier', 'NodeJsonWebKey',
+    'NodeSQLInputValue', 'NodeSQLOutputValue', 'NodeHeaderValue', 'NodeRequestOptions', 'NodeZlibConstants', 'NodeWebCrypto.subtle',
+    'atob', 'btoa', 'Blob', 'ReadableStream', 'ReadableStreamDefaultReader', 'ReadableStreamDefaultController', 'ReadableStreamReadResult',
+    'ReadableStreamReadValueResult', 'ReadableStreamReadDoneResult', 'WritableStream', 'WritableStreamDefaultWriter', 'StreamPipeOptions',
+    'CompressionStream', 'DecompressionStream', 'AbortSignal', 'CryptoKey', 'DigestStream', 'crypto.subtle', 'crypto.DigestStream'])
     // the host's objects themselves: a use of a member is classified by the member
     || ['process', 'console', 'crypto', 'performance']
     .includes(name)
+    || ['SubtleCrypto', 'SubtleCrypto.digest', 'SubtleCrypto.importKey', 'SubtleCrypto.exportKey', 'SubtleCrypto.verify', 'SubtleCrypto.decrypt'].includes(name)
     || ['structuredClone', 'queueMicrotask', 'NodeProcess.argv', 'NodeProcess.execPath', 'NodeProcess.exitCode', 'ImportMeta.url', 'ImportMeta.dirname', 'ImportMeta.filename'].includes(name);
 };
 // ---- tests: the test runner (test.html), inside a module's tests; used in its code it is a boundary use ----
@@ -108,9 +129,10 @@ const TESTS = (name) => /^(?:node:)?test(\.|$)/.test(name) || starts(name, ['Nod
 // their clears, performance.now, process.hrtime and uptime); randomness (crypto.randomUUID, getRandomValues); the
 // process-wide channels and hooks (diagnostics_channel, async_hooks, perf_hooks, trace_events, wasi, sqlite, sea); and
 // any facility of a Node module not reviewed above.
-const NODE_HOST = (name) => /^node:/.test(name) || /^(fs|fs\/promises|path|url|os|child_process|worker_threads|module|crypto|events|readline|process|assert|buffer)(\.|$)/.test(name)
+const NODE_HOST = (name) => /^node:/.test(name) || /^(fs|fs\/promises|path|url|os|child_process|worker_threads|module|crypto|events|readline|process|assert|buffer|http|zlib)(\.|$)/.test(name)
   || /^Node[A-Z]/.test(name) || starts(name, ['process', 'console', 'fetch', 'performance', 'crypto', 'setTimeout', 'setInterval', 'setImmediate', 'clearTimeout',
     'clearInterval', 'clearImmediate', 'ImportMeta', 'ImportAssertions', 'ImportAttributes', 'ImportCallOptions', 'URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder',
+    'SubtleCrypto',
     'structuredClone', 'queueMicrotask', 'Buffer', 'BufferConstructor']);
 
 /** The classification of one facility: 'in', 'tests', 'out', or null (never on a list, or not reviewed: a place). */
@@ -142,6 +164,11 @@ export function facilitiesDescribed() {
     if (s.flags & (ts.SymbolFlags.Interface | ts.SymbolFlags.Class)) membersOf(checker.getDeclaredTypeOfSymbol(s), n);
     if (s.flags & ts.SymbolFlags.Value) { try { membersOf(checker.getTypeOfSymbol(s), n); } catch { /* none */ } }
     if (s.flags & ts.SymbolFlags.Module) for (const e of checker.getExportsOfModule(s)) take(e.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(e) : e, n);
+    // a choice of object kinds named as one (IteratorResult): the members they share, named by that name, as refs.mjs names a read of one
+    if (s.flags & ts.SymbolFlags.TypeAlias) {
+      const t = checker.getDeclaredTypeOfSymbol(s);
+      if (t.flags & ts.TypeFlags.Union && t.types.every((u) => u.flags & ts.TypeFlags.Object)) for (const p of checker.getPropertiesOfType(t)) names.add(nameOf(p));
+    }
   };
   for (const sf of program.getSourceFiles()) {
     if (!sf.isDeclarationFile) continue;
