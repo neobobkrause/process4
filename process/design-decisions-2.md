@@ -604,7 +604,8 @@ GitHub has refused writes nothing until the wait ends; `branch` paced as pushes 
 merged pull requests instead of re-reading them (build text 1, section 3; decision K1–K5 of 27 November 2026). Every
 limit GitHub publishes is honoured (the primary requests an hour, read from its answers; points a minute; content a
 minute and an hour; pushes a minute and merges a minute per repository; its one-second advice between writes), and no
-restriction GitHub does not name as a limit is added (the owner's decision of 27 November 2026). On a refused write
+restriction GitHub does not name as a limit is added (the owner's decision of 27 November 2026). The shares together
+come to about 95 percent of each limit (his decision A on the margin), kept in one table in the tool. On a refused write
 it waits as long as GitHub says (its retry-after, or until its reset), otherwise a minute doubling each time, and after
 the fourth try fails, naming the time after which to run it again. No queue of later writes is kept.
 
@@ -633,3 +634,6 @@ the one-second advice kept, nothing added for concurrency or CPU time): "The pro
 unnecessary and unpublished limits that github slowed down development velocity significantly. Decision: support all
 published limits, and add no restriction GitHub doesn’t name as a limit" — 27 November 2026, about 02:00 UTC, typed in
 PROCESS #20's session.
+On the margin (PROCESS #20 asked: A keep a small margin, about 95 percent, recommended, since each machine counts only its
+own writes and ARCH's hourly count rests on an estimate of each job's writes; B GitHub's full numbers; C keep 83
+percent): "Decision: A" — 27 November 2026, about 02:03 UTC, typed in PROCESS #20's session.
