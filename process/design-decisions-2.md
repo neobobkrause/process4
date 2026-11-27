@@ -631,5 +631,5 @@ Then, while K1–K5 was being built (PROCESS #20 had set out each published limi
 primary 5,000 an hour and the 900 points a minute added, pushes and merges counted per repository as GitHub states them,
 the one-second advice kept, nothing added for concurrency or CPU time): "The process3 support added a bunch of
 unnecessary and unpublished limits that github slowed down development velocity significantly. Decision: support all
-published limits, and add no restriction GitHub doesn’t name as a limit" — 27 November 2026, about 02:05 UTC, typed in
+published limits, and add no restriction GitHub doesn’t name as a limit" — 27 November 2026, about 02:00 UTC, typed in
 PROCESS #20's session.
