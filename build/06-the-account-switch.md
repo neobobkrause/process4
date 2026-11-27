@@ -1,9 +1,8 @@
-Length: 161 lines. Last section: "7. Unproven, and not settled here".
+Length: 156 lines. Last section: "7. Unproven, and not settled here".
 
 # Process4 build text 6: the account switch
 
-Written by Claude (PROCESS) on 19 Nov 2026, beside the seventh draft of the design
-(the eleven parts in `design/`, "the design"). **Status: proposed. Nothing here has
+Beside the design (`design/`, "the design"). **Status: proposed. Nothing here has
 run.** It answers item 11 of the design's part 10, section 2 ("The steps of an account
 switch, and what is read to show that it lost no work"), and build text 4, stage 7.
 It adds no rule to the design, and no test, gate,
@@ -11,8 +10,7 @@ review or stop. It elaborates the design's part 4, section 7 ("the one way back"
 case of a switch of account; where it and the design differ, the design rules.
 
 Marks: **Decided here:** a choice of this text, which the owner or PROCESS can overrule.
-**Unproven:** never shown to work. The account switch failed once in the process before
-this one (build text 4, stage 7), so every claim here is unproven until the
+**Unproven:** never shown to work. Every claim here is unproven until the
 trial (stage 7, item 15).
 
 ## 1. What an account switch is
@@ -34,8 +32,8 @@ trial (stage 7, item 15).
   acts done first: a full stop, then the owner's acts in the new account, then he starts
   ROOT, and ROOT rebuilds everything from the shared state and the repository.
 - **Decided here:** it is not a new mechanism. Nothing is built for it; it reuses the
-  stop, the owner's start of ROOT, and the restart-from-state the design already has. The
-  work owed was only to set down the order and what is read to confirm it lost no work.
+  stop, the owner's start of ROOT, and the restart-from-state the design already has. This
+  text sets down only the order and what is read to confirm it lost no work.
 
 ## 2. What carries over, and what changes
 
@@ -79,8 +77,7 @@ part 7, section 5. The owner does these; no session can (the design, part 1, sec
    environment (act 6; part 9), and, for a journey that uses AI, connect the AI account
    (part 1, section 3).
 5. **A session confirms the new account's cloud environment carries the permissions-management
-   settings,** and where they are missing proposes the change, which the owner approves with a click (the design, part 7, section 5; the owner's instruction of 19 November
-   2026). This is the check the account switch adds. Without it the checker refuses the
+   settings,** and where they are missing proposes the change, which the owner approves with a click (the design, part 7, section 5). This is the check the account switch adds. Without it the checker refuses the
    roles' cross-session and cross-repository acts (part 7, section 5), and the restart
    below cannot complete.
 6. Start ROOT, with the plain prompt, on the product's repository (act 9). The prompt may
@@ -135,8 +132,7 @@ the Claude account, so each should read exactly as before the switch:
 **Decided here:** nothing is lost when the round record's open and blocked modules match
 GitHub's open pull requests and blocked records one for one, and every open pull request has
 a live new-account session against it. The coordinator puts this confirmation on the owner's
-standing page. **Unproven:** that this reads clean after a real switch; it did not once (build
-text 4, stage 7).
+standing page. **Unproven:** that this reads clean after a real switch.
 
 ## 6. Where this sits with the owner
 
@@ -150,8 +146,7 @@ text 4, stage 7).
 
 ## 7. Unproven, and not settled here
 
-1. Everything here: the account switch has never been shown to lose no work, and failed
-   once in the process before this one (build text 4, stage 7).
+1. Everything here: the account switch has never been shown to lose no work.
 2. Whether a new-account session can archive an old-account session (section 4, step 2).
 3. Whether the new account's permission checker passes the roles' sanctioned cross-session
    and cross-repository acts at a real rate (the design, part 7, section 5, is probabilistic;

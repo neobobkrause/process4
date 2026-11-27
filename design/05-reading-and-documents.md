@@ -1,6 +1,8 @@
 # Part 5. Reading in full, and the documents
 
-Length: 48 lines. Last section: "6. Each product's ranking page".
+Length: 29 lines. Last section: "6. Each product's ranking page".
+
+Part 5's other sections: 5 in `05b-`; 3 and 4 in `05c-`.
 
 ## 1. Reading in full
 
@@ -20,27 +22,6 @@ A Codex re-measurement is owed before these figures govern there (part 8).
 | The largest set of texts read together | 175,000 bytes | Applies on both harnesses. |
 | A role's starting text | 8,192 bytes, and at most ten rules | Applies on both harnesses. |
 | The fill level for a refresh | 50 percent | Where a harness shows no fill level, as on Codex, the refresh comes only at a natural pause (part 8). |
-
-## 3. Keeping texts under the maximums
-
-- Each role's principles are concise, sufficient for the role to be performed correctly, and unambiguously clear. Whenever they are changed, every effort is made to keep them short enough to be read in full and not scanned. Where that cannot be done, the matter comes to the owner to find a solution. PROCESS brings it to him.
-- A role's research is background, not governing text. A lane, and PROCESS, reads in full an index of its research, one line for each file, and reads a research file, or gives it to a worker, when a question needs it (part 1, section 6). PROCESS reads the record of the owner's decisions about the design (section 5) and the build texts the same way, through an index of the record's subjects and one of each build text's sections (`process/decisions-index.md`, `build/README.md`).
-- The size of a role's starting text is a rule, not a refusal among the tool's tests.
-
-## 4. The two documents
-
-- There are two documents. This design document defines the design and is what sessions follow. A background document gives the background and context; it is the owner's Foundations brought up to date with the design.
-- Where one harness's side of the design is not yet known or not yet built, the design notes the shortcoming plainly and leaves it for the owner's work on that harness's account to fill (part 8).
-- Each harness's own files are kept apart in the process's repository, and a change for one harness never alters the other's.
-- The design document is kept up to date with the owner's decisions in the same step as each decision is recorded.
-
-## 5. The records of decisions
-
-- The owner's decisions about the Process4 design are kept in the process's repository, by PROCESS. His decisions about a product are kept by the coordinator. Each record has one writer. A product's record is kept in that product's repository.
-- A record is ordered by subject. Each entry states the rule as it now stands, and a decision that changes an entry rewrites it in place.
-- The owner's exact dated words are kept and never edited.
-- A rewritten entry is shown to the owner once; this is not an approval gate. The change merges on his marked decision once the required check passes, without waiting for a further approval; if he later objects to the entry it is rewritten in place.
-- ARCH's technical decisions are written in a second record in the product's repository, of which ARCH is the only writer.
 
 ## 6. Each product's ranking page
 

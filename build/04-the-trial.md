@@ -1,8 +1,8 @@
-Length: 143 lines. Last section: "5. What the trial cannot show".
+Length: 141 lines. Last section: "5. What the trial cannot show".
 
 # Process4 build text 4: the order of building and trying
 
-Written by Claude on 18 Nov 2026, beside the design (`design/`). **Status: proposed. Nothing here has run.** It adds no rule to the design; where the two differ, the design rules. It puts in one order what the design's part 10, section 4 lists for the trial, what each stage builds of the tool (build text 1, section 7, which follows this text), the walk trials of build text 3 (section 8), and the trials of the shared state (`process4/working/design_work_18nov/shared_state_carrier.md`, section 7).
+Beside the design (`design/`). **Status: proposed. Nothing here has run.** It adds no rule to the design; where the two differ, the design rules. It puts in one order what the design's part 10, section 4 lists for the trial, what each stage builds of the tool (build text 1, section 7, which follows this text), the walk trials of build text 3 (section 8), and the trials of the shared state.
 
 Marks: **Decided here:** a choice of this text. **Unproven:** never shown to work.
 
@@ -18,16 +18,14 @@ Everything is tried in the trial repository, on made-up modules. No product is t
 
 Before stage 0:
 
-1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals, which he types in a session; the forbidden commands are PROCESS's technical list (the design, part 6, section 2). Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9. It was done before act 9 on the trial (the design, part 7, section 4).
+1. His acts 1 to 8 of the design's part 7, section 4, done for the trial repository and the process's repository. Acts 7 and 8 need his own wording of his approvals, which he types in a session; the forbidden commands are PROCESS's technical list (the design, part 6, section 2). Act 9, starting ROOT, comes at stage 2: stages 0 and 1 start a plain session. Act 10 comes at stage 1, before act 9.
 2. The trial's forbidden commands must allow the one path stage 0 takes: a script of a few lines, run with `node`, that starts `gh` and `git` as the tool will.
 3. His word on where the process's repository is, and whether it is public. Build text 1 assumes it is public.
 4. His word that a session may build the tool (the design's part 4, section 11).
 
 Nothing below can start until these are done. They are his alone.
 
-**Who builds.** The tool is first built by a building session that holds the process's repository alone. It puts there the tool in `tool/`, the workflow in `shims/`, the starting texts in `starting_texts/`, the design's eleven parts in `design/` and the build texts in `build/` (build text 1, section 2). The tool is now built; the owner merges none of its pull requests (the design, part 4, section 11). Until the tool exists it pushes to its own working branch and opens its pull requests by the harness's ordinary means, as the owner's present approvals allow (the design, part 4, section 11).
-
-**Stage 4** uses the repository that holds the notice's proof. It is public, and a session cloned it for reading on 19 Nov.
+**Who builds.** The tool is built by a building session that holds the process's repository alone. It puts there the tool in `tool/`, the workflow in `shims/`, the starting texts in `starting_texts/`, the design's eleven parts in `design/`, some in more than one file and the build texts in `build/` (build text 1, section 2). The owner merges none of its pull requests (the design, part 4, section 11).
 
 ## 3. The stages
 
@@ -41,13 +39,13 @@ Tried:
 3. One write of GitHub by the script: it makes a test issue, writes a comment on it, then rewrites the same comment in place.
 4. A push to a working branch by the script.
 
-**Run on 19 Nov, once: all four worked.** The forbidden commands were refused to the session before and after the fetch; the script read, wrote and rewrote a comment, and pushed, as the sessions' account; GraphQL was refused and REST worked. The report is `process4/working/trial/stage0_report_19nov.md`. Not shown by one run: the rate at which the permission checker passes these acts, and whether rewriting a comment notifies anyone.
+**Unproven** by this stage: the rate at which the permission checker passes these acts, and whether rewriting a comment notifies anyone.
 
 Breaks, if it fails: the tool as each session's only door to GitHub (the design's part 6, section 3), and the shared state as comments on an issue (part 4, section 4). If items 2 or 3 fail, the design must change before anything is built: the tool cannot be the door, and the door would be the harness's own GitHub acts, which the tool cannot hold to one form.
 
 ### Stage 1. The first piece of the tool
 
-Built, by the building session in the process's repository: the fetch line; `branch`, `push`, `open`, `ready`, `results`, `merge`; `state read`, and `state write` with `--create`; `test`, and the required run's `run verdict`, with the scope steps for the tranche's pull request, a draft, no module code and a job's whole module (build text 1, section 5); the job's text; the tool's own tests for these. The process repository's own required run, `tool-tests`, reports on every pull request there and passes at once where no file of the tool changed: in the earlier process a pull request on which the required run never reported waited for ever.
+Built, by the building session in the process's repository: the fetch line; `branch`, `push`, `open`, `ready`, `results`, `merge`; `state read`, and `state write` with `--create`; `test`, and the required run's `run verdict`, with the scope steps for the tranche's pull request, a draft, no module code and a job's whole module (build text 1, section 5); the job's text; the tool's own tests for these. The process repository's own required run, `tool-tests`, reports on every pull request there and passes at once where no file of the tool changed.
 
 In the trial repository, a plain session started there writes the repository's first content as its first act, by the tool's `branch`, `push`, `open`, `ready` and `merge`: `process.json`, the module list, the workflow, and two made-up modules' entries with their requirements files. The base then has no process config, which build text 1, section 5 allows for. Its working branches, and the tranche branch itself, are made from the newest commit of main (the design, part 7, section 4, act 8), also where main already holds an earlier history: a tranche branch with a history of its own shares no history with main and cannot merge into it. That one session then plays ARCH: it makes the shared state (`state write --create`, in ROOT's place, since no ROOT is started before stage 2) and writes the records that `open --module` and, later, `next-job` need (build text 5, section 2).
 
@@ -85,9 +83,9 @@ Tried:
 
 ### Stage 4. The notice
 
-Needs first: nothing of the owner's. The proof's own forms are now in build texts 2b and 5. Its 150 recorded changes are in its repository; their recorded answers were made with 23 refusals this design does not take and by inferring users, so they are recorded again under the means and the uses files, with the 13 further breaks found, before they can be the tool's tests; the coding standard's 27 cases become tests too (`process/research/uses-metadata-25nov/`).
+Needs first: nothing of the owner's. The forms are in build texts 2b and 5. The tool's tests are 150 recorded changes on made-up modules, with 13 further breaks, recorded under the means and the uses files, and the coding standard's 27 cases (`process/research/uses-metadata-25nov/`).
 
-Built: `listing` (the means), `uses` and the uses file at `push`, `notify`, `check`, with those as the tool's tests; uses files for the proof's product, written by the tool; then the related scope and `related`.
+Built: `listing` (the means), `uses` and the uses file at `push`, `notify`, `check`, with those as the tool's tests; uses files for the made-up product, written by the tool; then the related scope and `related`.
 
 Tried:
 1. A conversion on the trial product, then a change: a provider's change of means tells exactly the users of the changed item, in a running round and not only on made-up changes replayed.
@@ -103,7 +101,7 @@ Built: the walk commands; the walking session's text; the lane's text, used for 
 
 Tried, in the order of build text 3, section 8: a session builds and serves the product and opens it in its browser; one internal step and one part walked by hand find a planted mismatch; the flaw is written, placed and fixed by a job; ARCH names areas from planted changes whose areas are known beforehand; a deployment is made from a session in timed steps; a browser reaches the development site; two walking sessions walk at once, with the hosting account's use read before and after; several sessions share one walk (items 8 and 14).
 
-Breaks, if it fails: walks made by sessions at all. The earlier process's walks were a program on GitHub's machines.
+Breaks, if it fails: walks made by sessions at all.
 
 ### Stage 6. The tranche's end, and release
 
@@ -117,7 +115,7 @@ Tried:
 
 ### Stage 7. The account switch
 
-Tried: a switch of account that loses no work (item 15). It failed once in the earlier process. It needs his acts in a second account, and is left to last because nothing else rests on it.
+Tried: a switch of account that loses no work (item 15). It needs his acts in a second account, and is left to last because nothing else rests on it.
 
 The steps of an account switch, on the sessions' side and on his, and what is read to show that it lost no work, are in build text 6 (`06-the-account-switch.md`), which answers the design work owed (the design, part 10, section 2, item 11).
 
@@ -126,7 +124,7 @@ The steps of an account switch, on the sessions' side and on his, and what is re
 | Stage | His part |
 |---|---|
 | Before stage 0 | His acts 1 to 8; his wording of the approvals and of the forbidden commands, allowing stage 0's script; where the process's repository is; his word that a session may build the tool |
-| While the tool is first built | Start the building session on the process's repository (done; the tool is built) |
+| While the tool is first built | Start the building session on the process's repository |
 | 0 | Start one plain session |
 | 1 | Start one plain session; act 10, once the run has reported |
 | 2 | Act 9, start ROOT; one edit to his approvals |

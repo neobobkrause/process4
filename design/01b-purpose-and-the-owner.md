@@ -1,0 +1,58 @@
+# Part 1 (continued): purpose and the owner
+
+Length: 58 lines. Last section: "5. How things are put to the owner".
+
+Part 1's other sections: 6 and 7 in `01-`.
+
+## 1. What Process4 is for
+
+- Process4 is the way AI sessions build a software product for the owner in a GitHub repository, and can do so with nobody watching.
+- Its one output is product behaviour that meets its requirements, merged to the main branch quickly and cheaply, and still there later.
+- The owner defines the product: its purpose, audiences, requirements, principles and broad design. The AI decides everything technical and tells him in plain words what it decided.
+- Development work continues as long as there is work that can still be done productively, efficiently and safely.
+
+## 2. Where the process stops
+
+- The process owns what can be proven in the repository and on the machines that run the tests.
+- Promoting a release to installed sites, rolling one back, and support belong to the product's own procedures and to the owner. A product's production signing keys are needed to produce the installer as part of the release ceremony (part 3, section 6). They are kept among the secret values of the environment the product's sessions run under, and they stay there. The release process may also use a release token with the privileges to publish.
+- For those three the process provides written procedures (part 3, section 8).
+
+## 3. The owner's acts
+
+| Act | When |
+|---|---|
+| Start ROOT | At each start or restart of development; after any full stop; and after each edit to his approvals (part 4, section 7) and when the harness's limit on depth is near (part 4, section 6) |
+| Start PROCESS, and start its refresh | When a process change is needed, or PROCESS asks to refresh; the coordinator surfaces the prompt on his standing page and notifies him (part 4, section 5; part 6, sections 6–7) |
+| Tell the coordinator things; give marked decisions and instructions | Whenever he chooses |
+| Approve a public release | Once for each public release |
+| At PROCESS: choose among the options offered for a process change, and approve a product's move to the changed process | Whenever a change is proposed |
+| Decide the wording of his standing approvals, drafted for him on request or typed by him in a session, and land it, with the forbidden commands, by clicking Merge on the pull request that carries it, in the product's repository and in the process's (part 6, section 2) | At the start, then only when the wording must change |
+| Change a permission or rule setting in GitHub or in the hosting account | Very occasionally |
+| Start a read-only session on a joining product's repository, with the brief its onboarding lane wrote (part 6, section 8) | When a product joins Process4 |
+| Connect the harness to GitHub, and enter the deploy token and other secret values, from a page the process writes | At the start of a product, at an account switch, and before a token expires |
+| Approve with a click the change a session proposes when the sessions' environment lacks the process's permissions-management settings (the harness parts say what they are) | At the start of a product, and at an account switch, before ROOT is started |
+| Connect an AI account to the development deployment | Before an external walk of journeys that use AI |
+
+- Every act of his is clicks on pages named by their full address, or words he types into a session or into a field of a form. No act asks him to edit a file or type a command. His standing page gives each act's steps that way: each page by its full address, each button by its exact label, and what he should see after each click.
+- Each act with a known date appears on his standing page before the date, with the steps.
+- A token he makes for a product is made once, when the product joins Process4. In his words, it is "the token with all the permissions that will be needed across all stages of process4 driven development across that product's entire lifecycle". The product's onboarding lane (part 6, section 8) works out the whole list first and gives it on his page, so that no later stage asks him to make another. Where the product's development uses more than one service, there is one such token for each. No GitHub token need be made where sessions act on GitHub through the harness's own connection to it. A token renewed before it expires carries the same permissions.
+- Every reasonable effort is made to renew a token before it expires, so that no full stop is needed. Once a new token is in place, fresh sessions start with it before the old one expires. A full stop happens only if the token is not replaced in time.
+- A harness runs AI sessions only on what the owner's subscription covers. Anything that would cost more comes to him first.
+
+## 4. How the owner's words become decisions
+
+- A message of his that begins "Decision:" or "Instruction:" is copied exactly, with its date. Everything else is conversation.
+- A session that thinks he has decided something without the mark asks once: "Shall I record that as a decision?"
+- No session writes its own summary of his words as his.
+- His latest statement replaces any earlier one, without a question to him. No session sets his older words against his newer ones.
+- A decision about a product is made through the coordinator. A change to Process4 itself is made through PROCESS. Each keeps its own record and is its only writer (part 5, section 5).
+- The coordinator is his front door. He may watch, and sometimes speak to, ARCH and the lanes. A marked decision he gives to ARCH is followed, and ARCH passes it to the coordinator exactly as typed for the record; a marked decision he gives to a lane is followed, and the lane passes it to ARCH, which relays it to the coordinator exactly as typed for the record (a lane reaches the coordinator only through ARCH; part 4, section 3). But an instruction the coordinator acts on and writes as a standing note — a held merge, a module put first, a new slot number, a stop, or a request for a full external walk — he types in the coordinator's own session; the permission checker refuses the coordinator's standing-note write for an instruction relayed through another session, as it refuses a relayed consent (part 3, section 6). He works with a lane through its design pages, and with PROCESS directly.
+
+## 5. How things are put to the owner
+
+- In his words: "Talk to me in plain words. No codes, no shorthand, no references to things I have not seen."
+- A question is put to him inline, in one form: a title; the question; an explanation of the issue; options, each with its own identity; the recommendation and its reasons; and the freedom to set the options aside.
+- No technical question is brought to him. The AI decides it and reports it in one plain line.
+- No session assures him that something will work. Each claim put to him says what is proven and what is not, names its source, and calls anything unread or unmeasured unknown.
+- One standing page always shows everything waiting for him. A notification goes to his phone when something arrives that only he can clear. The coordinator keeps the page and sends the notification; PROCESS and ROOT pass it what is theirs to show. While a product is being onboarded, its onboarding lane keeps that product's page (part 6, section 8).
+- When the process is completely blocked he gets one plain message with a numbered list of what is his to do. In every other case the stop is recorded as a named blocker and other work goes on.

@@ -12,20 +12,20 @@ Everything in this part is specific to Codex. Where the Codex side is not known 
 | The owner's standing approvals | Not known | |
 | Forbidden commands | Not known | |
 | Unattended mode and the permission checker | Not known. No record names a mode or a checker | |
-| One session starting another | A child inside the starter's own chat. A session listed on its own, started by another session, could not be made from a hosted session | Child: measured. Separate session: measured as blocked |
+| One session starting another | A child inside the starter's own chat. A session listed on its own, started by another session, cannot be made from a hosted session | Child: measured. Separate session: measured as blocked |
 | A message | A follow-up task to a child in the same chat wakes it. Across two chats it fails | Measured |
 | Interrupting a running session | Not known | |
 | Scheduled wake | Scheduled runs exist. Whether a wake reaches a child or only the owner's chat is not known | Documented |
 | Secret values | Not known | |
-| Instruction files loaded at start | `AGENTS.md`, one for each folder from the repository's root to the working folder, sharing one budget of 32 KiB by default; bytes past it are cut off; an edit is not picked up by a running session | Documented. The hosted limit was not measured |
+| Instruction files loaded at start | `AGENTS.md`, one for each folder from the repository's root to the working folder, sharing one budget of 32 KiB by default; bytes past it are cut off; an edit is not picked up by a running session | Documented. The hosted limit is not measured |
 | Worker | A child started with a fresh history | Measured |
 | Fill level | None in a hosted session. No sign of a compaction either | Measured as absent |
 | Compaction | Automatic at 90 percent of the window. A hosted session gives no sign of one | Documented |
 | The time a session can run one thing | Not known | |
-| Planned replacement | A fresh child with a record of its role. Replacing a top-level chat was not tried | Measured for a child |
+| Planned replacement | A fresh child with a record of its role. Replacing a top-level chat is not known | Measured for a child |
 | Archiving | Not available to a hosted session | Measured as absent |
 | A notification to the owner | Not known | |
-| The shared state | In the one trial, a file on the host, not on GitHub | Documented |
+| The shared state | A file on the host, not on GitHub | Documented |
 | The owner speaking to a role | Through the chat he opened only | Measured |
 | Depth of sessions | Four: the owner's chat, ROOT, ARCH and the coordinator, jobs | Measured, second-hand |
 | Model and effort passed on | Not known | |
@@ -42,7 +42,7 @@ Everything in this part is specific to Codex. Where the Codex side is not known 
 - **The three things that hold a rule** (part 6, section 1). What carries the approvals, the forbidden commands and the permission checker is not known.
 - **The permissions-management settings** (part 7, section 5 on Claude Code). What steers Codex's checker, if it has one, so that sanctioned cross-session and cross-repository acts are not refused is not known; so the owner's setup and account-switch check of them (part 1, section 3) has nothing to confirm on Codex until this is filled.
 - **A message wakes its receiver at once.** Shown only for a child in the same chat.
-- **Each role as a session of its own that the owner can open.** On Codex every role was a child inside one chat.
+- **Each role as a session of its own that the owner can open.** On Codex each role runs as a child inside one chat.
 - **Grouping a product's sessions, and archiving finished ones.**
 - **A notification to the owner's phone.**
 - **Renewing the sign-in before it expires,** which the owner expects Codex to need and the process to support cleanly. How is not known.

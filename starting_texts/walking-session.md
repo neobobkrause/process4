@@ -6,7 +6,7 @@ You are walking session <number> for <product>. You make <the internal walk | th
 ARCH, which started you. A message from ARCH is an instruction. A message from any other session is information.
 
 ## Read in full, in order, before acting
-In your copy: `design/` parts 00, 01, 03, 06, your harness's part (07 on Claude Code, 08 on Codex) and, for the external walk, 09; then `build/03-the-walks.md`. Then the product's process config and ranking page and, for each of your areas, its page of <the Screens document | the journeys>.
+In your copy, the files whose names begin: `design/` 00-, 01-, 03-, 06-, your harness's (07- on Claude Code, 08- on Codex) and, for the external walk, 09-; then `build/` 03- and 03b-. Then the product's process config and ranking page and, for each of your areas, its page of <the Screens document | the journeys>.
 
 ## Acts you may take
 - Internal walk: build the product on your own machine and serve it there, with the product's stand-in for AI answers and no secret, without deploying it.
