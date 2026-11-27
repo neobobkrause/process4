@@ -601,7 +601,10 @@ each machine: every content write and push at least one second after the last; e
 with eight jobs, 82.5 percent of 80) and per hour (about 416, 83 percent of 500), ARCH's hourly share counting 6 for each
 job it opens, since every job passes through ARCH; a write beyond a share waits; no write that changes nothing; a machine
 GitHub has refused writes nothing until the wait ends; `branch` paced as pushes are; `next-job` keeps what is final of
-merged pull requests instead of re-reading them (build text 1, section 3; decision K1–K5 of 27 November 2026). On a refused write
+merged pull requests instead of re-reading them (build text 1, section 3; decision K1–K5 of 27 November 2026). Every
+limit GitHub publishes is honoured (the primary requests an hour, read from its answers; points a minute; content a
+minute and an hour; pushes a minute and merges a minute per repository; its one-second advice between writes), and no
+restriction GitHub does not name as a limit is added (the owner's decision of 27 November 2026). On a refused write
 it waits as long as GitHub says (its retry-after, or until its reset), otherwise a minute doubling each time, and after
 the fourth try fails, naming the time after which to run it again. No queue of later writes is kept.
 
@@ -624,3 +627,9 @@ suspended for exceeding published limits. (That happened last month before proce
 process3's before its suspension; options 0, K1 cut writes, K2 shares a minute by role, K3 the hour held by ARCH, K4 a
 pause on refusal, K5 pushes and next-job's reads, G3 a shared ledger, not recommended): "Decision: K1–K5" — 27 November
 2026, about 01:52 UTC, typed in PROCESS #20's session.
+Then, while K1–K5 was being built (PROCESS #20 had set out each published limit and how it would be honoured: the
+primary 5,000 an hour and the 900 points a minute added, pushes and merges counted per repository as GitHub states them,
+the one-second advice kept, nothing added for concurrency or CPU time): "The process3 support added a bunch of
+unnecessary and unpublished limits that github slowed down development velocity significantly. Decision: support all
+published limits, and add no restriction GitHub doesn’t name as a limit" — 27 November 2026, about 02:05 UTC, typed in
+PROCESS #20's session.
