@@ -23,12 +23,14 @@ import { Fail } from './util.mjs';
  * a minute to one repository (below 1: one push every 1/share minutes). With eight jobs, one ARCH, coordinator, ROOT,
  * watcher and PROCESS, four walkers and four lanes, they come to about 95% of each of GitHub's limits (the owner's
  * decision A, 27 Nov 2026): content 76 of 80 a minute and 475 of 500 an hour, points 854 of 900 a minute, pushes 5.69
- * of 6 a minute. Content and points are whole numbers (a share holds whole requests); their rounding is taken up by ARCH's
- * minute and hour, and by the coordinator's minute.
+ * of 6 a minute. The hour: ARCH's 350 holds its own writes and a charge of one job's hour (10) for each job it opens,
+ * so the jobs' writes are counted there, not again; with the others' 125 that is 475. A job's own 10 an hour leaves room
+ * for a job with a failed run and notices (about 13 in its life). Content and points are whole numbers (a share holds
+ * whole requests); their rounding is taken up by ARCH's minute and hour, and by the coordinator's minute.
  */
 export const SHARES = {
-  arch: { minute: 32, hour: 302, points: 325, pushes: 0.65 },
-  job: { minute: 3, hour: 6, points: 32, pushes: 0.325 },
+  arch: { minute: 32, hour: 350, points: 325, pushes: 0.65 },
+  job: { minute: 3, hour: 10, points: 32, pushes: 0.325 },
   coordinator: { minute: 4, hour: 19, points: 43, pushes: 0.1625 },
   root: { minute: 2, hour: 4, points: 22, pushes: 0.1625 },
   watcher: { minute: 1, hour: 2, points: 11, pushes: 0.1625 },

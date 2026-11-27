@@ -26,7 +26,8 @@ const sum = (k, counts = { arch: 1, job: 8, coordinator: 1, root: 1, watcher: 1,
 
 test('the one table of shares comes to about 95% of each of GitHub\'s limits with eight jobs, four walkers and four lanes', () => {
   assert.equal(sum('minute'), 76);
-  assert.equal(sum('hour'), 475);
+  // the jobs' hour is counted in ARCH's, by its charge for each job it opens, not again
+  assert.equal(sum('hour', { arch: 1, coordinator: 1, root: 1, watcher: 1, walker: 4, process: 1, lane: 4 }), 475);
   assert.equal(sum('points'), 854);
   assert.ok(Math.abs(sum('pushes') - 5.7) < 0.02 && sum('pushes') <= 6);
   assert.equal(JOB_CHARGE, SHARES.job.hour);
@@ -60,20 +61,21 @@ test('K2: a job\'s content writes keep to 3 a minute, a second apart; the fourth
 test('K3: an hour\'s share; a wait over 30 minutes fails as G2 does, naming the time to run again', () => {
   const c = clock();
   const f = file();
-  // a job's six an hour, spread
-  for (let i = 0; i < 6; i++) { take({ kind: 'write', role: 'job', file: f, nowMs: c.nowMs, wait: c.wait, say: c.say }); c.t += 5 * 60000; }
-  // the seventh would wait until the first is an hour old: 30 minutes from now, which is borne
+  const h = SHARES.job.hour;
+  // a job's hour, spread five minutes apart
+  for (let i = 0; i < h; i++) { take({ kind: 'write', role: 'job', file: f, nowMs: c.nowMs, wait: c.wait, say: c.say }); c.t += 5 * 60000; }
+  // the next waits until the first is an hour old, under 30 minutes from now, which is borne
   c.t = T0 + 31 * 60000;
   take({ kind: 'write', role: 'job', file: f, nowMs: c.nowMs, wait: c.wait, say: c.say });
   assert.equal(c.t, T0 + 3600000);
-  assert.match(c.said.at(-1), /6 an hour on this machine/);
-  // the eighth: the second write (T0 + 5 min) leaves the hour at T0 + 65 min, so from T0 + 60 min it is under 30 minutes
+  assert.match(c.said.at(-1), new RegExp(`${h} an hour on this machine`));
+  // the one after: the second write (T0 + 5 min) leaves the hour at T0 + 65 min
   take({ kind: 'write', role: 'job', file: f, nowMs: c.nowMs, wait: c.wait, say: c.say });
   assert.equal(c.t, T0 + 65 * 60000);
   // a fresh file full for the hour fails at once
   const g = file();
   const d = clock();
-  for (let i = 0; i < 6; i++) take({ kind: 'write', role: 'job', file: g, nowMs: d.nowMs, wait: d.wait });
+  for (let i = 0; i < h; i++) take({ kind: 'write', role: 'job', file: g, nowMs: d.nowMs, wait: d.wait });
   assert.throws(() => take({ kind: 'write', role: 'job', file: g, nowMs: d.nowMs, wait: d.wait }),
     (e) => e instanceof Fail && /run the command again after 2026-11-27T11:00:00Z$/.test(e.message));
 });
@@ -89,7 +91,7 @@ test('K3: ARCH\'s charge for each job it opens counts in its hour; when spent, r
   c.t = T0 + 40 * 60000;
   take({ kind: 'room', role: 'arch', file: f, nowMs: c.nowMs, wait: c.wait, say: c.say });
   assert.equal(c.t, T0 + 3600000);
-  assert.match(c.said[0], /arch share of content writes, 302 an hour \(each job opened counts 6\)/);
+  assert.match(c.said[0], new RegExp(`arch share of content writes, ${SHARES.arch.hour} an hour \\(each job opened counts ${JOB_CHARGE}\\)`));
   assert.equal(paceState(f).charges.length, n);
 });
 

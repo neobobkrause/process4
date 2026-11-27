@@ -597,9 +597,9 @@ the principle and the known-weakness row as drafted." — 26 November 2026, type
 
 **The rule as it now stands.** Sessions stay within GitHub's published limits with a margin and obey its rate-limit
 answers (design part 6, section 3). The limits are the whole account's and cannot be read, so the tool counts its own on
-each machine: every content write and push at least one second after the last; each role's share per minute (66 in all
-with eight jobs, 82.5 percent of 80) and per hour (about 416, 83 percent of 500), ARCH's hourly share counting 6 for each
-job it opens, since every job passes through ARCH; a write beyond a share waits; no write that changes nothing; a machine
+each machine: every content write at least one second after the last; each role's share of content writes per minute
+(76 in all with eight jobs) and per hour (475, ARCH's share holding its own writes and 10 for each job it opens, since
+every job passes through ARCH), of points per minute (854) and of pushes per minute to one repository (5.7); a write beyond a share waits; no write that changes nothing; a machine
 GitHub has refused writes nothing until the wait ends; `branch` paced as pushes are; `next-job` keeps what is final of
 merged pull requests instead of re-reading them (build text 1, section 3; decision K1–K5 of 27 November 2026). Every
 limit GitHub publishes is honoured (the primary requests an hour, read from its answers; points a minute; content a
