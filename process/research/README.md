@@ -5,6 +5,7 @@ governing text (design part 5 §3): PROCESS reads this index in full and opens a
 line per file, with its outcome; keep it current.
 
 ## 27 Nov 2026
+- `status-from-the-system-27nov.md`: a status stated from the transcript (ARCH's six causes, the owner's relay); the weakness row reaches only claims to the owner; options 0, V (state a status only from a read of the system), H widened, A (archive at the act that ends a job).
 - `sizes-handovers-goals-27nov.md`: why size limits keep being passed (no moment named to measure); options 0, S (measure at each PROCESS refresh and text change; a worker's reduction plan on a breach), H (no owner instruction carried in a handover); a session's goal explained (none in Process4; Claude Code's `/goal`).
 - `tranche-t3-study-27nov.md`: why civicsmith's t3 turned from conversions to fixes, and case-checker's six-hour wait; causes 1–6; options 0, X (a conversions-only scope), Y (newer provider jobs do not hold a passed job); X and Y recommended.
 - `reading-sets-27nov.md`: no text over its limit; PROCESS's set 179,585 with its starting text (over 175,000), ARCH 98.9%; how C & D and K1–K5 grew them; options 0, Z.
