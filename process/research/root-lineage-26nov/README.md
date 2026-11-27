@@ -68,3 +68,6 @@ environment's `autoMode` and `idleCompaction` were there (M). It had no tool to 
 cannot hold ROOT: B fails on the repository and on the tools. Archived by PROCESS #18; its one-time task ended itself.
 A built: design part 4 §6, part 7 §1 (the limit's row), ROOT's rules 6 and 8, the record's subject "The limit on depth,
 and a fresh ROOT". C is not chosen; put to the owner once.
+The owner's choice: "(What makes it climb fast is how often ROOT is replaced) Decision: D, as recommended" — 27 November
+2026, about 00:28 UTC, typed in PROCESS #20's session. Built as text: design part 4 §6, part 6 §7, ROOT's rule 5, the
+record's subject "The limit on depth, and a fresh ROOT".
