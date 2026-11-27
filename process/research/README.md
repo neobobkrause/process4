@@ -6,6 +6,7 @@ line per file, with its outcome; keep it current.
 
 ## 27 Nov 2026
 - `build-plan-purposes-27nov.md`: the owner's build plan — an ordered list of purposes, each a scope with a completion condition, the tool advancing through them (default when none); generalises the existing scope; options 0, A, B; B recommended; proposed to the owner, not decided.
+- `admin-tool-27nov/state.md`: where the administrator-tool work stands at PROCESS #21's refresh: his aims in his words, his working rules, what was learned, the 28 proposed functions, what is open. Read first for the tool.
 - `admin-tool-27nov/`: the study of an administrator tool across the whole design (parts A-C, synthesis D): 18 items, storage (a never-merged branch weighed against process3's suspension), hooks and events, 18 gaps, stages 0-4; options 0, T1, T2; T2 recommended.
 - `status-from-the-system-27nov.md`: a status stated from the transcript (ARCH's six causes, the owner's relay); the weakness row reaches only claims to the owner; options 0, V (state a status only from a read of the system), H widened, A (archive at the act that ends a job).
 - `sizes-handovers-goals-27nov.md`: why size limits keep being passed (no moment named to measure); options 0, S (measure at each PROCESS refresh and text change; a worker's reduction plan on a breach), H (no owner instruction carried in a handover); a session's goal explained (none in Process4; Claude Code's `/goal`).
