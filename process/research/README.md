@@ -1,112 +1,112 @@
 # PROCESS research: the index
 
-PROCESS records its research here before it proposes a change (design part 6, section 7; rule 3 of PROCESS's starting
-text). Research is background, not governing text (design part 5, section 3): PROCESS reads this index in full, and reads
-a file, or gives it to a worker, when a question needs it. One line for each file; keep it current.
+PROCESS records research here before it proposes a change (design part 6 §7; its rule 3). Research is background, not
+governing text (design part 5 §3): PROCESS reads this index in full and opens a file when a question needs it. One short
+line per file, with its outcome; keep it current.
 
 ## 27 Nov 2026
-- `job-reading-27nov.md` — the owner's decision to study trimming a job's reading (worker): a job's set is 177,379 bytes, over the 175,000 maximum (ARCH 176,983); ~85,000 never used, ~3,100 history; options 0, A (read named sections, 114,566), B, C (split texts by reader; recommended with D), D (remove history).
+- `job-reading-27nov.md`: trimming a job's reading set, over the 175,000-byte maximum; options 0, A–D; "Decision: C & D".
 
 ## 26 Nov 2026
-- `github-limits-26nov.md` — the owner's question: process3's safeguards against GitHub's limits (worker): its notices were state-branch files in one push, pacing at 85%, a budget gate, header-aware retry; PD-22 retired the content windows; Process4 has a 60 s blind retry, push and merge spacing, nothing pacing comments; GitHub's 80 a minute / 500 an hour; options 0, G1 (one second between writes), G2 (header-aware, growing retry), G3; recommended with A.
-- `unconverted-told-every-merge-26nov.md` — after the switch, each ordinary (non-conversion) merge on civicsmith told all 199 unconverted modules by point 3 (places outside the standard refer to every earlier module); ~199 told jobs after their conversions, merges held by notices; options 0, A (a module is not told before its conversion merges; its conversion clears what waits; recommended), B (hold ordinary work during the sweep); H (R1 notes from Node gaps kept, against ee2091f); J (R2 on a module's own data, generated files, own program output); then N (add the ~40 Node names the jobs reported) and J widened to the reader faults jobs report, a refusal of a deliberate error test among them; then TextDecoder's description refusing correct code stops two jobs (H widened: a host gap never refuses); after the sweep, leftover "*" places keep telling, so the tool faults behind them matter. Then those notices tripped GitHub's secondary rate limit (three owed, id-spaces cannot open; ARCH #32's process fault): A removes the cause.
-- `uses-rewrite-slow-26nov.md` — `p4 push` rewrote uses files at 15–20 s a module (about an hour for 203); cause: a fresh type-check per module; fix: shared parsed files, up to four reader processes (33.4 s to 5.6 s on 200 synthetic modules, files identical); merged on "Decision: A, the speed fix".
-- `uses-file-version-26nov.md` — the owner's decision on the uses file and the tool's version: what changed, how each reader reads an older file, which places are no longer stored; R14 places refer to no product module (his "Decision: A").
-- `weakness-implications-26nov.md` — choices made without following their cost through (the owner's words; five seen on 26 Nov); options 0 and A; reframed by him as development velocity; decided: a principle in design part 1 §6 and a known-weakness row.
-- `types-and-bounds-only-26nov.md` — the owner's "Decision: only a change of an item's stated types or bounds tells" (26 Nov), built (worker): each part of the means and its fate; errors, channels, arguments written into, a constant's value and `takesIn` tell no one; measured (converted proof: told 410 to 341, missed 7 to 21); the cost of also dropping named or declared meaning.
-- `first-pass-figures-26nov.md` — civicsmith ARCH #28's figures for the first 8 conversions (about $150; 14,318 places to 728, 95%; causes; no copies; uses files unchecked); PROCESS's estimate for 204 modules and open questions.
-- `conversion-tells-no-one-26nov.md` — the owner's "Decision: a conversion's merge tells no one." (26 Nov): why (conversions read as changing items told every unconverted importer), the risk, what was built; the five owed civicsmith notices need not be sent.
-- `notify-size-26nov.md` — `notify` cannot send five of civicsmith's conversion notices; researched (worker): a type error gone read as a change (all 150 importers told on a civicsmith-shaped product), reasons carrying whole types (120 MB to 153 KB), memory bounded; merged on "Decision: A".
-- `rules-r15-r19-host-26nov.md` — R15 read by spelling (fault, corrected), R19 counting `!x` as an assignment (fault, corrected), Node features added by hand, option C sized (2.6 MB of @types/node, a second dependency), the clock test's cost (told of every earlier module); merged on "Decision: A".
-- `no-code-module-26nov.md` — civicsmith's `documents` left with no code cannot finish its conversion; design part 2 §1 already makes it a list error for ARCH to correct; options 0 (recommended) and B; coordinator told as information.
-- `facility-names-26nov.md` — process fault: the tool named package facilities by this machine's path and counted the product's own members as the host's (15,677 places on civicsmith); causes and a correction on `work/facility-names` (worker; 273/273); options 0 and A (recommended).
-- `conversion-notices-26nov.md` — the trial's findings (a) and (b) (worker): (a) the facility list's first writing read as a change of the host's version, telling every module (a tool fault: `versionNotices`; option 1, a version first written tells no one); (b) a conversion's merge tells every later unconverted module by point 3 (1,596 notices and up to ~1,568 told jobs in civicsmith's first pass of 8; 20,706 over 204 modules; options 0, B1 a conversion tells no point-3 module, B2, B3 = 6B only); recommended 1 + B1 + 6B, put to the owner as one group with choice 6.
-- `trial-who-is-told-26nov.md` — the plan for Part D step 5: the trial of who is told on process3-probes (the owner's two lines at its coordinator; facility list, every module's conversion, a provider chosen with its expected users written first, a change to the insides, a change of an interface, a change of meaning, the account); what it cannot show.
-- `root-lineage-26nov/` — the owner: "ROOT creating its own successor ... halt regularly". Each takeover puts ROOT one level deeper (the watcher is ROOT's child); process3-probes stopped at depth 8, civicsmith reset once by the owner; takeovers mostly version moves (civicsmith) or fill (process3-probes); a scheduled task's session has no parent (one seen); an orphan wake trigger pushing the owner; options 0, A (choice 5B), B (the next ROOT started at the top by a scheduled task, measured first), C; worker's `trace.md`. 27 Nov: the owner raised it again (each refresh deepens ROOT); a top-level ROOT can only be his own start; options 0, C, D (ROOT takes over only at its fill level or death; recommended).
-- `precision-26nov/` — who is told, measured on the notice's proof converted to the coding standard (worker): 16 missed users there that only places outside the standard had caught; the precision work (member by member; what changed made exact) measured; the 16 traced (`misses.md`: 11 a started program's output or start-up, 2 swapped same-kind parameters, A14, X03, X01; rule 7 unsound for functions handed on and for objects); the owner's question on properly converted modules answered (15 missed, ~162 without need); options in `README.md`. Then, on the owner's request for a load-bearing design (his words in its `README.md`): `design-to-build.md` (what the tool and texts had to change), `design-check.md` (a fresh check of the draft: 28 findings, all answered), `final-check.md` (tool, texts and design against each other: 13 findings, five misses, all corrected), `footprint.md` (98 cuts of repetition and wordiness, no rule changed) and `cut-check.md` (each cut checked: no rule lost; stated limits restored); `md2html.py` makes the owner's reading page of design part 2 §7–8.
+- `github-limits-26nov.md`: safeguards against GitHub's rate limits, process3's and ours; options 0, G1–G3; G1 and G2 decided (with A below).
+- `unconverted-told-every-merge-26nov.md`: each ordinary merge told all ~199 unconverted modules; options 0, A, B, H, J, N; "Decision: A, G1, G2, H, J, N".
+- `uses-rewrite-slow-26nov.md`: `p4 push` rewrote uses files slowly (a type-check per module); "Decision: A, the speed fix".
+- `uses-file-version-26nov.md`: the uses file and the tool's version; how readers read older files; "Decision: A".
+- `weakness-implications-26nov.md`: choices made without following their cost; decided: a principle in design part 1 §6 and a known-weakness row.
+- `types-and-bounds-only-26nov.md`: "Decision: only a change of an item's stated types or bounds tells", built and measured; then "Decision: A".
+- `first-pass-figures-26nov.md`: civicsmith's figures for its first 8 conversions; PROCESS's estimate for 204 modules; questions open.
+- `conversion-tells-no-one-26nov.md`: "Decision: a conversion's merge tells no one.": why, the risk, what was built.
+- `notify-size-26nov.md`: `notify` could not send five conversion notices; causes and the fix; "Decision: A".
+- `rules-r15-r19-host-26nov.md`: R15 and R19 reading faults, Node features added by hand, option C sized; "Decision: A".
+- `no-code-module-26nov.md`: civicsmith's `documents` has no code, so cannot finish converting; a list error for ARCH; options 0 (recommended), B.
+- `facility-names-26nov.md`: process fault: facilities named by machine path, product members counted as host's; "Decision: A, as recommended".
+- `conversion-notices-26nov.md`: first facility list read as a version change; a conversion telling every later module; "Decision: 1-A, 2-B1, 6B".
+- `trial-who-is-told-26nov.md`: the plan for the trial of who is told on process3-probes (Part D step 5), and what it cannot show.
+- `root-lineage-26nov/`: each ROOT takeover goes a level deeper; "Decision: B" (measurement failed, A built), then "Decision: D, as recommended".
+- `precision-26nov/`: who is told, measured; misses traced; design checked and cut; "Decision: remove the rule that accepting more tells no one".
 
 ## 25 Nov 2026
-- `tidy-25nov.md` — the owner's tidy study (contradictions, things to combine, shorter wording) of the design, build texts and starting texts: 30 contradictions (18 fixed, 7 his: they change a rule or the status), 16 combined, 14 concision items; ARCH's and a job's reading sets about 9,000 bytes smaller; edits on `work/decision-c-tidy`, not yet put to him.
-- `arch-compacted-fill-unread-25nov.md` — process fault: civicsmith ARCH #26 compacted at 15:02Z; researched: an idle compaction at 43 percent after 76 idle minutes (not the threshold); the fill is readable after a session's first turn ends ("unreadable" was lore in ARCH's handover); options 0, A (idleCompaction off in the environment), B (correct the claim), C (both, recommended); put to the owner 25 Nov; 26 Nov his "Instruction: Turn idle compaction off": A carried out (the environment), B still open.
-- `uses-metadata-25nov.md` — the owner's proposal (conversation): each module keeps a file of the providers and entries it and its tests use, written by a job that understands the code and kept current by each job; finding users becomes a lookup. PROCESS #14's first analysis and what is left to design (incl. "what changed", F1). Option C is set aside while it is designed.
-- `uses-metadata-25nov/` — the owner's proposal designed (PROCESS #15): `design.md` (the design, options 0/A/B for the fix, B recommended; civicsmith's path 0/R1/R2, R2 recommended; put to the owner 25 Nov); workers' `tool-map.md` (what in the tool goes), `texts.md` (what in the texts changes; size limits), `means.md` (31 ways JavaScript refers to a provider; civicsmith's habits; indirect use), `proof.md` (the 45 explained: 43 are "what changed" misses; uses files simulated: 108/53/44 with the listing, 202/104/1 with an accurate statement; 13 breaks the proof's `needs` lacks); `civicsmith-state.md` (ARCH #27's facts on the refactoring and t2); the owner's reply of 25 Nov in `design.md` §6 (rigour from the language's means, a standard of permitted references, no tests where no code changes, abandon the refactoring so far, record by rewriting in place, the real pass stopped after 5–8 modules); workers' `standard.md` (every means of reference from the language's definitions; a standard S1–S13 under which the tool finds every use) and `changes.md` (domain and range in JavaScript; the tool's list of entries that may have changed, 215 of 215 on the proof; the job's guide); the design reworked (options 0, A, B, C; C recommended; the first pass of 8 real modules), put to the owner 25 Nov ~17:15Z; held on his word that every reference means every reference; `every-reference.md` (each gap closed by rules R1–R12, shown on 27 cases in two TypeScript versions, 50 of 50; copies findable only when marked or exact, proven); the first job on each module (§2 H); corrected design put to him ~17:45Z; a restated fact a defect, obtained from its owner by rule (his words); the whole design as a document for his review: https://claude.ai/artifact/FtqUWACJcaoWi9KZmubkAk (25 Nov ~18:00Z); restructured on his ask into Parts A–D (standard, conversion job, notification tool, plan); `study-references.md` (references from the language: R14–R22, two premises) and `study-changes.md` (users told on a change of means, decidable; meaning changes declared by the job and named by ARCH; "unchanged" undecidable); the document answers "Is it load-bearing?" (25 Nov ~18:45Z). Awaiting his decision.
-- `who-is-told-25nov.md` — how the tool decides who is told after a change, its flaws F1–F7 and misses (measured and reproduced), the root cause (it compares descriptions, and tells what it cannot follow), options 0, A–D (C recommended), and a read-only brief for civicsmith; the worker's prototype in `who-is-told-25nov/proto.diff` (scratch, against b798e6a). Asked for by the owner, 25 Nov; not yet put to him.
-- `cleanup-audit-25nov/` — the owner asked whether the last 36 hours' changes were made properly and limits kept: five workers' audits (design, build, starting texts, record, tool), measured limits (PROCESS's reading set ~300,000), why it happened, options A–C and PROCESS's reading set; summary in its `README.md`.
-- `waiting-work-record-size-25nov.md` — civicsmith's waiting-work record (1,937 entries, ~171,000 bytes) passed GitHub's 65,536-character comment limit; `notify` cannot place notices for modules with no open job; a starting job's block too (filings 1669, following 1674); options A to C; 6B built as `waiting-work-record-size-25nov/6b.patch`, waiting for the owner's word.
-- `depth-limit-watcher-25nov.md` — process3-probes watcher #12 at depth 8 could not arm its wake; the warning "two levels away" comes one takeover late (a ROOT at depth 7 has broken children); options A to C.
-- `first-comments-2c-25nov/` — a worker's prototype of options 2C, 2C+ and 2D (a first `@throws`/`@bound`, or any difference, on an entry whose own code is unchanged tells no one); results in `notify-1356-still-197-25nov.md`, last section (membership's first comments, PR 1457).
-- `same-name-entries-25nov.md` — test-support's five files each export `generate`; the listing kept one, so notices for nothing and a missed user; correction built (`same-name-entries-25nov/tool.patch`), choice 4 on the owner's page.
-- `notify-1356-still-197-25nov.md` — after 55db8e4, `notify 1356` still told 197: a first `@throws` or `@bound` on an entry that stated none is a change by the rules (and the printout hides it); `unbracket` stripped a parameter list's brackets, so the declaration backstop told against decision B (corrected in PR 275, the owner's decision 1B); options A to D put as one group with the narrowing below.
-- `narrowing-decision-2-25nov/` — the worker's prototype of the narrowing of decision 2 (`narrow.mjs`, `prototype.diff`); results in `notify-rerun-repeats-25nov.md`.
-- `notify-1356-anything-to-stated-25nov.md` — setup-words' merge: comments that state kinds once inferred as "anything" changed 164 later listings and told 198; a 422 whose reason was lost; a notice to a job merged the same moment; decision B, built 25 Nov (with the repeat fix below).
-- `notify-rerun-repeats-25nov.md` — re-running `notify 1350` on the fixed tool still told 125 (a `registerDeclared` hand-back change, not only accepts-more; real or inferred not yet known) and repeated the notice for ten finished jobs; decision B: skip jobs of any state that carried it, built 25 Nov. registerDeclared's change is real (a new error kind); the narrowing of decision 2 measured by a worker (8 of 150 proof answers change, no hole; 50 → 7 told on a civicsmith-shaped product); the owner's decision 3B, built 25 Nov; notify 1356 after 55db8e4; the 1339 re-run's repeated notices (open did not write `notices`; PR 275, decision 1B).
-- `ready-on-ready-pr-25nov.md` — civicsmith store-request #4: `p4 ready` on a pull request already ready or merged answered with a GraphQL refusal; nothing lost; decision B (say plainly, drop the fallback), 25 Nov.
-- `not-followed-told-everything-25nov.md` — `notify 1350` (an optional parameter added to test-support) told 121 modules, nearly all "not followed fully"; build text 5 tells such a user of any change, against "Accepting more tells no one"; decision B: such a user is told only of a change that tells users; slots above the number, information.
-- `waiting-work-too-large-25nov.md` — `notify 1339` (43 min) told seven open jobs, then could not write waiting work (likely over GitHub's 65,536-character comment limit; most users "not followed fully"), so the other notices were lost; the tool drops GitHub's words on a failed write; decision B: reasons on the merged pull request, waiting work names the notice.
-- `merges-held-for-notify-25nov.md` — civicsmith ARCH holds nine ready jobs while `notify` runs after record-grammar's merge; what in the process makes it wait (design part 2 §7 "the notice reaches that job at once", ARCH rule 2's one-turn sequence); options A to C; the owner chose B (merging goes on, `notify` in the background), 25 Nov; raised by the owner.
-- `notify-slow-early-provider-25nov.md` — `notify` after record-grammar's merge took 43 minutes and 8 GB on civicsmith; the cause (declaration emit redone per user, 97%), the worker's build (1,507 s to 37 s, same answers), the owner's uses-file idea tested; decision B (with the two below) built 25 Nov.
-- `test-on-stale-branch-25nov.md` — civicsmith's provenance job: `p4 test` ran on the job branch as pushed, not on its merge into the tranche; what failed (only `check`, on a field record-grammar's merged job had stated), the cost (a wasted run counted as failed); options A to C; the owner chose B (`p4 test` merges the tranche in first), 25 Nov.
+- `tidy-25nov.md`: the tidy study (contradictions, combining, concision) of design, build and starting texts; settled under cleanup B; some items his.
+- `arch-compacted-fill-unread-25nov.md`: civicsmith ARCH compacted while idle; options 0, A–C; "Instruction: Turn idle compaction off" (A); B open.
+- `uses-metadata-25nov.md`: the owner's proposal: each module keeps a file of the providers it uses; first analysis; designed in the folder below.
+- `uses-metadata-25nov/`: the uses-file design, the coding standard, studies and proofs; "Decision: C, the full standard, with the first pass of 8".
+- `who-is-told-25nov.md`: how the tool decided who is told, flaws F1–F7, root cause; options 0, A–D; prototype `who-is-told-25nov/proto.diff`; not put to the owner.
+- `cleanup-audit-25nov/`: audits of the last 36 hours' changes and limits; options A–C; PROCESS's reading set; "Decision: B, (ii)".
+- `waiting-work-record-size-25nov.md`: waiting-work record over GitHub's comment limit; options A–C; `waiting-work-record-size-25nov/6b.patch`; 6B decided.
+- `depth-limit-watcher-25nov.md`: a watcher at depth 8 could not arm its wake; warning one takeover late; options A–C; decided under `root-lineage-26nov/`.
+- `first-comments-2c-25nov/`: prototype of options 2C, 2C+ and 2D; results in `notify-1356-still-197-25nov.md`.
+- `same-name-entries-25nov.md`: five files export `generate`; the listing kept one; fix `same-name-entries-25nov/tool.patch`; "Decision: 4b".
+- `notify-1356-still-197-25nov.md`: `notify 1356` still told 197 (first `@throws`/`@bound` as a change; an `unbracket` fault, 1B); options A–D.
+- `narrowing-decision-2-25nov/`: prototype of narrowing decision 2; results in `notify-rerun-repeats-25nov.md`.
+- `notify-1356-anything-to-stated-25nov.md`: comments stating kinds once "anything" told 198; a lost 422 reason; decision B, built.
+- `notify-rerun-repeats-25nov.md`: a re-run told 125 and repeated notices to finished jobs; decision B; the narrowing measured; decision 3B; built.
+- `ready-on-ready-pr-25nov.md`: `p4 ready` on a ready or merged pull request gave a GraphQL refusal; decision B (say so plainly).
+- `not-followed-told-everything-25nov.md`: a user not followed fully was told of any change; decision B (only of a change that tells users).
+- `waiting-work-too-large-25nov.md`: `notify 1339` could not write waiting work, losing notices; decision B (reasons on the merged pull request).
+- `merges-held-for-notify-25nov.md`: ARCH held ready jobs while `notify` ran; options A–C; B chosen (merging goes on, `notify` in the background).
+- `notify-slow-early-provider-25nov.md`: `notify` took 43 minutes and 8 GB on civicsmith; cause and fix; decision B, built.
+- `test-on-stale-branch-25nov.md`: `p4 test` ran on the job branch, not its merge into the tranche; options A–C; B chosen (merge the tranche in first).
 
 ## 24 Nov 2026
-- `move-with-new-workflow-24nov.md` — civicsmith's move to the update failed as one pull request (the new workflow ran the old tool the base names) and passed as two in order; options A and B (say the order).
-- `update-trial-process3-probes-24nov.md` — the update's trial on process3-probes: test records, the verdict on GitHub, a merge that waited, a notice reaching an open job; no fault; two things seen with no change; what it did not show.
-- `civicsmith-check-count-brief-24nov.md` — the brief for a read-only session on civicsmith-copy counting `check`'s refusals under the pinned version and the update's, before civicsmith moves; the trial on process3-probes ran cleanly (24 Nov ~21:40Z).
-- `update-build-spec-24nov.md` — the owner's "Decision: the update plan as laid out" (24 Nov) and exactly what to build, which texts change, and what follows; recorded and built by PROCESS #11 (entry in `design-decisions-2.md`). Built beyond the spec, as technical choices: a job's tests run in its own checkout at the pushed head, the scope decided on the merge into the base; `merge` reads uses at both the tranche tip and the job's head; refusal (b) also counts a handed function's own receiving parameter (else the proof lost three true catches).
-- `refactor-plan-check-24nov.md` — a worker's check of the civicsmith refactoring plan against the update plan: change 6 partly met, declared uses far from real uses (1,279 undeclared pairs), no module near 2 hours, gaps for non-job pull requests (worker).
-- `update-plan-24nov.md` — the plan put to the owner on 24 Nov for the update: tests once in the job (`p4 test`, a pass record, GitHub only reads it), notices to running jobs, merging after the modules a job uses, slots, the check mended, module tests through imports; three small fixes folded in; order of building.
-- `dropped-tranche-24nov.md` — the owner dropped civicsmith's t1, and no route carries a drop out (a restoring pull request runs every touched module whole); options A to C (C: a drop is the tranche's merge in reverse, no tests run).
+- `move-with-new-workflow-24nov.md`: a move with a new workflow fails as one pull request, passes as two in order; "Decision: B, as recommended".
+- `update-trial-process3-probes-24nov.md`: the update's trial on process3-probes: no fault; what it did not show.
+- `civicsmith-check-count-brief-24nov.md`: brief for a read-only count of `check`'s refusals on civicsmith-copy before civicsmith moves.
+- `update-build-spec-24nov.md`: what to build for "Decision: the update plan as laid out", and technical choices beyond it.
+- `refactor-plan-check-24nov.md`: a worker's check of civicsmith's refactoring plan against the update plan.
+- `update-plan-24nov.md`: the update plan: tests once in the job, notices to running jobs, merge order, slots; "Decision: the update plan as laid out".
+- `dropped-tranche-24nov.md`: no route carried out the drop of civicsmith's t1; options A–C; "Decision: C, as recommended".
 
 ## 23 Nov 2026
-- `change-group-23nov.md` — the group put to the owner on 23 Nov evening: tests once in the job (one background command, up to 2 hours), notices to running jobs, merging after the modules a job uses, slots, the check's two faults, module tests through imports only; and what to do now.
-- `long-modules-23nov.md` — where tests run and how long each place allows: a session's background command up to 2 hours, GitHub 6 hours, the 45 minutes the process's own; tests already run in parallel; options (worker).
-- `module-uses-23nov.md` — what the check sees as a use (imports by path only; misses `require` and the product's own name; no path strings); why the third reading found more; options (worker).
-- `tests-once-and-merge-order-23nov.md` — the changes agreed in conversation on 23 Nov, for the owner's decision: tests once in the job, notices to running jobs, merging in provider order, slots.
-- `module-tests-timeout-23nov.md` — the required run's 45-minute limit cancels plane (44 minutes of tests) after they pass; it stops round 1; options A to C.
-- `check-names-wrong-provider-23nov.md` — refusal (b) counted control-plane's comment on the value handed over, where the receiving parameter (store-assembly's) stated nothing: a false refusal under 3B; options A and B.
-- `draft-run-passes-ready-pr-23nov.md` — a run that saw the pull request as a draft passes it once ready, with no tests run (civicsmith PR 1228; process4 PR 205); options A to C (not yet put to the owner).
-- `notice-reason-size-23nov.md` — a "not followed fully" reason lists every place, so the waiting-work record grows past a comment's size and the notice is lost; options A and B (not yet put to the owner).
-- `class-member-bound-23nov.md` — a class member's own `@bound` is left out of its listing, so a changed bound tells nobody; options A and B (not yet put to the owner).
-- `held-requirements-23nov.md` — ARCH cannot hold a requirement out of a tranche; the tool counts every not-yet-met line as work, so the round cannot end; options A to C; 24 Nov, sharper on civicsmith's refactoring tranche (78 requirements in 29 modules): option D, a scope list, recommended.
-- `blocked-record-not-cleared-23nov.md` — a job's blocked record stays after it goes on; measured three times ending by ARCH's decision, not a merge; decision B (`push --unblocked`).
-- `notify-out-of-memory-23nov.md` — `p4 notify` reads the whole product twice before asking which modules changed, and runs out of memory on civicsmith; decision B (no reading when no module changed; most of the machine's memory); then a job merge did not fit in 12 GB; the owner asked whether the tool is well designed: decision D, a staged reading of only what a merge can affect.
-- `no-repository-secrets-rule-23nov.md` — where Process4 says a product's repository holds no secrets: only act 3 (design part 7 §4), with no source; what is built on it; options A and B.
-- `job-branch-name-collides-23nov.md` — `job/<module>/<n>` could not be made beside an old flat `job/<module>` branch (137 of civicsmith's modules); decision B (`job/<module>.<n>`).
+- `change-group-23nov.md`: the group of changes put to the owner on 23 Nov; taken into the update plan of 24 Nov.
+- `long-modules-23nov.md`: where tests run and how long each place allows; options (worker).
+- `module-uses-23nov.md`: what the check saw as a use (path imports only); why the third reading found more; options (worker).
+- `tests-once-and-merge-order-23nov.md`: the changes agreed in conversation on 23 Nov; taken into the update plan.
+- `module-tests-timeout-23nov.md`: the required run's 45-minute limit cancels a module's passing tests; options A–C.
+- `check-names-wrong-provider-23nov.md`: refusal (b) counted the giving side's comment, not the receiving one; options A, B.
+- `draft-run-passes-ready-pr-23nov.md`: a run that saw a draft passes it once ready, with no tests run; options A–C; not put to the owner.
+- `notice-reason-size-23nov.md`: a "not followed fully" reason lists every place and outgrows a comment; options A, B; not put to the owner.
+- `class-member-bound-23nov.md`: a class member's own `@bound` left out of its listing; options A, B; not put to the owner.
+- `held-requirements-23nov.md`: ARCH could not hold a requirement out of a tranche; options A–D; "Decision: D, as recommended" (a scope list).
+- `blocked-record-not-cleared-23nov.md`: a job's blocked record stayed after it went on; decision B (`push --unblocked`).
+- `notify-out-of-memory-23nov.md`: `p4 notify` ran out of memory on civicsmith; decision B, then decision D (a staged reading).
+- `no-repository-secrets-rule-23nov.md`: the rule that a product's repository holds no secrets had no source; decision B (dropped).
+- `job-branch-name-collides-23nov.md`: `job/<module>/<n>` collided with old `job/<module>` branches; decision B (`job/<module>.<n>`).
 
 ## 22 Nov 2026
-- `repository-secrets-22nov.md` — civicsmith's own workflows hold repository secrets that act 3 removes (Docker Hub, a Cloudflare token); withdrawn 23 Nov: it rested on act 3's "no repository secrets", which the owner says is false (`no-repository-secrets-rule-23nov.md`).
-- `check-on-real-code-22nov.md` — the tool's `check` on civicsmith's real code: 74,271 refusals before decision 3B; after it, 177 of 204 modules pass, 217 comment-based refusals in 27 modules; the exclude list for vendored and built files.
-- `fault-fetch-copy-not-read-only-22nov.md` — `chmod -R a-w` did not make the process copy read-only; decision 1B dropped the step.
-- `fault-lanes-record-before-start-22nov.md` — the lanes record could not name a lane's session after a claim written before its start; decision 2B (claim first, address after).
-- `lane-reading-set-over-maximum-22nov.md` — a lane's (and PROCESS's) reading set grew past the set maximum because research was required reading; decision B (research read through an index).
-- `product-onboarding-22nov.md` — the onboarding lane, how it reads a product, who changes settings, a product's token made once; the signing keys stay.
-- `refresh-at-every-pause-22nov.md` — long-lived roles refreshed at every natural pause, far below 50 percent (civicsmith ARCH #1 to #4); decision B (the fill level decides, the pause times it).
-- `root-refresh-cadence-22nov.md` — why the trial's ROOT refreshed about hourly on 21 Nov: the cost of a quiet wake; no change.
-- `tests-referring-to-later-modules-22nov.md` — tests that reach a later module; decision B (`check` refuses a declared later use); what the third reading of civicsmith found.
-- `wake-left-after-archive-22nov.md` — a replaced session's scheduled wake left firing into an archived session; decision B (whoever archives removes the wake).
+- `repository-secrets-22nov.md`: civicsmith's workflows hold repository secrets act 3 would remove; withdrawn 23 Nov.
+- `check-on-real-code-22nov.md`: `check` on civicsmith's real code refused nearly everything; "Decision: 3B, as recommended"; exclude list.
+- `fault-fetch-copy-not-read-only-22nov.md`: `chmod -R a-w` did not make the process copy read-only; decision 1B (drop the step).
+- `fault-lanes-record-before-start-22nov.md`: the lanes record could not name a lane claimed before its start; decision 2B.
+- `lane-reading-set-over-maximum-22nov.md`: reading sets grew past the maximum through research; decision B (an index).
+- `product-onboarding-22nov.md`: the onboarding lane, reading a product, settings, the product's token; the owner's decisions in it.
+- `refresh-at-every-pause-22nov.md`: long-lived roles refreshed at every pause; decision B (the fill level decides).
+- `root-refresh-cadence-22nov.md`: why the trial's ROOT refreshed about hourly; no change.
+- `tests-referring-to-later-modules-22nov.md`: tests that reach a later module; decision B (`check` refuses it).
+- `wake-left-after-archive-22nov.md`: a replaced session's wake kept firing; decision B (whoever archives removes it).
 
 ## 21 Nov 2026
-- `approvals-draft-civicsmith-copy-21nov.md` — the drafted approvals and deny-list file for civicsmith-copy, with later corrections.
-- `first-approvals-in-existing-product-21nov.md` — no route to a product's first Process4 approvals when its old approvals forbid it; options A to C.
+- `approvals-draft-civicsmith-copy-21nov.md`: the drafted approvals and deny-list file for civicsmith-copy, with later corrections.
+- `first-approvals-in-existing-product-21nov.md`: no route to a product's first approvals when its old ones forbid it; options A–C.
 
 ## 20 Nov 2026
-- `approvals-draft-process4-20nov.md` — the drafted approvals for this repository, as the owner landed them.
-- `civicsmith-lane-points-20nov.md` — the civicsmith lane's nine setup points judged; decision B.
-- `coordinator-cannot-read-process-liveness-20nov.md` — a cross-repository read of PROCESS's record is refused; decision C (ROOT records PROCESS from its message).
-- `design-history-separation-20nov.md` — the design carried history; the cleanup the owner approved.
-- `owner-acts-without-files-20nov.md` — owner's acts that assumed he edits files; decision B (choose, don't type) and who drafts approvals.
-- `queued-consistency-and-option-c-ripple-20nov.md` — consistency corrections after option C, and the two sweep findings put to the owner.
-- `session-naming-standardization-20nov.md` — the standard session names and the generation counter; decision B.
-- `tranche-unrelated-to-main-20nov.md` — the trial's tranche branch shared no history with main; option C and its outcome.
+- `approvals-draft-process4-20nov.md`: the drafted approvals for this repository, as the owner landed them.
+- `civicsmith-lane-points-20nov.md`: the civicsmith lane's nine setup points judged; decision B.
+- `coordinator-cannot-read-process-liveness-20nov.md`: a cross-repository read of PROCESS's record is refused; decision C.
+- `design-history-separation-20nov.md`: the design carried history; the cleanup the owner approved.
+- `owner-acts-without-files-20nov.md`: owner's acts that assumed he edits files; decision B (choose, don't type).
+- `queued-consistency-and-option-c-ripple-20nov.md`: corrections after option C; two sweep findings put to the owner.
+- `session-naming-standardization-20nov.md`: standard session names and the generation counter; decision B.
+- `tranche-unrelated-to-main-20nov.md`: the trial's tranche branch shared no history with main; "Decision: option C".
 
 ## 19 Nov 2026
-- `automode-classifier-strategy-19nov.md` — classifier refusals across repositories; the `autoMode` settings as the cure.
-- `close-detached-checkout-19nov.md` — `close`/`ready`/`results` from a job's detached checkout; fix B (`--branch`).
-- `coordinator-gh-in-tool-command-19nov.md` — a `gh` command mixed into a recording command; record from a file.
-- `cross-repo-process-messaging-19nov.md` — "Unsanctioned Communication" refusals; the non-substantive refusal re-attempt.
-- `faultD-check-wrong-type-tests-19nov.md` — `check` refused deliberate error tests; option B (error assertions are "cannot tell").
-- `move-to-latest-version-19nov.md` — one instruction moves a product to the latest Process4 version; decision C.
-- `process-refresh-cross-repo-19nov.md` — the PROCESS refresh that never started; decision B.
-- `root-refresh-of-process-failed-again-19nov.md` — the PROCESS refresh failed again; decision C (the owner starts PROCESS).
-- `round4-faults-19nov.md` — the trial's round-4 faults and fixes B, A, C.
-- `trial-faults-19nov.md` — the trial's eight faults; faults 7 and 8 fixed.
-- `verification-sweep-19nov.md` — six workers checked Process4 against its design; corrections and two owner items.
+- `automode-classifier-strategy-19nov.md`: classifier refusals across repositories; the `autoMode` settings as the cure.
+- `close-detached-checkout-19nov.md`: `close`/`ready`/`results` from a detached checkout; fix B (`--branch`).
+- `coordinator-gh-in-tool-command-19nov.md`: a `gh` command mixed into a recording command; record from a file.
+- `cross-repo-process-messaging-19nov.md`: "Unsanctioned Communication" refusals; the non-substantive re-attempt.
+- `faultD-check-wrong-type-tests-19nov.md`: `check` refused deliberate error tests; decision B ("cannot tell").
+- `move-to-latest-version-19nov.md`: one instruction moves a product to the latest Process4 version; decision C.
+- `process-refresh-cross-repo-19nov.md`: the PROCESS refresh that never started; decision B.
+- `root-refresh-of-process-failed-again-19nov.md`: the PROCESS refresh failed again; decision C (the owner starts PROCESS).
+- `round4-faults-19nov.md`: the trial's round-4 faults; fixes B, A and C adopted.
+- `trial-faults-19nov.md`: the trial's eight faults; faults 7 and 8 fixed.
+- `verification-sweep-19nov.md`: six workers checked Process4 against its design; corrections and two owner items.
