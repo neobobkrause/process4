@@ -40,3 +40,4 @@ owner's exact dated words and the reasons. Keep it current with each entry writt
 - A record that outgrows one comment, and a starting job's block — `design-decisions-2.md`
 - The tool's reading of a product under the standard — `design-decisions-2.md`
 - Development velocity — `design-decisions-2.md`
+- GitHub's limits — `design-decisions-2.md`

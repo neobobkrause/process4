@@ -597,13 +597,18 @@ export function resolvesAnew(B, A, provider, fresh, order) {
  * @param o.filesChanged whether the merge changed the provider's files (a change that only names an item's meaning does not)
  * @param o.conversion whether the merged pull request is the provider's conversion
  * @param o.sameAs the items the pull request records as keeping their domain and range (changedItems)
+ * @param o.mayTell where given, the only modules that may be told: those whose conversion may have merged (the owner's
+ *   decision A, 27 Nov 2026: a module is not told of any change until its conversion merges). Every other module that
+ *   would be told is named in the report's `untold` instead.
  */
-export function notice(before, after, provider, { named = [], filesChanged = true, conversion = false, sameAs = [] } = {}) {
+export function notice(before, after, provider, { named = [], filesChanged = true, conversion = false, sameAs = [], mayTell = null } = {}) {
   loadReader();
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const B = treeOf(before), A = treeOf(after);
   if (!A.byId.has(provider)) throw new Error(`no such module: ${provider}`);
   const report = { provider, reader: `TypeScript ${readerVersion()}`, conversion, changed: [], fresh: [], told: [], summary: '' };
+  const may = mayTell ? new Set(mayTell) : null;
+  if (may) report.untold = [];
   const mine = changedItems(B, A, provider, { named, conversion, sameAs });
   report.fresh = mine.fresh;
   report.changed.push(...mine.changed);
@@ -756,12 +761,22 @@ export function notice(before, after, provider, { named = [], filesChanged = tru
         }
       }
     }
-    if (reasons.length) report.told.push({ user, reasons });
+    if (!reasons.length) continue;
+    // A module whose conversion has not merged is told of nothing; its conversion works on the newest code.
+    if (may && !may.has(user)) report.untold.push(user);
+    else report.told.push({ user, reasons });
   }
   passedOn(report, telling, hitsOf, indexOf);
-  report.summary = telling.length ? `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`
-    : `${report.changed.length ? 'No changed item tells anyone (each one the pull request records as keeping its domain and range)' : conversion ? `${provider}'s conversion: no item's means changed, describing aside` : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`;
+  report.summary = noticeSummary(report);
   return report;
+}
+
+/** A notice's summary line, from its changed items, its told modules and those left untold as not yet converted. */
+export function noticeSummary(report) {
+  const telling = report.changed.filter((c) => c.tells);
+  const untold = report.untold?.length ? ` ${report.untold.length} module(s) not yet converted left untold.` : '';
+  return (telling.length ? `${telling.length} item${telling.length === 1 ? '' : 's'} changed in a way that tells; ${report.told.length} module(s) told.`
+    : `${report.changed.length ? 'No changed item tells anyone (each one the pull request records as keeping its domain and range)' : report.conversion ? `${report.provider}'s conversion: no item's means changed, describing aside` : 'No item\'s means changed'}; ${report.told.length ? `${report.told.length} module(s) that hear of any change told.` : 'nobody is told.'}`) + untold;
 }
 
 const DEPENDENCY_LISTS = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
@@ -799,9 +814,11 @@ export function packageVersions(tree) {
  * names the package; on a change to the host's version (the facility list's `versions`), each module that uses a
  * facility of it. One notice for each package that changed; one with no version before is not changed. A lookup in the
  * uses files: no code is read.
- * @returns [{ package, was, now, told: [{ user, reasons }] }]
+ * `mayTell`, where given, names the only modules that may be told (notice); every other module that would be told is
+ * named in the notice's `untold`.
+ * @returns [{ package, was, now, told: [{ user, reasons }], untold?: [user] }]
  */
-export function versionNotices(before, after) {
+export function versionNotices(before, after, { mayTell = null } = {}) {
   const treeOf = (x) => (typeof x === 'string' ? loadTree(x) : x);
   const B = treeOf(before), A = treeOf(after);
   const vb = packageVersions(B), va = packageVersions(A);
@@ -824,7 +841,9 @@ export function versionNotices(before, after) {
       if (!facilities.length) continue;
       told.push({ user, reasons: [{ module: `package ${p}`, package: p, found: 'any change', changes: [], why: `${p}'s version changed (${vb.get(p) ?? 'none'} -> ${va.get(p) ?? 'none'}); ${user} uses ${facilities.slice(0, PLACES_SHOWN).join(', ')}${facilities.length > PLACES_SHOWN ? ` and ${facilities.length - PLACES_SHOWN} more` : ''}`, places: [] }] });
     }
-    return { package: p, was: vb.get(p) ?? null, now: va.get(p) ?? null, told };
+    if (!mayTell) return { package: p, was: vb.get(p) ?? null, now: va.get(p) ?? null, told };
+    const may = new Set(mayTell);
+    return { package: p, was: vb.get(p) ?? null, now: va.get(p) ?? null, told: told.filter((t) => may.has(t.user)), untold: told.filter((t) => !may.has(t.user)).map((t) => t.user) };
   });
 }
 

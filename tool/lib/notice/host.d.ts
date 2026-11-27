@@ -13,9 +13,11 @@ interface JSON {
 
 type NodePathLike = string | URL;
 interface NodeDirent { name: string; isFile(): boolean; isDirectory(): boolean; }
-interface NodeStats { size: number; mtimeMs: number; isFile(): boolean; isDirectory(): boolean; }
+// fs.html (Node 22), fs.Stats: mode is the file's type and permission bits; uid and gid its owner.
+interface NodeStats { size: number; mtimeMs: number; mode: number; uid: number; gid: number; isFile(): boolean; isDirectory(): boolean; isSymbolicLink(): boolean; }
 interface NodeReadOptions { encoding?: string; flag?: string; }
-interface NodeRmOptions { recursive?: boolean; force?: boolean; }
+// fs.rmSync's options: maxRetries and retryDelay, for EBUSY and the like (fs.html#fsrmsyncpath-options)
+interface NodeRmOptions { recursive?: boolean; force?: boolean; maxRetries?: number; retryDelay?: number; }
 
 // Buffer (Node 22, buffer.html): a Uint8Array with Node's encodings, global and in node:buffer. What a file read with no
 // encoding hands back.
@@ -30,8 +32,27 @@ interface Buffer extends Uint8Array {
   slice(start?: number, end?: number): Buffer;
   indexOf(value: string | number | Uint8Array, byteOffset?: number, encoding?: string): number;
   includes(value: string | number | Uint8Array, byteOffset?: number, encoding?: string): boolean;
+  // reading and writing numbers at an offset (buffer.html, buf.readUInt32BE and its kin; the names with Uint are aliases)
+  readUInt8(offset?: number): number; readUint8(offset?: number): number; readInt8(offset?: number): number;
+  readUInt16BE(offset?: number): number; readUInt16LE(offset?: number): number; readUint16BE(offset?: number): number; readUint16LE(offset?: number): number;
+  readUInt32BE(offset?: number): number; readUInt32LE(offset?: number): number; readUint32BE(offset?: number): number; readUint32LE(offset?: number): number;
+  readInt16BE(offset?: number): number; readInt16LE(offset?: number): number; readInt32BE(offset?: number): number; readInt32LE(offset?: number): number;
+  readUIntBE(offset: number, byteLength: number): number; readUIntLE(offset: number, byteLength: number): number;
+  readUintBE(offset: number, byteLength: number): number; readUintLE(offset: number, byteLength: number): number;
+  readIntBE(offset: number, byteLength: number): number; readIntLE(offset: number, byteLength: number): number;
+  readBigUInt64BE(offset?: number): bigint; readBigUInt64LE(offset?: number): bigint; readBigInt64BE(offset?: number): bigint; readBigInt64LE(offset?: number): bigint;
+  writeUInt8(value: number, offset?: number): number; writeUint8(value: number, offset?: number): number; writeInt8(value: number, offset?: number): number;
+  writeUInt16BE(value: number, offset?: number): number; writeUInt16LE(value: number, offset?: number): number; writeUint16BE(value: number, offset?: number): number; writeUint16LE(value: number, offset?: number): number;
+  writeUInt32BE(value: number, offset?: number): number; writeUInt32LE(value: number, offset?: number): number; writeUint32BE(value: number, offset?: number): number; writeUint32LE(value: number, offset?: number): number;
+  writeInt16BE(value: number, offset?: number): number; writeInt16LE(value: number, offset?: number): number; writeInt32BE(value: number, offset?: number): number; writeInt32LE(value: number, offset?: number): number;
+  writeUIntBE(value: number, offset: number, byteLength: number): number; writeUIntLE(value: number, offset: number, byteLength: number): number;
+  writeUintBE(value: number, offset: number, byteLength: number): number; writeUintLE(value: number, offset: number, byteLength: number): number;
+  writeIntBE(value: number, offset: number, byteLength: number): number; writeIntLE(value: number, offset: number, byteLength: number): number;
+  writeBigUInt64BE(value: bigint, offset?: number): number; writeBigUInt64LE(value: bigint, offset?: number): number;
+  writeBigInt64BE(value: bigint, offset?: number): number; writeBigInt64LE(value: bigint, offset?: number): number;
 }
 interface BufferConstructor {
+  of(...items: number[]): Buffer;
   from(data: string, encoding?: string): Buffer;
   from(data: Uint8Array | readonly number[] | ArrayBuffer): Buffer;
   alloc(size: number, fill?: string | number | Uint8Array, encoding?: string): Buffer;
@@ -64,6 +85,12 @@ declare module 'node:fs' {
   export function renameSync(from: NodePathLike, to: NodePathLike): void;
   export function copyFileSync(from: NodePathLike, to: NodePathLike): void;
   export function statSync(path: NodePathLike): NodeStats;
+  // fs.html (Node 22): lstatSync (a link's own stats), chmodSync, chownSync, openSync (a file descriptor) and closeSync
+  export function lstatSync(path: NodePathLike): NodeStats;
+  export function chmodSync(path: NodePathLike, mode: string | number): void;
+  export function chownSync(path: NodePathLike, uid: number, gid: number): void;
+  export function openSync(path: NodePathLike, flags?: string | number, mode?: string | number): number;
+  export function closeSync(fd: number): void;
   export function createReadStream(path: NodePathLike): NodeReadable;
   export function createWriteStream(path: NodePathLike): NodeWritable;
   const fs: {
@@ -71,6 +98,7 @@ declare module 'node:fs' {
     existsSync: typeof existsSync; readdirSync: typeof readdirSync; mkdirSync: typeof mkdirSync; mkdtempSync: typeof mkdtempSync;
     rmSync: typeof rmSync; unlinkSync: typeof unlinkSync; renameSync: typeof renameSync; copyFileSync: typeof copyFileSync;
     statSync: typeof statSync; createReadStream: typeof createReadStream; createWriteStream: typeof createWriteStream;
+    lstatSync: typeof lstatSync; chmodSync: typeof chmodSync; chownSync: typeof chownSync; openSync: typeof openSync; closeSync: typeof closeSync;
   };
   export default fs;
 }
@@ -119,7 +147,8 @@ interface NodeChild {
   kill(signal?: string | number): boolean;
 }
 interface NodeSpawnOptions { cwd?: string; env?: Record<string, string | undefined>; input?: string | Uint8Array; encoding?: string; stdio?: unknown; timeout?: number; maxBuffer?: number; killSignal?: string | number; shell?: boolean | string; windowsHide?: boolean; }
-interface NodeSpawnResult { status: number | null; signal: string | null; stdout: string; stderr: string; error?: Error; }
+// child_process.html#child_processspawnsynccommand-args-options: output is the results from stdio, [stdin's, stdout, stderr]
+interface NodeSpawnResult { pid: number; output: (string | null)[]; status: number | null; signal: string | null; stdout: string; stderr: string; error?: Error; }
 declare module 'node:child_process' {
   export function spawn(command: string, args?: readonly string[], options?: NodeSpawnOptions): NodeChild;
   export function spawnSync(command: string, args?: readonly string[], options?: NodeSpawnOptions): NodeSpawnResult;
@@ -164,9 +193,170 @@ declare module 'node:diagnostics_channel' {
 declare module 'node:readline' {
   export function createInterface(options: { input: NodeReadable; crlfDelay?: number }): AsyncIterable<string> & { close(): void; on(event: string, listener: (...args: any[]) => void): unknown };
 }
+// crypto.html (Node 22). A Hash's digest() with no encoding hands back a Buffer. Keys (KeyObject, createPrivateKey,
+// createPublicKey), one-shot signatures (sign, verify), ciphers with a key and IV handed in (createCipheriv,
+// createDecipheriv), and webcrypto, the same Web Crypto API as the global crypto.
+type NodeKeyInput = string | Uint8Array | { key: string | Uint8Array | NodeJsonWebKey; format?: 'pem' | 'der' | 'jwk'; type?: string; passphrase?: string | Uint8Array; encoding?: string };
+interface NodeCipher {
+  update(data: string | Uint8Array, inputEncoding?: string): Buffer;
+  update(data: string | Uint8Array, inputEncoding: string | undefined, outputEncoding: string): string;
+  final(): Buffer;
+  final(outputEncoding: string): string;
+  setAAD(buffer: Uint8Array, options?: { plaintextLength?: number }): NodeCipher;
+  getAuthTag(): Buffer;
+  setAutoPadding(autoPadding?: boolean): NodeCipher;
+}
+interface NodeDecipher {
+  update(data: string | Uint8Array, inputEncoding?: string): Buffer;
+  update(data: string | Uint8Array, inputEncoding: string | undefined, outputEncoding: string): string;
+  final(): Buffer;
+  final(outputEncoding: string): string;
+  setAAD(buffer: Uint8Array, options?: { plaintextLength?: number }): NodeDecipher;
+  setAuthTag(buffer: Uint8Array): NodeDecipher;
+  setAutoPadding(autoPadding?: boolean): NodeDecipher;
+}
+interface NodeWebCrypto { readonly subtle: SubtleCrypto; getRandomValues<T extends ArrayBufferView>(a: T): T; randomUUID(): string; }
 declare module 'node:crypto' {
   export function randomUUID(): string;
-  export function createHash(algorithm: string): { update(data: string | Uint8Array): { digest(encoding: string): string } };
+  export function createHash(algorithm: string): { update(data: string | Uint8Array): { digest(encoding: string): string; digest(): Buffer } };
+  export class KeyObject {
+    private constructor();
+    readonly type: 'secret' | 'public' | 'private';
+    readonly asymmetricKeyType?: string;
+    readonly symmetricKeySize?: number;
+    export(options?: { type?: string; format?: 'pem' | 'der' | 'jwk'; cipher?: string; passphrase?: string | Uint8Array }): string | Buffer | NodeJsonWebKey;
+    equals(otherKeyObject: KeyObject): boolean;
+  }
+  export function createPrivateKey(key: NodeKeyInput): KeyObject;
+  export function createPublicKey(key: NodeKeyInput | KeyObject): KeyObject;
+  export function sign(algorithm: string | null | undefined, data: Uint8Array, key: NodeKeyInput | KeyObject): Buffer;
+  export function verify(algorithm: string | null | undefined, data: Uint8Array, key: NodeKeyInput | KeyObject, signature: Uint8Array): boolean;
+  export function createCipheriv(algorithm: string, key: Uint8Array | KeyObject, iv: Uint8Array | null, options?: { authTagLength?: number }): NodeCipher;
+  export function createDecipheriv(algorithm: string, key: Uint8Array | KeyObject, iv: Uint8Array | null, options?: { authTagLength?: number }): NodeDecipher;
+  export const webcrypto: NodeWebCrypto;
+}
+
+// zlib.html (Node 22): the one-call forms (gzipSync and kin) and the streams (createGzip and kin) in common use.
+type NodeZlibInput = string | ArrayBuffer | ArrayBufferView;
+interface NodeZlibOptions {
+  flush?: number; finishFlush?: number; chunkSize?: number; windowBits?: number; level?: number; memLevel?: number; strategy?: number;
+  dictionary?: ArrayBuffer | ArrayBufferView; info?: boolean; maxOutputLength?: number;
+}
+interface NodeBrotliOptions { flush?: number; finishFlush?: number; chunkSize?: number; params?: Record<number, number | boolean>; maxOutputLength?: number; }
+// a zlib stream: written into and read from, as a Transform stream is
+interface NodeZlibStream {
+  write(chunk: string | Uint8Array, callback?: (error?: Error | null) => void): boolean;
+  end(callback?: () => void): void;
+  end(chunk: string | Uint8Array, callback?: () => void): void;
+  on(event: string, listener: (...args: any[]) => void): NodeZlibStream;
+  once(event: string, listener: (...args: any[]) => void): NodeZlibStream;
+  pipe<T extends NodeWritable>(destination: T, options?: { end?: boolean }): T;
+  close(callback?: () => void): void;
+}
+declare module 'node:zlib' {
+  export function gzipSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function gunzipSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function deflateSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function inflateSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function deflateRawSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function inflateRawSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function unzipSync(buffer: NodeZlibInput, options?: NodeZlibOptions): Buffer;
+  export function brotliCompressSync(buffer: NodeZlibInput, options?: NodeBrotliOptions): Buffer;
+  export function brotliDecompressSync(buffer: NodeZlibInput, options?: NodeBrotliOptions): Buffer;
+  export function createGzip(options?: NodeZlibOptions): NodeZlibStream;
+  export function createGunzip(options?: NodeZlibOptions): NodeZlibStream;
+  export function createDeflate(options?: NodeZlibOptions): NodeZlibStream;
+  export function createInflate(options?: NodeZlibOptions): NodeZlibStream;
+  export function createDeflateRaw(options?: NodeZlibOptions): NodeZlibStream;
+  export function createInflateRaw(options?: NodeZlibOptions): NodeZlibStream;
+  export function createUnzip(options?: NodeZlibOptions): NodeZlibStream;
+  export function createBrotliCompress(options?: NodeBrotliOptions): NodeZlibStream;
+  export function createBrotliDecompress(options?: NodeBrotliOptions): NodeZlibStream;
+  export const constants: NodeZlibConstants;
+}
+interface NodeZlibConstants {
+  readonly Z_NO_FLUSH: number; readonly Z_SYNC_FLUSH: number; readonly Z_FULL_FLUSH: number; readonly Z_FINISH: number;
+  readonly Z_BEST_SPEED: number; readonly Z_BEST_COMPRESSION: number; readonly Z_DEFAULT_COMPRESSION: number;
+  readonly BROTLI_PARAM_QUALITY: number; readonly BROTLI_PARAM_MODE: number; readonly BROTLI_PARAM_SIZE_HINT: number;
+  readonly BROTLI_MODE_GENERIC: number; readonly BROTLI_MODE_TEXT: number; readonly BROTLI_MIN_QUALITY: number; readonly BROTLI_MAX_QUALITY: number;
+}
+
+// http.html (Node 22): a server (createServer, its request and response) and a client request (request, get), the basics.
+type NodeHeaderValue = number | string | readonly string[];
+interface NodeIncomingMessage extends NodeReadable {
+  readonly headers: Record<string, string | string[] | undefined>;
+  readonly rawHeaders: string[];
+  readonly httpVersion: string;
+  readonly method?: string;
+  readonly url?: string;
+  readonly statusCode?: number;
+  readonly statusMessage?: string;
+  [Symbol.asyncIterator](): AsyncIterableIterator<Buffer, undefined, undefined>;
+}
+interface NodeServerResponse extends NodeWritable {
+  statusCode: number;
+  statusMessage: string;
+  readonly headersSent: boolean;
+  setHeader(name: string, value: NodeHeaderValue): NodeServerResponse;
+  getHeader(name: string): number | string | string[] | undefined;
+  removeHeader(name: string): void;
+  writeHead(statusCode: number, headers?: Record<string, NodeHeaderValue>): NodeServerResponse;
+  writeHead(statusCode: number, statusMessage: string, headers?: Record<string, NodeHeaderValue>): NodeServerResponse;
+}
+interface NodeServer {
+  listen(port?: number, hostname?: string, callback?: () => void): NodeServer;
+  listen(port?: number, callback?: () => void): NodeServer;
+  close(callback?: (error?: Error) => void): NodeServer;
+  address(): { port: number; family: string; address: string } | string | null;
+  on(event: string, listener: (...args: any[]) => void): NodeServer;
+  once(event: string, listener: (...args: any[]) => void): NodeServer;
+}
+interface NodeClientRequest extends NodeWritable {
+  setHeader(name: string, value: NodeHeaderValue): NodeClientRequest;
+  destroy(error?: Error): NodeClientRequest;
+  setTimeout(timeout: number, callback?: () => void): NodeClientRequest;
+}
+interface NodeRequestOptions {
+  protocol?: string; host?: string; hostname?: string; port?: number | string; path?: string; method?: string;
+  headers?: Record<string, NodeHeaderValue>; timeout?: number; signal?: AbortSignal;
+}
+declare module 'node:http' {
+  export function createServer(requestListener?: (request: NodeIncomingMessage, response: NodeServerResponse) => void): NodeServer;
+  export function request(url: string | URL | NodeRequestOptions, callback?: (response: NodeIncomingMessage) => void): NodeClientRequest;
+  export function request(url: string | URL, options: NodeRequestOptions, callback?: (response: NodeIncomingMessage) => void): NodeClientRequest;
+  export function get(url: string | URL | NodeRequestOptions, callback?: (response: NodeIncomingMessage) => void): NodeClientRequest;
+  export function get(url: string | URL, options: NodeRequestOptions, callback?: (response: NodeIncomingMessage) => void): NodeClientRequest;
+  export const STATUS_CODES: Record<number, string | undefined>;
+  export const METHODS: string[];
+  export type IncomingMessage = NodeIncomingMessage;
+  export type ServerResponse = NodeServerResponse;
+  export type Server = NodeServer;
+  export type ClientRequest = NodeClientRequest;
+}
+
+// sqlite.html (Node 22.5 and later): a database opened in the process (DatabaseSync) and its prepared statements.
+type NodeSQLInputValue = null | number | bigint | string | ArrayBufferView;
+type NodeSQLOutputValue = null | number | bigint | string | Uint8Array;
+interface NodeStatementSync {
+  run(...anonymousParameters: NodeSQLInputValue[]): { changes: number | bigint; lastInsertRowid: number | bigint };
+  run(namedParameters: Record<string, NodeSQLInputValue>, ...anonymousParameters: NodeSQLInputValue[]): { changes: number | bigint; lastInsertRowid: number | bigint };
+  get(...anonymousParameters: NodeSQLInputValue[]): Record<string, NodeSQLOutputValue> | undefined;
+  get(namedParameters: Record<string, NodeSQLInputValue>, ...anonymousParameters: NodeSQLInputValue[]): Record<string, NodeSQLOutputValue> | undefined;
+  all(...anonymousParameters: NodeSQLInputValue[]): Record<string, NodeSQLOutputValue>[];
+  all(namedParameters: Record<string, NodeSQLInputValue>, ...anonymousParameters: NodeSQLInputValue[]): Record<string, NodeSQLOutputValue>[];
+  readonly sourceSQL: string;
+  readonly expandedSQL: string;
+  setReadBigInts(enabled: boolean): void;
+}
+declare module 'node:sqlite' {
+  export class DatabaseSync {
+    constructor(location: string, options?: { open?: boolean; readOnly?: boolean; enableForeignKeyConstraints?: boolean; enableDoubleQuotedStringLiterals?: boolean });
+    open(): void;
+    close(): void;
+    exec(sql: string): void;
+    prepare(sql: string): NodeStatementSync;
+  }
+  export type StatementSync = NodeStatementSync;
 }
 declare module 'node:events' {
   export class EventEmitter {
@@ -253,3 +443,5 @@ declare module 'module' { export * from 'node:module'; }
 declare module 'crypto' { export * from 'node:crypto'; }
 declare module 'events' { export * from 'node:events'; }
 declare module 'readline' { export * from 'node:readline'; }
+declare module 'zlib' { export * from 'node:zlib'; }
+declare module 'http' { export * from 'node:http'; }
