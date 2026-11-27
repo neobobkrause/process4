@@ -57,7 +57,7 @@ export function fakeGitHub(over = {}) {
     getPR: (slug, n) => s.prs.find((p) => p.number === n) ?? s.earlier.find((p) => p.number === n),
     prForBranch: (slug, b) => s.prs.find((p) => p.state === 'open' && p.head.ref === b) || null,
     lastPRForBranch: (slug, b) => s.prs.filter((p) => p.head.ref === b).slice(-1)[0] || null,
-    closedPRs: (slug, base) => s.prs.filter((p) => p.state === 'closed' && p.base.ref === base),
+    closedPRs: (slug, base) => s.prs.filter((p) => p.state === 'closed' && (!base || p.base.ref === base)),
     createPR: (slug, { head, base, title, draft }) => {
       const pr = { number: s.next++, state: 'open', draft, title, html_url: `https://gh/pr/${s.next - 1}`, head: { ref: head, sha: 'h'.repeat(40) }, base: { ref: base } };
       s.prs.push(pr);
@@ -92,6 +92,12 @@ export function fakeGitHub(over = {}) {
   return gh;
 }
 
+// A pace file and a merged-kinds file of the test's own, so that no test reads or writes the machine's (pace.mjs, K5).
+export const isolated = () => ({
+  paceFile: join(mkdtempSync(join(tmpdir(), 'p4-pace-')), 'pace.json'),
+  kindsFile: join(mkdtempSync(join(tmpdir(), 'p4-kinds-')), 'kinds.json'),
+});
+
 export function ctxFor(root, gh, over = {}) {
   const out = [];
   let t = Date.parse('2026-11-20T10:00:00Z');
@@ -102,6 +108,7 @@ export function ctxFor(root, gh, over = {}) {
       wait: (ms) => { t += ms; out.push(`(waited ${Math.round(ms / 1000)} s)`); },
       nowMs: () => t,
       paceFile: join(mkdtempSync(join(tmpdir(), 'p4-pace-')), 'pace.json'),
+      kindsFile: join(mkdtempSync(join(tmpdir(), 'p4-kinds-')), 'kinds.json'),
       ...over,
     },
   };

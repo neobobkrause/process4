@@ -34,7 +34,8 @@ export function makeGitHub(gh = realGh) {
     // Asks GitHub to run a workflow run again. True when GitHub took it, false when it refused (a run still going).
     // `-i` prints the answer's status line, so that an empty answer to a taken request is told from a refusal.
     rerunRun: (slug, id) => gh(['api', '-i', '-X', 'POST', `repos/${slug}/actions/runs/${id}/rerun`], { allowFail: true }) !== null,
-    closedPRs: (slug, base) => api(`repos/${slug}/pulls?state=closed&base=${encodeURIComponent(base)}&sort=updated&direction=desc&per_page=50`) || [],
+    // The pull requests closed lately into a branch, or into any branch where none is named.
+    closedPRs: (slug, base) => api(`repos/${slug}/pulls?state=closed${base ? `&base=${encodeURIComponent(base)}` : ''}&sort=updated&direction=desc&per_page=50`) || [],
     createPR: (slug, body) => {
       const pr = send('POST', `repos/${slug}/pulls`, body);
       if (!pr?.number) fail('GitHub did not return a pull request');
