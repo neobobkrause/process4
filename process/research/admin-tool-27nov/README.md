@@ -18,6 +18,7 @@ mechanical tool like this". His exact words are in `brief.md`.
 - The owner's review document (27 Nov): "Process4 administrator tool: opportunities for review", https://claude.ai/artifact/RDKPVKMMCVcQ3EuUrudb3A: 22 opportunities in five groups (A course, B accounting and lifecycle, C memory and handovers, D his view and reports, E platform), each with pros, cons and fit, a pick per row, and what each needs from him; Cloudflare assumed as the state service. No artificial Cloudflare trial is planned: the owner, 27 Nov, "Let's not worry about building a completely artificial test of Cloudflare potential usage."
 - `h-architecture.md`, `i-prototype.md` (+ `prototype/`), `j-hooks.md`, `k-evidence.md`: the design, a local build with a t3 replay, hooks run in nested sessions, evidence per opportunity (brief in `brief-2.md`).
 - `l-recommendation.md`: recommended and load-bearing: A1, B5 (Y), B4, B6, C1, C2, C3; supporting A2, A4, B1, C4; later D1, D2, A3, A5, B7, B8, D3; not now B3, B2, E2, E1.
+- `m-full-set.md`: the owner's criterion (every function the tool can do reliably and at least as efficiently): all 22 in, with conditions for hooks and gates; six more (F1-F6); part L's "recorded failure" bar was a misreading of the caution rule.
 - `d-synthesis.md`: one merged list of 18 items, how they form one tool, storage, the dashboard, 18 gaps in the current
   design, a staged path (stages 0-4), what each needs from the owner.
 
