@@ -23,7 +23,9 @@ marked decision typed there by him ("the user (owner)") is his typed word.
   (name it `[Symbol.name]`; read old names as such). B: owner lookups take `declarations[0]`; esbuild's `interface URL {}`
   under pdf-worker/ made the host's URL a later module's (refs.mjs `packageOf` ~75 and other `declarations[0]` uses): a
   symbol any host description declares is the host's; a package declaration never makes a symbol a product module's.
-  On his word: brief a worker (worktree) to build both in `tool/` with tests; merge with the record entry (subject "The
+  Then C (same file, ~05:19Z, not stopping work): H misses R1/S4 resting on a missing global (workerd Response,
+  Request); N lacks workerd's Fetch kinds; a union of typed arrays' method read as unclassified. Put A, B, C as one.
+  On his word: brief a worker (worktree) to build them in `tool/` with tests; merge with the record entry (subject "The
   tool's reading of a product under the standard" in `design-decisions-2.md`), research, `changes` record; then put on his
   page the line for civicsmith's coordinator: `Instruction: move civicsmith to the latest Process4 version, now`.
 - Older items still on his page (not urgent): ROOT C is superseded by D (done); "fill unreadable" B; two tidy

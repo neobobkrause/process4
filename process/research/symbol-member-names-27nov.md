@@ -41,3 +41,20 @@ where it is one) and build text 2c (a host facility is the host's). Its effect: 
 - **B. A symbol any host description declares is the host's,** whatever else merges into it; a declaration in a package
   (under any `node_modules`) never makes a symbol a product module's. Small; no text change.
 Recommended: A and B together, one version; B unblocks pdf-pixels.
+
+## Two more (neither stops work), via ARCH #35 and coordinator #16, ~05:19Z
+
+1. pdf-worker #7 (PR 1770): "workerd's Response and Request are not in the tool's host description. The tool's note on
+   the "Cannot find name 'Response'" place says it is not kept, yet the R1 "any" places that follow from it ARE kept in
+   the uses file. That is 18 in src/index.mjs (every json(...) answer) and more in the tests. Design part 2, section 7
+   says a place that stands only on such a gap is not kept. The S4 on the default export's stated type
+   `Promise<Response>` (src/index.mjs:433) is kept too." So H's tracing misses R1 that follows a missing global's value,
+   and an S4 on a stated type naming it; and N lacks workerd's Response and Request (and kin).
+2. image-codecs #3 (PR 1766): a typed-array method called on a union (`Float32Array | Int32Array`).fill/.set is listed
+   as R14 "a facility the classification leaves out", though the same call on one typed-array type is classified (a
+   naming of a union member's method; the job narrowed with instanceof).
+
+- **C. Complete H and N for these:** an R1 or S4 that rests only on a missing host global is not kept; workerd's Fetch
+  API kinds (Response, Request, Headers, fetch's init) described; a method of a union of host kinds classified as each
+  member's. Small; no text change.
+Recommended now: A, B and C as one version.
