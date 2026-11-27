@@ -22,7 +22,7 @@ per write.
 | Durable Objects rows written ($1/M; 50M included) | ~0.2M | ~0.6M | $0 |
 | Durable Objects rows read ($0.001/M; 25B included) | small | small | $0 |
 | Durable Objects storage ($0.20/GB-month; 1 GB included); process3's 8,937 small files | well under 1 GB | | $0 |
-| Durable Objects duration ($12.50 per million GB-s; the 400,000 included already used up by this account: 1,242,406 used) | a few hours a day active | active all month | $0.20 to $4.05 |
+| Durable Objects duration ($12.50 per million GB-s; the 400,000 included already used up by this account: 1,242,406 used) | active about an hour a day | active all month | $0.17 to $4.05 |
 | D1 instead: rows written ($1/M; 50M), rows read ($0.001/M; 25B), storage ($0.75/GB; 5 GB); no duration charge | | | $0 |
 | KV instead: writes ($5/M; 1M included) | ~43k | ~125k | $0; but KV is eventually consistent, unfit for this |
 
