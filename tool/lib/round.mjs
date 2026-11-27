@@ -5,6 +5,9 @@
 import { loadModules, needConfig, notYetMet, readAt, requirementsFile } from './config.mjs';
 import { parseBlock } from './github.mjs';
 import { liveNotes } from './state.mjs';
+import { readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { git } from './util.mjs';
 
 export const JOB_MARK = 'process4-job';
@@ -69,6 +72,35 @@ export const CONVERSION = 'conversion: bring the module into the coding standard
  */
 export const hasConverted = (prs, blockOf, module) => prs.some((p) => p.merged_at && jobOf(p)?.module === module && blockOf(p.number)?.kind === 'conversion');
 
+/**
+ * The kind of a merged job pull request's job block, which nothing changes once it has merged, kept in a small file in
+ * this machine's temporary folder by repository and pull request number, so that its comments are read once (the
+ * owner's decision K5). `read(n)` reads the block where the file has none; null where it has no block. `ctx.kindsFile`
+ * replaces the file in tests. A file that cannot be read or written only means reading again.
+ */
+export function mergedKinds(ctx) {
+  const file = ctx.kindsFile || join(tmpdir(), 'p4-merged-kinds.json');
+  let held = null;
+  const load = () => { try { const j = JSON.parse(readFileSync(file, 'utf8')); return j && typeof j === 'object' ? j : {}; } catch { return {}; } };
+  return (n, read) => {
+    const key = `${ctx.slug}#${n}`;
+    held ??= load();
+    if (Object.hasOwn(held, key)) return held[key];
+    const kind = read(n) ?? null;
+    // merged with the newest the file holds, so that parallel commands lose nothing worse than a read
+    held = { ...load(), ...held, [key]: kind };
+    try { const tmp = `${file}.${process.pid}.tmp`; writeFileSync(tmp, JSON.stringify(held)); renameSync(tmp, file); } catch { /* read again next time */ }
+    return kind;
+  };
+}
+
+/** A job block reader for hasConverted that reads a merged pull request's kind through mergedKinds. */
+export const convertedBlocks = (ctx, prs, blockOf) => {
+  const kinds = mergedKinds(ctx);
+  const merged = new Set(prs.filter((p) => p.merged_at).map((p) => p.number));
+  return (n) => (merged.has(n) ? { kind: kinds(n, (k) => blockOf(k)?.kind) } : blockOf(n));
+};
+
 // The work a module has now: its conversion, where none of its conversions has merged and the tranche's scope holds it,
 // which is then its only work, the rest waiting for its next job; otherwise requirements not yet met at the tranche
 // branch's newest commit, within the tranche's scope, and what waits for it in the waiting-work record. A told job's kind
@@ -107,9 +139,10 @@ export function readView(ctx, { records } = {}) {
   const comments = {};
   const commentsOf = (n) => (comments[n] ||= ctx.gh.comments(ctx.slug, n));
   const jobBlock = (n) => jobBlockOf(commentsOf(n))?.data || null;
+  const kinds = convertedBlocks(ctx, prs, jobBlock);
   return {
     cfg, base, modules, requirements, prs, merged, round, records: recs,
-    converted: (module) => hasConverted(prs, jobBlock, module),
+    converted: (module) => hasConverted(prs, kinds, module),
     waiting: recs['waiting-work']?.data?.work || [],
     notes: liveNotes(notesData, ends),
     jobBlock,

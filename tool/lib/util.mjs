@@ -1,9 +1,7 @@
 // Shared helpers: running programs, git, GitHub through gh, arguments.
 // The tool holds, reads and prints no token (build text 1, section 3).
 import { spawnSync } from 'node:child_process';
-import { closeSync, openSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { note as paceNote, take } from './pace.mjs';
 
 export class Fail extends Error {}
 export const fail = (msg) => { throw new Fail(msg); };
@@ -41,8 +39,9 @@ export const TRANSIENT = /HTTP 5\d\d|ECONNRESET|ETIMEDOUT|EAI_AGAIN|connection r
 // own advice for its secondary limits): it waits the answer's retry-after where it gives one; else, where
 // x-ratelimit-remaining is 0, until x-ratelimit-reset; else a minute, doubling each time (60, 120, 240, 480 s); after
 // the fourth wait it fails, naming the time (UTC) after which to run the command again.
-// A write (any method but GET) asks gh for the answer's headers (`-i`), so that those are seen, and starts at least a
-// second after the last write of any p4 command on this machine (writePace).
+// Every call but a paginated read asks gh for the answer's headers (`-i`), so that those are seen, and every call takes
+// its place under GitHub's published limits as this machine holds them (pace.mjs): a write at least a second after the
+// last write of any p4 command on this machine (writePace), within its role's shares.
 // A call allowed to fail answers null; GitHub's own words for that failure are kept, as gh.refused, until the next call.
 // GitHub's whole refusal: gh's own line (standard error) and the message GitHub sent with it, which `gh api` prints on
 // standard output as JSON ({ message, errors }): "body is too long" is only there.
@@ -103,57 +102,63 @@ export function rateWait(headers, text, rateTries, nowMs) {
 }
 
 /**
- * Content-creating writes start at least `gap` ms apart, counted across this machine's p4 commands through one small
- * file in the temporary folder, as pushes are (commands.mjs, pushPace). Each write takes the next free start under a
- * lock made by creating a file only where none is (so parallel runs never take the same start), then waits for that
- * start outside the lock. A lock left by a run that died is taken over after ten seconds.
+ * A content-creating write's place under every limit pace.mjs holds for this machine (G1's second between writes among
+ * them), shared across this machine's p4 commands through one small file in the temporary folder.
  */
-export function writePace({ file = join(tmpdir(), 'p4-writes.json'), nowMs = Date.now, wait = sleep, gap = 1000 } = {}) {
-  const lock = `${file}.lock`;
-  let held = false;
-  for (let i = 0; i < 4000 && !held; i++) {
-    try { closeSync(openSync(lock, 'wx')); held = true; } catch {
-      try { if (Date.now() - statSync(lock).mtimeMs > 10000) rmSync(lock, { force: true }); } catch { /* gone already */ }
-      if (!held) sleep(5);
-    }
-  }
-  let start = nowMs();
-  try {
-    let last = 0;
-    try { last = Number(JSON.parse(readFileSync(file, 'utf8')).last) || 0; } catch { /* none yet */ }
-    start = Math.max(start, last + gap);
-    writeFileSync(file, JSON.stringify({ last: start }));
-  } finally { if (held) rmSync(lock, { force: true }); }
-  const d = start - nowMs();
-  if (d > 0) wait(d);
+export function writePace({ file, nowMs = Date.now, wait = sleep, role, say } = {}) {
+  take({ kind: 'write', file, nowMs, wait, role, say });
 }
 
 const utc = (ms) => new Date(ms).toISOString().replace(/\.\d+Z$/, 'Z');
+const PRIMARY = /API rate limit exceeded/i;
 
-export function makeGh({ exec = (args, input) => run('gh', args, { input }), wait = sleep, nowMs = Date.now, pace, paceFile } = {}) {
-  const paced = pace || (() => writePace({ file: paceFile, nowMs, wait }));
+/**
+ * gh, paced and obeying GitHub's rate-limit answers. Before each request, its place (pace.mjs): a GET as a read, any
+ * other method as a write; a paginated read's further pages are counted after it. Every request but a paginated read asks
+ * for the answer's headers (`-i`), taken off the answer: where x-ratelimit-remaining is 0, every request of this machine
+ * waits until x-ratelimit-reset. A refused request waits as rateWait says; a write's refusal by a secondary limit is
+ * noted, so that every write of this machine waits as long (K4). A paginated read refused by the primary limit reads
+ * GitHub's /rate_limit, which counts against no limit, for the reset. `pace(kind)` and `note(what)` replace the file in
+ * tests.
+ */
+export function makeGh({ exec = (args, input) => run('gh', args, { input }), wait = sleep, nowMs = Date.now, pace, note: noted, paceFile, role, say } = {}) {
+  const paced = pace || ((kind) => take({ kind, file: paceFile, nowMs, wait, role, say }));
+  const remember = noted || (pace ? () => {} : (what) => paceNote({ file: paceFile, nowMs, ...what }));
+  const primaryOf = (h) => (h['x-ratelimit-remaining'] === '0' && /^\d+$/.test(h['x-ratelimit-reset'] ?? '') ? Number(h['x-ratelimit-reset']) * 1000 + 1000 : 0);
   return function gh(args, opts = {}) {
     gh.refused = null;
     const write = isWrite(args);
+    const paged = args.includes('--paginate');
     // the headers are asked for where the caller did not ask for them itself, and then taken off the answer
-    const own = write && !args.includes('-i') && !args.includes('--include');
-    const call = own ? ['api', '-i', ...args.slice(1)] : args;
+    const own = !paged && !args.includes('-i') && !args.includes('--include');
+    const call = own ? [args[0], '-i', ...args.slice(1)] : args;
     let r;
     let rateTries = 0;
     let transient = 0;
     for (;;) {
-      if (write) paced();
+      paced(write ? 'write' : 'read');
       r = exec(call, opts.input);
-      const { headers, body } = own ? splitHeaders(r.stdout) : { headers: {}, body: r.stdout };
-      if (own) r = { ...r, stdout: body };
+      const split = own ? splitHeaders(r.stdout) : { headers: {}, body: r.stdout };
+      let headers = split.headers;
+      if (own) r = { ...r, stdout: split.body };
+      if (primaryOf(headers)) remember({ primaryUntil: primaryOf(headers) });
       if (r.code === 0) break;
       const text = `${r.stderr}\n${r.stdout}`;
       const rate = RATE.test(text) || (/HTTP 403/.test(text) && (headers['retry-after'] !== undefined || headers['x-ratelimit-remaining'] === '0'));
       if (rate) {
+        if (!own && PRIMARY.test(text)) {
+          let core = null;
+          try { core = JSON.parse(exec(['api', 'rate_limit']).stdout || '')?.resources?.core; } catch { /* not read */ }
+          if (core && Number(core.remaining) === 0 && /^\d+$/.test(String(core.reset))) {
+            headers = { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': String(core.reset) };
+            remember({ primaryUntil: primaryOf(headers) });
+          }
+        }
         const ms = rateWait(headers, text, rateTries, nowMs());
         if (rateTries >= 4) {
           fail(`GitHub refused: ${refusalWords(r)}; GitHub's rate limit held after four waits: run the command again after ${utc(nowMs() + ms)}`);
         }
+        if (write && !primaryOf(headers)) remember({ notBefore: nowMs() + ms });
         rateTries++;
         wait(ms);
         continue;
@@ -169,7 +174,11 @@ export function makeGh({ exec = (args, input) => run('gh', args, { input }), wai
     }
     const s = r.stdout.trim();
     if (!s) return null;
-    try { return JSON.parse(s); } catch { return s; }
+    let out;
+    try { out = JSON.parse(s); } catch { return s; }
+    // each further page of a paginated read was a request of its own (gh --slurp hands back one array for each page)
+    if (paged && args.includes('--slurp') && Array.isArray(out) && out.length > 1) remember({ points: out.length - 1 });
+    return out;
   };
 }
 export const gh = makeGh();

@@ -63,12 +63,14 @@ test('push sends the current branch, never forced, and refuses the tranche and m
   assert.equal(remote(root, 'job/orders/1'), other);
 });
 
-test('push keeps to six a minute', () => {
+test('push keeps to the role\'s share of GitHub\'s six pushes a minute to the repository; branch counts as a push', () => {
   const root = product();
-  const { ctx, out } = ctxFor(root, fakeGitHub());
+  const { ctx, out } = ctxFor(root, fakeGitHub(), { role: 'job' });
   git(['checkout', '-q', '-b', 'work/x'], { cwd: root });
-  for (let i = 0; i < 7; i++) push(ctx, { _: [] });
-  assert.equal(out.filter((l) => l.startsWith('(waited')).length, 1);
+  for (let i = 0; i < 3; i++) push(ctx, { _: [] });
+  branch(ctx, 'work/y');
+  // a job's share is 0.325 a minute: one push every 185 s
+  assert.deepEqual(out.filter((l) => l.startsWith('(waited')), ['(waited 185 s)', '(waited 185 s)', '(waited 185 s)']);
 });
 
 test('push --blocked writes the job\'s record on its pull request, rewritten in place', () => {

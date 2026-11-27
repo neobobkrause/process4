@@ -39,6 +39,8 @@ const putRecord = (gh, n, data) => gh.addComment('o/product', n, block(TEST_MARK
 
 test('p4 test runs the module\'s check and tests at the head, writes a pass record, and asks the newest required run again', () => {
   const j = job({ 'src/orders/index.mjs': USES, 'test/orders/a.test.mjs': passing });
+  // a pull request already ready (a draft's run comes from ready: K1)
+  j.pr.draft = false;
   const sha = j.pr.head.sha;
   j.gh.s.wfruns.push(
     { id: 6, name: 'module-tests', head_sha: sha, status: 'completed', conclusion: 'failure', created_at: '2026-11-20T09:00:00Z', html_url: 'W6' },
@@ -73,7 +75,24 @@ test('p4 test records a fail, counts every fail across runs, and rewrites the on
   r = recordOf(j.gh);
   assert.deepEqual([r.result, r.passed, r.failed, r.fails_total], ['pass', 2, 0, 2]);
   assert.equal(records(j.gh).length, 1);
+  assert.match(j.out.join('\n'), /pull request 1 is a draft: ready asks for the required run, which reads this record/);
+  // marked ready (by hand, with no event the tool sees), a pass asks for the run again as before
+  j.pr.draft = false;
+  j.out.length = 0;
+  assert.equal(testCmd(j.ctx, j.pr.number), 0);
   assert.match(j.out.join('\n'), /no module-tests run on .* yet; the next one reads the record/);
+});
+
+test('K1: on a draft, a pass asks for no run again: the ready_for_review run reads the record', () => {
+  const j = job({ 'src/orders/index.mjs': USES, 'test/orders/a.test.mjs': passing });
+  j.gh.s.wfruns.push({ id: 7, name: 'module-tests', head_sha: j.pr.head.sha, status: 'completed', conclusion: 'failure', created_at: '2026-11-20T09:30:00Z', html_url: 'W7' });
+  assert.equal(testCmd(j.ctx, j.pr.number), 0);
+  assert.deepEqual(j.gh.s.calls.filter((c) => c[0] === 'rerun'), []);
+  assert.match(j.out.join('\n'), /is a draft: ready asks for the required run/);
+  // the workflow the run comes from starts on ready_for_review and reads the comments when it runs
+  const wf = readFileSync(new URL('../../shims/module-tests.yml', import.meta.url), 'utf8');
+  assert.match(wf, /types: \[[^\]]*ready_for_review/);
+  assert.match(wf, /read_mark process4-test-record/);
 });
 
 test('p4 test with scope nothing writes a pass with no files', () => {

@@ -37,16 +37,16 @@ export function readAll(gh, slug, issue) {
     const p = partOf(c.body);
     if (p) {
       parts[p.key] ??= {};
-      if (!parts[p.key][p.part]) parts[p.key][p.part] = { id: c.id, data: parseBlock(c.body, partMark(p.key, p.part))?.data };
+      if (!parts[p.key][p.part]) parts[p.key][p.part] = { id: c.id, data: parseBlock(c.body, partMark(p.key, p.part))?.data, body: c.body };
       continue;
     }
     const key = keyOf(c.body);
     if (!key || out[key]) continue;
     const b = parseBlock(c.body, mark(key));
-    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '', more: {} };
+    out[key] = { id: c.id, data: b ? b.data : {}, words: b ? b.words : '', more: {}, body: c.body, bodies: {} };
   }
   for (const [key, rec] of Object.entries(out)) {
-    for (const [part, p] of Object.entries(parts[key] || {})) rec.more[part] = p.id;
+    for (const [part, p] of Object.entries(parts[key] || {})) { rec.more[part] = p.id; rec.bodies[part] = p.body; }
     const n = Number(rec.data?.parts) || 1;
     if (n <= 1) continue;
     const { parts: _, ...data } = rec.data;
@@ -169,12 +169,16 @@ export function recordParts(key, data, words = '') {
 
 // Rewrites one record in place, or makes it where it has no comment yet (a gone comment is made afresh). A record too
 // large for one comment is written in parts (recordParts): the further parts first, then the first comment, which names
-// how many parts there are; a further part no longer needed is emptied. Returns the body of the first comment.
+// how many parts there are; a further part no longer needed is emptied. A comment whose body would be the same as it is
+// (`body`/`bodies`, as readAll read it) is not written again (the owner's decision K1). Returns the body of the first
+// comment.
 export function writeRecord(gh, slug, issue, records, key, data, words = '') {
   const bodies = recordParts(key, data, words);
   const had = records[key];
   const more = { ...(had?.more || {}) };
+  const was = (part) => (part ? had?.bodies?.[part] : had?.body);
   const put = (id, body, what, part) => {
+    if (id && was(part) === body) return;
     if (id && gh.editComment(slug, id, body, { allowFail: true }) !== null) return;
     const said = id ? gh.refusal?.() || '' : '';
     const still = () => { try { const r = readAll(gh, slug, issue)[key]; return part ? !!r?.more[part] : !!r; } catch { return !part; } };
@@ -188,7 +192,14 @@ export function writeRecord(gh, slug, issue, records, key, data, words = '') {
   bodies.slice(1).forEach((body, i) => put(more[i + 2], body, `${key} record's part ${i + 2}`, i + 2));
   put(had?.id, bodies[0], `${key} record`);
   for (const [part, id] of Object.entries(more)) {
-    if (Number(part) > bodies.length) gh.editComment(slug, id, block(partMark(key, part), { emptied: [] }), { allowFail: true });
+    const emptied = block(partMark(key, part), { emptied: [] });
+    if (Number(part) > bodies.length && was(part) !== emptied) gh.editComment(slug, id, emptied, { allowFail: true });
+  }
+  // what was written is what a later write in the same command compares with; where in doubt, nothing is skipped
+  if (had) {
+    had.body = bodies[0];
+    had.bodies = {};
+    bodies.slice(1).forEach((body, i) => { if (more[i + 2]) had.bodies[i + 2] = body; });
   }
   return bodies[0];
 }

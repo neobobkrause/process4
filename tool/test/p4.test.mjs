@@ -6,7 +6,7 @@ import { requiredCheck } from '../lib/config.mjs';
 import { block } from '../lib/github.mjs';
 import { TEST_MARK } from '../lib/testrecord.mjs';
 import { git } from '../lib/util.mjs';
-import { fakeGitHub, makeRepo, productFiles, write } from './helpers.mjs';
+import { fakeGitHub, isolated, makeRepo, productFiles, write } from './helpers.mjs';
 
 // Any reach to GitHub, git's checkout or the clock fails the test: --help must only print.
 // A pass recorded for a pull request's head, so that ready marks it.
@@ -57,7 +57,7 @@ test('ready with no number uses the current branch\'s open pull request', () => 
   const pr = gh.createPR('o/product', { head: 'job/dates/1', base: 'tranche', draft: true, title: 'x' });
   passFor(gh, pr);
   const out = [];
-  const code = main(['ready'], { root, slug: 'o/product', gh, log: (l) => out.push(String(l)), wait: () => {} });
+  const code = main(['ready'], { root, slug: 'o/product', gh, ...isolated(), log: (l) => out.push(String(l)), wait: () => {} });
   assert.equal(code, 0);
   assert.equal(gh.getPR('o/product', pr.number).draft, false);
   assert.match(out.join('\n'), new RegExp(`pull request ${pr.number} is open and ready`));
@@ -68,7 +68,7 @@ test('close --nothing-to-change with no number uses the current branch\'s pull r
   git(['checkout', '-q', '-b', 'job/orders/1'], { cwd: root });
   const gh = fakeGitHub();
   const pr = gh.createPR('o/product', { head: 'job/orders/1', base: 'tranche', draft: true, title: 'x' });
-  const code = main(['close', '--nothing-to-change', 'nothing here'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
+  const code = main(['close', '--nothing-to-change', 'nothing here'], { root, slug: 'o/product', gh, ...isolated(), log: () => {}, wait: () => {} });
   assert.equal(code, 0);
   assert.equal(gh.getPR('o/product', pr.number).state, 'closed');
 });
@@ -82,13 +82,13 @@ test('close/ready resolve the pull request from --branch on a detached checkout'
   const gh = fakeGitHub();
   const pr = gh.createPR('o/product', { head: 'job/invoice/8', base: 'tranche', draft: true, title: 'x' });
   const code = main(['close', '--branch', 'job/invoice/8', '--nothing-to-change', 'nothing here'],
-    { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
+    { root, slug: 'o/product', gh, ...isolated(), log: () => {}, wait: () => {} });
   assert.equal(code, 0);
   assert.equal(gh.getPR('o/product', pr.number).state, 'closed');
   // ready resolves --branch the same way.
   const pr2 = gh.createPR('o/product', { head: 'job/dates/3', base: 'tranche', draft: true, title: 'y' });
   passFor(gh, pr2);
-  assert.equal(main(['ready', '--branch', 'job/dates/3'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} }), 0);
+  assert.equal(main(['ready', '--branch', 'job/dates/3'], { root, slug: 'o/product', gh, ...isolated(), log: () => {}, wait: () => {} }), 0);
   assert.equal(gh.getPR('o/product', pr2.number).draft, false);
 });
 
@@ -97,7 +97,7 @@ test('close with neither a number nor --branch on a detached checkout fails and 
   git(['checkout', '-q', '--detach'], { cwd: root });
   const gh = fakeGitHub();
   const pr = gh.createPR('o/product', { head: 'job/invoice/8', base: 'tranche', draft: true, title: 'x' });
-  const code = main(['close', '--nothing-to-change', 'x'], { root, slug: 'o/product', gh, log: () => {}, wait: () => {} });
+  const code = main(['close', '--nothing-to-change', 'x'], { root, slug: 'o/product', gh, ...isolated(), log: () => {}, wait: () => {} });
   assert.equal(code, 1);
   assert.equal(gh.getPR('o/product', pr.number).state, 'open');
 });

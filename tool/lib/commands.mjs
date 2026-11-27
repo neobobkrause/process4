@@ -11,13 +11,14 @@ import {
   noteEnded, parseRecordFile, readAll, readRecords, writeRecord,
 } from './state.mjs';
 import { ORDER, fail, git, underPath } from './util.mjs';
+import { roleFor, take } from './pace.mjs';
 import { DROP } from './scope.mjs';
 import { noticeAfterTests, noticeSeq, recordNeed, recordStands } from './testrecord.mjs';
 import { recordsOf, scopeForPR, usesOnly } from './testrun.mjs';
 
 import {
   JOB, JOB_MARK, RECORD_MARK, REQUIRED, chooseNext, describe, finished as isFinished, isBlocked, jobBlockOf, jobRecordOf, MEANING_MARK, meaningsOf,
-  hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
+  convertedBlocks, hasConverted, moduleStates, nextJobName, openJob, readView, roundDone as isRoundDone, slots, workLines, workOf,
 } from './round.mjs';
 import { earlierUsesAt } from './uses.mjs';
 import { loadTree } from './notice/model.mjs';
@@ -66,20 +67,21 @@ export function branch(ctx, name, into) {
   git(['fetch', '-q', 'origin', `refs/heads/${base}`], { cwd: ctx.root });
   const tip = git(['rev-parse', 'FETCH_HEAD'], { cwd: ctx.root });
   const c = git(['commit-tree', `${tip}^{tree}`, '-p', tip, '-m', `Start ${name}`], { cwd: ctx.root });
+  pushPace(ctx);
   git(['push', '-q', 'origin', `${c}:refs/heads/${name}`], { cwd: ctx.root });
   ctx.log(`${name} made from ${base} at ${tip.slice(0, 10)}; its first commit is ${c}`);
   return 0;
 }
 
-// Six pushes a minute at most, counted across this machine's runs of the tool.
+// The role a command's pacing is held to (pace.mjs): the context's, else P4_ROLE, else from the repository.
+export const roleOf = (ctx) => ctx.role ?? roleFor(ctx.root);
+// Takes a place under pace.mjs's limits for this machine, as the context's clock and file say.
+export const paceFor = (ctx, kind) => take({ kind, role: roleOf(ctx), slug: ctx.slug, file: ctx.paceFile, nowMs: ctx.nowMs, wait: ctx.wait });
+
+// Each push, `branch`'s included, waits for the role's share of GitHub's six pushes a minute to one repository, counted
+// across this machine's runs of the tool (pace.mjs).
 export function pushPace(ctx) {
-  const file = ctx.paceFile || join(tmpdir(), 'p4-pushes.json');
-  let times = [];
-  try { times = JSON.parse(readFileSync(file, 'utf8')); } catch { /* none yet */ }
-  times = times.filter((t) => ctx.nowMs() - t < 60000);
-  if (times.length >= 6) ctx.wait(60000 - (ctx.nowMs() - times[0]));
-  times.push(ctx.nowMs());
-  writeFileSync(file, JSON.stringify(times.slice(-6)));
+  paceFor(ctx, 'push');
 }
 
 // The job's record on its pull request: one comment, written only by the job's session. A record that a notice needs
@@ -348,13 +350,16 @@ export function open(ctx, a) {
     return 0;
   }
   needConfig(ctx.root);
+  // ARCH's hour holds the account's (K3): each job it opens counts JOB_CHARGE in it, kept on this machine only; where
+  // the hour has no room, the opening waits for it.
+  if (roleOf(ctx) === 'arch') paceFor(ctx, 'charge');
   git(['fetch', '-q', 'origin', `refs/heads/${base}`], { cwd: ctx.root });
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const waiting = records['waiting-work']?.data?.work || [];
   const round = records.round?.data || {};
   // Whether the module has had its conversion: a merged job pull request of kind conversion (build text 1b, command 9).
   const prsInto = ctx.gh.allPRs(ctx.slug, base).filter((p) => p.base?.ref === base && JOB.test(p.head?.ref || ''));
-  const converted = (m) => hasConverted(prsInto, (k) => jobBlockOf(ctx.gh.comments(ctx.slug, k))?.data || null, m);
+  const converted = (m) => hasConverted(prsInto, convertedBlocks(ctx, prsInto, (k) => jobBlockOf(ctx.gh.comments(ctx.slug, k))?.data || null), m);
   const w = workOf({ requirements: { [module]: readAt(ctx.root, requirementsFile(cfg, module), 'FETCH_HEAD') }, waiting, round, converted }, module);
   const { mine, notices, kind, waits } = w;
   // A conversion's work is the conversion alone; the module's other work waits for its next job.
@@ -548,9 +553,10 @@ export function merge(ctx, n) {
       return 0;
     }
   }
-  const last = ctx.gh.closedPRs(ctx.slug, pr.base.ref).map((p) => p.merged_at).filter(Boolean).sort().pop();
+  // GitHub's "1 merged pull request per minute", per repository: the newest merge into any branch of it.
+  const last = ctx.gh.closedPRs(ctx.slug).map((p) => p.merged_at).filter(Boolean).sort().pop();
   const since = last ? ctx.nowMs() - Date.parse(last) : Infinity;
-  if (since < 60000) { ctx.log(`waiting ${Math.ceil((60000 - since) / 1000)} s since the last merge into ${pr.base.ref}`); ctx.wait(60000 - since); }
+  if (since < 60000) { ctx.log(`waiting ${Math.ceil((60000 - since) / 1000)} s since the last merge into ${ctx.slug}`); ctx.wait(60000 - since); }
   const r = ctx.gh.mergePR(ctx.slug, n, pr.head.sha, `Merge pull request #${n} from ${pr.head.ref}`);
   if (!r?.merged) fail(`GitHub did not merge pull request ${n}: ${r?.message || 'no answer'}`);
   ctx.log(`merged pull request ${n} into ${pr.base.ref}: ${r.sha}`);
@@ -658,6 +664,8 @@ function usesFileDiffers(ctx, pr, module) {
 
 // 9. next-job: one job for each call. Rewrites the round record and prints what open needs.
 export function nextJob(ctx) {
+  // ARCH's hour spent (K3): it waits for room for one more job's charge before handing one out.
+  if (roleOf(ctx) === 'arch') paceFor(ctx, 'room');
   const { issue, records } = readRecords(ctx.gh, ctx.slug);
   const view = readView(ctx, { records });
   const states = moduleStates(view);
