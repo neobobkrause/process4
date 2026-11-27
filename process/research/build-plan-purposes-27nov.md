@@ -85,3 +85,40 @@ and the job's rule 1 in the starting texts (pointing to the tool, net removal of
   the owner states each next purpose himself when ready. Simpler; he intervenes at each phase boundary.
 - **B — the build plan (what he described).** An ordered sequence of purposes, each with a completion condition; the
   tool advances automatically; default when the list is exhausted or none is stated. Recommended (his direction).
+
+## Refinement from the owner's dialogue (27 Nov, this session, unmarked conversation)
+
+The owner refined the model. Captured for the final proposal (his marked decision still owed):
+
+1. **Purpose is a round property, not a job's; focus is uniform across jobs.** Every job's role is the same (work one
+   module); every lane's role is the same (design one area). A round carries one **purpose** = the **focus-set** its
+   jobs take on, applied uniformly. A job's focus can be multiple. Default focuses: a module's unmet requirements, its
+   flaws, the providers it uses that have changed. The owner, by the dashboard or the coordinator, may add to, subtract
+   from or replace the default focuses for a round (conversion round → convert only; refactoring round → refactor). A
+   lane's design-area focus may likewise widen or narrow.
+2. **The purpose persists across the round and successive rounds until its condition is met**, then the next purpose
+   begins; when the owner's special purposes are used up, the default purpose runs on. The example (convert every
+   module, then refactor, then requirements/flaws/notices) is **sequential phases** — each purpose runs to completion
+   before the next — not one job doing all of them.
+3. **ARCH and the jobs read only the current focus**; they do not know or care whether it is special or default. The
+   tool holds the sequence and advances it. This keeps ARCH and the jobs simple.
+4. **Completion conditions are ARCH's.** ARCH obtains each purpose's completion condition (asks the owner where a
+   special purpose is set) and **makes the determination that it has been met**; the tool then advances. (Supersedes
+   the earlier "tool-checkable conditions only".)
+5. **The tool tracks per-module job properties** (the module-level mirror of the build plan; part 2 §3 step 1 refers
+   to them): the module's currently unmet requirements; flaws found in its code or tests; the provider interfaces it
+   uses that have changed since its last job run; and any special reason a run is needed (conversion, refactoring,
+   etc.). "A module has work" = these, filtered by the current round's focus, non-empty.
+6. **A conversion-only round is not notice-free; it is free of attending to anything but conversion** (his words).
+   Work it surfaces — notices to earlier, already-merged modules, flaws — is recorded against those modules and
+   carried to a later round whose focus takes it on (the default round at the latest). The round never chases it and
+   never stalls on it. This qualifies the 26 Nov "a conversion's merge tells no one": a conversion that must restate
+   an item's type to match the code is a real interface change whose users must be told; reconciling this with the
+   notify-flood fix of 26 Nov must be done carefully in the edit set (do not reopen the 199-module flood).
+7. **Still open with the owner:** whether a purpose boundary coincides with the tranche's merge to main (each purpose
+   its own tranche: convert→merge→refactor→merge→regular) or purposes sequence within one long-lived tranche. Needed
+   before the merge-to-main text can be written exactly.
+
+Part 3 §2 item 4 edits accepted in dialogue (not yet marked). Where this lands: the admin-tool review document's
+charter (A1), plan (A2) and ledger (B1) items (it is on track to become the tool's design), and the Process4 design
+text (parts 2 §3, 3 §1–2, 6 §5) on his marked decision.
