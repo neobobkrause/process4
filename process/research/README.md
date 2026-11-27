@@ -5,6 +5,7 @@ governing text (design part 5 §3): PROCESS reads this index in full and opens a
 line per file, with its outcome; keep it current.
 
 ## 27 Nov 2026
+- `github-limits-account-27nov.md`: GitHub's limits across the whole account (80/min, 500/h); the tool's writes counted; options K1-K5, G3; awaiting the owner.
 - `job-reading-27nov.md`: trimming a job's reading set, over the 175,000-byte maximum; options 0, A–D; "Decision: C & D".
 
 ## 26 Nov 2026
